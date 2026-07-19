@@ -17,10 +17,12 @@ to drop external-checklist coverage from the exit dossier entirely (amendments t
 the brief and its R0/R1 seed sources are only seed context for the research phase, not something
 worth coverage-reporting.
 Move answered questions into decisions.md with their answer rather than deleting them.
+Batch 45/46/47/48/49 questions (filed 2026-07-19 from brainstorms 45–49) were answered by the
+developer later the same day and promoted to ratified decisions D53–D57.
 
 ## Open Questions
 
-None currently open.
+None currently open (see Deferred below for items waiting on a future trigger).
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 

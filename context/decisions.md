@@ -1719,6 +1719,171 @@ the research phase, not something the developer wants coverage-reported. The owe
 `ontology/exit-checklists/<source>.yaml` authored-artifact deliverable is cancelled along with it;
 `dossier` ships with five items, matching the amended D27 exit-dossier definition.
 
+## Batch 45, 46, 47, 48, 49 decisions (2026-07-19 — from brainstorms 45, 46, 47, 48, 49 — **ratified by the developer**, amendments noted inline)
+
+### D53. Finding-aid tooling for the research phase (45)
+
+Turns D29's "finding aids only" policy into a concrete pipeline component. **One library, two
+consumption modes**: a `langatlas_finding_aids` package with per-source query functions
+(`query_pldb`, `query_wikidata`, `query_hyperpolyglot`, `query_wikipedia`), wrapped by
+`tools/finding-aids/report.py` (`checklist` subcommand for D27 R3 batch survey generation,
+`lookup` for ad hoc queries) and by a thin D26 tool wrapper exposing the same functions as a live
+`search_finding_aids` callable for the D5 sweep's point-lookup need. **Per-source adapters match
+each backend's real shape**: live throttled/cached clients for Wikidata (scoped SPARQL template)
+and Wikipedia (REST API); monthly-refreshed local mirrors for PLDB (dataset export pull) and
+Hyperpolyglot (scoped scrape respecting robots.txt/TDM opt-outs per D14), with all reads served
+from mirrors for reproducibility. **Caching/rate-limiting/logging ride the existing D26
+`RunContext`** as a fifth channel type, no bespoke mechanism. **Non-citability enforced
+structurally, three layers**: a typed `FindingAidResult` envelope the fact schema has no slot for,
+a tool-description caveat restating D29/D3 once per session, and D31's data-not-instructions scan
+applied from day one (this tool is the concrete retrofit point D31's own ratification flagged as
+deferred-but-owed). **`provenance.candidate_source` populated as advisory bookkeeping** at
+drafting time when a finding-aid query precedes a fact proposal; D29's identification-metadata
+carve-out is a separate explicit path (`mint_identification_source`) producing a real tier-D
+`sources/` citation through the normal D4 gate. **Location: `tools/finding-aids/`**, matching the
+established `tools/<domain>/` family, never registered on the public MCP (D8). Full analysis:
+[brainstorms/45-finding-aid-tooling.md](brainstorms/45-finding-aid-tooling.md).
+
+*[developer]* Ratified with: **the D31 lexical instruction-pattern scan is built into
+`search_finding_aids` from day one** — no accepted initial gap, overriding D31's own
+"acceptable gap, retrofit before relied on heavily" posture now that this is the concrete
+retrofit point. **Monthly mirror refresh cadence confirmed** as proposed (matching D37/D41's
+other periodic jobs), not a coarser per-R3-theme-cycle refresh. **PLDB mirror mechanics: a
+git-clone-style mirror** of PLDB's published repo, not a scraped/API-shaped pull. **Tool
+wrapper placement: inside `tools/finding-aids/` itself**, not the provider-abstraction
+package's tool registry. **Live-tool availability: available to every agent session type**, not
+scoped only to R3 survey and D5 sweep sessions.
+
+### D54. Challenger-round auto-skip rules (46)
+
+Designs the *mechanism* for brainstorm 04 §4's syntax-quote-auto-accept idea without picking a
+numeric threshold — the sweep pipeline hasn't run yet, so no real "debate changed nothing" rate
+exists to look at (per the existing open question this topic resolves). **Eligibility starts
+narrow**: layer-1 syntax claims only, backing source `custom.grounding: formal-spec` (D43) only,
+D24 fuzzy-match ≥0.90, no `since` back-dating in play — expansion to other claim types/groundings
+happens later, per-type, on that type's own measured data, never inherited. **Mechanism is a
+short-circuit inside an already-triggered D5 debate**, not reconciler-level conflict suppression:
+the reconciler's conflict detection stays untouched; only the challenger/moderator sub-step is
+skippable, and only after the pre-challenge draft clears the D24 verifier at the required tier —
+this is also the only version the existing D30/D41 verifier-replay counterfactual can evaluate.
+**Extends `replay_verdict` (D41) with stratified logging**: claim type × `grounding` ×
+fuzzy-match bucket, a widened query including undebated same-type facts as the true production
+denominator, and a taxonomy-tagged breakdown of what changed (reusing D44's 13-stratum
+vocabulary) on debates that did matter. **Rollout: shadow mode first** (log "would have
+auto-skipped" without changing behavior), **then live with a permanent kill switch and audit
+sample** that never tapers to zero, mirroring D4's spot-check and D24's cross-family drift
+sampling. **Governance**: a small versioned `config/auto_skip.yaml`, changed only by explicit
+developer decision recorded in decisions.md, mirroring D16's MAJOR-gate pattern at config scale.
+Full analysis:
+[brainstorms/46-challenger-auto-skip.md](brainstorms/46-challenger-auto-skip.md).
+
+*[developer]* Ratified with: **the narrow initial eligibility slice (layer-1 syntax,
+`formal-spec` grounding, fuzzy-match ≥0.90, no `since` back-dating) confirmed as-is** — matches
+the developer's intuition for the safest first cut; no further narrowing (e.g. zero prior
+contradiction history) added. **Mechanism confirmed as the short-circuit inside an
+already-triggered debate** (the recommended option), with reconciler-level suppression left for
+later consideration only once the short-circuit version has a track record. **Initial
+audit-sample fraction: a number now is fine**, anchored to D4's 5–10% spot-check / D24's ~10%
+cross-family sample rather than waiting for shadow-mode volume to size it. **Governance weight:
+the lighter process confirmed** — a plain versioned `config/auto_skip.yaml` change recorded in
+decisions.md, not D16's full RFC-gated MAJOR process. **Rough volume goalpost: left fully
+open**, as currently stated — no minimum shadow-mode sample size named yet.
+
+### D55. Discussion→Issue promotion tooling (47)
+
+Answers the checklist's own "whether it's ever needed" framing: **stay fully manual (D32 §2.3's
+baseline) until Discussions exist and accumulate real volume** — D32 hasn't itself shipped yet, so
+there is no volume to instrument against and building promotion tooling now would be automation
+in search of a problem. **Trigger to revisit**: not a numeric threshold but a qualitative signal —
+the developer noticing either promotions happening late or promotion triage itself consuming
+noticeable recurring time. **When triggered, build a private developer-facing digest first**
+(`tools/community/report.py` or similar, styled like D41/D44's CLIs) — a scheduled job using a
+two-stage signal funnel (cheap structural pre-filter: reply count/participant count/staleness-as-
+stop-signal, feeding an LLM claim+source-presence classification only on the pre-filtered subset)
+that surfaces candidate threads to the developer; promotion itself stays a manual click. **Only
+escalate to a public-facing bot** if the digest's own triage load (not just the noticing problem)
+becomes the bottleneck — and even then, the bot proposes promotion (comments, human confirms)
+rather than silently auto-filing, since GitHub's native "convert to issue" is lossy against D32's
+four typed Issue Forms and template-misselection/mis-transcription risk is real. If ever built,
+the bot needs its own third, narrowly-scoped GitHub App (`Discussions: write` + `Issues: write`
+only, distinctly named from D36's `langatlas-bot[bot]`), matching D36's "new trust surface gets
+its own App" pattern. Full analysis:
+[brainstorms/47-discussion-issue-promotion.md](brainstorms/47-discussion-issue-promotion.md).
+
+*[developer]* Ratified with: **sequencing confirmed** — manual now → private digest once real
+Discussion volume exists → public bot only if the digest's own triage load becomes the
+bottleneck; the developer does not want to commit now to building the full public-facing bot.
+**Trigger condition confirmed as purely qualitative** (developer-judged "promotions happening
+late" or "triage consuming noticeable time") — no concrete proxy metric named ahead of any
+Discussion data existing. **Propose-only mechanic confirmed**: if/when the public bot is built,
+it must propose (comment, human confirms) rather than silently auto-file, even once the
+classification step has a shadow-mode track record. **Bot identity confirmed**: a third,
+distinctly-named GitHub App (`Discussions: write` + `Issues: write` only), separate from both the
+D36 runner App and the future external-PR-skim App — it does not ride on the external-PR App.
+**Digest placement: a standalone script**, not a subcommand on an existing CLI (D41's
+observability tool or D44's coverage tool).
+
+### D56. CONTRIBUTING.md content (48)
+
+A doc-writing item, not a design decision — D32 already settled every substantive question
+(channels, lane division, PR posture, DCO). This decision records that a full `CONTRIBUTING.md`
+draft has been produced and reviewed for structure (see the brainstorm file for the complete
+drafted markdown), covering: a two-sentence project one-liner; the three lanes (challenge a fact
+via `challenge-fact.yml`, start/join a Discussion, propose new coverage/sources via
+`propose-coverage.yml`/`request-language.yml` or a source/proposal PR); D32's graduated
+external-authorship posture stated plainly (source/proposal PRs open now, full fact-authoring PRs
+not yet, no fixed date); a DCO section correctly distinguishing D36's bot-installation carve-out
+from human per-commit `Signed-off-by:`; a licensing section tied to D42 (CC BY-SA 4.0 corpus /
+MIT code, "LangAtlas contributors" attribution, takedown contact + `legal-complaint.yml`); and a
+"no growth chrome" closing note pointing to `/coverage/` as the honest entry point. **The file is
+not landed at the repo root yet** — the developer decides when (tied to public-launch timing,
+per brainstorm 31) and confirms placeholder GitHub-org/domain links once D17's org-name action
+resolves. Full analysis, with the complete drafted document:
+[brainstorms/48-contributing-md-content.md](brainstorms/48-contributing-md-content.md).
+
+*[developer]* Ratified with: **hold, not land now** — the drafted content stays unlanded until
+the public-launch checklist (tied to brainstorm 31's positioning work), rather than landing as
+the actual `CONTRIBUTING.md` immediately on the private repo. **Real URLs: wait on D17's
+still-unconfirmed GitHub org name** before finalizing the link block — no placeholder-with-TODO
+version lands in the interim. **Ontology-RFC mention: out of scope** for this contributor-facing
+doc — no pointer to the D16 ontology-MAJOR RFC process is added. **Tone check: the drafted
+plain/declarative voice is fine as written** — it lands D32 §2.6's "no growth chrome" principle
+correctly; no spots (including the opening paragraph) need to run warmer.
+
+### D57. Per-onboarding-cycle tooling checklist (49)
+
+Consolidates four scattered onboarding-relevant decisions (D28/D34's audit, D33's Shiki/
+`syntax_check` aside, D50's `language_kind` classification, D51's `grounding` classification, plus
+D37's source-ingestion fields) into one reusable artifact. **Hybrid (O3)**: a markdown checklist
+template, `ontology/onboarding-checklists/language-template.md`, covering nine items (selection
+sanity, license/access class, D51 grounding resolution, D50 `language_kind`/`domain`, Shiki-
+grammar presence, D33 `syntax_check` mode, D37 source-record fields, ingestion-cost note, D28
+phase sign-off) as a `- [ ]` checkbox list per CLAUDE.md's checkbox-plan convention, copied to
+`ontology/onboarding-checklists/<lang-id>.md` per language and filled in at onboarding start.
+Items that are already schema fields on canonical records (`syntax_check`, `language_kind`/
+`domain`, `custom.grounding`, D37's source fields) are not duplicated into a separate structured
+file — the checklist just points at the field to set; the schema and validator remain the
+enforcement surface. **One small fold-in to D48's `tools/validate/` `precommit`/`ci` contracts**:
+a required-field-*presence* check (not correctness) confirming every language that has reached
+`not-yet-swept`-or-later status has `language_kind` and `syntax_check` set to *something*, closing
+the one silent-skip failure mode (an unset field is indistinguishable from a deliberate default)
+a pure-documentation template can't catch on its own. **Directory choice**: `ontology/
+onboarding-checklists/`, not `ontology/exit-checklists/` — that name was proposed then explicitly
+cancelled by the developer per D52's dated amendment, so it's a naming precedent to avoid
+repeating; not under `tools/<domain>/` either, since this artifact has no importable library or
+CLI, only a markdown template. Full analysis, including a worked example for Rust (D28 phase 1):
+[brainstorms/49-onboarding-checklist.md](brainstorms/49-onboarding-checklist.md).
+
+*[developer]* Ratified with: **directory choice amended — nest under `context/` instead**, not
+`ontology/onboarding-checklists/` as proposed and not attached inside each language's own
+registry record directory. **D48 fold-in dropped**: the narrow required-field-presence check
+(`language_kind` and `syntax_check` only) is **not worth adding now** — both stay fully manual,
+unenforced checklist items, since the failure mode it guards against hasn't actually happened yet
+(D28 phase 1 remains the only completed onboarding so far). **Selection-sanity item (checklist
+item 1) stays purely narrative** — D34's per-candidate audit-table columns are not pulled in as a
+reusable sub-table format. **Timing: deferred** until closer to D28 phase 2/3, rather than built
+now, despite the shape being fresh from this consolidation pass.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human
