@@ -1274,6 +1274,165 @@ check-in is the only alerting actually intended; cron-mail setup is not worth do
 sweep's "checked monthly, no-ops until due" pattern is confirmed** as matching the developer's
 expectation, over a coarser manually-remembered trigger.
 
+## Batch 36 decision (2026-07-19 — from brainstorm 36 — **ratified by the developer**, amendments noted inline)
+
+### D44. Golden-set authoring methodology (36)
+
+One shared perturbation taxonomy — 13 named strata (correct, overstated claim, fabricated
+locator, wrong `since` off-by-one/off-by-major, contradicted, right-claim-wrong-source, category
+error, fabricated feature-instance combination, quote-mismatch, quote-found-elsewhere, OCR-noisy,
+paraphrase-heavy correct) — reused across the D24 verifier golden set's authoring, with the
+**overstated-claim stratum treated as first-class and reported separately**, since it is the only
+stratum that exercises the `partial` verdict's intended meaning and the K1 laundering defense.
+Construction: LLM-generated candidates (volume, decorrelated from the verifier model) curated by
+the developer during R1 QA skims (quality); target composition ~40% correct / 60% wrong-stratum,
+overstated-claim and wrong-`since` over-weighted. **Contamination defense** is primarily
+structural: perturb toward counterfactual, specifically-invented wrongness (invented version
+numbers, swapped similar-language attribution, altered page/section loci) rather than "famous
+facts stated wrong," supplemented by obscure-locus targeting, the existing D24 cross-family
+sample repurposed as a passive contamination gauge, and a small (~10–15 item) fully-developer-
+authored held-out slice for occasional manual audits; no dedicated red-teaming role (matches
+D31's disproportionality precedent). **Hand-labeled controversy cases**: keep D25's ~50-case
+target, reached via a bootstrap lane (~15–20 synthetic structured-input cases authored at project
+start) plus an opportunistic lane (D25's own Claude-escalation-review process already produces
+real hand-labeled cases as a byproduct); genuine field-dispute cases minted opportunistically as
+the corpus acquires opposing tier-A/B literature, not on a schedule; cases carry
+`ontology_version`/`prompt_version` tags, staleness-checked (not migration-gated) by topic 40's
+validator. **Retrieval golden queries**: derived-first from the verifier golden set's own
+correct-stratum `(claim, locator)` pairs (shared bootstrap corpus, not duplicated authoring),
+supplemented by dedicated hand-authoring (developer, R1 QA skims per D27) for the paraphrase and
+cross-source difficulty bands the derivation can't produce. **Topic-16 join**: a sibling
+`tests/golden/` directory (`verifier/`, `controversy/`, `retrieval/`, `debates/`), scored/
+threshold-gated (vs topic-16's diff-reviewed `tests/fixtures/providers/regression/`); the
+verifier golden set reuses D41's `replay_verdict` as a third consumer; the deferred debate-outcome
+golden set (D30's Option B) becomes this topic's responsibility once phase-1 debate volume exists.
+**Public benchmark**: stretch goal, not a near-term commitment — ship D24's already-ratified
+"publish measured error rates" now; if pursued later, use a public-sample + private-held-out-slice
+split (contamination mitigation) with CC0 1.0 licensing matching the `langatlas-transcripts`
+precedent (D42). Full analysis:
+[brainstorms/36-golden-set-authoring-methodology.md](brainstorms/36-golden-set-authoring-methodology.md).
+
+*[developer]* Ratified with: **O1's LLM-generated-candidates + developer-curated-selection split
+confirmed as proposed** — no fully-manual authoring pass for the overstated-claim stratum
+specifically. **Counterfactual construction confirmed as the primary contamination defense**,
+with the ~10–15 item held-out audit slice size accepted as proposed (not sized larger). **D25's
+~50-case controversy golden-set target and the bootstrap + opportunistic sourcing hybrid
+confirmed** — no firmer near-term floor forcing all ~50 cases authored before R3/R4 debates
+start. **Retrieval golden-query derivation confirmed as proposed**: derive the majority of
+exact-term/paraphrase bands from the verifier golden set's own citations, hand-authoring
+reserved for paraphrase-hard and cross-source queries only. **`tests/golden/` fixture directory
+placement confirmed** as proposed, sibling to topic-16's `tests/fixtures/providers/regression/`.
+**Public-benchmark posture confirmed as stretch-goal/not-now** — no need to scope the
+public-sample/private-holdout split or a `public-eligible` tagging convention in advance.
+**Golden-set staleness enforcement is a soft/log-only flag**, mirroring D41's soft-gate stance on
+topic-16's regression-fixture staleness checks — not a CI hard-fail.
+
+## Batch 37 decision (2026-07-19 — from brainstorm 37 — **ratified by the developer**, amendments noted inline)
+
+### D45. Contradiction-register lifecycle (37)
+
+Splits D5's "contradictions are first-class records" policy and D24's `contradicted` verdict into
+**two record types sharing one schema**: `type: verification` (a fact vs. one of its own
+citations — low-severity, mechanical, minted by the D24 verifier only when the fact stays
+admissible via a different citation; a contradicted primary/only citation blocks admission
+outright and never mints a record) and `type: cross-fact` (two independently verified facts
+disagreeing — the rare, high-severity case D5 originally meant, and what D25's controversy level 3
+and the site's disputed glyph actually refer to). Minting is restricted to three mechanical
+sources — the D24 verifier, the D5 reconciler/debate outcome, and human-challenge resolution
+sessions — plus a proposed (not yet designed) periodic cross-fact scan job to catch conflicts
+between facts admitted in different pipeline runs; the controversy assessor never mints records
+itself, preserving its D25 structured-input-only lane. **Identity is content-keyed**
+(`ctr-<12-hex SHA-256>` over sorted participant fact ids, or fact+citation for verification-type),
+mirroring D23's fact-id scheme so concurrent no-PR-gate processes dedup automatically. **Storage**:
+one root-level `contradictions.yaml`, sibling to `tombstones.yaml`, mutable `status` field (git
+history is the audit trail). **Closure**: an automated since/version-qualification check at mint
+time closes the D5-named common case immediately (`status: dissolved`) with no visible dispute
+state; auto-closure on participant correction via a tombstone cross-reference; human-challenge
+adjudication (qualify, correct, or explicitly confirm-as-genuinely-open); indefinite `open` status
+is the correct default for genuine field disagreement, re-checked only on new-source-ingestion
+events — never forced closed. Closed records are never deleted; the live `dispute` axis (D25) is
+always a derived read of currently-open records only. **`partial` verdicts do not mint
+contradiction records** — corrects the checklist topic's own phrasing, since `partial` and
+`contradicted` are mutually exclusive under D24's own decomposition fold rule; partials get their
+own filterable build-side log per D24's existing ratification. **Site**: verification-type records
+add one short clause to the existing D25-axis popover line; cross-fact records get a compact
+"Sources disagree" block inside the same popover, both riding brainstorm 19's shared base-page
+glyph with no new page chrome; a dedicated `/disputed/` index of open cross-fact records is
+proposed as a content/positioning opportunity, left open. **MCP**: `get_fact` on a `dispute:
+contradicted` fact inlines the conflicting participant fact(s) in full (mirroring the D35/29
+tombstone-inlining precedent), each with its own `caution` block; a proposed
+`list_contradictions`/`get_contradiction` read-only tool pair would extend D8's set. Full analysis:
+[brainstorms/37-contradiction-register-lifecycle.md](brainstorms/37-contradiction-register-lifecycle.md).
+
+*[developer]* Ratified with: **the core `verification`/`cross-fact` type split (O1b) confirmed**
+as matching the developer's own intuition for what "a contradiction" means on this project.
+**`partial`-verdict exclusion from the register confirmed** — `partial` and `contradicted` stay
+mutually exclusive per D24's fold rule, with partials living in their own filterable log. **The
+proposed periodic cross-fact contradiction-scan job (O3.3) is an acceptable future pipeline
+component** — already tracked as backlog topic 56, not designed further here. **A dedicated
+`/disputed/` page is declined** — stays popover-only indefinitely, per D10's minimal-surface-area
+ethos, over building it as a content/positioning feature. **Since/version qualification check
+scope (O4 path 1) stays at v0's `since`/`status` comparison only** — not extended to other
+structured scoping fields (dialect/edition, platform) for now. **Human-challenge-confirmed-open
+contradictions (O4 path 3b) carry more weight in the controversy assessor's rubric** than a
+machine-discovered, never-human-reviewed contradiction — the assessor's rubric should read
+`closure_attempt.outcome: confirmed-open` as stronger evidence toward level-3 `disputed` than an
+unreviewed open record. **MCP tool extension confirmed as part of this topic's implementation**:
+`list_contradictions`/`get_contradiction` (O7) ship now rather than deferring to a future
+D8-extension pass — consistent with backlog topic 57's standing tracking note, which stays open
+only for consolidating the *rest* of the extended tool list (D15's `search_sources`/
+`get_source_section`), not this pair.
+
+## Batch 38 decision (2026-07-19 — from brainstorm 38 — **ratified by the developer**, amendments noted inline)
+
+### D46. Questionnaire compiler (38)
+
+A real, deterministic code tool, `tools/questionnaire/compile.py` (matching the "small Python
+CLI, no daemon" shape of D38's blast-radius script and D41's `report.py`), turns the ontology
+tree into the D5 sweep questionnaire — never a hand-maintained document (which would drift the
+moment either source of truth changed without a human remembering to touch the other) and never a
+live per-sweep re-derivation (which makes drift undetectable after the fact). **Fact-bearing vs.
+structural line**: the compiler emits sweep items only for D23's four FeatureInstance fields
+(`exists`/`since`/`characteristics`/`syntax`); everything ontology-authored (feature/edge/rule
+existence, edge polarity, `affects-quality` assessments, dimension `exclusivity`, `layer`,
+`cross_cutting`) is never re-asked per language — hard `requires`/`conflicts-with` edges and
+`rules/*.yaml` instead compile to a separate `constraints:` list the reconciler validates sweep
+answers against, never rendered as questions themselves. **Schema**: per-dimension grouped items
+(carrying the group's `exclusivity` context once, per topic 30's field) plus standalone flat items
+for layer-1/2 features outside any dimension; every item's `anchor_prefix` matches D23's
+`fi.<lang>.<feature>` anchor scheme so compiled items and derived facts share vocabulary by
+construction. **Algorithm**: six mechanical steps over `features/`, `taxonomy/dimensions.yaml`,
+`edges/**`, `rules/*.yaml` — no judgment calls inside the compiler, which is what makes "compiled"
+a meaningful guarantee. **Drift prevention** is structural, not procedural: the questionnaire is
+never independently-editable state, so there is nothing to fall out of sync by omission —
+extending D23's "facts are build artifacts" and D26's "computed once, shipped as data" precedents
+one layer up the pipeline; a schema-shape regression fixture (shared pattern with D26/D30) guards
+the rarer schema-vocabulary-drift mode. **Handoff contract**: every compiled spec is stamped with
+the `ontology_version` it was compiled from (no independent questionnaire semver in v0); every
+sweep-run manifest records which spec version it answered, mirroring D26/D35's version-provenance
+pattern. In-flight-answer disposition after a later ontology migration reuses D38's existing
+migration-manifest disposition DSL applied to FeatureInstance records — this topic's only new
+deliverable is a **delta-questionnaire diff** (`compile.py`, diff two spec versions by
+`anchor_prefix`) feeding D38's `fact_remap` requeue list. **Operational placement**: on-demand,
+invoked at R6/first-sweep-launch and at the start of each subsequent D28 onboarding phase (plus ad
+hoc whenever a migration touches previously-compiled nodes), as one more `config/jobs/` entry for
+D43's driver — never continuous/cron-triggered, matching D43's "sweep launches stay
+developer-initiated by hand" ratification. Full analysis:
+[brainstorms/38-questionnaire-compiler.md](brainstorms/38-questionnaire-compiler.md).
+
+*[developer]* Ratified with: **language-agnostic spec confirmed, no per-language
+candidate-feature filtering** — filtering up front would make the compiler render a judgment
+call about a language before any evidence exists, contradicting D23's "absence is a sourced
+fact, not a skip" principle. **Constraint violations route into the existing D5 conflicted-cell
+debate machinery unchanged** — no separate resolution path or auto-flagging of the
+ontology-level edge/rule itself. **Delta-questionnaire requeue scoped to exactly the changed
+anchors** (minimal re-ask), not the whole dimension group. **`questionnaire_schema_version` stays
+deferred** until the compiler has shipped at least one real version — not stubbed in now the way
+D35 stubbed in `bundle_schema_version`. **Compiled questionnaire spec output is a committed
+artifact** (visible in git history, diffable across ontology versions) — the opposite of D41's
+`report.py` ephemeral-output precedent — with no directory-location preference specified beyond
+`tools/questionnaire/`'s existing output path.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human
