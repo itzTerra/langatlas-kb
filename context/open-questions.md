@@ -2,18 +2,27 @@
 
 Updated 2026-07-18: round-3 questions (brainstorms 09, 11, 12, 13, 25, 34) were answered by the
 developer and promoted to ratified decisions D23–D28 in `context/decisions.md`. Batch 14/16/17
-questions were answered in a later pass the same day and promoted to D29–D31. Move answered
-questions into decisions.md with their answer rather than deleting them.
+questions were answered in a later pass the same day and promoted to D29–D31. Batch 18/19/20
+questions were answered by the developer on 2026-07-19 and promoted to ratified decisions D32–D34.
+Batch 26/27/28 questions were answered by the developer later on 2026-07-19 and promoted to
+ratified decisions D35–D37. Batch 29/30/31 questions (filed 2026-07-19) were answered by the
+developer later the same day and promoted to ratified decisions D38–D40.
+Move answered questions into decisions.md with their answer rather than deleting them.
 
 ## Open Questions
+
+None currently open.
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 
 - **Register `langatlas.dev` and confirm the `langatlas` GitHub org** (D17). The registrar
    check found `langatlas.dev` available (`langatlas.io` is taken; `lang-atlas.io` available
    defensively) — the actual registration and the GitHub-org name confirmation are still to do.
-- **Positioning paragraph wording** — direction decided (D19: typed concept graph first,
-  per-fact sourcing second); topic 31 drafts the actual statement.
+   Per D40, this is **not gated on topic 31's launch-readiness work or any other trigger** — it
+   happens purely on the developer's own independent decision, whenever that comes.
+- **Positioning paragraph wording** — drafted by topic 31/D40 (three nested lengths: hero
+  paragraph, compressed derivative, D17's tagline); per D40, ship with the PLDB/Hyperpolyglot
+  named-comparison sentence cut from the hero paragraph, rest of the wording as written.
 - **Embedding-model choices** — D22's research-phase benchmark subphase decides per use case.
 - **What threshold of "debate changed nothing" would justify simplifying the challenger round
   for some claim types?** Flagged in brainstorm 16 §2.1/open-question 2 but not resolved there

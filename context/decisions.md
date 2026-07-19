@@ -721,6 +721,446 @@ live-web-fetch tool (topic 25) does not need the same wrapper treatment from day
 acceptable to run the first research-phase iteration without it and retrofit before it's relied
 on heavily (overriding the brainstorm's own lean toward building it early in topic 13).
 
+## Batch 18, 19, 20 decisions (2026-07-19 — from brainstorms 18, 19, 20 — **ratified by the developer**, amendments noted inline)
+
+### D32. Contribution funnel & ergonomics (18)
+
+Four typed GitHub Issue Forms (`challenge-fact.yml`, `propose-coverage.yml`,
+`request-language.yml`, `general-question.yml` redirecting to Discussions) replace D9's single
+generic template, auto-labeled and deep-linkable from site surfaces with pre-filled query params
+— this *is* the "propose a fact" web form; no dedicated form backend, serverless relay, or
+third-party form service gets built (would conflict with D10's static site / D12's no-custom-auth
+stance for no real benefit over the already-accepted GitHub-account requirement). giscus
+Discussions scoped to feature and language pages only (`pathname` mapping, lazy thread creation,
+small fixed category set), with an explicit Issues-vs-Discussions division of labor documented in
+`CONTRIBUTING.md`. A new `/coverage/` page joins the site IA: a build-time feature × language
+matrix with three distinct empty-cell states (not-yet-swept / not-yet-onboarded / deferred per
+D28), each empty cell deep-linking to a pre-filled `propose-coverage` issue; ships as pre-baked
+static views (zero-JS, matching D10) with detailed interactive matrix UX left to topic 19. For the
+"would-be co-author" gap D1 left open (D1 no-PR-gate was scoped to the project's own agent fleet,
+not external humans), a **graduated external-authorship posture**: source/candidate-proposal PRs
+only for now (mechanically checkable, no entailment judgment involved), escalating to
+developer-skimmed full fact-PRs once the channel has a track record, with unqualified
+auto-merge-on-green reserved indefinitely — mirroring how D16 and D30 already handle comparable
+trust-boundary questions. No growth chrome (no contributor leaderboards/badges/counters); the
+invitation lives in genuinely useful content (the coverage matrix's honest gaps), not social
+signaling.
+
+*[developer]* Ratified with: the **graduated external-PR posture confirmed as proposed** (source/
+candidate-proposal PRs now, escalating to developer-skimmed full fact-PRs once the channel has a
+track record, unqualified auto-merge reserved for much later) — no further commitment now.
+**giscus scope confirmed as proposed**: feature and language pages only for now, **no comparison
+pages** (they stay gated on D10's data-richness threshold before getting Discussions at all).
+**The four-template issue-form set confirmed as proposed** (`challenge-fact` / `propose-coverage`
+/ `request-language` / `general-question`) — no folding/splitting. **`/coverage/` IA placement
+confirmed**: a standalone top-level page, with **no conflict** with topic 19's matrix-component
+assumptions. **Not-yet-onboarded (D28 later-phase) languages get no per-language stub page** —
+all recruitment for those languages lives on `/coverage/` only. **No hand-curated "good first
+gap" list** — the coverage page waits for topic 44's coverage analytics data rather than the
+developer hand-picking an initial seed list.
+
+### D33. Website deep-dives (19)
+
+Five fairly independent sub-topics, each screened against D10's zero-JS/static posture and the
+"boring, solo-maintainable technology" constraint. **Search**: ship Pagefind (static, client-side
+lexical index over rendered pages) as the default; defer publicly exposing the D8 FastAPI hybrid-
+search endpoint until logged-query evidence shows lexical search is insufficient. **Coverage-
+matrix component** (the interaction design left open by D32's IA placement): several pre-baked
+static views (overview, per-language, per-dimension, "biggest gaps") rather than a live
+interactive table for now; revisit an Astro island (preferred over CSS-only tricks) only if that
+proves insufficient once real coverage data exists. **Syntax-preview validation**: add a
+`syntax_check: parser | none` language-registry field, wiring real parse-only checks (not full
+compilation) into the existing D13 offline validator suite for languages with a cheap CLI syntax-
+check mode; explicitly reject LLM-based plausibility checks for code correctness as inconsistent
+with D4's verified-ground-truth premise. Missing-Shiki-grammar risk for post-1.0 onboarded
+languages becomes a per-onboarding-cycle checklist item (fallback to plain-text highlighting), not
+a new site feature. **OG images**: build-time Satori + resvg generation, two-to-three page-kind
+templates (feature/language/comparison) pulled from the structured data layer — no runtime image
+service. **Analytics**: self-hosted Umami (MIT-licensed, cookieless, no PII) added to the existing
+docker-compose stack post-launch, consumed manually and privately by the developer, never
+surfaced on the public site. **Trust-signal UX** (rendering D25's axes without dashboard creep):
+extend the existing D10 citation popover with a plain-text line covering all D25 axes
+(verification/freshness/dispute/confidence/controversy); reserve exactly one shared base-page
+glyph for the disputed/contradicted/superseded/partially-verified minority of facts, with every
+other status combination staying visually silent on the page itself.
+
+*[developer]* Ratified with: **search ships as an inline instant-search box on every page**
+(not a dedicated `/search/` results page), which must support **ctrl+click to open a result in a
+new tab**; the FastAPI hybrid-search fast-follow deferral is confirmed. **No concrete trigger** is
+set now for revisiting an Astro island on the coverage matrix — "the developer notices the static
+views aren't working" stays an acceptable informal trigger. **"No automated syntax check" for
+languages without a fast CLI syntax-check mode (Prolog and similar) is acceptable indefinitely**,
+not conditioned on topic 42 settling `language_kind` first. **OG images omit the citation-count/
+controversy glyph entirely** (rather than a coarse verified/disputed-only icon), to avoid any
+staleness risk between the static image and the live page. **Self-hosted Umami confirmed** over
+Plausible/GoatCounter self-hosted, per the brainstorm's MIT-license/Docker-friendliness argument —
+no standing preference overrides it. **The single-shared-glyph design confirmed** — one marker
+doing double duty for disputed/contradicted/superseded/partially-verified, with no visual
+distinction between those states outside the popover.
+
+### D34. Scale-up & phase-2 backend sketch (20)
+
+**Sweep pipeline at many-language scale**: keep D5's independent per-language sweep unchanged
+while the language count stays near D28's curated 15 — no batching/lineage-reuse across similar
+languages (rejected: would introduce anchoring bias and undermine the reconciler's independence
+property, the load-bearing check that catches genuine divergence). A future **tiered "stub
+sweep"** (a small fixed field subset for long-tail languages, upgradeable later without a schema
+migration) is the proposed release valve *if* the project's ambition ever shifts from curated
+depth toward PLDB-adjacent breadth (thousands of languages) — not designed in detail, flagged as
+its own future brainstorm. Prioritization past the curated 15 should draw on coverage-gap
+analytics (topic 44) and audience demand rather than D28's ontology-stress ordering, which stops
+applying once the ontology is stable. **The static site (D10) needs no architectural change for
+language-count scale** — full-rebuild time is the only metric to watch; the real site-scale
+trigger (coverage-matrix pre-baked views proving insufficient, per brainstorm 19) is orthogonal to
+language count. **The Builder does not automatically need a dynamic backend**: splitting it into
+combination-validation + sharing (both stay backend-free — client-side rules engine, URL/
+localStorage-encoded permalinks, matching D10's static-first plan) versus the public library of
+built languages (the one piece that genuinely needs a live writable store, since "public" +
+"persistent" + "browsable" cannot be static) shows the honest trigger is "the library ships," not
+"the Builder ships." Ship the backend-free half first; when/if the library is greenlit, extend the
+existing Postgres+FastAPI stack with a clearly separate, non-derived community schema and GitHub
+OAuth — reject a third-party backend-as-a-service absent a concrete reason to distrust
+self-hosting. Ontology-versioning mechanics (id/slug split, blast-radius semver, migrations) are
+explicitly out of scope here — D16/topic 22 remains the authority regardless of language count.
+
+*[developer]* Ratified with: **yes, eventually** — there is a real ambition to go past the curated
+15-language set toward broader PLDB-adjacent coverage, so the tiered "stub sweep" proposal stands
+as the future release valve rather than being dropped. **PLDB's language list (names only, not
+content) confirmed as a legitimate future target-selection input** for choosing which languages to
+consider onboarding next, distinct from D29's already-settled rejection of PLDB as fact content.
+**The trigger for greenlighting the public-library half of the Builder is purely developer
+discretion** — no fixed criterion (verified-fact count, traffic threshold, etc.) is set now.
+**No visible site-side badge is needed for a future stub-sweep tier** distinguishing full-depth
+from stub-depth languages — the existing `/coverage/` "help wanted" framing (D32) already covers
+this adequately.
+
+## Batch 26, 27, 28 decisions (2026-07-19 — from brainstorms 26, 27, 28 — **ratified by the developer**, amendments noted inline)
+
+### D35. Dataset bundle contract design (26)
+
+The published dataset bundle (D13) is two GitHub Release assets per `data-vN` tag: a
+zstd-compressed single **SQLite file** (`langatlas-data-vN.sqlite.zst`) plus a small **JSON
+manifest** (`langatlas-data-vN.manifest.json`) — no wrapping archive, since GitHub Releases
+already support multiple named assets per tag. This is an interchange-format choice only; it does
+**not** reopen D7's "no SQLite serving phase" decision — the live services still run on Postgres,
+and the bundle is a file that gets downloaded once and loaded *into* Postgres (or read directly
+only in the narrow MCP "lite mode" below). Three independent version axes go in the manifest:
+`data_tag` (the D13 release tag, drives rollback), `ontology_version` (D16/D22's content semver,
+carried for provenance/D25-freshness-backstop display only — no compatibility logic needed since
+derived stores are always fully rebuilt), and a new **`bundle_schema_version`** (a semver over the
+bundle's own table/column/manifest structure — MAJOR = breaking structural change, MINOR =
+additive, PATCH = non-structural). Consumers pin a compiled-in `bundle_schema_version`
+compatibility range and **hard-refuse to load on a MAJOR mismatch** (loud failure, matching D13's
+failure-closed publish posture). The manifest also carries `git_commit`, `built_at`,
+`embedding_model_id` (nullable), integrity hashes (`sqlite_sha256`, `sqlite_zst_sha256`,
+`sqlite_bytes`), per-table row counts, and the D24 published verifier error-rate estimates.
+
+The D20 fact-granularity interaction is resolved by shipping a **single flat, precomputed `facts`
+table** — one row per derived fact, already carrying `fact_id`, `anchor`, `canonical_claim`,
+`rendered_text`, `sources_json`, `provenance_json`, and all D25 status axes — alongside
+record-shaped tables (`instances`, `edges`, `rules`, `sources`, `features`, `concepts`,
+`languages`) for page-shaped reads, plus `tombstones`/`redirects` tables. Facts are computed once
+in the build pipeline and shipped as data, never re-derived independently by each consumer.
+
+MCP's primary path is unchanged from D8 (queries Postgres, which the loader populates and stamps
+with the manifest's version fields in a `_meta` table). A documented, explicitly-labeled **lite
+mode** is proposed on top: the MCP server can be pointed directly at a decompressed bundle
+`.sqlite` file with no Postgres, giving full point-lookup tools and SQLite-FTS5-only lexical
+search; every lite-mode response carries `"retrieval_mode": "lexical-fallback"` so reduced quality
+is never silently served as the full deployment.
+
+**The MCP caution contract** (the checklist's named sub-problem): every fact object in every MCP
+tool response carries a mandatory, always-present `caution` block
+(status/confidence/verification/dispute/note — note null only when fully settled); non-null notes
+are additionally prepended as plain-text caveats into the tool's returned text content, not left
+structured-only; and the MCP tool descriptions themselves state the caution contract so it loads
+into a consuming agent's context once per session. No fact is ever suppressed for low confidence
+or high controversy (mirrors D9/D25's non-suppression policy); `search_knowledge` keeps relevance
+as its primary sort key, with confidence/controversy staying per-result annotations rather than a
+re-ranking signal.
+
+Snapshots are always full, never incremental/diffable, matching D13's existing rollback model;
+expected size is low tens of MB compressed — trivial for GitHub Release assets at this project's
+scale. Full analysis: [brainstorms/26-dataset-bundle-contract.md](brainstorms/26-dataset-bundle-contract.md).
+
+*[developer]* Ratified with: **`bundle_schema_version` starts at `1.0.0`** once this design is
+implemented, treating the pre-implementation period as `0.x` — consistent with D16/D22's own
+graduated-ceremony pattern, over a lighter-touch scheme that skips the axis. **MCP lite mode is
+not worth building in v0** — it stays a documented future accessibility feature while the primary
+Postgres-backed MCP path (D8) ships first. **The caution contract's `(status, dispute)` →
+note-sentence template table lives in the MCP server's own code**, not the bundle, so wording can
+improve without a data republish. **The Postgres loader's embedding-cache-reuse check allows a
+looser per-fact content-hash match** (not just exact `(embedding_model_id, corpus_hash)`), so
+unchanged facts skip re-embedding even across an otherwise-changed publish.
+
+### D36. Agent-runner commit protocol & failure bot (27)
+
+An agent run lands each commit via a **persistent local clone**: `git fetch` + `git
+rebase origin/main` + fast-forward-only `git push`, retried on non-fast-forward rejection, giving
+up after 5 retries or 3 minutes (whichever first) and reporting `contention_exhausted` rather than
+looping forever or dropping the record — D23's per-file sharding keeps the common case a cheap
+content-free rebase. The **GitHub App identity** (already named over PATs in D13) is scoped to
+`Contents: write`, `Issues: write`, `Checks: read`, `Statuses: read` — deliberately no `Pull
+requests` scope, since the runner's own lane never opens PRs; a second, separately-scoped App is
+proposed if the D32 external-PR skim ever needs PR permissions. Token refresh is owned by
+`RunContext` (D26) and never logged (D18). DCO handling for automated commits: a documented
+CONTRIBUTING.md carve-out treats the GitHub App's installation itself as the one-time sign-off,
+with per-commit `Signed-off-by:` trailers reserved for human-submitted PRs only.
+
+**Commit granularity is one commit per touched record file** — not per agent turn, not per derived
+fact, since facts have no independent existence to commit (D20/D23). Every commit carries a
+`LangAtlas-Record-Key` trailer (content hash + path, the idempotency key) and a
+`LangAtlas-Chat-Run-Id` trailer linking to D18's separate, coarser transcript-batch granularity.
+**Is-main-green gating** decouples preparation (drafting, D24 verification, local validation) from
+landing: only the final push checks `main`'s CI status; on red or unknown status, the record is
+held in a local ready-to-land queue and reported `blocked_red_main` rather than pushed or
+discarded — the runner never tries to fix a red `main` itself.
+
+**Auto-revert requires all four conditions**: the failing commit is `main`'s current tip; its
+author is the bot identity; the failure is a deterministic validator failure reproduced once (not
+a flake); and `git revert` applies cleanly. Any unmet condition halts the runner and files an
+issue instead of acting. A **run-level circuit breaker halts after 2 reverts in one run** even if
+each individually passed. Content disputes, D25 controversy flags, and anything the D24 verifier
+already gated stay explicitly out of auto-revert's scope — those are supposed to land and render
+visibly flagged, not get reverted.
+
+The **halt/resume interface** handed to the future run-orchestrator (topic 35, not designed here)
+is a typed `LandResult` union (`landed | blocked_red_main | contention_exhausted | reverted |
+unsafe_halt`). Idempotent resume is guaranteed by checking the `LangAtlas-Record-Key` trailer
+against `main`'s reachable history before any push — ground truth that survives even a lost
+orchestrator checkpoint. **Multi-runner concurrency** needs no queue for now (optimistic retry via
+§2.1's mechanics, cheap because of D23 sharding); a single Contents-API-mediated `RUNNER_LOCK`
+lease is named as the escalation path if concurrent runners become real, not designed further.
+
+**External-PR abuse handling stays a fold-in note, not a full section** — different trust domain
+from D32's already-narrow near-term scope, zero current volume. The one load-bearing near-term
+mitigation is GitHub's native "require approval for first-time-contributor workflow runs" setting
+(no custom code). The "provenance/scope skim" D32 left unspecified is three mechanical checks:
+permitted file types only, single-topic PR, resolvable bibliographic identifiers — an extension of
+the validator-CLI scope (topic 40), not a new protocol. Full analysis:
+[brainstorms/27-agent-runner-commit-protocol.md](brainstorms/27-agent-runner-commit-protocol.md).
+
+*[developer]* Ratified with: **DCO carve-out confirmed** (see above). **The 5-retries/3-minutes
+fetch-rebase-retry threshold and the 2-revert-per-run circuit breaker are confirmed as proposed**
+— no different numbers wanted. **Time spent `blocked_red_main` gets an exemption from a run's
+overall budget/wall-clock hard-stop (D26)**, since the delay isn't the runner's own doing (an early
+instinct only — topic 35 still owns the final interface question). **A second, separately-scoped
+GitHub App is confirmed** for the external-PR skim once it needs `Pull requests` access, mirroring
+D32's trust-domain separation, rather than widening the existing runner App's permissions. **One
+rerun is confirmed sufficient** to distinguish flake from real failure before auto-revert — no
+stricter two-rerun bar.
+
+### D37. Locator normalization & ingestion QA (28)
+
+Confirms brainstorm 09's locator grammar **verbatim, no changes**. URL-kind locators
+always pin to the archived snapshot, never the live page (live-page freshness is the link-checker's
+job, kept cleanly separate from locator validity). Multi-entry `sources:` lists keep OR-semantics
+as the default; a conjunctive `all_required` mode stays unbuilt in reserve. One shared
+`validate-locator` routine (regex shape + `source_chunks` resolution check) is reused by the
+pre-commit gate, CI, and the D24 verifier's stage-2 step, so a malformed locator is caught at
+commit time rather than wasting a verifier batch.
+
+**Extraction-quality harness**: garbled-text detectors (encoding/mojibake, OCR heuristics,
+extraction-collapse, length-distribution outliers) plus an outline-coverage diff (chunker's
+`section_path` set vs. the source's own table of contents) run in the ingestion CLI.
+Encoding/extraction-collapse failures **hard-gate** a source from `source_chunks` promotion;
+outline-coverage gaps and softer heuristic hits produce a structured per-source QA report consumed
+during the developer's existing manual skim step — no new workflow, a pre-triaged one.
+
+**Corpus freshness / edition pinning**: spec source records carry `custom.edition` +
+optional `custom.edition_check_url`; a quarterly lightweight edition-check job (plain page fetch,
+no re-ingestion) opens a triage queue entry on mismatch, never auto-reingests. Adopting a new
+edition ingests it as a new versioned `source_id`, tombstones the old one via
+`custom.superseded_by`, and fires a new `edition-superseded` freshness-staleness trigger riding
+D25's existing event-driven re-verification queue.
+
+**Scheduled link-checker**: a monthly job over URL-locator sources only (book/repo locators are
+immune by construction), checking resolution, anchor presence, and content-hash drift as three
+independent signals. Content drift feeds D25's already-designed `snapshot-drift` trigger directly;
+dead links and anchor drift get their own sibling reason codes. A dead live link never
+retroactively unverifies a fact already verified against its archived snapshot — it only queues
+the citation for possible future repair.
+
+**Source-acquisition queue**: a single private `sourcing_queue` log, entries typed by reason
+(`not-ingested | partially-ingested | paywalled | access-pending | acquisition-failed`), tracking
+`bounce_count` against D24's existing 2-bounce budget and `age_days` against its existing 14-day
+alarm. Automatic re-filing into the verifier's stage-1 queue the moment a cited source becomes
+ingested. Genuinely inaccessible sources stay visibly parked indefinitely, never silently dropped.
+
+**Corpus/mirror-integrity distinction**: a new `custom.canonical_source` flag (orthogonal to D3's
+evidentiary `tier`) with preference for official publishing-body URLs at ingestion time, a
+mandatory `custom.acquisition_note` for every non-canonical source (CI-enforced presence, not
+truth), and explicit reliance on the existing D24/D25 multi-source verification and corroboration
+machinery as the structural backstop rather than a bespoke detector. The residual risk of a
+single-sourced claim with no second source to catch a stealth error is named, not solved. Full
+analysis: [brainstorms/28-locator-normalization-ingestion-qa.md](brainstorms/28-locator-normalization-ingestion-qa.md).
+
+*[developer]* Ratified with: **quarterly edition-check cadence confirmed as proposed** — no
+per-language cadence tracking. **The R1 initial-corpus ingestion gets a one-time retroactive pass**
+backfilling `canonical_source`/`acquisition_note` before the flag becomes load-bearing for later
+sources (not binding only going forward). **No additional confidence ceiling for single-sourced
+claims** — D25's existing tier×corroboration-count confidence model already covers the
+mirror-integrity residual risk; not worth a bespoke mechanism. **A single retry is sufficient**
+before flagging `link_status: dead` — no "confirm dead across N consecutive monthly runs"
+dampener, given a wrongly-flagged dead link only costs a staleness badge. **A silent no-op is
+acceptable** for the outline-coverage check on sources with no machine-readable outline — no
+explicit "outline-coverage: not applicable" marker needed in the QA report.
+
+### D38. Ontology change tooling (29)
+
+Mechanical blast-radius script (`--kind ontology-node|source`) computes direct/indirect fact
+references, affected URLs, D26-cost-log-derived re-verification cost, and downstream artifact
+touch counts, then drafts a starting `fact_remap` list using each D16 casebook row's default
+disposition (split→requeue, merge→remap/fast-path, move→requeue only for
+classification-asserting facts, removal→tombstone) — fully editable afterward, never a blank
+form. A fifth GitHub Issue Form (matching D32's pattern) captures the RFC with a `change_type`
+dropdown routing to the right casebook row and a required dissenting-evidence field; the
+committed `impact.md` splits into an auto-generated section (CI diff-checked against a fresh
+blast-radius run) and an authored rationale section. The migration-manifest gap D16 left open is
+closed by a typed `op` disposition DSL (`split | merge | move | remove`, one-to-one with D16's
+casebook rows) carrying a `fact_remap` list of matcher→action entries from a closed four-action
+vocabulary (`remap | requeue | tombstone | untouched`); `migrate.py` becomes a thin shared
+interpreter over the manifest rather than bespoke per-migration Python. Migration-triggered
+tombstones extend D23's existing `tombstones.yaml` (one added `migration_id` field) instead of a
+parallel ledger; one shared chain-walking resolution routine (depth-capped) serves both the
+Astro build (static never-404 tombstone pages, hub pages for splits per D16's URL policy) and
+the MCP server (`get_fact`/`get_feature`/`get_neighbors` on a dead id return a structured
+`{status: superseded, successor(s), chain}` object with resolved successor content inline,
+wrapped in D35's mandatory caution-block contract). Ontology diff visualization is a build-time
+static diff table/tree (nodes added/removed/renamed/split/merged/moved, fact-disposition
+counts) — an interactive graph-diff library is explicitly rejected as disproportionate at
+low-hundreds-of-nodes/~monthly-MAJOR scale — generated once and reused for both RFC review and a
+public `/changelog/ontology/<migration-id>/` page.
+
+Topic 28's `edition-superseded` source-registry tombstone folds in as **structurally the same
+shape, one level up**: `sources/_tombstones.yaml` reuses the identical `op`/`fact_remap`/action
+schema, adding one new op (`supersede`, source-scoped) and one new action (`flag-stale` — the
+only action that never touches fact content/id/verification status, matching D37's
+"never retroactively unverifies" rule), written automatically by D37's quarterly edition-check
+job with no RFC and no human gate. The governance split lives in *where the ledger is and who
+writes to it* (RFC-gated `ontology/migrations/` vs. job-triggered ungated
+`sources/_tombstones.yaml`), never in a second parallel schema. Full analysis:
+[brainstorms/29-ontology-change-tooling.md](brainstorms/29-ontology-change-tooling.md).
+
+*[developer]* Ratified with: **blast-radius script scope stays as proposed** — scoped to
+facts/edges/rules per D16's original blast-radius definition; `source_chunks`, debate records,
+and chat logs are not counted (revisit only if that broadening is separately greenlit, per the
+topic-32 fold-in note already on the checklist). **`action: untouched` is an allowed implicit
+default** — CI does not hard-require every blast-radius-discovered fact anchor to appear
+explicitly in the submitted manifest's `fact_remap`. **Ontology changelog page: one static page
+per migration** under `/changelog/ontology/<id>/`, in its own top-level site-IA slot (not folded
+under an existing docs/about section). **`get_feature` on a split's old node id returns the hub
+content directly**, in the normal feature-object shape — not wrapped in the `{status:
+superseded, ...}` envelope `get_fact` uses for dead fact ids, since a hub page has real content
+rather than being a dead reference. **`get_source` auto-walks to the latest edition
+transparently** on a multi-hop supersession chain, matching the existing chain-walk resolution
+routine, rather than stopping at the first hop. **No mechanical CI/bot enforcement of the RFC
+objection window** — worth naming as considered, not worth building; stays trusted to the
+developer's own process discipline, consistent with D16 O5b's developer-run-checklist framing.
+
+### D39. Cross-cutting concern modeling (30)
+
+Adds one new field, `exclusivity: exclusive | multi`, to each dimension record in
+`ontology/taxonomy/dimensions.yaml`, defaulting to `exclusive` so every currently tree-shaped
+layer-3 dimension (memory management strategy, evaluation strategy, type-system strictness, …)
+needs zero edits. D2's dimension-exclusivity validation level reads this field: `exclusive`
+enforces today's at-most-one-feature rule unchanged; `multi` skips the check entirely, letting
+any subset of the dimension's features co-occur. Deliberately no partial/counted mode
+("at most 2 of 4") — anything more nuanced than one-of/any-of is pushed to Rule entities (D2
+level 4) instead of growing the dimension-exclusivity check into a constraint mini-language.
+D16's `cross_cutting: true` feature-level flag is unchanged and stays pure metadata (site
+badging, RFC triage), lint-checked for agreement with its home dimension's `exclusivity` rather
+than doing validation work itself. The other three D2 combination-validation levels (hard
+pairwise requires/conflicts, soft influences, Rules) need **no change** — they were already
+feature-pairwise/feature-set machinery, never dimension-shaped, so cross-cutting features
+interact with them exactly like any other feature today.
+
+Resolves D16 O6's flagged Exceptions collision: the brief's literal `Exceptions:
+checked/unchecked/effect-system` layer-3 dimension is a mis-specified `exclusive` dimension
+(languages accumulate exception mechanisms, they don't pick one) that should be renamed "Error
+handling mechanism" and marked `exclusivity: multi`; the deliberately-excluded "Exceptions"
+Concept (D16) remains the pedagogical parent the atomized mechanism-features
+(`checked-exceptions`, `result-type-error-handling`, `panic-unwind`, …) eventually link under via
+`realizes`, per D16's existing Concept-first-staging-then-atomize path. No ontology content has
+been minted yet (the research phase hasn't started), so this is a pre-emptive schema fix to land
+before the first layer-3 dimension is authored, not a corrective migration — landing this field
+is what would let a later `exclusive → multi` correction be an ordinary MINOR-cost dimension
+flip under D16 rather than a forced MAJOR. Full analysis:
+[brainstorms/30-cross-cutting-concern-modeling.md](brainstorms/30-cross-cutting-concern-modeling.md).
+
+*[developer]* Ratified with: **the explicit `dimensions.yaml`-level `exclusivity: exclusive |
+multi` field confirmed as proposed** — not inferred from feature-level `cross_cutting`, so the
+rule stays legible straight from `dimensions.yaml` without cross-referencing every feature file
+(the lint-checked agreement between the two fields stands as designed). **"Error handling
+mechanism" confirmed as the renamed dimension label.** **`multi`-exclusivity dimensions get
+visually distinguished from `exclusive` ones on the feature-matrix/coverage pages** (topics
+19/44) — not deferred as a later site-IA-only decision; folded into topic 19's checklist entry
+since it already owns trust-signal/matrix-component UX. **The no-partial-exclusivity stance
+("anything more nuanced than one-of/any-of is a Rule entity's job") is confirmed as the
+permanent stance** — no cross-cutting concern currently needs a genuinely counted constraint at
+the dimension level. **The stated scope boundary is confirmed correct**: this topic does not
+design topic 52's Builder-side consumption of `exclusivity`, nor topic 29's migration tooling for
+the eventual Exceptions restructure — both stay pointers, no sketch needed here.
+
+### D40. Brand identity & launch positioning (31)
+
+**Positioning statement**, three nested lengths for three surfaces, all saying the same two
+things in D19's order (typed graph first, per-fact sourcing second): a 3-sentence hero paragraph
+("LangAtlas maps programming-language features as a typed graph... Every fact in that graph is a
+single sourced claim, checked against its cited source by an independent verification pass...
+Where PLDB trades depth for breadth and Hyperpolyglot trades sourcing for speed, LangAtlas is
+narrower on purpose") for the homepage/about page; a compressed 1-sentence derivative for
+character-constrained surfaces (meta description, OG images); D17's existing tagline as the
+shortest form underneath both. Names PLDB and Hyperpolyglot honestly by their real strengths
+(breadth/structured metadata; fast lookup) rather than strawmanning either.
+
+**HN/lobste.rs launch framing**: title foregrounds the typed graph + sourcing claim
+(independently checkable by any reader who clicks through), not the AI-agent-pipeline angle. The
+"agents wrote this" disclosure moves to the first or second sentence of the body, framed as *why*
+the sourcing claim is credible ("there's no human review gate, the citation check *is* the
+gate") rather than a confession — omitting or burying the disclosure is rejected as inconsistent
+with D1's own no-PR-gate architecture and more likely to backfire if discovered than disclosed.
+lobste.rs gets the same disclosure-up-front structure but shifts relative emphasis toward the
+ontology/typed-graph/versioning design given that community's PL-theory density.
+
+**Wordmark/logo**: ship wordmark-only (no icon) for the actual launch — a standard open-source
+geometric/humanist sans, monogram favicon — deferring a parametrically-generated isogloss-line
+SVG mark (two-to-three open Bézier contour-line paths, matching real dialectology-map
+conventions, built as a small reproducible script under version control) to a fast-follow once
+there's slack to iterate on it properly. A commissioned custom logo is rejected outright against
+the solo-maintainable, no-cash-budget constraints.
+
+**Accent color**: warm amber/ochre as the single accent hue (a concrete starting range,
+`#B5540A`–`#C9691A` light-mode / `#E8A33D`–`#F0AE4A` dark-mode, exact hex values left to an
+implementation-time contrast audit) — the real ink color used for contour lines/isoglosses on
+topographic and dialectology maps, distinctive against the generic dev-tool-blue default, and
+avoiding the LangChain blue/violet brand-association risk D17 already flagged.
+
+**OG-image templates** (visual design for the mechanism D33 already fixed): three templates —
+feature/language (shared skeleton, swapped headline/subhead content), comparison (two-column
+skeleton with an accent-color center divider deliberately echoing the isogloss-crossing
+metaphor), and homepage (tagline + wordmark, centered) — on a shared warm-paper visual language
+(thin accent-color rule, small corner mark once built, bottom-corner wordmark + compressed
+tagline). No live-changing numbers or status glyphs on any template, generalizing D33's
+citation-count-glyph omission to every numeric field to avoid staleness between a static image
+and a live page. Full analysis:
+[brainstorms/31-brand-identity-launch-positioning.md](brainstorms/31-brand-identity-launch-positioning.md).
+
+*[developer]* Ratified with: **the positioning paragraph needs one cut before it's usable
+verbatim**: drop the explicit named comparison against PLDB and Hyperpolyglot ("Where PLDB
+trades depth for breadth and Hyperpolyglot trades sourcing for speed...") from the hero
+paragraph — the rest of Option A's wording (graph-first, sourcing-second, "narrower on purpose")
+stands. **HN/lobste.rs title-vs-body disclosure split (Option B) confirmed** as the right,
+appropriately conservative framing — graph/sourcing in the title, AI-pipeline disclosure in the
+opening body sentence. **Wordmark-only launch (no icon at all) confirmed acceptable**, deferring
+the isogloss-line mark to a fast-follow. **Warm amber/ochre accent-color direction confirmed.**
+**OG-image numeric fields: omit entirely, as recommended** — no build-time-stamped count field.
+**Domain/org registration timing: no trigger tied to this topic's completion.** Registering
+`langatlas.dev` and confirming the `langatlas` GitHub org remains unplanned and will happen only
+on the developer's own independent decision, not gated on positioning/launch-post/wordmark
+readiness — the `open-questions.md` deferred item's "trigger" language is superseded by this:
+there is no trigger criterion, only developer discretion.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

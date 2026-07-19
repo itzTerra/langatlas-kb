@@ -102,6 +102,20 @@ into a single bullet per brainstorm and not left as plain unnumbered bullets —
 `## Developer actions` convention already in open-questions.md and lets the developer refer to
 or check off each question by number.
 
+Every brainstorm ends with a "New brainstorm topics surfaced" section — **each surfaced topic
+must be reflected into [context/brainstorm-checklist.md](context/brainstorm-checklist.md) in the
+same pass**, never left only inside the brainstorm file itself:
+- If the brainstorm says the topic should fold into an existing checklist item (e.g. "worth
+  folding into topic 44," "flagged here so it isn't lost" against a named topic), amend that
+  item's existing description line to mention the addition — don't create a duplicate entry.
+- If the topic is brainstorm-worthy on its own (the brainstorm proposes it as a future dedicated
+  session, or names no existing item to fold into), give it the next unused number as a new
+  backlog line, under a `## Backlog additions from round N` heading grouped with any other topics
+  surfaced in the same batch (matching the existing round-3/round-4 sections' pattern).
+- Do this for every surfaced topic, not just the ones that look most actionable — a surfaced
+  topic with no checklist trace is effectively lost, since brainstorm files are not re-read as
+  part of normal workflow.
+
 ## Conventions for all project .md files
 
 - **Citations**: author-year in prose — e.g. Jordan et al. (2015); Van Roy & Haridi (2003) —
