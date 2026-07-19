@@ -1433,6 +1433,146 @@ artifact** (visible in git history, diffable across ontology versions) — the o
 `report.py` ephemeral-output precedent — with no directory-location preference specified beyond
 `tools/questionnaire/`'s existing output path.
 
+## Batch 39, 40, 41 decisions (2026-07-19 — from brainstorms 39, 40, 41 — **ratified by the developer**, amendments noted inline)
+
+### D47. Fact statement templating (39)
+
+Concretizes D23's "canonical claim phrasing as fixed per-kind templates over node ids," which
+was never given a concrete home. **Template catalog**: a new sibling registry
+`ontology/claim-templates/<kind>.yaml`, one file per brainstorm-09 §O6 claim kind, each carrying
+a frozen `claim_pattern` (the S-expression grammar, documentation/CI cross-check only) plus an
+editable `render:` block (the English wording), versioned with the same content-hash pattern
+D16/D23/D41 already use — deliberately a separate artifact family from D41's `prompts/` LLM-
+instruction registry, since claim rendering is pure deterministic string interpolation with no
+model call in it at all. **Change management** splits on the file's two blocks:
+`claim_pattern` edits are ontology-schema surgery routed through D16/D38's existing migration
+machinery (no new format invented); `render:` (wording-only) edits are **always re-rendered**
+(free, automatic, every build — `rendered_text` is already a precomputed D35 bundle column),
+**blast-radius-surfaced before re-embedding** (extending D38's blast-radius script to `--kind
+claim-template`, the exact broadening D41 §2.8 already anticipated, so the developer sees an
+affected-fact count before a batch re-embed runs — no hard gate, cost stays governed by
+D26/D35's existing cache/budget machinery), and **never trigger re-verification** (the D24
+verifier certifies the underlying claim, which a wording-only edit never touches, per O6's
+"claims never derive from renderings" rule) — scoped to the five templated claim kinds only;
+free-text kinds (`characteristic`, `syntax-valid`, a `quality-assessment`'s `statement:`) already
+have D23's copyedit-tolerant-hashing answer and don't need this machinery. **Sampling-parameter
+provenance** resolves as a category error in the checklist's framing, not an unanswered
+question: the template-rendering layer makes no model call, so there is no sampling to attribute.
+The real gap (from brainstorm 13) is a small optional `sampling: {temperature, top_p, seed}`
+sub-block added to brainstorm 09 §O4's existing per-record `provenance:` schema, populated only
+for LLM-drafted claims that deviated from pipeline defaults (mirroring D26's omit-when-default
+convention). Full analysis:
+[brainstorms/39-fact-statement-templating.md](brainstorms/39-fact-statement-templating.md).
+
+*[developer]* Ratified with: **D38's blast-radius script itself gets extended** to accept `--kind
+claim-template` rather than building a bespoke smaller script. A `render:` wording edit's
+blast-radius count **folds into the existing scheduled re-embed cadence** (still TBD per D27's
+deferred fact-index embedding-model decision) rather than getting its own on-demand "re-embed now"
+trigger. The `sampling:` sub-block **populates only when it deviates from pipeline defaults**, as
+originally drafted. **`quality-assessment` gets a split identity**: a templated existence-claim
+plus a free-text statement-claim, per O6's own claim-pattern example showing both are true at
+once — it does not fit cleanly into either the templated-kinds or free-text-kinds bucket alone.
+
+### D48. Validator/normalizer CLI (40)
+
+Closes out five prior brainstorms' fold-in notes (09, 27, 28, 29, 38) in one pass. **Structure**:
+a library-first Python package `tools/validate/` (module `langatlas_validate`) with a thin
+`cli.py` dispatching to plain, independently-importable functions — resolving the tension between
+"one shared tool" and "callable inline from the D24 verifier's batch loop, not via subprocess."
+Three call-site contracts: `langatlas-validate precommit <files...>` (fast, scoped to touched
+files + direct referential neighbors, phase-1-only locator check by default, refuses to commit on
+nonzero exit per D36); `langatlas-validate ci` (full corpus scan, phase-2 locator resolution,
+fact-id collision check, migration-manifest validation, full regression run); and `from
+langatlas_validate.locators import validate_locator` imported directly inside the verifier's
+stage-2 step, called with the verifier's own already-open `source_chunks` index handle.
+**`validate_locator`** (D37/topic 28's named routine) is two-phase: `validate_locator_shape`
+(pure regex-shape check against brainstorm-09's grammar table, zero I/O, always run) and
+`validate_locator` (shape + `source_chunks` resolution, requires a caller-supplied
+`SourceChunksIndex` handle, always run in CI/verifier, only in pre-commit if a local index is
+configured) — one implementation, three call sites, dependency-injected rather than owning a DB
+connection. **Migration-manifest validation** (D38/topic 29) checks matcher resolvability (every
+`fact_remap[].match` pattern matches ≥1 real anchor — catching typo-class dead matchers), target
+resolvability, per-op required fields, a closed action vocabulary scoped by ledger kind, and the
+`impact.md` auto-generated-section diff-check — **explicitly does not** require every blast-radius-
+discovered anchor to appear in `fact_remap`, since `action: untouched` stays a valid implicit
+default per D38's ratification. **Regression-fixture convention** unifies D26 (hard), D30 (soft),
+D41 (soft), and D46 (undecided) into one fixture format (`fixture_id`, `kind`, `mode: hard|soft`)
+under `tests/fixtures/providers/`, one runner (`langatlas-validate regression run`) with a
+pluggable checker registry (`provider-record-replay`, `schema-shape`, `questionnaire-shape`,
+`prompt-version-rerun`) — mode is fixture metadata, not tool-hardcoded per-kind behavior — kept
+explicitly distinct from D44's `tests/golden/` scored/threshold-gated evaluation harness (a
+structurally different diff-vs-recording vs. score-vs-threshold mechanism). **YAML normalization**
+implements brainstorm 09's spec as two functions in `normalize.py`: `normalize_record` (whole-file
+formatting, idempotent, run by the pre-commit hook to write and by CI/pre-commit check-mode to
+verify) and `normalize_value` (copyedit-tolerant claim-content normalization feeding D23's fact-id
+hashing) — both single-sourced so every consumer (pre-commit writer, CI checker, fact-id-minting
+code) imports rather than reimplements. Full analysis:
+[brainstorms/40-validator-normalizer-cli.md](brainstorms/40-validator-normalizer-cli.md).
+
+*[developer]* Ratified with: **pre-commit always runs phase-1-only locator checks by default** —
+no auto-upgrade to phase-2 `source_chunks` resolution even when a local Postgres happens to be
+reachable, keeping pre-commit's fast/zero-DB-dependency contract unconditional. **D46's
+schema-shape fixture starts `mode: soft`** for a shakeout period, since `compile.py` hasn't shipped
+a real version yet; hardening it is a later step. **Console-script packaging: an installable
+`pyproject.toml` `[project.scripts]` entry point**, matching the project's uv-in-Docker packaging
+approach (uv resolves and installs the console script cleanly from `pyproject.toml`, no bespoke
+`python -m` call-site wiring needed at the pre-commit hook, CI workflow, or verifier import path).
+**Package location/naming confirmed as proposed**: `tools/validate/` (module
+`langatlas_validate`), matching the existing `tools/questionnaire/`/`tools/orchestrator/`/
+`tools/observability/` convention — no more prominent top-level name needed despite its
+central imported-by-the-verifier role. **A `fact_remap` matcher resolving to zero anchors is a
+hard CI failure**, blocking the migration PR outright rather than surfacing only as an
+impact-report warning — even though ontology MAJORs already go through D16 O5b's human-gated
+process review, a dead matcher is a mechanically-detectable defect that shouldn't rely on the
+human reviewer catching it by eye.
+
+### D49. Absence & unknown semantics (41)
+
+Closes D23's "absence is a sourced fact, not a skip" principle and D46's ratification note into
+concrete cross-surface mechanics. **State space**: `not-yet-onboarded`, `not-yet-swept`, and
+`deferred` are all "no record exists" states — not facts, nothing to verify/dispute/embed;
+`present`, `partial`, and `absent` are all "a record exists" states, the same `instance-exists`
+claim kind differing only in the `status` value, equally first-class and equally verified.
+**Schema**: no new entity — one new required field `absence_scope` (free text) on `status: absent`
+records, the sweep agent's argument for why the cited source(s) can be trusted as comprehensive
+over the feature's category, feeding the verifier check below. **Coverage page (D32)**: `absent`
+is explicitly **not** a fourth empty-cell state — D32's three empty-cell states
+(`not-yet-swept | not-yet-onboarded | deferred`) stand unchanged; an `absent` cell renders as a
+normal filled cell ("Not present" + sourced summary) using the same fact-popover machinery as
+`present`/`partial`, and gets a real, normally-served feature-instance page, never suppressed.
+**Verification**: a new method, `completeness-check`, extends D24's existing six-verdict ladder
+(reusing the vocabulary, not inventing new verdicts) via three stages — tier-A/B + locator
+resolution; a corpus-wide negative full-text grep across every chunk of the cited source using a
+new optional feature-level `aliases: []` field; an inverted-framing LLM entailment stage verifying
+the agent's own `absence_scope` argument rather than searching for a supporting quote. A source
+that actually documents the feature yields `contradicted`, blocking admission outright — guarding
+the inverse of K1 citation-laundering (a false absence claim). Confidence (D25) for `absent` facts
+caps at `medium` on a single tier-A/B source, requiring a second independent source to reach
+`high`. **Contradiction handling**: no new machinery — D45's cross-fact type and D25's existing
+since/version-qualification dissolution already cover apparent present/absent disagreements; this
+topic only makes the underlying `absent` claim trustworthy enough for that machinery to matter.
+**MCP**: two typed response shapes, not three — an ordinary fact object (covering
+`present`/`partial`/`absent` uniformly, full `caution` block) and a new `no-record` envelope
+(`{status: "no-record", reason: not-yet-swept | not-yet-onboarded | deferred, language, feature,
+coverage_url}`, no `caution` block since it isn't a fact) for the three no-file states, reusing
+D32's `reason` vocabulary rather than minting a parallel one; `search_knowledge`/`get_neighbors`
+never synthesize an absence conclusion from a missing hit, and the MCP caution text gets one added
+sentence stating this explicitly. **Builder**: pointer only (deferred module) — must consume the
+fact-object/`no-record` split as first-class three-valued logic, never defaulting unknown to
+false; D2's four combination-validation levels are unaffected since they're feature-graph-level,
+never per-instance. Full analysis:
+[brainstorms/41-absence-and-unknown-semantics.md](brainstorms/41-absence-and-unknown-semantics.md).
+
+*[developer]* Ratified with: **`absence_scope` is a hard requirement** on every `absent` record,
+not optional-but-verifier-penalized. **Feature-level `aliases: []` ships now** as a general schema
+field, useful beyond absence-checking (e.g. search/synonym matching), rather than staying scoped
+to only appear once a language's sweep has produced an `absent` record. **The `medium`-confidence
+cap for single-sourced absence claims is confirmed** as the right conservatism, as drafted.
+**Coverage-page `absent` cells get the same filled-cell treatment as `present`/`partial`**,
+distinguished only by a status chip — no visual muting relative to `present`, confirming the
+brainstorm's draft. **The `no-record` envelope's `coverage_url` field is not added now** —
+premature given no "agent notices a gap and flags it" MCP workflow exists yet.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

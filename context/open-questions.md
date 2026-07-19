@@ -9,7 +9,8 @@ ratified decisions D35–D37. Batch 29/30/31 questions (filed 2026-07-19) were a
 developer later the same day and promoted to ratified decisions D38–D40. Batch 32/33/35 questions
 were answered by the developer later the same day and promoted to ratified decisions D41–D43.
 Batch 36, 37, and 38 questions were answered by the developer later on 2026-07-19 and promoted to
-ratified decisions D44–D46.
+ratified decisions D44–D46. Batch 39, 40, and 41 questions were answered by the developer later on
+2026-07-19 and promoted to ratified decisions D47–D49.
 Move answered questions into decisions.md with their answer rather than deleting them.
 
 ## Open Questions
