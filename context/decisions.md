@@ -588,7 +588,7 @@ Recall@5 or matched within 2 pts by a local model; reranker stays default-on unl
 <2 pts. Source strategy: curated-corpus-first (D15 seed + specs) plus proposed new acquisitions
 (Scott *Pragmatics*, Turbak & Gifford, Harper *PFPL*, Krishnamurthi *PLAI*, Sebesta, Kaijanaho
 2015) with gap-driven internet scouting into papers and official design docs (Rust RFCs, PEPs,
-JEPs). Exit: a coverage dossier (external-checklist coverage, 100% tier-A/B-backed nodes, <5%
+JEPs). Exit: a coverage dossier (100% tier-A/B-backed nodes, <5%
 unmappable, zero exclusivity violations, churn ≈ 0, pipeline readiness) against which the
 developer declares v1.0.0 per D16. Handoff to the per-language sweep pipeline is a **questionnaire
 compiler** deriving the D5 sweep questionnaire from the ontology's fact-bearing field map.
@@ -606,6 +606,11 @@ judgment per D16. **Fact-index embedding-model decision deferred to sweep-pipeli
 proposed — the source-corpus benchmark (D22) stands now, the fact index gets its own re-run
 later. **R3's per-theme topic list requires explicit developer sign-off before each cycle** —
 research agents do not proceed autonomously between checkpoints.
+
+*[developer, 2026-07-19]* **External-checklist coverage is dropped from the exit dossier
+entirely** (D52 amended to match): the brief and the R0/R1 seed sources (Jordan et al. 2015, Van
+Roy & Haridi 2003) are seed context for the research phase, not something the developer wants
+tracked as a coverage metric — the dossier now has five items, not six.
 
 ### D28. Initial language selection (34)
 
@@ -644,6 +649,11 @@ latest available edition** for each (e.g. C23/N3220 over C17; JLS SE 25 over SE 
 current ECMA-262 edition; Haskell 2010 + the latest GHC user guide), re-pinning as new editions
 ship. **Later onboarding phases (2–4) are gated on completing earlier phases' sweeps** — they do
 not interleave, even once the ontology reaches `1.0.0`.
+
+*[developer, 2026-07-19]* **SQL gets its own new phase 5** in this phased plan (D50), rather than
+folding into whichever phase is current once D50's `language_kind`/`applies_to` schema and its
+vendor-dialect sourcing substitute are both settled. Phase 5 stays otherwise undesigned until
+those two prerequisites land.
 
 ## Batch 14, 16, 17 decisions (2026-07-18 — from brainstorms 14, 16, 17 — **ratified by the developer**, amendments noted inline)
 
@@ -1572,6 +1582,142 @@ cap for single-sourced absence claims is confirmed** as the right conservatism, 
 distinguished only by a status chip — no visual muting relative to `present`, confirming the
 brainstorm's draft. **The `no-record` envelope's `coverage_url` field is not added now** —
 premature given no "agent notices a gap and flags it" MCP workflow exists yet.
+
+### D50. Domain-specific languages in the ontology (42)
+
+DSLs stay in scope in principle — no global exclusion — but each
+candidate (SQL now, others later) is still evaluated case-by-case per D28's existing
+per-language selection discipline; this topic only removes the *ontological* blocker, not SQL's
+separate ISO/IEC 9075 sourcing blocker. **Schema**: `language_kind: general-purpose |
+domain-specific` (+ free-text `domain` tag) on the Language record, default `general-purpose`
+(zero edits to existing languages); `applies_to: [language_kind, ...]` on `dimensions.yaml`,
+parallel to brainstorm 30's `exclusivity` field but with the *opposite* default polarity —
+defaults to `[general-purpose]` so every dimension authored against the general-purpose-only
+research phase needs no edits and is only widened when confirmed genuinely universal; the same
+field name works as a rarer per-feature override. **Compiler**: the D46 questionnaire compiler
+reads `applies_to` mechanically (like `exclusivity`) and never emits a sweep item for a
+(language, feature) pair the language's `language_kind` doesn't reach — a one-time,
+taxonomy-driven scoping decision distinguishable from D46's banned per-language evidentiary
+guess by a concrete test: would a `challenge-fact.yml` on the cell make sense? (No, for this
+case.) **State space**: extends D49's `no-record` reason enum with a fourth value,
+`not-applicable`, mechanically derived at build time — distinct from `absent` (sourced,
+challengeable claim), `not-yet-swept` (real unanswered work), and `deferred` (human-maintained
+per-language roadmap decision). Coverage matrix and MCP `no-record` envelope both extend to
+carry the new reason; exact visual treatment deferred to topic 19/33. **Combination validation**:
+no change at the requires/conflicts/influences/Rules levels (feature-graph-level, not
+per-instance, same reasoning as brainstorm 30). **SQL concretely**: recommends the same
+vendor-dialect substitution pattern already used for Prolog (Deransart et al. 1996) — PostgreSQL
+or SQLite documentation as tier-A/B backing in place of the paywalled ISO/IEC 9075 standard.
+Full analysis:
+[brainstorms/42-dsl-in-ontology.md](brainstorms/42-dsl-in-ontology.md).
+
+*[developer]* Ratified in full, with: **the asymmetric defaults confirmed as specified** —
+`language_kind` defaults to `general-purpose`, `applies_to` defaults to `[general-purpose]`,
+opposite polarity from brainstorm 30's `exclusivity` default, kept despite the mental-model
+inconsistency because it's the correct default here. **`not-applicable` confirmed as the name**
+for the fourth `no-record` reason, as drafted. **`domain` stays free text but as an "open"
+vocabulary in practice**: a sweep/onboarding agent minting a new DSL's `domain` tag should try
+hard to map onto an existing value first, and only add a new one when no existing tag genuinely
+fits — an informal authoring discipline, not a schema-enforced closed enum. **O1c's
+case-by-case DSL-candidate scoping line confirmed acceptable** — no more mechanical rule needed
+for borderline candidates (regex, HCL, jq) at this time. **SQL's vendor-dialect sourcing
+substitute is greenlit** — PostgreSQL or SQLite documentation stands in as tier-A/B backing for
+SQL in place of pursuing the paywalled ISO/IEC 9075 text. **SQL onboarding gets its own new
+phase-5-style slot in D28's phased plan** (see the dated note added to D28), rather than folding
+into whichever phase happens to be current once its schema and sourcing questions are settled.
+
+### D51. Spec-vs-implementation provenance (43)
+
+Extends D3's source-tier system without touching D4/D24's
+admissibility rule. **New Source-record field, `custom.grounding`**: one of `formal-spec |
+reference-implementation-docs | design-doc | third-party-reference`,
+orthogonal to D3's tier — tier answers document quality/authority; `grounding` answers what kind
+of authority the document holds over the language's true definition (a reference-implementation's
+docs can be tier-B *and* the most reliable available grounding for a language with no fuller
+formal spec, which a tier-only model can't express). Default `third-party-reference`, with a
+one-time retroactive pass classifying D28 phase-1's primary sources at ingestion, mirroring D37's
+own retroactive-pass precedent for `canonical_source`. **Derived, not authored, per-fact `basis`
+rollup**: computed at build time as the union of a fact's citations' `grounding` values, joining
+D25's existing display-derived-axes family (verification/freshness/dispute) as a descriptive
+label — never a fifth axis with display precedence, never gating admissibility. **Design docs**
+(PEPs/JEPs/RFCs/TC39 proposals): no new tier letter — `grounding: design-doc` classifies them,
+tier follows D3's letter unmodified (B once accepted/final, C while in-flight); new locator
+grammar row `<doc-kind> <number> ["§" <section>]` (e.g. `PEP 634 §Overview`), `doc-kind` an open
+documented string. **D4/D24 unchanged**: the six-verdict entailment ladder already checks "does
+the source support this claim" identically regardless of `grounding`; the one edge case (a design
+doc's stated intent cited for current behavior) is already caught by existing overstated-claim
+handling, flagged only as a D44 golden-set coverage note. **Two additive downstream hooks**: a
+shorter default edition-check interval for non-`formal-spec` groundings
+(D37's existing job, config-tuned), and one added plain-text disclosure line in the
+citation popover when `basis` isn't `formal-spec`. **Per-language**: Python and R get
+`reference-implementation-docs` (PEPs get `design-doc`); Rust splits by claim between the
+Reference (`reference-implementation-docs`) and the FLS (`formal-spec`), preferring the FLS
+wherever it covers a claim (sweep-agent instruction, not schema enforcement); TypeScript's
+eventual sourcing is pre-resolved as permanently `reference-implementation-docs`; SQL's D50
+vendor-dialect substitute also gets `reference-implementation-docs` (see amendment below). Full
+analysis:
+[brainstorms/43-spec-vs-implementation-provenance.md](brainstorms/43-spec-vs-implementation-provenance.md).
+
+*[developer]* Ratified with: **`vendor-dialect-docs` folded into `reference-implementation-docs`**
+— the vocabulary is four values, not five (`formal-spec | reference-implementation-docs |
+design-doc | third-party-reference`), accepting that "spec exists but is paywalled" (SQL) and "no
+fuller spec exists at all" (Python/R/TypeScript) collapse into one disclosure/grounding value,
+since only SQL currently needs the distinction and Prolog's already-resolved precedent
+(`formal-spec`, via Deransart et al.) doesn't. **Retroactive `grounding`-classification pass
+scoped to D28 phase-1's six languages only** at first ingestion, not the full 14-language set up
+front — phases 2–4 classify at their own ingestion time. **`doc-kind` stays an open,
+undocumented-enum string indefinitely** — no lightweight registered list needed unless a real
+governance problem shows up later. **Edition-check interval: a flat shorter interval for every
+non-`formal-spec` grounding**, no further per-implementation-speed variance (CPython's annual
+cadence vs. a rolling-release tool are treated the same for now). **Popover disclosure wording
+accepted as the v0 template** as drafted ("Sourced from [Python]'s reference implementation's
+documented behavior, not a formal language specification") — no separate review batch needed
+before it ships. **Rust's per-claim FLS-preference rule stays a sweep-agent instruction only** —
+no mechanical recheck trigger for now, despite the FLS's active post-2026 growth.
+
+### D52. Coverage analytics (44)
+
+Splits the checklist's single topic into **three reports at three
+different points in the project's lifecycle** (the three inputs are never simultaneously
+populated), sharing one tool and one computational core rather than three inconsistent scripts or
+folding into D41's pipeline-telemetry tool (different data domain: corpus/audience data, not
+pipeline-run data). **One new sibling CLI, `tools/coverage/report.py`**, matching D41/D46/D48's
+established `tools/<domain>/` shape (subcommand dispatch, markdown to stdout, optional gitignored
+snapshot, no daemon, never canonical data), built on one shared `langatlas_coverage.metrics`
+library computing "instance count per node, keyed by immutable id" once. **`dossier`** implements
+brainstorm 25's O6 exit dossier (five items per the D27 amendment dropping external-checklist
+coverage): four items are pure computation over existing data; one (R5 structured findings) needs
+a small named authored artifact —
+`research/reality-checks/<cycle>-<theme>.yaml` (per R5 cycle, a light format addition to
+brainstorm 25's R5 design). **`gaps`** computes `<dimension, value>` corroborating-instance counts
+against a configurable `--min-instances` default of `2` (no per-dimension override for now),
+purely advisory — nothing automatic triggers, and the report explicitly caveats that the metric is
+close to meaningless before D28 phase 1 completes. **`demand`** reads a monthly Umami custom-event
+export of Pagefind search queries (`pagefind-search` event, a small addition to the already-
+ratified inline search-box JS), matched against D49's `aliases: []` field to separate "known
+synonym miss" from "genuinely absent content." **No structural interaction with topic 29**: every
+metric recomputes from current data on each run (no cache to invalidate); the only obligation is
+keying by immutable node `id`, already project-wide convention. Coverage-page visual treatment of
+thin/gap values is explicitly out of scope, folded into topic 19/33's existing trust-signal/matrix
+ownership. Full analysis:
+[brainstorms/44-coverage-analytics.md](brainstorms/44-coverage-analytics.md).
+
+*[developer]* Ratified with: **tool boundary confirmed** — a new sibling `tools/coverage/report.py`
+over folding into D41's `tools/observability/report.py`, given the different data domain. **R5
+structured-findings format confirmed** — R5 sessions emit a small
+`research/reality-checks/<cycle>-<theme>.yaml` file, not just a prose summary. **`--min-instances`
+default of `2` confirmed**, no per-dimension override, and crossing it triggers nothing automatic
+(report-only). **Report persistence: ephemeral** — `dossier`/`gaps`/`demand` output stays stdout +
+optional gitignored snapshot, mirroring D41's precedent, not committed as a dated audit trail.
+**Pagefind→Umami `pagefind-search` custom-event wiring is acceptable** under D33's existing search
+ratification and should be added — no separate sign-off needed beyond this note. **`demand`
+cadence: monthly export**, matching D37/D41's other periodic jobs, not purely on-demand.
+
+*[developer, 2026-07-19]* **External-checklist coverage is dropped from `dossier` entirely** — the
+brief and the R0/R1 seed sources (Jordan et al. 2015, Van Roy & Haridi 2003) are seed context for
+the research phase, not something the developer wants coverage-reported. The owed
+`ontology/exit-checklists/<source>.yaml` authored-artifact deliverable is cancelled along with it;
+`dossier` ships with five items, matching the amended D27 exit-dossier definition.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 

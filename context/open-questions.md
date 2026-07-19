@@ -10,7 +10,12 @@ developer later the same day and promoted to ratified decisions D38–D40. Batch
 were answered by the developer later the same day and promoted to ratified decisions D41–D43.
 Batch 36, 37, and 38 questions were answered by the developer later on 2026-07-19 and promoted to
 ratified decisions D44–D46. Batch 39, 40, and 41 questions were answered by the developer later on
-2026-07-19 and promoted to ratified decisions D47–D49.
+2026-07-19 and promoted to ratified decisions D47–D49. Batch 42/43/44 questions were answered by
+the developer later on 2026-07-19 and promoted to ratified decisions D50–D52; the one remaining
+item (external-checklist transcription) was resolved later the same day — the developer decided
+to drop external-checklist coverage from the exit dossier entirely (amendments to D27/D52), since
+the brief and its R0/R1 seed sources are only seed context for the research phase, not something
+worth coverage-reporting.
 Move answered questions into decisions.md with their answer rather than deleting them.
 
 ## Open Questions
