@@ -645,6 +645,82 @@ current ECMA-262 edition; Haskell 2010 + the latest GHC user guide), re-pinning 
 ship. **Later onboarding phases (2–4) are gated on completing earlier phases' sweeps** — they do
 not interleave, even once the ontology reaches `1.0.0`.
 
+## Batch 14, 16, 17 decisions (2026-07-18 — from brainstorms 14, 16, 17 — **ratified by the developer**, amendments noted inline)
+
+### D29. Corpus bootstrap & import strategy (14)
+
+Reject bulk import of PLDB (public domain) and Wikidata (CC0) as fact content: D3's
+"community sources are corroboration only, never sole backing" rule already forbids what a bulk
+import would require, and it would gut D19's positioning wedge (typed graph + per-fact sourcing
+vs PLDB). Both stay **finding aids only** (alongside Hyperpolyglot/Wikipedia, D14 rule 5), used
+by research-phase/sweep agents to generate coverage checklists and candidate language↔feature
+pairs — never copied into `sources:` or claim text. No new fact-status tier needed. Seeding is
+judged a false economy: the bottleneck is verified sourcing, not candidate generation, and the
+D24 gate runs per-fact regardless of origin.
+
+*[developer]* Ratified with: **Option C's finding-aid-only scope confirmed** as proposed — no
+distinction in restrictiveness from Hyperpolyglot/Wikipedia despite PLDB/Wikidata's more
+permissive licenses. **`provenance.candidate_source` specified now**, not deferred to topic 32:
+an optional, non-public enum `pldb | wikidata | hyperpolyglot | internal-survey |
+sweep-questionnaire | challenge`, recorded at proposal time, extending D23's provenance block,
+for pipeline analytics only — never rendered on the public site. **No explicit note needed**
+distinguishing this rejection (Wikidata as fact source) from D10's already-decided Wikidata
+`sameAs` outbound SEO link — the two uses are different enough in context that a callout isn't
+necessary. **A narrow carve-out is added**: pure identification metadata from PLDB/Wikidata
+(file extensions, first-appeared year — not feature/paradigm claims) may be pulled as single
+attributed data points, mirroring D14 rule 7's treatment of TIOBE.
+
+### D30. Debate cost/quality instrumentation (16)
+
+Split the checklist's "N-agent debate vs. single-agent+verifier" question into two
+differently-timed pieces: R4 schema-dispute debates (running now, per D27) and sweep-pipeline
+fact debates (D5), which can't produce volume before phase-1 onboarding (D28). Stand up two
+cheap, zero-new-infrastructure scripts now, reusing data already logged under D18/D24/D26: (a) a
+verifier-replay counterfactual re-scoring a debate's pre-challenge draft through the D24 verifier
+to see whether the challenger round changed anything detectable; (b) a cost join computing
+Claude-messages-per-accepted-fact segmented by `debate_id`. Defer any scored golden set or full
+debate-vs-no-debate simulator until phase-1 onboarding produces real fact-debate volume. The
+minimal regression harness is D26's already-planned record/replay fixtures plus a hand-curated
+regression subset, diffed on prompt/model change — no heavier A/B simulator.
+
+*[developer]* Ratified with: **the verifier-replay counterfactual (Option A) confirmed as
+sufficient on its own for now** — the downstream dispute-rate comparison (Option B) is **not**
+wired up yet, staying deferred until post-phase-2/3 volume makes matching feasible (its
+selection-effect confound is not worth accepting early). **R4 schema-dispute debate outcomes
+will also be tracked against later D16 MAJOR-churn** (did a carve that survived R4 sign-off
+later get reverted in a MAJOR bump) — not just measured at the R4 checkpoint sign-off itself.
+**Regression fixtures live under the same `tests/fixtures/providers/` tree D26 already
+specifies**, in a `regression/` subfolder, with the lighter-weight human-diff review step (not
+CI-blocking pass/fail like D26's core record/replay fixtures) — per the brainstorm's own
+recommended shape.
+
+Left open (needs sharper framing before the developer can answer): what threshold of "debate
+changed nothing detectable" would justify simplifying the challenger round for some conflict
+types — see `context/open-questions.md`.
+
+### D31. Prompt-injection surface of fetched sources (17)
+
+Generalize D24's existing verifier-safe pattern (fetched content delimited as evidence, never as
+instructions) project-wide, enforced once inside the D26 `RunContext`/provider wrapper rather
+than per-prompt discipline, plus a cheap shared lexical instruction-pattern scan on every
+fetch/search tool result, logged per D18. Explicitly rejects building a dedicated low-privilege
+reader/actor agent split for now (kept as an escalation path only if logged flags turn into
+evidence of actual manipulation) and rejects a parallel injection-specific admissibility gate —
+the existing D4/D24 entailment gate already has to catch an injected claim the same way it
+catches a hallucinated one. Rationale: no private data, no exfiltration channel, low-traffic/
+not a high-value target, and git history makes any landed bad fact discoverable and revertable,
+so severity is bounded even though likelihood (routinely reading adversarial-by-default internet
+text) is non-trivial.
+
+*[developer]* Ratified in full, with: **the §1.2 risk framing (bounded severity, non-trivial
+likelihood, light-touch controls) confirmed** as matching the developer's own risk tolerance —
+no reader/actor split needed from day one. **The delimiter/scan convention gets documented by
+folding into topic 13's wrapper implementation notes** — no separate spec doc. **Flagged
+instruction-pattern hits always log-and-continue** — never hard-block a run. **The R3
+live-web-fetch tool (topic 25) does not need the same wrapper treatment from day one** — it is
+acceptable to run the first research-phase iteration without it and retrofit before it's relied
+on heavily (overriding the brainstorm's own lean toward building it early in topic 13).
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

@@ -89,6 +89,19 @@ Workflow for these docs: answered questions move from open-questions.md into dec
 their answer; new big topics go onto the checklist backlog and get their own brainstorm file;
 this file stays the stable entry point.
 
+**After every brainstorm run** (one or more topics dispatched to a subagent), before reporting
+back to the user: reflect each brainstorm's recommendation into
+[context/decisions.md](context/decisions.md) as a *proposed* decision (per the decision-hygiene
+convention below — not ratified until the developer says so), and file its open questions in
+[context/open-questions.md](context/open-questions.md). Any non-obvious ratification made in the
+same turn (the developer accepting a recommendation without a full separate review pass) also
+gets recorded in decisions.md as ratified, so the developer always has a decisions.md/
+open-questions.md diff to review after a brainstorm run, not just the raw brainstorm file.
+File open questions **one numbered list item per discrete question**, not grouped/summarized
+into a single bullet per brainstorm and not left as plain unnumbered bullets — matches the
+`## Developer actions` convention already in open-questions.md and lets the developer refer to
+or check off each question by number.
+
 ## Conventions for all project .md files
 
 - **Citations**: author-year in prose — e.g. Jordan et al. (2015); Van Roy & Haridi (2003) —
