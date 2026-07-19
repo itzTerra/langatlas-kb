@@ -1161,6 +1161,119 @@ on the developer's own independent decision, not gated on positioning/launch-pos
 readiness — the `open-questions.md` deferred item's "trigger" language is superseded by this:
 there is no trigger criterion, only developer discretion.
 
+## Batch 32, 33, 35 decisions (2026-07-19 — from brainstorms 32, 33, 35 — **ratified by the developer**, amendments noted inline)
+
+### D41. Pipeline observability & prompt registry (32)
+
+No new service or live dashboard: a CLI tool `tools/observability/report.py` (subcommands
+`cost`, `verifier`, `debates`, `sourcing-queue`, `capabilities`, `verifier-drift`) reads directly
+from the D18 transcripts repo, the D26 cost log, and the private build-side verification ledger
+(D23); output is ephemeral markdown, never committed as canonical data (D35's bundle manifest
+already covers the one legitimately public number — verifier error rates). **Prompt registry**:
+`prompts/<prompt_id>/v-<8hex-content-hash>.md` files in the kb repo, content-addressed versions
+(mirroring D16/D23's immutable-id pattern) with a human-readable alias in a per-prompt
+CHANGELOG; new versions trigger a soft (log-only) regression-fixture re-run check under topic
+40's validator. **Capability table**: `config/provider_capabilities.yaml`, updated by a
+manual/periodic `probe_capabilities.py` that diffs and flags drift rather than auto-committing.
+**Claude usage-limit telemetry**: a typed reactive `ClaudeLimitSignal` (no proactive quota API
+exists on Pro) raised by the Claude channel of `RunContext`, logged per D18, distinguishable from
+self-imposed D26 budget stops — handed to topic 35 as an interface, not solved here.
+**`provenance.candidate_source` (D29)**: no broader "why did the pipeline look here" model
+needed — D18 transcript logging already gives the full trace via `chat_run_id`; D29's field
+stays the sufficient per-fact summary. **Verifier-replay counterfactual reuse**: one shared
+library function `replay_verdict` used both by topic 16 (single-draft debate instrumentation)
+and this topic (bulk verifier-drift reporting). **Unified sourcing work queue**: one
+`sourcing_queue` table with a `kind` discriminator spanning pending-source/link-checker/
+edition-check entries, written by the three existing jobs, read by one report subcommand.
+**Topic 29 interface**: only a join-key compatibility note (`chat_run_id`/`source_id`/`run_id`),
+no design now. Full analysis:
+[brainstorms/32-pipeline-observability-prompt-registry.md](brainstorms/32-pipeline-observability-prompt-registry.md).
+
+*[developer]* Ratified with: **`report.py` output stays purely ephemeral** (stdout, optionally a
+gitignored local snapshot) — no periodic reports committed anywhere, beyond what D35's bundle
+manifest already publishes. **Content-hash-addressed prompt versions (§2.2 Option B) confirmed**
+over plain sequential integers. **The stale/missing regression-check gate stays a uniform soft
+gate everywhere** — no special hard-block carve-out for unattended overnight batches specifically,
+matching D30's existing stance. **Capability-probe cadence: monthly**, run by
+`probe_capabilities.py` on that schedule (via topic 35's scheduler) rather than only on-demand
+before batches. **The reactive-only `ClaudeLimitSignal` is sufficient** — no proactive heuristic
+attempted, given there is no quota API to calibrate one against.
+
+### D42. Licensing follow-ups (33)
+
+Four operational artifacts D14 deferred to their own brainstorm, none reopening D14's legal
+analysis: **attribution rendering** — a site-wide BY-SA footer notice + `/license/` explainer page
++ per-page JSON-LD `license` field (distinct from D3/D10's existing per-fact citation popovers,
+which handle § 31 quotation-attribution of *cited sources*, not LangAtlas's own BY-SA notice as
+licensor); MCP tool descriptions state the BY-SA reuse obligation once per session (mirroring
+D35's `caution`-block pattern), plus a structural `attribution` field on every fact object
+alongside D35's `caution` block. **Takedown/complaint runbook** — a published email address as the
+primary intake channel (plus an optional `legal-complaint.yml` GitHub Issue Form alongside D32's
+four), triaged solo by the developer into legal-vs-not-legal, default safe action is unpublishing
+the contested quote/excerpt (never the underlying fact, restating D14/15 §R8), "takedown" means an
+ordinary forward-fixing commit except for genuine severity, which reuses D18's existing
+`REDACTIONS.md` force-push escape hatch (already scoped to cover copyright incidents) rather than
+a new mechanism; D14's existing lawyer-trigger list is the unchanged escalation line. **Dataset
+export attribution** — one additive `license` field threaded through D35's `manifest.json`, a
+companion `NOTICE.txt` Release asset, and the same field in the D35 loader's `_meta` table — no
+bundle redesign. **Transcript-corpus licensing** — `langatlas-transcripts` (D18) gets its own
+license, proposed **CC0 1.0**, distinct from the corpus's CC BY-SA 4.0: transcripts are audit
+trail rather than product (D24's own framing), carry a thin-to-nonexistent original copyright
+claim (US no-human-authorship doctrine), and CC0 directly serves the eval/training-set reuse case
+the checklist names, which a share-alike obligation would otherwise complicate. Third-party
+copyrighted excerpts embedded in transcripts remain governed by their original rightsholder
+regardless of LangAtlas's own license choice either way. Full analysis:
+[brainstorms/33-licensing-follow-ups.md](brainstorms/33-licensing-follow-ups.md).
+
+*[developer]* Ratified with: **CC0 1.0 for `langatlas-transcripts` confirmed**, distinct from the
+corpus's CC BY-SA 4.0, as proposed. **A published project-alias email as the primary
+takedown-complaint channel, with `legal-complaint.yml` as the GitHub-native alternative,
+confirmed** — no single-GitHub-only channel. **`REDACTIONS.md`'s existing category taxonomy gets
+broadened to explicitly cover takedown-driven history rewrites, confirmed** — no sibling
+`TAKEDOWNS.md` log. **Attribution name: "LangAtlas contributors"** confirmed for the footer/
+JSON-LD/MCP/`NOTICE.txt` strings. **No stated acknowledgment-SLA number** — the takedown runbook
+stays purely best-effort, with nothing to point to if missed (over the proposed 5-business-day
+figure).
+
+### D43. Run orchestrator & checkpointing (35)
+
+A thin driver library, `tools/orchestrator/driver.py`, no daemon: one generic loop (enumerate
+work items → call into the D26 provider layer / D36 commit protocol → interpret the typed result
+→ checkpoint → continue/pause/halt), parameterized per job by a small batch-spec YAML in
+`config/jobs/` (`kind`, `work_item_source`, `budget`, `checkpoint_path`). One driver invocation =
+one `RunContext`-scoped run; adding a job kind is one enumerator function + one YAML file, not a
+new subsystem. **Checkpoint unit** is whatever grain each job's own work-item source already
+enumerates (sweep cell, R3/R4 theme, fact, source) — no forced global granularity. **Checkpoint
+storage**: a local, private, non-git SQLite file in the same private tier as D26's cache/cost log
+(`orchestrator_checkpoint`, one row per (run, item)); this is driver-level bookkeeping only — the
+`LangAtlas-Record-Key` git trailer (D36) stays ground truth for "did it actually land," looked up
+before re-attempting anything not cleanly marked `done`, so checkpoint state and repo state can
+never disagree even if the checkpoint file is lost. **Budget hard-stops**: `RunContext` raises a
+typed `BudgetExceeded` signal before crossing a declared cap; the driver checkpoints the in-flight
+item as `blocked` (still valid, re-attemptable) and exits with a distinct code; resume is plain
+re-invocation of the same command, no separate resume mode. **Claude usage-limit handling**: on
+D41's `ClaudeLimitSignal`, apply a conservative fixed cool-down (proposed 4 hours, no calibration
+data exists yet) before any resume attempt; a too-early re-invocation no-ops. "Alerting" is the run
+halting plus two cheap surfaces — standard cron mail and a small `orchestrator/status.json` (one
+more `report.py` subcommand) — no bespoke notification service, matching the project's no-new-infra
+posture. **Scheduling**: plain cron on the developer's machine, one line per job (nightly
+verification/controversy batch, monthly link-checker, quarterly edition-check, an 18-month
+backstop sweep whose own logic no-ops until due), each invoking the same driver against a
+different batch spec; a committed `config/jobs/crontab.example` documents intended cadence, the
+developer's real crontab stays local machine state. Full analysis:
+[brainstorms/35-run-orchestrator-checkpointing.md](brainstorms/35-run-orchestrator-checkpointing.md).
+
+*[developer]* Ratified with: **the per-language sweep pipeline (D5) stays always
+developer-initiated by hand**, never run unattended via cron — unlike the background jobs (nightly
+verification, monthly link-checker, quarterly edition-check, the 18-month backstop), which do run
+via cron per §2.5. **The proposed 4-hour Claude-limit cool-down is confirmed as a reasonable
+starting default** — no sharper instinct from prior usage-limit experience to replace it with.
+**Cron mail (`MAILTO`) is not needed** — the `orchestrator/status.json` + manual `report.py`
+check-in is the only alerting actually intended; cron-mail setup is not worth documenting.
+**A committed `config/jobs/crontab.example` is worth maintaining.** **The 18-month backstop
+sweep's "checked monthly, no-ops until due" pattern is confirmed** as matching the developer's
+expectation, over a coarser manually-remembered trigger.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

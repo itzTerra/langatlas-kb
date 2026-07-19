@@ -6,12 +6,14 @@ questions were answered in a later pass the same day and promoted to D29–D31. 
 questions were answered by the developer on 2026-07-19 and promoted to ratified decisions D32–D34.
 Batch 26/27/28 questions were answered by the developer later on 2026-07-19 and promoted to
 ratified decisions D35–D37. Batch 29/30/31 questions (filed 2026-07-19) were answered by the
-developer later the same day and promoted to ratified decisions D38–D40.
+developer later the same day and promoted to ratified decisions D38–D40. Batch 32/33/35 questions
+were answered by the developer later the same day and promoted to ratified decisions D41–D43.
 Move answered questions into decisions.md with their answer rather than deleting them.
 
 ## Open Questions
 
-None currently open.
+None currently outstanding — all filed batches have been answered and promoted into
+`decisions.md`.
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 
