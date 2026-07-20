@@ -1435,7 +1435,9 @@ candidate-feature filtering** — filtering up front would make the compiler ren
 call about a language before any evidence exists, contradicting D23's "absence is a sourced
 fact, not a skip" principle. **Constraint violations route into the existing D5 conflicted-cell
 debate machinery unchanged** — no separate resolution path or auto-flagging of the
-ontology-level edge/rule itself. **Delta-questionnaire requeue scoped to exactly the changed
+ontology-level edge/rule itself. *Amended 2026-07-20 (D61): superseded* — a `constraint-disputed`
+debate outcome now does auto-flag the edge/rule itself via an RFC-issue work-queue item; see D61.
+**Delta-questionnaire requeue scoped to exactly the changed
 anchors** (minimal re-ask), not the whole dimension group. **`questionnaire_schema_version` stays
 deferred** until the compiler has shipped at least one real version — not stubbed in now the way
 D35 stubbed in `bundle_schema_version`. **Compiled questionnaire spec output is a committed
@@ -1883,6 +1885,128 @@ unenforced checklist items, since the failure mode it guards against hasn't actu
 item 1) stays purely narrative** — D34's per-candidate audit-table columns are not pulled in as a
 reusable sub-table format. **Timing: deferred** until closer to D28 phase 2/3, rather than built
 now, despite the shape being fresh from this consolidation pass.
+
+## Batch 53, 56, 57, 59 decisions (2026-07-20 — from brainstorms 53, 56, 57, 59 — **ratified by the developer**, amendments noted inline)
+
+Consolidated from the fourth round-4-backlog brainstorm batch and ratified in conversation on
+2026-07-20.
+
+### D58. Postgres loader implementation & blue-green load mechanics (53) — *proposed*
+
+A single Python loader script (`tools/loader/load_bundle.py`, matching D48's `tools/<domain>/`
+CLI convention) reads the D35 zstd-SQLite bundle via stdlib `sqlite3` and writes into Postgres
+via `psycopg` v3, upgrading JSON-in-TEXT bundle columns to native `jsonb`. **Blue-green
+mechanics**: each load builds into a fresh schema named after the bundle's `data_tag` (e.g.
+`data_v418`) — all bulk copy and index builds (pgvector ANN, tsvector FTS) happen there with zero
+live-query impact — then an atomic single-transaction swap of `CREATE OR REPLACE VIEW
+current.<table> AS SELECT * FROM data_v418.<table>` flips everything at once; MCP/FastAPI query
+`current.*` exclusively via Postgres role grants. A MAJOR `bundle_schema_version` bump needs
+`DROP VIEW`+recreate instead of `CREATE OR REPLACE`. **Embedding-cache keying**: recommended
+`(embedding_model_id, fact_id)` — not a coarser `corpus_hash` — since D23's fact ids are already
+content-derived (copyedit-tolerant), so fact-id stability *is* content stability; route through
+the existing D26 `RunContext` cache plus a new `fact_embeddings` lookup table. Index rebuild
+happens entirely inside the isolated shadow schema before the swap. **Rollback**: a failed
+build-phase load just leaves an orphaned unused shadow schema (drop and retry); rollback after a
+successful swap is the same view-swap run in reverse, retaining exactly two live schemas
+(current + previous); deeper rollback re-runs the loader against an older `data-vN` release asset.
+Full analysis: [brainstorms/53-postgres-loader-blue-green.md](brainstorms/53-postgres-loader-blue-green.md).
+
+*[developer]* Ratified with: **role/grant setup: a separate docker-compose init script**, not the
+loader itself — the loader's own code stays focused on data movement, not role management.
+**Pre-swap validation: simple checks only** (row-count-against-manifest + a handful of
+hand-picked smoke queries), not the full golden-set Recall@5/MRR eval — that stays a separate
+pipeline check, not duplicated inside the loader. **Invocation: both** — the `langatlas-site`
+repo's `repository_dispatch` build triggers the site-owned Postgres load, and a separate
+scheduled job also runs against the `langatlas-kb` repo's own compose stack (plus manual local
+loads for MCP testing). **Retention depth: confirmed as proposed** — exactly two live schemas
+(current + previous), no deeper grace window.
+
+### D59. Cross-fact contradiction scan job design (56)
+
+Adds no new infrastructure category, reusing what the project already committed to building.
+**Candidate generation** is two-stage: free same-anchor-family filtering via D23's record-id
+scheme, then an embedding-similarity top-k pool (k=10–20, cosine floor ≈0.75) drawn from a new
+fact-embedding index — a table separate from D15's `source_chunks`, not piggybacked on it.
+**Cadence**: event-driven off new-fact commits (mirroring D25's re-verification philosophy)
+rather than a fixed calendar interval, plus a rare backstop re-scan tied to embedding-model swaps.
+**Cost**: stays on the university API at D24's own `deepseek`/`deepseek-thinking` tiering;
+estimated volume stays a strict subset of D24's own verification load, so no new cost-tiering or
+drift-sampling decision is needed. **Comparison call**: a distinct four-verdict vocabulary
+(`no-conflict | qualified-non-conflict | conflict | inconclusive`) — a claim-vs-claim relation,
+deliberately not reusing D24's six-verdict claim-vs-source vocabulary — folding D45's since/
+version qualification check into the same call for this minting path only. **Findings** write
+directly into D45's existing `contradictions.yaml` (zero schema changes, `type: cross-fact`,
+mechanism `contradiction-scan`) and surface via a new `report.py cross-fact-scan` subcommand
+riding D41's CLI pattern, orchestrated as one more job kind in D43's `driver.py`. Full analysis:
+[brainstorms/56-cross-fact-contradiction-scan.md](brainstorms/56-cross-fact-contradiction-scan.md).
+
+*[developer]* Ratified with: **fact-embedding index confirmed as a separate table from
+`source_chunks`**, deferring model choice to D22's fact-index benchmark rather than making its
+own choice now. **Similarity floor/top-k defaults (≈0.75 cosine, k=10–20) confirmed** as
+reasonable starting points to tune empirically once real fact volume exists. **Cadence
+confirmed**: event-driven-per-commit as the primary trigger, plus the proposed annual/
+embedding-model-swap backstop re-scan as an acceptable low-frequency complement. **D24-style
+cross-family drift sampling skipped at v0**, as recommended. **Four-verdict vocabulary
+(`no-conflict | qualified-non-conflict | conflict | inconclusive`) confirmed as-is** — no further
+split of `qualified-non-conflict`. **Folding the qualification check into this job's LLM call
+accepted**, including the resulting asymmetry with the reconciler/human-challenge paths that keep
+it a separate mechanical step (D45).
+
+### D60. MCP tool-set extension tracking (57)
+
+A consolidation, not a new mechanism: the brainstorm file is now the standing reference for the
+public read-only MCP tool set and everything deliberately kept off it. **Public set (7 tools)**:
+D8's original five (`search_knowledge`, `get_fact`, `get_feature`, `get_neighbors`, `get_source`)
+plus D45's `list_contradictions`/`get_contradiction` (confirmed shipping, correcting brainstorm
+37's own stale "not fully specified" language). **Pipeline-only (never public)**: D15's
+`search_sources`/`get_source_section`, D53's `search_finding_aids`, and D18's still-unbuilt
+`search_debate_history` (v2, proposed only). The recorded boundary test: a tool is public only if
+every possible return is either an admitted/verified fact or citable KB structure; pipeline-only
+if any output is raw pre-verification evidence, structurally non-citable finding-aid content, or
+non-citable agent chat text (the common K1 citation-laundering rationale). Process
+recommendation: future brainstorms that propose a new MCP tool append a row to this file instead
+of re-deriving the boundary from scratch; any decisions.md ratification touching a listed tool
+updates this file's status column in the same pass. Full analysis:
+[brainstorms/57-mcp-toolset-tracking.md](brainstorms/57-mcp-toolset-tracking.md).
+
+*[developer]* Ratified with: **`search_debate_history` does not get its own dedicated brainstorm
+now** — it stays parked until the transcripts repo (D18) has enough real volume to make the
+design concrete, reusing D15/D45/D53's non-citability pattern (typed envelope, tool-description
+caveat, D31 scan) whenever it is eventually built. **Maintenance ownership: manual
+per-brainstorm-append upkeep of this tracking file is sufficient** — no mechanical regeneration
+from decisions.md planned.
+
+### D61. Constraint-violation resolution path (59)
+
+Proposes a hybrid (Option C), amending D46's existing quick-ratification text ("route into D5's
+debate machinery unchanged, no separate path"). Keep D5's debate machinery for the fact-level
+question it's actually built for — is the sweep evidence for each contradicting answer solid,
+and does a `since`/version qualification dissolve the apparent contradiction (this part of D46
+stays unchanged). Add one new resolution outcome, `constraint-disputed`, for when evidence is
+solid on both sides and nothing dissolves it: that outcome lands as a pre-filled
+`constraint-dispute`-typed RFC issue draft in a work queue (mirroring D1's "controversial facts
+are auto-flagged... surfaced... in a work queue" pattern and backlog topic 47's
+discussion-issue-promotion shape) for manual promotion, rather than auto-opening the issue —
+since "is the ontology rule itself wrong" is
+squarely inside D16's one human-gated carve-out, not a fact question D1's no-PR-gate default
+should settle. The sweep's FeatureInstance records land and render visibly flagged the whole
+time, never blocked — applying D36's existing "disputes are excluded from auto-revert, land and
+render visibly flagged" policy and D25's dispute axis, not a new policy. Full analysis:
+[brainstorms/59-constraint-violation-resolution.md](brainstorms/59-constraint-violation-resolution.md).
+
+*[developer]* Ratified with: **the refinement supersedes D46's existing "no separate path"
+text** (dated amendment added at D46 above), rather than reconfirming the original
+unchanged-debate-machinery option. **RFC trigger: a work-queue item for manual promotion**, not
+an automatic issue-open — matching backlog topic 47's discussion-issue-promotion shape, decided
+the same way for consistency. **Label confirmed**: `constraint-disputed` stays as named, no
+rename to something like `rule-suspect` — distinct enough from D25's `disputed` controversy
+level in context. **One-side-well-sourced case confirmed as assumed**: resolves as an ordinary
+D5 fact outcome (reject/qualify the weak claim), no RFC and no constraint-dispute machinery
+invoked; the lightweight pattern-spotting note (tracking repeat partial challenges against the
+same rule) is filed as a nice-to-have, not designed here. **Debate prompt framing: not needed**
+— the reconciler's constraint-violation debate variant does not need explicit "adjudicate
+evidence, not ontology correctness" prompt-level framing beyond the existing typed-challenge
+vocabulary.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 

@@ -19,6 +19,8 @@ worth coverage-reporting.
 Move answered questions into decisions.md with their answer rather than deleting them.
 Batch 45/46/47/48/49 questions (filed 2026-07-19 from brainstorms 45–49) were answered by the
 developer later the same day and promoted to ratified decisions D53–D57.
+Batch 53/56/57/59 questions (filed 2026-07-19 from brainstorms 53, 56, 57, 59) were answered by
+the developer on 2026-07-20 and promoted to ratified decisions D58–D61.
 
 ## Open Questions
 
