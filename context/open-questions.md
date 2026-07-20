@@ -23,10 +23,42 @@ Batch 53/56/57/59 questions (filed 2026-07-19 from brainstorms 53, 56, 57, 59) w
 the developer on 2026-07-20 and promoted to ratified decisions D58–D61.
 Batch 61 questions (filed 2026-07-20 from brainstorm 61) were answered by the developer later the
 same day and promoted to ratified decision D62.
+The 2026-07-20 spec-consolidation pass (`context/spec.md` §14) filed the four open items below
+(U1/U2/U5/U6); its fifth item (U4, human-challenge hard-override mechanics) became backlog
+brainstorm topic 62, and its sixth (U3, the stale Elixir line in D28's deferred list) was fixed
+in place the same day.
 
 ## Open Questions
 
-None currently open (see Deferred below for items waiting on a future trigger).
+Filed 2026-07-20 from the spec-consolidation pass (`context/spec.md` §14). Items 1–2 must be
+resolved during the R0 schema-authoring work (spec §15 Stage 1) — they are design gaps, not
+waiting on any external trigger; items 3–4 are implementation-note clarifications owed before
+the code they touch is written.
+
+1. **U1 — Concrete schema of the consolidated `affects-quality` edge.** D23 merged the two
+   quality edge types into one signed `affects-quality` edge "carrying polarity + strength",
+   but no document specifies the post-consolidation record shape; brainstorms 09 and 12 still
+   show two conflicting pre-consolidation sketches. To decide: the record-id pattern
+   (`edge.affects-quality.<feature>.<quality>`?); whether polarity lives per-assessment (the
+   recorded-spread model implies yes) or on the edge; and whether brainstorm 12's
+   `mixed`/`negligible` values survive in the polarity vocabulary alongside `improves`/`hurts`.
+2. **U2 — Shape of the typed notes on `status: partial` instances.** D23 keeps `partial`
+   "carrying associated notes typed `limitation | extra | alternative`", but the instance
+   schema only has free-text `notes:`. To decide: keyed list or not, whether each typed note is
+   fact-bearing (own `sources:` and derived fact), and its sub-key grammar.
+3. **U5 — Retrieval-tool mediation split for university-API agents.** D26 excludes tool loops
+   from the completion channel, yet D53's `search_finding_aids` is "available to every agent
+   session type" and sweep drafting needs `search_sources` lookups. The implied resolution —
+   the runner mediates all retrieval for university-API roles (as the D24 verifier already
+   does), while only Claude-channel sessions call tools directly — is stated nowhere. Confirm
+   and write it into the D26/D53 implementation notes before the sweep drafting role is built.
+4. **U6 — Authoritative verdict-fold table.** D24 says `partial`-only facts bounce and never
+   enter; D25 defines fact-level `partially-verified` as "best verdict is partial support". The
+   reconciliation is implied (entry via one `supported` citation while other citations returned
+   `partial`, or via the `since` as-of split) but never spelled out. Write the single
+   authoritative fold table from per-(claim, citation) verdicts to the fact-level
+   `verification` axis (brainstorm 12 §O6's sketch predates D24's final vocabulary) as part of
+   the verifier's implementation.
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 

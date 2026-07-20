@@ -65,6 +65,7 @@ budget, no shortcuts that damage the long-term product.
 
 | File | Contents |
 |---|---|
+| [context/spec.md](context/spec.md) | Full consolidated project spec (current amended state of D1–D62 + brainstorm detail) with the developer timeline/checklist |
 | [context/input-brief.md](context/input-brief.md) | Complete original Notion content + developer constraints — the requirements source of truth |
 | [context/decisions.md](context/decisions.md) | Ratified decisions with pointers to full analyses |
 | [context/open-questions.md](context/open-questions.md) | Remaining open questions and developer actions |

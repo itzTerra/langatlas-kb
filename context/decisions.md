@@ -657,7 +657,9 @@ Swift — onboarded in four phases (this amends the "tentatively TIOBE top 10" c
 - **Phase 4 — optional cheap completeness**: Visual Basic (near-zero novel facts, restores
   literal "TIOBE top 10 covered" for positioning).
 - **Deferred, revisit post-1.0**: SQL (needs an ontology position on DSLs first), TypeScript (no
-  normative spec), Scheme/Racket, APL-family, Julia, Elixir.
+  normative spec), Scheme/Racket, APL-family, Julia. *(Elixir removed from this list
+  2026-07-20 — editorial fix: the ratification amendment below had already moved it into
+  phase 3 as the second BEAM representative.)*
 
 All 15(+VB) have bundled Shiki grammars (Elixir's included; no D10 risk). Positioning line for topic 31: "the
 most-used languages of the TIOBE top 10, plus the languages that define the rest of the feature
