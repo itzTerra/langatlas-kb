@@ -102,4 +102,11 @@ Postgres from the start; no PR gate for agent facts; split repos).
 
 ## Backlog additions from round 8 (surfaced by 56)
 
-- [ ] 61 Fact-embedding index build-out — no brainstorm has yet concretely designed the schema, refresh cadence, and shared use (across topic 56's cross-fact contradiction scan, site search, and `search_knowledge`) of a fact-level embedding index separate from D15's `source_chunks` table; topic 56 assumed its existence but deferred its design (from 56)
+- [x] 61 Fact-embedding index build-out — done 2026-07-20 (`brainstorms/61-fact-embedding-index-build-out.md`; decision D62, ratified): one table `knowledge_embeddings`, `chunk_type IN ('fact', 'feature-description')` discriminator, keyed `(embedding_model_id, chunk_type, subject_id)`, embedding `rendered_text` (D47's precomputed claim string); embeddings computed once during the bundle-build pipeline and shipped as a precomputed bundle column, copied into Postgres by D58's existing loader mechanics (no new loader code path); no fixed calendar refresh — incremental re-embed rides bundle-build cadence, full re-embed falls out for free on an embedding-model swap; shared by the contradiction scan (D59) and `search_knowledge` (D8), while site search stays Pagefind (D33), a different layer entirely; resolves D58's open "or reuse of D26's cache store directly" parenthetical as this same table — the schema, refresh cadence, and shared use topic 56 assumed but deferred (from 56)
+
+## Backlog additions from round 9 (surfaced by 61)
+
+None — brainstorm 61's one surfaced item (a canonical feature/concept description field for
+embedding) turned out to already be resolved: D62's ratification confirms brainstorm 09's O7
+Feature/Concept `summary.text` field is that canonical description field, so no follow-up
+brainstorm or schema addition is owed.

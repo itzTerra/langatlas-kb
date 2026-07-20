@@ -1904,7 +1904,7 @@ current.<table> AS SELECT * FROM data_v418.<table>` flips everything at once; MC
 `DROP VIEW`+recreate instead of `CREATE OR REPLACE`. **Embedding-cache keying**: recommended
 `(embedding_model_id, fact_id)` — not a coarser `corpus_hash` — since D23's fact ids are already
 content-derived (copyedit-tolerant), so fact-id stability *is* content stability; route through
-the existing D26 `RunContext` cache plus a new `fact_embeddings` lookup table. Index rebuild
+the existing D26 `RunContext` cache plus a new `knowledge_embeddings` lookup table. Index rebuild
 happens entirely inside the isolated shadow schema before the swap. **Rollback**: a failed
 build-phase load just leaves an orphaned unused shadow schema (drop and retry); rollback after a
 successful swap is the same view-swap run in reverse, retaining exactly two live schemas
@@ -2007,6 +2007,51 @@ same rule) is filed as a nice-to-have, not designed here. **Debate prompt framin
 — the reconciler's constraint-violation debate variant does not need explicit "adjudicate
 evidence, not ontology correctness" prompt-level framing beyond the existing typed-challenge
 vocabulary.
+
+### D62. Fact-embedding index build-out (61)
+
+Concretizes D7's originally-named fact-embedding index, assembling fragments left open by D56/
+D58/D60. One table, `knowledge_embeddings`, `chunk_type IN ('fact', 'feature-description')`
+discriminator (not split tables) — a single table already sufficient for D7's original filter-first
+design, since the earlier split into a separate `source_chunks` (D15) was motivated by source text's
+different lifecycle, not by anything specific to facts vs. feature descriptions. Primary key
+`(embedding_model_id, chunk_type, subject_id)`, `vector(N)` at whatever dimension D22's benchmark
+selects, `rendered_text` (D47's precomputed claim/description string) as the exact embedded text,
+plus D7's original filter metadata (`feature_id`, `language_id`, `status`) extended with
+`controversy_level`. **Loader relationship**: embeddings are computed once during the bundle-build
+pipeline (via `RunContext`/D26) and shipped as a precomputed bundle column (D35); D58's loader
+copies them into the shadow schema using its own already-specified cache-reuse-keyed,
+build-before-`COPY` mechanics — no new loader code path. **Refresh cadence**: no fixed calendar
+job; incremental re-embed rides whatever cadence bundle builds already run at (unchanged
+`rendered_text` reuses its vector via cache-reuse keying), with a full re-embed falling out for
+free on an embedding-model swap since the cache key includes `embedding_model_id` — the same event
+D59 already names as its own contradiction-scan backstop trigger. **Shared consumers**: the
+contradiction scan (D59) and `search_knowledge` (D8) both read this one table, differently (raw
+cosine top-k vs. filtered hybrid BM25+vector RRF gated to a publicly-safe status); site search
+stays Pagefind (D33) — a different architectural layer, not a consumer of this index at v0; D33's
+deferred public FastAPI hybrid search, if ever built, becomes a third consumer of the same table.
+**Cache table question resolved**: `knowledge_embeddings` *is* the table D58 left open as a
+parenthetical ("or reuse of D26's existing cache store directly") — it serves both D58's
+cache-reuse bookkeeping and the live query index every downstream reader needs; `RunContext`'s
+existing content-addressed cache stays the separate, complementary embedding-API-call dedup layer
+underneath it. Full analysis:
+[brainstorms/61-fact-embedding-index-build-out.md](brainstorms/61-fact-embedding-index-build-out.md).
+
+*[developer]* Ratified with: **table renamed to `knowledge_embeddings`** — the name better
+covers its scope (fact claims *and* feature/concept-description rows) now, before any code
+references the original `fact_embeddings` wording inherited from D58; applied throughout this
+decision and the source brainstorm. **Feature/concept-description embedding source text
+confirmed already resolved by the proposed schema**: brainstorm 09's O7 Feature/Concept record
+shape already carries a fact-bearing `summary.text` field for exactly this purpose (see
+`features/pattern-matching.yaml`'s `summary:` block) — no follow-up decision needed;
+`chunk_type='feature-description'` rows embed that field's rendered text. **Bundle-column
+computation confirmed** — embeddings are computed once during the bundle-build pipeline and
+shipped as a precomputed `data-vN` column, not computed by the Postgres loader at load time.
+**`search_knowledge`'s publicly-safe-status filter confirmed**: D25 verification values
+`verified` and `partially-verified` (the latter rendering with its existing public badge, per
+D25) gate a fact into results; `unverified` and `failed` do not. **Embedding dimension and
+HNSW-vs-IVFFlat index choice confirmed deferred to D22's benchmark output**, no default pinned
+now.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
