@@ -1,9 +1,7 @@
 # LangAtlas
 
 Single source of context for this project (formerly working-titled "Hermes" — that name is
-retired everywhere except historical brainstorm documents; D17). This file replaces the
-original Notion page; the complete Notion content is preserved (restructured, nothing lost) in
-[context/input-brief.md](context/input-brief.md).
+retired everywhere except historical brainstorm documents; D17).
 
 ## What LangAtlas is
 
@@ -63,27 +61,15 @@ completely separate from the per-language sweep pipeline, which is retained for 
 languages later. Personal hobby project: no deadline, full Claude Pro + reasonable academic API
 budget, no shortcuts that damage the long-term product.
 
-Round-2 decisions (D13–D22 in decisions.md, ratified): CI via a validated dataset bundle
-published as release assets — the site never reads raw KB files (repos: `langatlas-kb`,
-`langatlas-site`, `langatlas-transcripts`); a second full-text **source-corpus RAG index**
-(books/specs, locator-carrying chunks, initial corpus in `~/Downloads/hermes-research/` + specs
-of the initial languages — tentatively TIOBE top 10, topic 34) feeding both the research phase
-and the verifier; ontology versioning with immutable node ids vs renameable slugs,
-blast-radius semver, migrations-as-scripts (ontology MAJORs are the one human-gated
-exception); DCO for contributions; all agent chats captured to a public transcripts repo with
-fact→chat links; positioning wedge = typed concept graph first, per-fact sourcing second (D19);
-fact granularity = per-instance records with derived per-field fact IDs (D20); controversy as
-an agent-assessed ordinal score with GitHub-challenge activity kept separate (D21).
-
 ## Context directory map
 
 | File | Contents |
 |---|---|
 | [context/input-brief.md](context/input-brief.md) | Complete original Notion content + developer constraints — the requirements source of truth |
-| [context/decisions.md](context/decisions.md) | Ratified decisions D1–D22 + top risks, with pointers to full analyses |
+| [context/decisions.md](context/decisions.md) | Ratified decisions with pointers to full analyses |
 | [context/open-questions.md](context/open-questions.md) | Remaining open questions and developer actions |
-| [context/brainstorm-checklist.md](context/brainstorm-checklist.md) | Living list of brainstorm topics: rounds 1–2 done, backlog 09–34 pending |
-| [context/brainstorms/](context/brainstorms/) | Full brainstorm deep-dives, rounds 1 (01–08) and 2 (10, 15, 21–24); historical — they predate the rename and still say "Hermes" |
+| [context/brainstorm-checklist.md](context/brainstorm-checklist.md) | Living list of brainstorm topics |
+| [context/brainstorms/](context/brainstorms/) | Full brainstorm deep-dives |
 
 Workflow for these docs: answered questions move from open-questions.md into decisions.md with
 their answer; new big topics go onto the checklist backlog and get their own brainstorm file;
@@ -127,7 +113,7 @@ same pass**, never left only inside the brainstorm file itself:
 - **Decision hygiene**: proposals are marked *proposed* until the developer ratifies; ratified
   decisions are binding and edited in place with a dated note if changed.
 - **People terminology**: never "owner" — use **developer** (the person operating the pipeline
-  and making project decisions) or **contributor** (anyone participating); the project is
+  and making project decisions); the project is
   designed for multiple people.
 - Checkbox plans use `[ ]`/`[x]`; check items off immediately when completed.
 

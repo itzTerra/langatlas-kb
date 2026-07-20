@@ -34,7 +34,8 @@ Entities: **Concept** (thin, pedagogical), **Feature** (primary node; `layer` 1 
 (feature × language — the reified `implemented-by` edge), **SyntaxExample** (reified
 `expressed-as`; functionality stays separate from syntax), **Quality** (small controlled
 vocabulary), **Characteristic**, **Edge** (5 feature↔feature types: requires, enables,
-influences ±, conflicts-with, alternative-to; 2 feature→quality types), **Rule** (multi-feature
+influences ±, conflicts-with, alternative-to; 2 feature→quality types *[superseded by D23,
+2026-07-18: consolidated into one signed `affects-quality` edge]*), **Rule** (multi-feature
 emergent interactions), **Fact**, **Source**.
 
 - *[developer 2026-07-18]* **Characteristic = a fact listed under a language feature** (an observable
@@ -118,6 +119,11 @@ cost-per-accepted-fact.
 - *[developer 2026-07-18]* **Budget = full Claude Pro limits + reasonable academic LLM API use; no
   additional cash budget.** No deadline pressure — do not take shortcuts that damage the
   long-term product.
+- *[developer 2026-07-20]* The budget additionally includes a **small programmatic SDK credit
+  pool** alongside Claude Pro (surfaced during D26's ratification). It is never for volume:
+  bulk work stays in the university-API lane, and the credit pool is reserved for the pipeline
+  steps requiring the highest-quality judgment. Supersedes D26's "pipeline/bulk agentic work
+  defaults to Haiku-tier models" clause.
 
 ### Environment: university API (developer-provided, 2026-07-18)
 
@@ -169,7 +175,9 @@ full-source RAG (brainstorm 21).
 One Python retrieval core; a **stdio MCP server** registered in `.mcp.json` for Claude Code and
 MCP-speaking local models (`search_knowledge`, `get_fact`, `get_feature`, `get_neighbors`,
 `get_source`); returned chunks carry inline citation keys. A thin FastAPI adapter serves
-non-MCP providers and the site's search box. The website reads structured data directly — SEO
+non-MCP providers and the site's search box *[amended by D33, 2026-07-19: site search ships as
+Pagefind; the public FastAPI search endpoint is deferred until lexical search proves
+insufficient]*. The website reads structured data directly — SEO
 pages are never rendered from RAG.
 
 - *[developer 2026-07-18]* **MCP server is read-only.** The write path is the agent pipeline only.
@@ -185,13 +193,22 @@ pages are never rendered from RAG.
 - giscus-style embedded Discussions as a fast follow; anonymous intake only if experts bounce
   off the GitHub-account requirement *[developer 2026-07-18: GitHub account requirement is
   acceptable]*.
-- *[developer 2026-07-18]* No human experts are lined up yet; unchallenged facts count as
-  **unverified, not verified** (fact-status model: brainstorm 12).
+- *[developer 2026-07-18]* No human experts are lined up yet; the absence of human challenge
+  confers nothing — **"verified" comes only from the machine gate (D4/D24)**, never from a fact
+  having gone unchallenged (fact-status model: brainstorm 12). *[Reworded 2026-07-20: the
+  original "unchallenged facts count as unverified" phrasing contradicted D25's
+  machine-verified-only model.]*
+- *[developer 2026-07-20]* **An accepted human challenge is a hard override** of anything
+  machine-decided about the fact: the re-argued correction still enters through the normal
+  verification gate on its way in, but no subsequent machine verdict can reinstate a value a
+  human challenge overturned.
 
 ## D10. Website (06 — ratified)
 
-- **Astro, fully static**, static-first hosting; zero-JS knowledge-base pages;
-  builder/selector later as islands. Full rebuilds accepted initially.
+- **Astro, fully static**, static-first hosting; zero-JS knowledge-base pages *[amended via
+  D32/D33, 2026-07-19: the inline Pagefind search box and giscus embeds on feature/language
+  pages add scoped JS islands — "zero-JS" means core knowledge-base content renders fully
+  without JS]*; builder/selector later as islands. Full rebuilds accepted initially.
 - IA: `/features/`, `/features/<x>/`, `/features/<x>/<lang>/`, `/features/<x>/<a>-vs-<b>/`
   (alphabetical canonical), `/languages/`, `/languages/<x>/`; comparison pages only above a
   data-richness threshold; internal links derived from graph edges; stable slugs + 301 policy.
@@ -258,6 +275,10 @@ otherwise halts the runner and files an issue. Agents commit under a GitHub App 
 identity; `data-vN` tags cut **daily, only on days with changes**; the embeddings cache stays
 **private for now** (not a public release asset); red-main policy confirmed; the site **does**
 display its `data-vN` build stamp.
+
+*[developer 2026-07-20]* Embeddings-privacy clause reaffirmed against D62: embeddings stay
+private as long as the web app itself has no use for them (it currently doesn't — site search is
+Pagefind, D33); see the dated note on D62 for the delivery mechanics.
 
 ### D14. Licensing policy (15)
 
@@ -566,6 +587,11 @@ the amendment that **pipeline/bulk agentic work defaults to Haiku-tier models**.
 config space reserved now** (schema/config surface only) — no CPU Ollama target stood up yet.
 **Cache lives inside the D15 snapshot store**, riding the same backup as the source corpus.
 
+*[developer 2026-07-20]* Budget clause amended (see D6's dated bullet): the SDK credit pool is
+small and reserved for the highest-judgment pipeline steps only — never bulk work, which stays
+in the university-API lane per D6. The "pipeline/bulk agentic work defaults to Haiku-tier
+models" clause above is superseded.
+
 ### D27. Frontloaded research phase design (25)
 
 Staged subphases **R0–R6** with a repeating per-theme loop: R0 infrastructure preflight (D15
@@ -614,9 +640,9 @@ tracked as a coverage metric — the dossier now has five items, not six.
 
 ### D28. Initial language selection (34)
 
-**14-language curated set** — the July 2026 TIOBE top 10 minus SQL and Visual Basic, plus
-Haskell, OCaml, Prolog, Erlang, Go, Swift — onboarded in four phases (this amends the
-"tentatively TIOBE top 10" clause of D15):
+**15-language curated set** *(ratified as 14; Elixir added by the amendment below)* — the July
+2026 TIOBE top 10 minus SQL and Visual Basic, plus Haskell, OCaml, Prolog, Erlang, Elixir, Go,
+Swift — onboarded in four phases (this amends the "tentatively TIOBE top 10" clause of D15):
 
 - **Phase 1 — ontology stress set (6)**: Python, C, Java, Rust, Haskell, Prolog — every layer-3
   dimension in the brief gets ≥2 distinct values instantiated inside this phase alone; cheap
@@ -624,15 +650,16 @@ Haskell, OCaml, Prolog, Erlang, Go, Swift — onboarded in four phases (this ame
   the one acquisition gap — see open questions).
 - **Phase 2 — mainstream weight (4)**: C++, C#, JavaScript, R — remaining TIOBE-top-10 members,
   highest sweep/ingestion cost, run against a phase-1-hardened ontology.
-- **Phase 3 — landscape completers (4)**: OCaml, Erlang, Go, Swift — functors/effect handlers,
-  actors, CSP + structural interfaces, ARC + protocol-oriented design; all four have free
-  permissively-licensed references.
+- **Phase 3 — landscape completers (5)**: OCaml, Erlang, Elixir, Go, Swift — functors/effect
+  handlers, actors (both BEAM representatives, per the amendment below), CSP + structural
+  interfaces, ARC + protocol-oriented design; all five have free permissively-licensed
+  references.
 - **Phase 4 — optional cheap completeness**: Visual Basic (near-zero novel facts, restores
   literal "TIOBE top 10 covered" for positioning).
 - **Deferred, revisit post-1.0**: SQL (needs an ontology position on DSLs first), TypeScript (no
   normative spec), Scheme/Racket, APL-family, Julia, Elixir.
 
-All 14(+VB) have bundled Shiki grammars (no D10 risk). Positioning line for topic 31: "the
+All 15(+VB) have bundled Shiki grammars (Elixir's included; no D10 risk). Positioning line for topic 31: "the
 most-used languages of the TIOBE top 10, plus the languages that define the rest of the feature
 landscape."
 
@@ -679,6 +706,13 @@ distinguishing this rejection (Wikidata as fact source) from D10's already-decid
 necessary. **A narrow carve-out is added**: pure identification metadata from PLDB/Wikidata
 (file extensions, first-appeared year — not feature/paradigm claims) may be pulled as single
 attributed data points, mirroring D14 rule 7's treatment of TIOBE.
+
+*[developer 2026-07-20]* **Identification metadata is ungated registry data, not gated facts**:
+fields like file extensions and first-appeared year live on the Language registry record, never
+pass through D4/D24's admissibility gate, and need no tier-A/B backing — the tier-D citation is
+recorded for attribution only. (Resolves the otherwise-impossible interaction with D24's
+≥1-supported-tier-A/B admissibility rule; D53's "through the normal D4 gate" wording is
+superseded accordingly.)
 
 ### D30. Debate cost/quality instrumentation (16)
 
@@ -1284,12 +1318,20 @@ check-in is the only alerting actually intended; cron-mail setup is not worth do
 sweep's "checked monthly, no-ops until due" pattern is confirmed** as matching the developer's
 expectation, over a coarser manually-remembered trigger.
 
+*[developer 2026-07-20]* **Full periodic-job inventory** (the list above predates several later
+ratifications; `config/jobs/crontab.example` must enumerate all of these): nightly
+verification/controversy batch; monthly link-checker (D37), capability probe (D41), finding-aid
+mirror refresh (D53), and Umami `demand` export (D52); quarterly edition-check (D37); the
+18-month backstop sweep. Event-driven work (the D59 contradiction scan, D25's re-verification
+triggers) rides commit/pipeline events, not cron.
+
 ## Batch 36 decision (2026-07-19 — from brainstorm 36 — **ratified by the developer**, amendments noted inline)
 
 ### D44. Golden-set authoring methodology (36)
 
 One shared perturbation taxonomy — 13 named strata (correct, overstated claim, fabricated
-locator, wrong `since` off-by-one/off-by-major, contradicted, right-claim-wrong-source, category
+locator, wrong `since` off-by-one and wrong `since` off-by-major — two distinct strata —
+contradicted, right-claim-wrong-source, category
 error, fabricated feature-instance combination, quote-mismatch, quote-found-elsewhere, OCR-noisy,
 paraphrase-heavy correct) — reused across the D24 verifier golden set's authoring, with the
 **overstated-claim stratum treated as first-class and reported separately**, since it is the only
@@ -1387,11 +1429,18 @@ structured scoping fields (dialect/edition, platform) for now. **Human-challenge
 contradictions (O4 path 3b) carry more weight in the controversy assessor's rubric** than a
 machine-discovered, never-human-reviewed contradiction — the assessor's rubric should read
 `closure_attempt.outcome: confirmed-open` as stronger evidence toward level-3 `disputed` than an
-unreviewed open record. **MCP tool extension confirmed as part of this topic's implementation**:
+unreviewed open record. *[Withdrawn 2026-07-20 — see the dated note below.]* **MCP tool
+extension confirmed as part of this topic's implementation**:
 `list_contradictions`/`get_contradiction` (O7) ship now rather than deferring to a future
 D8-extension pass — consistent with backlog topic 57's standing tracking note, which stays open
 only for consolidating the *rest* of the extended tool list (D15's `search_sources`/
 `get_source_section`), not this pair.
+
+*[developer 2026-07-20]* The confirmed-open-weighting clause above is **withdrawn**: no
+human-challenge-derived result — including a contradiction record's
+`closure_attempt.outcome: confirmed-open` — may serve as a controversy-assessor input. D21/D25's
+challenge-free rubric holds without exception; open contradiction records feed the assessor only
+through their machine-produced content.
 
 ## Batch 38 decision (2026-07-19 — from brainstorm 38 — **ratified by the developer**, amendments noted inline)
 
@@ -1756,6 +1805,11 @@ wrapper placement: inside `tools/finding-aids/` itself**, not the provider-abstr
 package's tool registry. **Live-tool availability: available to every agent session type**, not
 scoped only to R3 survey and D5 sweep sessions.
 
+*[developer 2026-07-20]* The body's "through the normal D4 gate" clause for
+`mint_identification_source` is superseded: identification metadata is ungated registry data per
+D29's dated note — the tier-D citation is still minted, but only for attribution; no
+admissibility gate applies.
+
 ### D54. Challenger-round auto-skip rules (46)
 
 Designs the *mechanism* for brainstorm 04 §4's syntax-quote-auto-accept idea without picking a
@@ -1881,7 +1935,7 @@ CLI, only a markdown template. Full analysis, including a worked example for Rus
 registry record directory. **D48 fold-in dropped**: the narrow required-field-presence check
 (`language_kind` and `syntax_check` only) is **not worth adding now** — both stay fully manual,
 unenforced checklist items, since the failure mode it guards against hasn't actually happened yet
-(D28 phase 1 remains the only completed onboarding so far). **Selection-sanity item (checklist
+(no onboarding has run yet — D28 phase 1 is still ahead; parenthetical corrected 2026-07-20). **Selection-sanity item (checklist
 item 1) stays purely narrative** — D34's per-candidate audit-table columns are not pulled in as a
 reusable sub-table format. **Timing: deferred** until closer to D28 phase 2/3, rather than built
 now, despite the shape being fresh from this consolidation pass.
@@ -1891,7 +1945,7 @@ now, despite the shape being fresh from this consolidation pass.
 Consolidated from the fourth round-4-backlog brainstorm batch and ratified in conversation on
 2026-07-20.
 
-### D58. Postgres loader implementation & blue-green load mechanics (53) — *proposed*
+### D58. Postgres loader implementation & blue-green load mechanics (53)
 
 A single Python loader script (`tools/loader/load_bundle.py`, matching D48's `tools/<domain>/`
 CLI convention) reads the D35 zstd-SQLite bundle via stdlib `sqlite3` and writes into Postgres
@@ -1920,6 +1974,13 @@ repo's `repository_dispatch` build triggers the site-owned Postgres load, and a 
 scheduled job also runs against the `langatlas-kb` repo's own compose stack (plus manual local
 loads for MCP testing). **Retention depth: confirmed as proposed** — exactly two live schemas
 (current + previous), no deeper grace window.
+
+*[developer 2026-07-20]* **Where Postgres lives, clarified**: Postgres serves the RAG/MCP local
+agentic workload on developers' machines (the kb repo's compose stack) — its only role at
+launch. A site-side Postgres becomes relevant only later, when/if the deferred public FastAPI
+search (D33) or additional live modules (e.g. the Builder's public library, D34) ship; the
+"site-owned Postgres load" invocation path above provisions for that stage, not a launch
+requirement.
 
 ### D59. Cross-fact contradiction scan job design (56)
 
@@ -2052,6 +2113,13 @@ shipped as a precomputed `data-vN` column, not computed by the Postgres loader a
 D25) gate a fact into results; `unverified` and `failed` do not. **Embedding dimension and
 HNSW-vs-IVFFlat index choice confirmed deferred to D22's benchmark output**, no default pinned
 now.
+
+*[developer 2026-07-20]* **Embedding columns stay out of the public bundle**, resolving the
+conflict with D13's embeddings-stay-private ratification: the web app has no use for the vectors
+(site search is Pagefind, D33), so the precomputed `knowledge_embeddings` data is built alongside
+the bundle but delivered through the private tier (the D15 snapshot store, same home as D26's
+cache) rather than as a public `data-vN` asset; D58's loader reads it from there. Everything else
+in this decision stands unchanged.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
