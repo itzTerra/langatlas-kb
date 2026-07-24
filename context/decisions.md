@@ -485,6 +485,22 @@ feature→quality edges specifically (D2's "`influences` is polarity-only" wordi
 for feature↔feature `influences`). Language registry and the `cpp`/`csharp`/`javascript` id
 conventions confirmed.
 
+*[developer 2026-07-24]* **U1 resolved — consolidated `affects-quality` edge schema**: the
+record id stays `edge.affects-quality.<feature>.<quality>`, with **no polarity in the id**,
+matching the existing `influences` precedent (polarity is a field, not part of identity) — one
+edge record per (feature, quality) pair, ever. Polarity lives **per-assessment**, inside each
+entry of the `assessments:` list, matching D25's "attributed assessments, recorded spread, no
+forced consensus" model; disagreement between assessors is expressed as multiple assessments on
+the one record, not multiple records. **`mixed`/`negligible` are dropped from the polarity
+vocabulary** — only `improves`/`hurts` are recorded; an assessor who finds no meaningful effect
+simply produces no assessment rather than a `negligible` one.
+
+**U2 resolved — shape of typed partial-instance notes**: `notes:` on `status: partial`
+instances is a **flat keyed list** (not three lists nested per type), each entry `{key:
+n-<slug>, type: limitation | extra | alternative, text, sources}`, mirroring the existing
+`characteristics[c-...]`/`syntax[...]` bracket-key convention. Anchor: `#notes[n-<slug>]`. Each
+note is its own independently challengeable derived fact (own `sources:`, own fact id).
+
 ### D24. Claim↔source verification pipeline (11)
 
 Index-only evidence: the verifier reads exclusively from the D15 `source_chunks` table, never
@@ -550,6 +566,27 @@ vocabulary (`high/medium/low`) confirmed.** **Snapshot-drift policy confirmed**:
 live source has since changed stays verified against the archived snapshot while queued for
 refresh. Separately, **`partially-verified` facts render publicly, visibly marked with a
 badge** — not suppressed from public pages.
+
+*[developer 2026-07-24]* **U6 resolved — authoritative verdict fold table**. `verification`
+folds over the best per-(claim, citation) verdict (D24: `source-unavailable | locator-not-found
+| supported | partial | unsupported | contradicted`) per **load-bearing field** of the claim —
+the base claim, plus `since` when the fact carries one:
+
+| Condition | `verification` |
+|---|---|
+| Best verdict on the base claim never reaches `supported` on a tier-A/B citation | `failed` — never enters the canonical store (D24); transient/pipeline-only |
+| Not yet run through the gate | `unverified` — transient for new facts |
+| Base claim `supported` on ≥1 tier-A/B citation (admissible), **and** every other load-bearing field also reaches `supported` on ≥1 tier-A/B citation, including `since` reaching `since-supported` specifically | `verified` |
+| Base claim `supported` on ≥1 tier-A/B citation (admissible), but ≥1 load-bearing field's best verdict tops out at `partial` — including `since` reaching only `as-of-supported`, not `since-supported` | `partially-verified` |
+
+This single rule covers both cases the open question separated: "admitted via one `supported`
+citation while another citation for the same fact came back `partial`" and "the `since` as-of/
+since-supported split" are the same situation — admissible, but not every load-bearing field
+cleared `supported`. `source-unavailable`/`locator-not-found` verdicts never count as support for
+any field (excluded from the best-verdict computation, per D24). `contradicted` verdicts never
+feed this table directly — they route to the contradiction register and the controversy assessor
+(the separate `dispute` axis, defined above in this decision), so a fact can be `verified` (or
+`partially-verified`) on `verification` while simultaneously `contradicted` on `dispute`.
 
 ### D26. Provider-abstraction layer (13)
 
@@ -1812,6 +1849,15 @@ scoped only to R3 survey and D5 sweep sessions.
 D29's dated note — the tier-D citation is still minted, but only for attribution; no
 admissibility gate applies.
 
+*[developer 2026-07-24]* **U5 resolved — retrieval-tool mediation split**: "available to every
+agent session type" means the *function* is invocable on behalf of any session, not that every
+session type gets a live tool-calling loop — D26 already excludes tool loops from the completion
+channel. University-API sessions (sweep drafting included) get `search_finding_aids`/
+`search_sources` only as **single-shot, runner-mediated calls**: the runner calls the function
+and injects the result into the prompt, exactly as the D24 verifier's retrieval already works
+(the verifier itself has no tools). Only Claude-channel sessions call these tools directly, live,
+in a multi-turn loop.
+
 ### D54. Challenger-round auto-skip rules (46)
 
 Designs the *mechanism* for brainstorm 04 §4's syntax-quote-auto-accept idea without picking a
@@ -2122,6 +2168,45 @@ conflict with D13's embeddings-stay-private ratification: the web app has no use
 the bundle but delivered through the private tier (the D15 snapshot store, same home as D26's
 cache) rather than as a public `data-vN` asset; D58's loader reads it from there. Everything else
 in this decision stands unchanged.
+
+### D63. Human-challenge hard-override mechanics (62)
+
+Designs the mechanism behind D9's 2026-07-20 amendment ("no subsequent machine verdict can
+reinstate a value a human challenge overturned"), a Stage-6 hard gate (spec.md §15) with no
+prior design. **Storage**: a new root ledger `overrides.yaml`, sibling to `tombstones.yaml` and
+`contradictions.yaml` (D45's own precedent for a sibling ledger over overloading an existing
+one), content-keyed id, holding `anchor`, `locked_value`, `overturned_value`,
+`challenge_issue_url`, `chat_run_id` (D18 link), mutable `status: locked | superseded`.
+**Granularity**: anchor-level lock, not a narrow single-fact-id blocklist — content-keyed fact
+ids (D23) mean a machine process could re-derive the exact overturned claim string, but could
+also derive a different, still-wrong value the narrow reading wouldn't catch; any machine write
+to a locked anchor (content or `since`) is refused, matching D9's own "hard override of anything
+machine-decided about the fact" framing rather than just its literal reinstatement clause.
+**Consultation points**: a pre-commit lock check runs ahead of D24's verifier and D5's reconciler
+on every machine-authored write path (new terminal status `blocked_by_human_override`, matching
+D36's halt-state vocabulary); the same check gates the back-dating pipeline's per-fact loop,
+excluding locked anchors from a batch entirely; D36's auto-revert gets a fifth condition (never
+revert a commit carrying a new `LangAtlas-Challenge-Id` trailer) since a challenge-resolution
+commit is bot-authored and could otherwise satisfy auto-revert's existing four conditions by
+accident; D25's event-driven re-verification keeps running on locked anchors and can display a
+`failed`/`contradicted` status, but — per D23's existing verifier/content separation — no
+reconciler action may write a correction back, so status and content are allowed to visibly
+diverge rather than being forced back into agreement. **Lock update path**: only a new
+human-challenge resolution may update an existing lock (in place, not appended), authenticated by
+the same `LangAtlas-Challenge-Id` trailer referencing a real resolved `challenge-fact.yml` issue.
+Full analysis:
+[brainstorms/62-human-challenge-hard-override-mechanics.md](brainstorms/62-human-challenge-hard-override-mechanics.md).
+
+*[developer]* Ratified with: **anchor-level lock granularity confirmed** over the narrower
+single-fact-id-blocklist reading. **`overrides.yaml` as a new root ledger confirmed** over
+extending `tombstones.yaml` with a flag. **`LangAtlas-Challenge-Id` trailer + auto-revert
+carve-out confirmed** — D36's auto-revert gains the fifth condition as proposed. **No dedicated
+site content for the "locked but machine still disagrees" state** — the existing D25
+verification-status popover and D45 `caution` block are sufficient as-is; no distinct glyph/copy
+is added. **No automated re-surfacing mechanism** — instead, a small CLI script is added to list
+existing `overrides.yaml` entries (with lock age) for manual periodic review; this is a
+lightweight reporting tool, not an automated staleness check or notification path, and carries no
+cadence commitment of its own.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 

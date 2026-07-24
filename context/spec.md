@@ -7,8 +7,7 @@
 > state is written here. decisions.md remains the decision authority; the brainstorm files
 > remain the trade-off analyses; this document is the single readable build spec.
 >
-> Two companion sections close the document: **§14 Unclear points found during spec
-> writing** (items owed further brainstorming) and **§15 Timeline & developer checklist**
+> Companion section closes the document: **§15 Timeline & developer checklist**
 > (all future steps, including the deferred brainstorm backlog and deferred open
 > questions).
 
@@ -142,7 +141,7 @@ is no sync-back problem because nothing downstream is ever authoritative.
 ```
 langatlas-kb (git, public, canonical)
   ontology/  concepts/  features/  languages/  edges/  rules/  sources/
-  tombstones.yaml  contradictions.yaml  sources/_tombstones.yaml
+  tombstones.yaml  contradictions.yaml  overrides.yaml  sources/_tombstones.yaml
   prompts/  config/  tools/  tests/
         │  agent runner commits directly (GitHub App identity, §7.9)
         ▼
@@ -269,12 +268,15 @@ edges/<from-id>/<type>--<to-id>.yaml                       (one file per edge, s
 rules/<rule-id>.yaml
 sources/<source-id>.yaml           sources/_tombstones.yaml   (D38 fold-in)
 tombstones.yaml                    contradictions.yaml        (both canonical ledgers)
+overrides.yaml                                                (D63 — human-lock ledger)
 ```
 
 Edges are one-file-per-edge sharded by from-feature (hot features would make a shared
 file a permanent merge-conflict magnet under concurrent commits); `tombstones.yaml` is
 append-only and CI-checked (shard to `tombstones/<year>.yaml` later if conflicts become
-real — a PATCH-level change).
+real — a PATCH-level change). `overrides.yaml` (D63, §6.7) is the one root ledger with
+**mutable** entries — an anchor's lock is updated in place on a later human-challenge
+resolution, not appended as a new record — unlike its append-only siblings.
 
 ### 3.4 Record schemas (v0 — brainstorm 09 §O7, as ratified)
 
@@ -344,8 +346,11 @@ sources, provenance, and status. Correcting `since` changes one fact id, appends
 tombstone line, and leaves the other facts untouched.
 
 - **`status: partial` is kept** (D23), carrying associated notes typed
-  `limitation | extra | alternative` describing the missing or additional aspect
-  (concrete schema shape: see §14, unclear point U2).
+  `limitation | extra | alternative` describing the missing or additional aspect: a flat
+  keyed list, `notes: [{key: n-<slug>, type: limitation | extra | alternative, text,
+  sources}]`, mirroring the `characteristics[c-...]`/`syntax[...]` bracket-key grammar
+  (anchor `#notes[n-<slug>]`). Each note is its own independently challengeable derived
+  fact.
 - **`status: absent` records are first-class sourced facts** with a **required
   `absence_scope`** free-text field (D49) — the sweep agent's argument for why the cited
   source(s) can be trusted as comprehensive over the feature's category. No file at all
@@ -354,15 +359,19 @@ tombstone line, and leaves the other facts untouched.
 **Edge**: `id`, `type`, `from`, `to`, `polarity` (influences only), fact-bearing
 `statement:` block (`text` + `sources`), `provenance`.
 
-**`affects-quality` edge**: same file shape with `to: <quality-id>`; instead of a single
-statement it carries a keyed **`assessments:` list** — D2's "attributed assessments with
-recorded spread, no forced consensus". Each assessment is one independently challengeable
-derived fact: `key`, `assessor` (agent/model/prompt), signed polarity, `strength: weak |
-moderate | strong`, `statement`, `sources`. The build derives a **distribution summary**
-per (feature, quality) — counts per polarity, strongest tier per side — which the site
-renders ("sources disagree: 1 says improves, 1 says hurts"), never averaged or voted.
-Under D47 each assessment has a **split identity**: a templated existence-claim plus a
-free-text statement-claim.
+**`affects-quality` edge**: same file shape with `to: <quality-id>`; **no polarity in the
+record id** (`edge.affects-quality.<feature>.<quality>`, one record per pair, ever —
+matching the `influences` precedent that polarity is a field, not part of identity);
+instead of a single statement it carries a keyed **`assessments:` list** — D2's
+"attributed assessments with recorded spread, no forced consensus". Each assessment is one
+independently challengeable derived fact: `key`, `assessor` (agent/model/prompt), signed
+polarity (`improves | hurts` only — no `mixed`/`negligible`; an assessor who finds no
+meaningful effect simply produces no assessment), `strength: weak | moderate | strong`,
+`statement`, `sources`. The build derives a **distribution summary** per (feature,
+quality) — counts per polarity, strongest tier per side — which the site renders
+("sources disagree: 1 says improves, 1 says hurts"), never averaged or voted. Under D47
+each assessment has a **split identity**: a templated existence-claim plus a free-text
+statement-claim.
 
 **Rule**: `id`, `when_all: [<feature-ids>]`, `effect`, `then`, `message` + `sources`,
 `provenance`. The rule's existence + message is one derived fact.
@@ -792,6 +801,25 @@ actually documents the feature yields `contradicted`, blocking admission — gua
 inverse of K1 (false-absence laundering). Absence confidence caps at `medium` on a single
 source (§6.3).
 
+**Authoritative verdict fold table**: `verification` folds over the best per-(claim,
+citation) verdict per **load-bearing field** of the claim — the base claim, plus `since`
+when the fact carries one:
+
+| Condition | `verification` |
+|---|---|
+| Best verdict on the base claim never reaches `supported` on a tier-A/B citation | `failed` — never enters the canonical store; transient/pipeline-only |
+| Not yet run through the gate | `unverified` — transient for new facts |
+| Base claim `supported` on ≥1 tier-A/B citation (admissible), and every other load-bearing field also reaches `supported`, including `since` reaching `since-supported` specifically | `verified` |
+| Base claim `supported` on ≥1 tier-A/B citation (admissible), but ≥1 load-bearing field's best verdict tops out at `partial` — including `since` reaching only `as-of-supported` | `partially-verified` |
+
+One rule covers both the "admitted via one `supported` citation while another citation
+came back `partial`" case and the `since` as-of/since-supported split — both are "admissible,
+but not every load-bearing field cleared `supported`". `source-unavailable`/
+`locator-not-found` never count as support for any field. `contradicted` verdicts never
+feed this table directly — they route to the contradiction register (§6.5) and the
+controversy assessor (the separate `dispute` axis below), so a fact can be `verified` (or
+`partially-verified`) while simultaneously `contradicted`.
+
 ### 6.3 Status axes, confidence (D25)
 
 Fact status is **three orthogonal axes**, never one lifecycle:
@@ -962,6 +990,40 @@ to false.
 - **An accepted human challenge is a hard override** (2026-07-20): the re-argued
   correction still enters through the normal verification gate, but no subsequent machine
   verdict may reinstate a value a human challenge overturned.
+- **Hard-override mechanics (D63)**: a new root ledger **`overrides.yaml`** (§3.3), sibling
+  to `tombstones.yaml`/`contradictions.yaml`, holds one **mutable, anchor-level lock**
+  per overridden anchor — `anchor`, `locked_value`, `overturned_value`,
+  `challenge_issue_url`, `chat_run_id` (§7.10 link), `status: locked | superseded`. The
+  lock is anchor-level, not a single-fact-id blocklist: since fact ids are content-keyed
+  (D23), a machine process disagreeing with the human's correction could derive a
+  *different* wrong value the narrow reading wouldn't catch, so **any** machine write to
+  a locked anchor — content or `since` — is refused, not just literal reinstatement of the
+  overturned value.
+  - **Verifier/reconciler gate**: every machine-authored write path (D24 verifier
+    admission, D5 reconciler/debate outcome) resolves the target anchor against
+    `overrides.yaml` *before* verification runs; a lock hit refuses the write outright with
+    a new terminal status `blocked_by_human_override` (§7.9's halt-state vocabulary), and
+    the draft never reaches the verifier's filter ladder at all.
+  - **Back-dating (§3.7)**: the same anchor-lock check runs before any `since` computation;
+    locked anchors are excluded from a back-dating batch entirely.
+  - **Auto-revert (§7.9)**: gains a fifth condition — never revert a commit carrying a
+    `LangAtlas-Challenge-Id` trailer — since a challenge-resolution commit is bot-authored
+    and could otherwise satisfy the existing four conditions by accident if it trips an
+    unrelated deterministic validator; an unmet condition halts + files an issue as usual,
+    never silently reverts.
+  - **Re-verification (D25)**: keeps running on locked anchors and may display
+    `failed`/`contradicted`, but per D23's existing verifier/content separation no
+    reconciler action may write a correction back — status and content are allowed to
+    visibly diverge, with **no dedicated site glyph/copy** for this state (the existing
+    D25 status popover + D45 `caution` block already cover it).
+  - **Lock update path**: only a new human-challenge resolution may update an existing lock
+    (in place, not appended), authenticated by the commit carrying a `LangAtlas-Challenge-Id`
+    trailer referencing a real resolved `challenge-fact.yml` issue.
+  - **Review tooling**: a small CLI script lists existing `overrides.yaml` entries with
+    lock age, for manual periodic review — a lightweight reporting tool, not an automated
+    staleness check, with no cadence commitment. Full analysis:
+    [brainstorms/62-human-challenge-hard-override-mechanics.md](brainstorms/62-human-challenge-hard-override-mechanics.md)
+    (decision D63).
 - giscus-style embedded Discussions as a fast follow (§10.3).
 
 ### 6.8 Challenger-round auto-skip (D54) and constraint disputes (D61)
@@ -1172,7 +1234,12 @@ pin the resolved model at run start, abort on drift. Local-model config space re
 (schema only). Cache lives inside the D15 snapshot store (same backup). Pure Python
 library in `langatlas-kb`, no daemon; record/replay fixtures at the wrapper interface.
 Out of scope: streaming to UIs, tool loops on the completion channel, multi-provider
-routing, fine-tuning, exact tokenization, queueing.
+routing, fine-tuning, exact tokenization, queueing. **Retrieval-tool mediation split**:
+because the completion channel never gets a tool loop, university-API sessions (sweep
+drafting included) only ever get `search_finding_aids`/`search_sources` as **single-shot,
+runner-mediated calls** — the runner calls the function and injects the result into the
+prompt, exactly as the D24 verifier's retrieval already works. Only Claude-channel
+sessions call these tools directly, live, in a multi-turn loop.
 
 ### 7.7 Prompt registry & observability (D41 — brainstorm 32)
 
@@ -1219,14 +1286,18 @@ gets the scan from day one (D53).
   sign-off; per-commit `Signed-off-by:` is for human PRs only.
 - **Granularity**: one commit per touched record file, with trailers
   `LangAtlas-Record-Key` (content hash + path — the idempotency key) and
-  `LangAtlas-Chat-Run-Id`.
+  `LangAtlas-Chat-Run-Id`; a human-challenge-resolution commit additionally carries
+  `LangAtlas-Challenge-Id` (D63, §6.7) — the trailer that both authenticates a write past
+  an `overrides.yaml` lock and exempts the commit from auto-revert below.
 - **Is-main-green gating**: only the final push checks `main`'s CI status;
   prep/verification proceed regardless; on red/unknown the record holds in a local
   ready-to-land queue → `blocked_red_main` (time spent blocked is exempted from the run's
   budget/wall-clock hard-stop). The runner never fixes a red main itself.
-- **Auto-revert requires all four**: failing commit is main's tip; author is the bot;
-  deterministic validator failure reproduced once; `git revert` applies cleanly — else
-  halt + file an issue. Circuit breaker: **2 reverts per run**. Content disputes,
+- **Auto-revert requires all five**: failing commit is main's tip; author is the bot;
+  deterministic validator failure reproduced once; `git revert` applies cleanly; the
+  commit carries **no** `LangAtlas-Challenge-Id` trailer (D63 — never auto-revert a
+  human-challenge resolution) — else halt + file an issue. Circuit breaker: **2 reverts
+  per run**. Content disputes,
   controversy flags, and anything the verifier gated are out of scope — those land and
   render visibly flagged.
 - **Interface**: typed `LandResult` union — `landed | blocked_red_main |
@@ -1638,32 +1709,7 @@ GitHub OAuth; third-party BaaS rejected) — greenlit purely at developer discre
 
 ---
 
-## 14. Unclear points found during spec writing
-
-Six items were found; all are now tracked outside this document (nothing lives only
-here). Disposition as of 2026-07-20:
-
-- **U1 — Concrete schema of the consolidated `affects-quality` edge** and **U2 — shape
-  of the typed `limitation | extra | alternative` notes on `status: partial`
-  instances**: filed as **open questions 1–2 in
-  [open-questions.md](open-questions.md)**; resolved during the Stage-1 R0
-  schema-authoring work (brainstorm 09 is done and won't be revisited — these are
-  schema-pass tasks, not brainstorm fold-ins).
-- **U3 — stale Elixir entry in D28's deferred list**: **fixed in decisions.md
-  2026-07-20** (editorial, with dated note).
-- **U4 — human-challenge hard-override mechanics (D9, 2026-07-20 amendment)**: no
-  designed mechanism exists (where the override is recorded, how the
-  verifier/back-dating/auto-revert paths consult it, interaction with D25
-  re-verification). Filed as **backlog brainstorm topic 62** in
-  [brainstorm-checklist.md](brainstorm-checklist.md); scheduled as a Stage-6 task —
-  brainstorm run + implementation **before the challenge channel goes live**.
-- **U5 — retrieval-tool mediation split for university-API agents** and **U6 — the
-  authoritative per-pair-verdict → fact-level `verification` fold table**: filed as
-  **open questions 3–4 in [open-questions.md](open-questions.md)**, owed in the
-  D26/D53 implementation notes (before the sweep drafting role is built) and the D24
-  verifier implementation respectively — Stage-1/Stage-2 tasks.
-
-## 15. Timeline & developer checklist
+## 14. Timeline & developer checklist
 
 Ordered by dependency, not calendar (no deadlines exist, D6/D11). Each stage lists its
 gating condition. Deferred brainstorm topics (from
@@ -1675,7 +1721,6 @@ wait on.
 
 - [ ] Register `langatlas.dev` (+ optionally defensive `lang-atlas.io`) and confirm the
       `langatlas` GitHub org name (D17/D40 — explicitly not gated on anything).
-- [x] Editorial fix U3 (drop Elixir from D28's deferred list) — done 2026-07-20.
 
 ### Stage 1 — R0: infrastructure preflight (gates everything else)
 
@@ -1683,13 +1728,9 @@ wait on.
       `VERSION 0.1.0`, id/slug machinery, JSON Schemas in `ontology/schema/`
       (incl. `exclusivity`, `applies_to`, `aliases`, `absence_scope`, `language_kind`,
       `syntax_check`, `grounding` fields — all pre-emptive, before the first node).
-      **Resolves open questions 1–2** (U1 consolidated `affects-quality` edge schema;
-      U2 typed partial-notes shape) as part of this schema pass.
-- [ ] Answer open question 3 (U5) — write the retrieval-mediation split into the
-      D26/D53 implementation notes before any university-API agent role is built.
 - [ ] `tools/validate/` (D48): normalizer, precommit/ci contracts,
       `validate_locator_shape`, regression-fixture runner.
-- [ ] Provider abstraction + `RunContext` (D26): openai-SDK channel, Claude channel,
+- [ ] Provider abstraction + `RunContext` (D26/D53): openai-SDK channel, Claude channel,
       cost log, cache, budget signals, data-not-instructions delimiting + lexical scan
       (D31).
 - [ ] Transcript logging (D18): wrapper persistence, normalizer, `langatlas-transcripts`
@@ -1723,9 +1764,7 @@ wait on.
       *(Deferred question folded here: "Embedding-model choices — D22's benchmark
       decides per use case." The fact-index re-run happens at Stage 5.)*
 - [ ] Stand up the D24 verifier against the golden set; calibrate to FA ≤2% / FR ≤10%;
-      wire canaries. **Resolves open question 4 (U6)**: write the authoritative
-      per-pair-verdict → fact-level `verification` fold table as part of the verifier
-      implementation.
+      wire canaries.
 
 ### Stage 3 — R3→R5 theme cycles (repeat per theme, ~12 themes)
 
@@ -1772,10 +1811,11 @@ wait on.
 - [ ] Postgres loader (D58) + blue-green swap + compose role-init script; MCP server
       with the 7 public tools, caution + attribution contracts, `no-record` envelope,
       tombstone chain-walking.
-- [ ] **Run brainstorm 62** (human-challenge hard-override mechanics, U4) and implement
-      its outcome — hard gate: must land **before the challenge channel goes live**
-      (the first `challenge-fact.yml` resolution must already respect the override
-      rule).
+- [ ] **Implement D63** (human-challenge hard-override mechanics): `overrides.yaml` ledger, the
+      verifier/reconciler/back-dating pre-commit lock gate, the `LangAtlas-Challenge-Id`
+      trailer + auto-revert carve-out (§7.9), and the override-review CLI script — hard
+      gate: must land **before the challenge channel goes live** (the first
+      `challenge-fact.yml` resolution must already respect the override rule).
 - [ ] Issue forms (5–6), giscus wiring, deep links from site surfaces (D32).
 - [ ] Land CONTRIBUTING.md (D56 — gated on org-name confirmation for real URLs).
 - [ ] Finalize positioning copy (D40: hero paragraph with the named-comparison sentence
@@ -1817,10 +1857,6 @@ Deferred brainstorm topics (checklist backlog):
 - [ ] **60 Reader-demand → issue-draft automation** — strictly post-launch, after real
       `demand` data accumulates: a periodic script drafting candidate issues (never
       auto-filed) from recurring zero-result queries.
-- New from this spec pass — none of these wait on a trigger; all are scheduled above:
-  **U1/U2/U5/U6** are open questions 1–4 in
-  [open-questions.md](open-questions.md) (Stages 1–2); **U4** is backlog brainstorm
-  topic 62, scheduled in Stage 6 before the challenge channel goes live.
 
 Deferred questions (open-questions.md, triggers restated):
 
