@@ -2208,6 +2208,39 @@ existing `overrides.yaml` entries (with lock age) for manual periodic review; th
 lightweight reporting tool, not an automated staleness check or notification path, and carries no
 cadence commitment of its own.
 
+### D64. Rule entity design (63)
+
+Fills in the Rule entity schema that was named (brainstorm 09) but never fully specified, plus
+two developer-posed collapsing questions. **`then` field**: a list of feature ids;
+`requires`/`forbids` require it non-empty (nothing to require/forbid otherwise), `warn` permits
+an empty `then` (a caution about the antecedent combination itself, no third feature implicated).
+**Authoring**: minting a Rule is an ordinary admissibility-gated content addition — same
+evidence bar as a fact, not a D16 ontology MAJOR — legal both for frontloaded research-phase
+agents and sweep agents mid-sweep; no extra human gate for the sweep-triggered case. A
+sweep-minted Rule changing the ontology under an already-handed-off questionnaire is flagged as a
+fold-in to topic 38's existing disposition-DSL machinery, not re-solved here. **`when_any`/
+`unless`**: stay deferred exactly as already ratified; the only addition is a forward-compat note
+— they'll land as new sibling keys on the existing record, never a restructuring of `when_all`.
+**Canonical form**: `when_all` is lexicographically sorted before hashing into the claim string
+(mirrors `alternative-to`'s existing precedent); `then` stays authored-order. **Collapsing
+question 1 (`warn` into `influences`)**: not merged at the type level — `influences` is strictly
+pairwise and can't express a genuinely joint ≥2-antecedent caution ("A and B together warrant
+caution about C, but neither alone does") without losing the conjunctive meaning. **Collapsing
+question 2 (hard edges into Rules)**: not merged, for the same structural reason plus edges'
+cheaper deterministic-composed-id dedup (`edge.<type>.<from>.<to>`) versus Rules' freely-minted
+slugs, and the existing 4-level combination-validation model already being a load-bearing
+invariant other topics (30, 52) build on. **Resolution mechanism for both**: a new CI-enforced
+arity floor, `len(when_all) ≥ 2`, on every Rule record — a candidate Rule with a single antecedent
+is mechanically redirected to the matching edge type instead (`requires`→`requires` edge,
+`forbids`→`conflicts-with` edge, `warn`→`influences` edge with negative polarity). Full analysis:
+[brainstorms/63-rule-entity-design.md](brainstorms/63-rule-entity-design.md).
+
+*[developer]* Ratified with all four proposals as written: the `len(when_all) ≥ 2` arity floor
+confirmed as a CI-enforced hard requirement, with the redirect-to-edge-type table as authoring
+guidance; the `then` empty-only-for-`warn` validation rule confirmed; sweep-triggered Rule
+minting confirmed to need no extra human gate beyond the ordinary admissibility rule; `when_all`'s
+lexicographic sort-before-hashing confirmed, matching `alternative-to`'s precedent.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

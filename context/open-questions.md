@@ -32,6 +32,8 @@ on D23 (U1/U2), D53 (U5), and D25 (U6), with the resolved shapes written into `s
 6.2, 7.6.
 Batch 62 questions (filed 2026-07-24 from brainstorm 62) were answered by the developer the same
 day and promoted to ratified decision D63.
+Batch 63 questions (filed 2026-07-25 from brainstorm 63) were answered by the developer the same
+day and promoted to ratified decision D64.
 
 ## Open Questions
 

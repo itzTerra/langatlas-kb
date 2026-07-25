@@ -201,7 +201,13 @@ static; challenges ride GitHub auth; MCP local), daemons of any kind, LiteLLM, d
   `affects-quality` feature→quality edge** carrying polarity + strength (D23 consolidated
   D2's original `improves-quality`/`hurts-quality` pair).
 - **Rule** — multi-feature emergent interactions (`when_all` conjunctive antecedents in
-  v0; `when_any`/`unless` are additive later; `effect: requires | forbids | warn`).
+  v0; `when_any`/`unless` are additive later as sibling keys on the same record, no
+  restructuring owed; `effect: requires | forbids | warn`); CI-enforced arity floor
+  `len(when_all) ≥ 2` (D64) — a 1-antecedent candidate is a degenerate case that belongs
+  in the matching edge type instead (`requires`→`requires` edge, `forbids`→
+  `conflicts-with` edge, `warn`→`influences` edge), never authored as a Rule. Minting a
+  Rule is an ordinary admissibility-gated content addition, not a D16 ontology MAJOR —
+  legal for both research-phase and sweep-triggered authorship (D64).
 - **Fact** — one human-readable sourced sentence bound to exactly one machine-readable
   claim; two independently challengeable claims = two facts. Facts are the embedding unit
   for fact-RAG so retrieval always returns provenance.
@@ -249,7 +255,12 @@ immutable node ids:
 
 Sub-keys (`sx.<key>`, characteristic `c-<key>`, assessment keys) are minted once and
 immutable (renaming = supersession). `alternative-to` endpoints are stored in
-lexicographic order (CI-enforced) so the edge id is canonical. Only one `influences`
+lexicographic order (CI-enforced) so the edge id is canonical. A Rule's `when_all` list
+is canonicalized the same way — lexicographically sorted before hashing into the
+canonical claim string (D64) — so two agents independently authoring the same
+conjunctive interaction in a different antecedent order dedup correctly; `then` stays in
+authored order, since its order can carry meaning (e.g. primary consequence listed
+first) and isn't an unordered set the way `when_all` is. Only one `influences`
 edge per ordered pair — polarity is a field, not part of the id; flipping polarity is a
 supersession of the same edge record's fact.
 
@@ -373,8 +384,38 @@ quality) — counts per polarity, strongest tier per side — which the site ren
 each assessment has a **split identity**: a templated existence-claim plus a free-text
 statement-claim.
 
-**Rule**: `id`, `when_all: [<feature-ids>]`, `effect`, `then`, `message` + `sources`,
-`provenance`. The rule's existence + message is one derived fact.
+**Rule** (D64, worked example): `id`, `when_all: [<feature-ids>]` (≥2 entries — CI-enforced
+arity floor; see §3.1), `effect: requires | forbids | warn`, `then: [<feature-ids>]`,
+`message` + `sources`, `provenance`. The rule's existence + message is one derived fact
+(`rule-exists(rule-id, sha256-16=…)`, §3.5). `then` semantics are per-`effect`: for
+`requires`, every feature in `then` must be present whenever all of `when_all` is present
+(non-empty `then` required); for `forbids`, no feature in `then` may be present whenever
+`when_all` holds (non-empty `then` required — the N-ary generalization of
+`conflicts-with`); for `warn`, `then` names the feature(s) the caution concerns but may be
+**empty** (the caution can be about the antecedent combination itself, with no third
+feature implicated).
+
+```yaml
+id: rule-laziness-needs-purity
+when_all: [lazy-evaluation, side-effects-allowed]   # lexicographically sorted (D64)
+effect: forbids
+then: [referential-transparency]
+message: >-
+  Lazy evaluation combined with unrestricted side effects makes evaluation order
+  observable, which breaks the referential transparency that pure functional
+  languages otherwise guarantee.
+sources: [...]
+provenance: {...}
+```
+
+Authoring a Rule is an ordinary admissibility-gated content addition (same evidence bar as
+a fact — ≥1 `supported` tier-A/B citation grounding `message`), not a D16 ontology MAJOR;
+legal for both frontloaded research-phase agents and sweep agents proposing a new Rule
+mid-sweep. A sweep-minted Rule changing the ontology under an already-handed-off
+questionnaire reuses D38's disposition-DSL/delta-questionnaire-diff machinery (§5.4)
+rather than a new path. `when_any`/`unless` stay deferred exactly as scoped above; when
+they land they arrive as new sibling keys on this same record shape, never a
+restructuring of `when_all`.
 
 **Language record** (`language.yaml` + `languages/_registry.yaml`): the registry is the
 mint authority for language ids (community-conventional ASCII: `cpp`, `csharp`,
@@ -450,6 +491,20 @@ Combination validation in four levels:
 
 Levels 2–4 are feature-pairwise/feature-set machinery, indifferent to dimension shape —
 cross-cutting features need no change there.
+
+**Levels 2–4 don't collapse into each other (D64).** The developer twice asked whether
+the model can shrink to fewer primitives — folding `warn` into `influences`, and folding
+hard pairwise edges into Rules — and both resolve the same way: the boundary is arity,
+not effect type. `influences` and the hard edges are strictly pairwise (one from, one to)
+with a deterministic composed id (`edge.<type>.<from>.<to>`) that dedups for free; Rules
+exist specifically for antecedents that only jointly produce an effect ("A and B together
+warrant this, neither alone does"), which no pairwise edge can express without silently
+turning a conjunction into two independent triggers. Rather than merging the levels, a
+CI-enforced arity floor (`len(when_all) ≥ 2`, §3.1) keeps content in the tool built for
+its actual shape: a degenerate 1-antecedent Rule is redirected to the matching edge type
+instead (`requires`→`requires` edge, `forbids`→`conflicts-with` edge, `warn`→
+`influences` edge), and a genuine ≥2-antecedent interaction has no edge type to
+degrade into, so it can only be modeled as a Rule.
 
 **The Exceptions resolution (D39)**: the brief's literal `Exceptions:
 checked/unchecked/effect-system` layer-3 dimension is mis-specified — renamed **"Error
