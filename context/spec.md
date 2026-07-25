@@ -977,7 +977,9 @@ automatically; mutable `status`; closed records never deleted):
   verifier only when the fact stays admissible via a different citation (a contradicted
   primary/only citation blocks admission and mints nothing).
 - `type: cross-fact` — two independently verified facts disagreeing; the rare,
-  high-severity case behind controversy level 3 and the site's disputed glyph.
+  high-severity case behind controversy level 3 and the site's AI-judged controversy
+  glyph (distinct from the mechanical display-status glyph the open record itself
+  triggers via `dispute: contradicted`; D33 amendment 2026-07-25).
 
 Minting is restricted to the D24 verifier, the D5 reconciler/debate outcome,
 human-challenge resolution sessions, and the cross-fact scan job. **`partial` verdicts
@@ -1004,8 +1006,11 @@ as one more `driver.py` job kind. No cross-family drift sampling at v0. Its comp
 call's golden set routes through D44's methodology when calibration is needed.
 
 Site rendering: verification-type records add one clause to the popover status line;
-cross-fact records get a compact "Sources disagree" block in the same popover, riding the
-shared base-page glyph. **A dedicated `/disputed/` page is declined** — popover-only
+cross-fact records get a compact "Sources disagree" block in the same popover. Both
+types drive the mechanical display-status glyph via `dispute: contradicted` while open;
+`type: cross-fact` additionally typically feeds controversy level 3, surfaced through the
+separate AI-judged controversy glyph (D33 amendment 2026-07-25). **A dedicated
+`/disputed/` page is declined** — popover-only
 indefinitely. MCP: `get_fact` on a disputed fact inlines the conflicting participant
 fact(s) in full, each with its own caution block; `list_contradictions`/
 `get_contradiction` ship in the public tool set (§9).
@@ -1654,9 +1659,14 @@ the popover; stable `data-fact-id` everywhere.
   post-launch, consumed manually and privately, never surfaced publicly.
 - **Trust-signal UX**: the citation popover carries a plain-text line covering all
   status axes (verification/freshness/dispute/confidence/controversy) plus the
-  grounding-disclosure line (D51) and contradiction clauses (D45); exactly **one shared
-  base-page glyph** marks the disputed/contradicted/superseded/partially-verified
-  minority — every other combination stays visually silent outside the popover.
+  grounding-disclosure line (D51) and contradiction clauses (D45); **two separate
+  base-page glyphs**, not one shared marker *(amended 2026-07-25, D33)*: a
+  higher-visual-weight glyph for the mechanical D25 display-status precedence
+  (`superseded > stale > contradicted > partially-verified`), and a visually secondary,
+  **explicitly AI-judged-labeled** glyph for the D21/D25 controversy score
+  (`contested | disputed`) — every other combination stays visually silent outside the
+  popover. Concrete visual weighting (size/color/position) is a site-implementation
+  detail.
 
 ### 10.3 Contribution funnel (D32 — brainstorm 18)
 

@@ -881,6 +881,16 @@ no standing preference overrides it. **The single-shared-glyph design confirmed*
 doing double duty for disputed/contradicted/superseded/partially-verified, with no visual
 distinction between those states outside the popover.
 
+*[developer 2026-07-25]* **Amended — single shared glyph split into two.** The mechanical
+display-status precedence (`superseded > stale > contradicted > partially-verified`, D25) and the
+AI-assessed controversy score (`contested | disputed`, D21/D25) get **separate glyphs**, not one
+shared marker: the display-status glyph carries greater visual weight on the page (it reflects the
+pipeline's own mechanical verification/freshness/dispute fold), while the controversy-score glyph
+is visually secondary and must be **explicitly labeled as AI-judged** wherever it appears —
+including in the citation popover's controversy line — to keep it from reading as equivalent to
+the machine-verified axes. Concrete visual weighting (size/color/position) is left to
+implementation.
+
 ### D34. Scale-up & phase-2 backend sketch (20)
 
 **Sweep pipeline at many-language scale**: keep D5's independent per-language sweep unchanged
