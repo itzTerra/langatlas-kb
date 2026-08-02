@@ -1,14 +1,29 @@
 import argparse
 from pathlib import Path
+from typing import Iterator
 from ruamel.yaml import YAML
 from langatlas_validate import __version__
 from langatlas_validate.schema import validate_record, RECORD_KINDS
 from langatlas_validate.normalize import normalize_record
 from langatlas_validate.regression import run_regression
+from langatlas_validate.locators import validate_locator_shape
+from langatlas_validate.paths import REPO_ROOT as _REPO_ROOT, FIXTURES_DIR as _FIXTURES
 
 _yaml = YAML(typ="safe")
-_REPO_ROOT = Path(__file__).resolve().parents[4]   # src layout: one level deeper than tests/
-_FIXTURES = _REPO_ROOT / "tests" / "fixtures" / "providers"
+
+
+def _iter_source_entries(data) -> Iterator[dict]:
+    """Structurally walk a parsed record, yielding every dict that looks like a
+    sourceEntry ({"source": str, "locator": str}), regardless of where it is
+    nested (summary.sources, characteristics[].sources, edge/rule sources, ...)."""
+    if isinstance(data, dict):
+        if isinstance(data.get("source"), str) and isinstance(data.get("locator"), str):
+            yield data
+        for value in data.values():
+            yield from _iter_source_entries(value)
+    elif isinstance(data, list):
+        for item in data:
+            yield from _iter_source_entries(item)
 
 
 def cmd_precommit(files: list[str], kind: str) -> int:
@@ -17,6 +32,9 @@ def cmd_precommit(files: list[str], kind: str) -> int:
         text = Path(f).read_text()
         data = _yaml.load(text)
         errors = validate_record(data, kind)
+        for entry in _iter_source_entries(data):
+            if validate_locator_shape(entry["locator"]) is None:
+                errors.append(f"locator: unrecognized shape: {entry['locator']!r}")
         if normalize_record(text, kind) != text:
             errors.append("not normalized (re-run the normalizer to fix)")
         for e in errors:

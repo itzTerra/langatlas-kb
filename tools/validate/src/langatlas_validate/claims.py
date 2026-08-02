@@ -1,11 +1,10 @@
 import hashlib
 import re
 from functools import lru_cache
-from pathlib import Path
 from ruamel.yaml import YAML
 from langatlas_validate.normalize import normalize_value
+from langatlas_validate.paths import CLAIM_TEMPLATE_DIR as _TEMPLATE_DIR
 
-_TEMPLATE_DIR = Path(__file__).resolve().parents[4] / "ontology" / "claim-templates"
 _yaml = YAML(typ="safe")
 
 TEMPLATED_KINDS = (

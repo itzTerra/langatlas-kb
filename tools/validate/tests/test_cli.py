@@ -58,3 +58,36 @@ def test_precommit_rejects_invalid_file(tmp_path):
 
 def test_ci_exit_zero_on_clean_repo():
     assert main(["ci"]) == 0
+
+
+def test_precommit_rejects_bad_locator_shape(tmp_path):
+    f = tmp_path / "bad-locator.yaml"
+    f.write_text(
+        "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "characteristics:\n"
+        "  - key: c-a\n"
+        "    text: some characteristic\n"
+        "    sources:\n"
+        "      - source: s1\n"
+        "        locator: just some text\n"
+        "provenance:\n  claim_origin: source-derived\n"
+    )
+    assert main(["precommit", "--kind", "feature-instance", str(f)]) == 1
+
+
+def test_precommit_accepts_well_shaped_locator(tmp_path):
+    from langatlas_validate.normalize import normalize_record
+
+    raw = (
+        "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "characteristics:\n"
+        "  - key: c-a\n"
+        "    text: some characteristic\n"
+        "    sources:\n"
+        "      - source: s1\n"
+        "        locator: p. 1\n"
+        "provenance:\n  claim_origin: source-derived\n"
+    )
+    f = tmp_path / "good-locator.yaml"
+    f.write_text(normalize_record(raw, "feature-instance"))
+    assert main(["precommit", "--kind", "feature-instance", str(f)]) == 0

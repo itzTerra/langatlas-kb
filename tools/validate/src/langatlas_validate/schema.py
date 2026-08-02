@@ -1,16 +1,15 @@
 import json
 from functools import lru_cache
-from pathlib import Path
 from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
+
+from langatlas_validate.ids import is_valid_slug
+from langatlas_validate.paths import SCHEMA_DIR as _SCHEMA_DIR
 
 RECORD_KINDS = (
     "feature", "feature-instance", "edge", "affects-quality-edge",
     "rule", "language", "language-registry", "concept", "source",
 )
-
-# src layout: .../tools/validate/src/langatlas_validate/schema.py -> parents[4] == repo root
-_SCHEMA_DIR = Path(__file__).resolve().parents[4] / "ontology" / "schema"
 
 
 @lru_cache(maxsize=None)
@@ -46,7 +45,23 @@ def _validator(kind: str) -> Draft202012Validator:
 def validate_record(data: dict, kind: str) -> list[str]:
     if kind not in RECORD_KINDS:
         raise ValueError(f"unknown record kind: {kind!r}")
-    return [
+    errors = [
         f"{'/'.join(str(p) for p in e.absolute_path) or '<root>'}: {e.message}"
         for e in sorted(_validator(kind).iter_errors(data), key=str)
     ]
+    errors.extend(_slug_errors(data, kind))
+    return errors
+
+
+def _slug_errors(data: dict, kind: str) -> list[str]:
+    errors: list[str] = []
+    if kind in ("feature", "concept"):
+        slug = data.get("slug")
+        if isinstance(slug, str) and not is_valid_slug(slug):
+            errors.append(f"slug: invalid slug format: {slug!r}")
+    elif kind in ("edge", "affects-quality-edge"):
+        for field in ("from", "to"):
+            value = data.get(field)
+            if isinstance(value, str) and not is_valid_slug(value):
+                errors.append(f"{field}: invalid slug format: {value!r}")
+    return errors

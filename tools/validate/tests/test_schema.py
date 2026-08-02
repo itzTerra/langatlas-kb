@@ -55,3 +55,46 @@ def test_valid_feature_with_populated_summary_and_sources():
 def test_unknown_kind_raises():
     with pytest.raises(ValueError):
         validate_record({}, "not-a-kind")
+
+
+def test_feature_invalid_slug_rejected():
+    rec = {
+        "id": "feature-pattern-matching",
+        "slug": "Pattern_Matching",
+        "name": "Pattern matching",
+        "layer": 1,
+        "summary": {
+            "text": "Destructures values against structural patterns.",
+            "sources": [{"source": "s1", "locator": "p. 1"}],
+        },
+        "provenance": {"claim_origin": "source-derived"},
+    }
+    errors = validate_record(rec, "feature")
+    assert any("slug" in e for e in errors)
+
+
+def test_feature_valid_slug_passes():
+    rec = {
+        "id": "feature-pattern-matching",
+        "slug": "pattern-matching",
+        "name": "Pattern matching",
+        "layer": 1,
+        "summary": {
+            "text": "Destructures values against structural patterns.",
+            "sources": [{"source": "s1", "locator": "p. 1"}],
+        },
+        "provenance": {"claim_origin": "source-derived"},
+    }
+    assert validate_record(rec, "feature") == []
+
+
+def test_edge_invalid_from_id_rejected():
+    rec = {
+        "id": "edge.requires.Bad_Id.pattern-matching",
+        "type": "requires",
+        "from": "Bad_Id",
+        "to": "pattern-matching",
+        "provenance": {"claim_origin": "source-derived"},
+    }
+    errors = validate_record(rec, "edge")
+    assert any("from" in e and "slug" in e for e in errors)

@@ -3,11 +3,11 @@ import json
 import re
 import unicodedata
 from functools import lru_cache
-from pathlib import Path
 
 from ruamel.yaml import YAML
 
 from langatlas_validate.schema import RECORD_KINDS
+from langatlas_validate.paths import SCHEMA_DIR as _SCHEMA_DIR
 
 _WS = re.compile(r"\s+")
 _TERMINAL_PUNCT = ".!?;:,"
@@ -19,9 +19,6 @@ def normalize_value(value: str, *, freetext: bool = False) -> str:
     if freetext:
         s = s.lower().rstrip(_TERMINAL_PUNCT)
     return s
-
-
-_SCHEMA_DIR = Path(__file__).resolve().parents[4] / "ontology" / "schema"
 
 
 @lru_cache(maxsize=None)
