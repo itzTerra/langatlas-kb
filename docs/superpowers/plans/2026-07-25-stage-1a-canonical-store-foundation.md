@@ -307,7 +307,7 @@ The deterministic id grammar every other task and every later sub-plan depends o
 - Consumes: nothing.
 - Produces: `is_valid_slug`, `compose_instance_id`, `compose_edge_id`, `canonical_endpoints`, `canonical_when_all`, `compose_rule_id`, `compose_syntax_id` (signatures in the top-of-plan contract).
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_ids.py
@@ -358,12 +358,12 @@ def test_composers_reject_bad_slugs():
         compose_instance_id("Rust", "pattern-matching")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails.**
+- [x] **Step 2: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_ids.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.ids'`.
 
-- [ ] **Step 3: Implement `ids.py`.**
+- [x] **Step 3: Implement `ids.py`.**
 
 ```python
 # tools/validate/src/langatlas_validate/ids.py
@@ -407,12 +407,12 @@ def canonical_when_all(feature_ids: list[str]) -> list[str]:
     return sorted(_require_slug(f) for f in feature_ids)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_ids.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/ids.py tools/validate/tests/test_ids.py
