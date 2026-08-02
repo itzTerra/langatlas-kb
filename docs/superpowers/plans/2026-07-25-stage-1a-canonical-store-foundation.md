@@ -1191,7 +1191,7 @@ git commit -m "feat(#stage-1a): canonical claims, fact-id hashing, claim-templat
 - Consumes: `RECORD_KINDS` and the schema files (Task 3) — key order is derived from each schema's `properties` insertion order.
 - Produces: `normalize_record(text, kind) -> str`.
 
-- [ ] **Step 1: Write the failing test (append to `test_normalize.py`).**
+- [x] **Step 1: Write the failing test (append to `test_normalize.py`).**
 
 ```python
 from langatlas_validate.normalize import normalize_record
@@ -1224,12 +1224,12 @@ def test_keyed_list_sorted_by_key():
     assert out.index("c-alpha") < out.index("c-zeta")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails.**
+- [x] **Step 2: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_normalize.py::test_record_key_order_and_indent -v`
 Expected: FAIL — `ImportError: cannot import name 'normalize_record'`.
 
-- [ ] **Step 3: Implement `normalize_record` in `normalize.py`.**
+- [x] **Step 3: Implement `normalize_record` in `normalize.py`.**
 
 ```python
 # append to tools/validate/src/langatlas_validate/normalize.py
@@ -1275,12 +1275,12 @@ def normalize_record(text: str, kind: str) -> str:
 
 Note: keep the `import` statements at the top of the file when appending (Python needs them module-level). The `ruamel.yaml` round-trip loader is used here (not the `typ="safe"` one from `claims.py`) so block styles are controllable; that is fine — two `YAML` instances with different configs coexist.
 
-- [ ] **Step 4: Run the tests to verify they pass.**
+- [x] **Step 4: Run the tests to verify they pass.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_normalize.py -v`
 Expected: PASS (all value + record cases).
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/normalize.py tools/validate/tests/test_normalize.py
