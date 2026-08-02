@@ -1,0 +1,3 @@
+kind: edge-exists
+claim_pattern: "edge-exists({edge_id})"
+render: "{from} {relation} {to}."

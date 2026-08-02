@@ -1,0 +1,3 @@
+kind: instance-exists
+claim_pattern: "instance-exists({instance_id}, status={status})"
+render: "{language} {feature_verb} {feature} ({status})."

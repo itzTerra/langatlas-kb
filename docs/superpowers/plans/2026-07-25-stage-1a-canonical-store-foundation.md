@@ -976,7 +976,7 @@ Builds the canonical S-expression claim strings, the `f-`+12-hex fact id, and th
 - Consumes: `normalize_value` (Task 5).
 - Produces: `build_claim(kind, **params) -> str`, `fact_id(claim) -> str`, `render_claim(kind, params) -> str`, `load_claim_template(kind) -> dict`, `validate_claim_template(kind) -> list[str]`.
 
-- [ ] **Step 1: Write the six claim-template files.**
+- [x] **Step 1: Write the six claim-template files.**
 
 Each file has a frozen `claim_pattern` (documentation/CI cross-check of the S-expression grammar) and an editable `render` block (Python `str.format`-style English). Example:
 
@@ -1024,7 +1024,7 @@ claim_pattern: "quality-assessment({edge_id}, {assessment_key})"
 render: "{from} {polarity} {quality} ({strength})."
 ```
 
-- [ ] **Step 2: Write the failing test.**
+- [x] **Step 2: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_claims.py
@@ -1084,7 +1084,7 @@ def test_unknown_kind_raises():
         build_claim("nope")
 ```
 
-- [ ] **Step 3: Implement `claims.py`.**
+- [x] **Step 3: Implement `claims.py`.**
 
 ```python
 # tools/langatlas_validate/claims.py   ->   tools/validate/src/langatlas_validate/claims.py
@@ -1164,12 +1164,12 @@ def validate_claim_template(kind: str) -> list[str]:
     return errors
 ```
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_claims.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/claims.py ontology/claim-templates \

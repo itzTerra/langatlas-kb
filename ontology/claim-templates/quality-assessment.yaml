@@ -1,0 +1,3 @@
+kind: quality-assessment
+claim_pattern: "quality-assessment({edge_id}, {assessment_key})"
+render: "{from} {polarity} {quality} ({strength})."

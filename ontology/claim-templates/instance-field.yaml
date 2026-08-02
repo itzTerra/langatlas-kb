@@ -1,0 +1,3 @@
+kind: instance-field
+claim_pattern: "instance-field({instance_id}, {field}, \"{value}\")"
+render: "{feature} in {language} has {field} {value}."

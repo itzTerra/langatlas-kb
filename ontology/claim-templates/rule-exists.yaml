@@ -1,0 +1,3 @@
+kind: rule-exists
+claim_pattern: "rule-exists({rule_id}, sha256-16={hash})"
+render: "{message}"
