@@ -100,11 +100,18 @@ only 1E can satisfy. Sub-plan boundaries:
   - **Consumes:** Stage 0's `langatlas-transcripts` repo + workspace wiring.
   - **Produces for 1C–1E:** the provider-call surface + `RunContext` every agent-invoking
     subsystem uses, and the transcript-logging path every logged run writes through.
+  - **Carried over from 1A:** if 1B adds the first `regression.py` fixture for the
+    `provider-record-replay` checker kind (1A shipped it as a stub that always passes), decide
+    then whether a fixture needs `mode: soft` to behave differently from `mode: hard` — 1A's
+    `run_regression` parses the field but both modes currently behave identically since no fixture
+    has needed the distinction yet.
 - **1C — Ingestion & retrieval.** D15 ingestion CLI + `source_chunks` schema (§8.2) +
   extraction-QA harness (§4.4) + snapshot store layout + the `search_sources` retrieval tool.
   - **Consumes:** 1A source-record schema + locator grammar; 1B provider abstraction (embeddings
     via the university API channel).
   - **Produces for 1E:** the `search_sources` tool the R0 exit test drives.
+  - **Carried over from 1A:** same `mode: hard|soft` note as 1B, if 1C is the one that adds the
+    first `questionnaire-shape` fixture instead.
 - **1D — Commit & CI.** Agent-runner commit protocol (§7.9/D36: GitHub App identity, trailers,
   land loop, is-main-green gate, failure bot) and the CI validated-artifact pipeline skeleton
   (§8.7/D13: validators, fact derivation, collision check, last-green publication, `data-vN`
@@ -112,6 +119,15 @@ only 1E can satisfy. Sub-plan boundaries:
   - **Consumes:** 1A validators/normalizer (pre-commit + CI run these); 1B transcript path
     (commits carry `chat_run_id` provenance).
   - **Produces for 1E:** the commit path every later stage's agents land facts through.
+  - **Carried over from 1A:** 1A's `langatlas-validate ci` command only re-runs the
+    regression-fixture suite — it does not yet walk the live canonical store to validate every
+    committed record, check normalization drift against disk, cross-check the claim-template
+    registry (`validate_claim_template`), or enforce the canonical `alternative-to`/`when_all`
+    ordering (`canonical_endpoints`/`canonical_when_all` exist and are unit-tested but have no
+    caller outside their own test). Per 1A's own final review, turning `ci` into that real
+    store-validating gate is 1D's "CI validated-artifact pipeline skeleton" deliverable, not a 1A
+    gap to backfill — build it against the already-shipped `validate_record`/`normalize_record`/
+    `validate_claim_template`/`canonical_endpoints`/`canonical_when_all` functions.
 - **1E — Orchestrator + R0 exit test.** Orchestrator (`tools/orchestrator/driver.py`,
   `config/jobs/`, `crontab.example`; §7.11/D43) and the end-to-end wiring that satisfies the hard
   exit gate below.
