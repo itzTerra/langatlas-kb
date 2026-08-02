@@ -1,0 +1,7 @@
+edge_types:
+  - id: requires
+  - id: enables
+  - id: influences        # polarity field, ± only
+  - id: conflicts-with
+  - id: alternative-to
+  - id: affects-quality   # feature -> quality, signed + strength

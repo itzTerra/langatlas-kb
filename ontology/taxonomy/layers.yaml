@@ -1,0 +1,7 @@
+layers:
+  - id: 1
+    name: syntax
+  - id: 2
+    name: semantic
+  - id: 3
+    name: design-choice

@@ -127,14 +127,14 @@ Creates the empty directory tree, the versioned `ontology/` skeleton, the taxono
 - Consumes: nothing (first task).
 - Produces: installed console script `langatlas-validate`; `langatlas_validate.__version__` == `"0.1.0"`.
 
-- [ ] **Step 1: Commit this plan file first (per project CLAUDE.md).**
+- [x] **Step 1: Commit this plan file first (per project CLAUDE.md).**
 
 ```bash
 git add docs/superpowers/plans/2026-07-25-stage-1a-canonical-store-foundation.md
 git commit -m "docs(#stage-1a): add canonical store foundation plan"
 ```
 
-- [ ] **Step 2: Write `pyproject.toml`.**
+- [x] **Step 2: Write `pyproject.toml`.**
 
 ```toml
 # tools/validate/pyproject.toml
@@ -160,7 +160,7 @@ build-backend = "hatchling.build"
 packages = ["src/langatlas_validate"]
 ```
 
-- [ ] **Step 3: Write the package init and a minimal CLI.**
+- [x] **Step 3: Write the package init and a minimal CLI.**
 
 ```python
 # tools/validate/src/langatlas_validate/__init__.py
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Create the data-store skeleton files.**
+- [x] **Step 4: Create the data-store skeleton files.**
 
 `ontology/VERSION` contains exactly `0.1.0` followed by a trailing newline. `ontology/redirects.yaml`, all four root/`sources/` ledgers, and `languages/_registry.yaml` each contain a single top-level empty mapping so they parse as valid YAML:
 
@@ -201,7 +201,7 @@ tombstones: []
 
 Use the same one-key-empty-collection shape for `contradictions.yaml` (`contradictions: []`), `overrides.yaml` (`overrides: []`), `sources/_tombstones.yaml` (`tombstones: []`), and `languages/_registry.yaml` (`languages: {}`). `ontology/CHANGELOG.md` gets a one-line heading `# Ontology changelog`. Put a literal `.gitkeep` (empty file) in each of `concepts/`, `features/`, `edges/`, `rules/`, `sources/`, `ontology/migrations/`.
 
-- [ ] **Step 5: Write the four taxonomy files with their pre-emptive fields.**
+- [x] **Step 5: Write the four taxonomy files with their pre-emptive fields.**
 
 ```yaml
 # ontology/taxonomy/layers.yaml
@@ -237,7 +237,7 @@ edge_types:
 qualities: []
 ```
 
-- [ ] **Step 6: Write the failing test.**
+- [x] **Step 6: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_cli.py
@@ -274,17 +274,17 @@ class pytest_raises_systemexit:
         return True
 ```
 
-- [ ] **Step 7: Run the test to verify it fails.**
+- [x] **Step 7: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate'` (package not yet installed).
 
-- [ ] **Step 8: Install the package in editable mode and re-run.**
+- [x] **Step 8: Install the package in editable mode and re-run.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_cli.py -v`
 Expected: PASS on all three tests (uv resolves the local package from `pyproject.toml` automatically).
 
-- [ ] **Step 9: Commit.**
+- [x] **Step 9: Commit.**
 
 ```bash
 git add tools/validate/pyproject.toml tools/validate/src tools/validate/tests/test_cli.py \

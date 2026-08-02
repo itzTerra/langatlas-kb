@@ -1,0 +1,3 @@
+# Each dimension carries `exclusivity` (default exclusive, D39) and
+# `applies_to` (default [general-purpose], D50) pre-emptively.
+dimensions: []
