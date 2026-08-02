@@ -1,0 +1,23 @@
+completion:
+  base_url_env: LANGATLAS_UNI_BASE_URL
+  token_env: LANGATLAS_UNI_TOKEN
+  auth_header: x-litellm-api-key      # D26: gateway auth is NOT plain Authorization
+  auth_scheme: Bearer
+  model_info_path: /v1/model/info
+  timeout_seconds: 900                # reasoning models take minutes, not seconds
+  max_attempts: 5
+  circuit_breaker_failures: 5
+  min_interval_seconds:
+    chat: 0.5                         # no documented rate limit -> be polite by default
+    embedding: 0.1
+rerank:
+  mode: completion                    # D26: no /v1/rerank route is documented
+  prompt_id: rerank-score
+  batch_size: 8
+transcripts:
+  publish: false                      # dev default; set true (or LANGATLAS_PUBLISH_TRANSCRIPTS=1) for pipeline runs
+budget_defaults:
+  max_calls: 500
+  max_total_tokens: 2000000
+  max_wall_seconds: 14400
+  max_claude_messages: 400
