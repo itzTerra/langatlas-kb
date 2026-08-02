@@ -751,7 +751,7 @@ Implements `validate_locator_shape` (pure regex, zero I/O — the phase-1 check 
 - Consumes: nothing.
 - Produces: `validate_locator_shape`, `validate_locator`, `SourceChunksIndex` (Protocol), `LocatorResult` (dataclass).
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_locators.py
@@ -801,12 +801,12 @@ def test_resolution_hits():
     assert res.chunk_ids == ["chunk-1"]
 ```
 
-- [ ] **Step 2: Run the test to verify it fails.**
+- [x] **Step 2: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_locators.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.locators'`.
 
-- [ ] **Step 3: Implement `locators.py`.**
+- [x] **Step 3: Implement `locators.py`.**
 
 ```python
 # tools/validate/src/langatlas_validate/locators.py
@@ -868,12 +868,12 @@ def validate_locator(
 
 Note: `design-doc` and `multipage-docs`/`web-fragment` patterns can overlap (`PEP 634` vs a bare token). The dict order above resolves ties deterministically; the tests pin the intended winners. If a real corpus locator is mis-classified later, tighten `design-doc` to a documented `doc-kind` set — but that is out of scope here.
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_locators.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/locators.py tools/validate/tests/test_locators.py
