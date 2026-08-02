@@ -29,3 +29,32 @@ class pytest_raises_systemexit:
         assert exc_type is SystemExit, f"expected SystemExit, got {exc_type}"
         self.value = exc.code
         return True
+
+
+from langatlas_validate.cli import main
+
+
+def test_regression_run_exit_zero():
+    assert main(["regression", "run"]) == 0
+
+
+def test_precommit_on_clean_file(tmp_path):
+    f = tmp_path / "pattern-matching.yaml"
+    f.write_text(
+        "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "provenance:\n  claim_origin: source-derived\n"
+    )
+    assert main(["precommit", "--kind", "feature-instance", str(f)]) == 0
+
+
+def test_precommit_rejects_invalid_file(tmp_path):
+    f = tmp_path / "bad.yaml"
+    f.write_text(
+        "feature: x\nlanguage: rust\nstatus: absent\n"          # absence_scope missing
+        "provenance:\n  claim_origin: source-derived\n"
+    )
+    assert main(["precommit", "--kind", "feature-instance", str(f)]) == 1
+
+
+def test_ci_exit_zero_on_clean_repo():
+    assert main(["ci"]) == 0

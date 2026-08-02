@@ -1453,7 +1453,7 @@ Wires the pieces into the three D48 call-site contracts so the R0 pipeline (1D/1
 - Consumes: `validate_record` + `RECORD_KINDS` (Task 3), `validate_locator_shape` (Task 4), `normalize_record` (Task 7), `run_regression` (Task 8).
 - Produces: `main(argv) -> int`; `cmd_precommit(files) -> int`; `cmd_ci() -> int`; `cmd_regression_run() -> int`.
 
-- [ ] **Step 1: Write the failing test (append to `test_cli.py`).**
+- [x] **Step 1: Write the failing test (append to `test_cli.py`).**
 
 ```python
 from langatlas_validate.cli import main
@@ -1485,12 +1485,12 @@ def test_ci_exit_zero_on_clean_repo():
     assert main(["ci"]) == 0
 ```
 
-- [ ] **Step 2: Run the test to verify it fails.**
+- [x] **Step 2: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_cli.py -v`
 Expected: FAIL — the new subcommands are not wired (`SystemExit: 2` from argparse or `AttributeError`).
 
-- [ ] **Step 3: Implement the CLI dispatch.**
+- [x] **Step 3: Implement the CLI dispatch.**
 
 ```python
 # tools/validate/src/langatlas_validate/cli.py
@@ -1567,12 +1567,12 @@ if __name__ == "__main__":
 
 Note: the `precommit --kind` flag is a pragmatic v0 for this sub-plan — 1D's commit protocol will infer `kind` from the file's path (`languages/*/instances/*.yaml` → `feature-instance`, etc.). Leave that path-inference to 1D; do not build it here.
 
-- [ ] **Step 4: Run the full package test suite.**
+- [x] **Step 4: Run the full package test suite.**
 
 Run: `cd tools/validate && uv run --extra dev pytest -v`
 Expected: PASS — every test from Tasks 1–9.
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/cli.py tools/validate/tests/test_cli.py

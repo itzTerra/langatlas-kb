@@ -1789,11 +1789,11 @@ wait on.
 
 ### Stage 1 — R0: infrastructure preflight (gates everything else)
 
-- [ ] Repo scaffolding for `langatlas-kb`: directory layout (§3.3), `ontology/` at
+- [x] Repo scaffolding for `langatlas-kb`: directory layout (§3.3), `ontology/` at
       `VERSION 0.1.0`, id/slug machinery, JSON Schemas in `ontology/schema/`
       (incl. `exclusivity`, `applies_to`, `aliases`, `absence_scope`, `language_kind`,
       `syntax_check`, `grounding` fields — all pre-emptive, before the first node).
-- [ ] `tools/validate/` (D48): normalizer, precommit/ci contracts,
+- [x] `tools/validate/` (D48): normalizer, precommit/ci contracts,
       `validate_locator_shape`, regression-fixture runner.
 - [ ] Provider abstraction + `RunContext` (D26/D53): openai-SDK channel, Claude channel,
       cost log, cache, budget signals, data-not-instructions delimiting + lexical scan
@@ -1804,7 +1804,7 @@ wait on.
       (D41).
 - [ ] D15 ingestion CLI + `source_chunks` schema + extraction-QA harness (D37) +
       snapshot store layout.
-- [ ] Claim-template registry `ontology/claim-templates/` (D47).
+- [x] Claim-template registry `ontology/claim-templates/` (D47).
 - [ ] Agent-runner commit protocol (D36): GitHub App, trailers, land loop, is-main-green
       gate, failure bot.
 - [ ] CI: validated-artifact pipeline skeleton (D13) — validators, fact derivation,
