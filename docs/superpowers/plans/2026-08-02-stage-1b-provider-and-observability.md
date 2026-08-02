@@ -708,7 +708,7 @@ The D18 tap. One run = one directory with `manifest.yaml` + `transcript.jsonl`, 
 - Consumes: `paths.TRANSCRIPTS_ROOT`, `__version__` (Task 1).
 - Produces: `TranscriptEvent`, `RunManifest`, `mint_run_id`, `TranscriptWriter`, `REDACTION_RULES_VERSION`, `scrub_secrets`, `truncate_tool_result`.
 
-- [ ] **Step 1: Write the failing redaction test.**
+- [x] **Step 1: Write the failing redaction test.**
 
 ```python
 # tools/pipeline/tests/test_redaction.py
@@ -748,12 +748,12 @@ def test_small_tool_result_is_kept_verbatim():
     assert ref["truncated"] is False
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_redaction.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...transcripts.redaction`.
 
-- [ ] **Step 3: Write `redaction.py`.**
+- [x] **Step 3: Write `redaction.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/redaction.py
@@ -803,12 +803,12 @@ def truncate_tool_result(text: str, *, source_id: str | None) -> tuple[str, dict
     return text[:TOOL_RESULT_EXCERPT_CHARS] + "\n…[truncated]", ref
 ```
 
-- [ ] **Step 4: Run the redaction test to verify it passes.**
+- [x] **Step 4: Run the redaction test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_redaction.py -v`
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Write the failing writer test.**
+- [x] **Step 5: Write the failing writer test.**
 
 ```python
 # tools/pipeline/tests/test_transcript_writer.py
@@ -884,12 +884,12 @@ def test_finalize_writes_the_manifest(tmp_path: Path):
     assert manifest["wrapper_version"]
 ```
 
-- [ ] **Step 6: Run it to verify it fails.**
+- [x] **Step 6: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_transcript_writer.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...transcripts.events`.
 
-- [ ] **Step 7: Write `events.py`.**
+- [x] **Step 7: Write `events.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/events.py
@@ -946,7 +946,7 @@ class RunManifest:
         return asdict(self)
 ```
 
-- [ ] **Step 8: Write `writer.py`.**
+- [x] **Step 8: Write `writer.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/writer.py
@@ -1045,12 +1045,12 @@ class TranscriptWriter:
         return path
 ```
 
-- [ ] **Step 9: Run both test files to verify they pass.**
+- [x] **Step 9: Run both test files to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_redaction.py tests/test_transcript_writer.py -v`
 Expected: PASS (10 tests).
 
-- [ ] **Step 10: Commit.**
+- [x] **Step 10: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/transcripts tools/pipeline/tests/test_redaction.py tools/pipeline/tests/test_transcript_writer.py
