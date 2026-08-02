@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/language-registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["languages"],
+  "properties": {
+    "languages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name"],
+        "properties": {
+          "name": { "type": "string" },
+          "language_kind": {
+            "enum": ["general-purpose", "domain-specific"],
+            "default": "general-purpose"
+          },
+          "domain": { "type": "string" },
+          "syntax_check": { "enum": ["parser", "none"] },
+          "file_extensions": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "first_appeared": { "type": "string" }
+        }
+      }
+    }
+  }
+}

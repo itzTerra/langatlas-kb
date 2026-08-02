@@ -435,7 +435,7 @@ Authors the nine record schemas (with every pre-emptive field) and a loader that
 - Consumes: `is_valid_slug` (Task 2), for the id-format check in `validate_record`.
 - Produces: `RECORD_KINDS`, `validate_record(data, kind) -> list[str]`.
 
-- [ ] **Step 1: Write the shared `$defs` schema.**
+- [x] **Step 1: Write the shared `$defs` schema.**
 
 ```json
 // ontology/schema/defs.schema.json
@@ -485,7 +485,7 @@ Authors the nine record schemas (with every pre-emptive field) and a loader that
 }
 ```
 
-- [ ] **Step 2: Write `feature-instance.schema.json` in full (the pre-emptive-field carrier).**
+- [x] **Step 2: Write `feature-instance.schema.json` in full (the pre-emptive-field carrier).**
 
 ```json
 // ontology/schema/feature-instance.schema.json
@@ -564,7 +564,7 @@ Authors the nine record schemas (with every pre-emptive field) and a loader that
 }
 ```
 
-- [ ] **Step 3: Write `source.schema.json` in full (carries `grounding` + tier).**
+- [x] **Step 3: Write `source.schema.json` in full (carries `grounding` + tier).**
 
 ```json
 // ontology/schema/source.schema.json
@@ -606,7 +606,7 @@ Authors the nine record schemas (with every pre-emptive field) and a loader that
 }
 ```
 
-- [ ] **Step 4: Write the remaining seven schemas from these field tables.**
+- [x] **Step 4: Write the remaining seven schemas from these field tables.**
 
 Each is Draft 2020-12, `"type": "object"`, `"additionalProperties": false`, with `provenance` referencing `defs.schema.json#/$defs/provenance` and fact-bearing blocks referencing `#/$defs/factBlock`. Required fields are marked **R**.
 
@@ -624,7 +624,7 @@ Each is Draft 2020-12, `"type": "object"`, `"additionalProperties": false`, with
 
 `language-registry.schema.json`: top-level object with one key `languages` **R** (object mapping language-id → object with the same `language_kind`/`domain`/`syntax_check`/`file_extensions`/`first_appeared` fields as `language.schema.json`, all optional except an inner `name` **R**).
 
-- [ ] **Step 5: Write the failing test.**
+- [x] **Step 5: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_schema.py
@@ -672,12 +672,12 @@ def test_unknown_kind_raises():
         validate_record({}, "not-a-kind")
 ```
 
-- [ ] **Step 6: Run the test to verify it fails.**
+- [x] **Step 6: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_schema.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.schema'`.
 
-- [ ] **Step 7: Implement `schema.py`.**
+- [x] **Step 7: Implement `schema.py`.**
 
 ```python
 # tools/validate/src/langatlas_validate/schema.py
@@ -724,12 +724,12 @@ def validate_record(data: dict, kind: str) -> list[str]:
 
 Note: `referencing` ships with `jsonschema>=4.18`; no extra dependency. If `$ref` cross-file resolution needs the `defs.schema.json` id to match, ensure each schema's local `$ref` uses the `defs.schema.json#/$defs/...` form registered above.
 
-- [ ] **Step 8: Run the test to verify it passes.**
+- [x] **Step 8: Run the test to verify it passes.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_schema.py -v`
 Expected: PASS. If a `$ref` fails to resolve, confirm the registry key (`defs.schema.json`) matches the `$ref` string exactly.
 
-- [ ] **Step 9: Commit.**
+- [x] **Step 9: Commit.**
 
 ```bash
 git add ontology/schema tools/validate/src/langatlas_validate/schema.py \

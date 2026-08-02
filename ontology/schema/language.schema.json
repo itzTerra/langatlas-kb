@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/language",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "provenance"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "language_kind": {
+      "enum": ["general-purpose", "domain-specific"],
+      "default": "general-purpose"
+    },
+    "domain": { "type": "string" },
+    "syntax_check": { "enum": ["parser", "none"] },
+    "file_extensions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "first_appeared": { "type": "string" },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/defs",
+  "$defs": {
+    "sourceEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "locator"],
+      "properties": {
+        "source": { "type": "string" },
+        "locator": { "type": "string" },
+        "quote": { "type": "string" }
+      }
+    },
+    "sourcesList": {
+      "type": "array",
+      "items": { "$ref": "defs.schema.json#/$defs/sourceEntry" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "proposer": { "type": "object" },
+        "claim_origin": { "enum": ["source-derived", "prior"] },
+        "debate_id": { "type": ["string", "null"] },
+        "chat_run_id": { "type": ["string", "null"] },
+        "candidate_source": {
+          "enum": ["pldb", "wikidata", "hyperpolyglot", "internal-survey",
+                   "sweep-questionnaire", "challenge"]
+        },
+        "sampling": { "type": "object" }
+      }
+    },
+    "factBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text", "sources"],
+      "properties": {
+        "text": { "type": "string" },
+        "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
+      }
+    }
+  }
+}

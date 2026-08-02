@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/source",
+  "type": "object",
+  "required": ["id", "type", "title", "custom"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "type": "string" },
+    "title": { "type": "string" },
+    "author": { "type": "array" },
+    "issued": { "type": "object" },
+    "URL": { "type": "string" },
+    "DOI": { "type": "string" },
+    "custom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "grounding"],
+      "properties": {
+        "tier": { "enum": ["A", "B", "C", "D"] },
+        "grounding": {
+          "enum": ["formal-spec", "reference-implementation-docs",
+                   "design-doc", "third-party-reference"]
+        },
+        "archive_url": { "type": "string" },
+        "accessed": { "type": "string" },
+        "added_by": { "type": "string" },
+        "locator_kinds": { "type": "array", "items": { "type": "string" } },
+        "edition": { "type": "string" },
+        "edition_check_url": { "type": "string" },
+        "canonical_source": { "type": "boolean" },
+        "acquisition_note": { "type": "string" },
+        "superseded_by": { "type": "string" }
+      }
+    }
+  }
+}

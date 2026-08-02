@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/concept",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "slug", "name", "provenance"],
+  "properties": {
+    "id": { "type": "string" },
+    "slug": { "type": "string" },
+    "name": { "type": "string" },
+    "excluded_rationale": { "type": "string" },
+    "summary": { "$ref": "defs.schema.json#/$defs/factBlock" },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  }
+}

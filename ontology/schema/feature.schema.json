@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/feature",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "slug", "name", "layer", "summary", "provenance"],
+  "properties": {
+    "id": { "type": "string" },
+    "slug": { "type": "string" },
+    "name": { "type": "string" },
+    "layer": { "enum": [1, 2, 3] },
+    "dimension": { "type": "string" },
+    "cross_cutting": { "type": "boolean" },
+    "aliases": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "realizes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "summary": { "$ref": "defs.schema.json#/$defs/factBlock" },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "layer": { "const": 3 } } },
+      "then": { "required": ["dimension"] }
+    }
+  ]
+}

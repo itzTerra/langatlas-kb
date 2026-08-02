@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/feature-instance",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["feature", "language", "status", "provenance"],
+  "properties": {
+    "feature": { "type": "string" },
+    "language": { "type": "string" },
+    "status": { "enum": ["present", "absent", "partial"] },
+    "absence_scope": { "type": "string" },
+    "since": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "sources"],
+      "properties": {
+        "value": { "type": "string" },
+        "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" },
+        "since_status": { "enum": ["as-cited", "back-dated"] }
+      }
+    },
+    "notes_text": { "type": "string" },
+    "characteristics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "text", "sources"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^c-[a-z0-9]+(-[a-z0-9]+)*$" },
+          "text": { "type": "string" },
+          "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
+        }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "type", "text", "sources"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^n-[a-z0-9]+(-[a-z0-9]+)*$" },
+          "type": { "enum": ["limitation", "extra", "alternative"] },
+          "text": { "type": "string" },
+          "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
+        }
+      }
+    },
+    "syntax": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "title", "origin", "code", "sources"],
+        "properties": {
+          "key": { "type": "string" },
+          "title": { "type": "string" },
+          "origin": { "type": "string", "pattern": "^(original|adapted-from:.+)$" },
+          "code": { "type": "string" },
+          "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
+        }
+      }
+    },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "absent" } } },
+      "then": { "required": ["absence_scope"] }
+    }
+  ]
+}

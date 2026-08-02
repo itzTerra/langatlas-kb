@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/affects-quality-edge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "from", "to", "assessments", "provenance"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": { "const": "affects-quality" },
+    "from": { "type": "string" },
+    "to": { "type": "string" },
+    "assessments": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "assessor", "polarity", "strength", "statement", "sources"],
+        "properties": {
+          "key": { "type": "string" },
+          "assessor": { "type": "object" },
+          "polarity": { "enum": ["improves", "hurts"] },
+          "strength": { "enum": ["weak", "moderate", "strong"] },
+          "statement": { "type": "string" },
+          "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
+        }
+      }
+    },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/edge",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "from", "to", "statement", "provenance"],
+  "properties": {
+    "id": { "type": "string" },
+    "type": {
+      "enum": ["requires", "enables", "influences", "conflicts-with", "alternative-to"]
+    },
+    "from": { "type": "string" },
+    "to": { "type": "string" },
+    "polarity": { "enum": ["+", "-"] },
+    "statement": { "$ref": "defs.schema.json#/$defs/factBlock" },
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "type": { "const": "influences" } } },
+      "then": { "required": ["polarity"] }
+    }
+  ]
+}
