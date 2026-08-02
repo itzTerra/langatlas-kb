@@ -18,7 +18,7 @@ def cmd_precommit(files: list[str], kind: str) -> int:
         data = _yaml.load(text)
         errors = validate_record(data, kind)
         if normalize_record(text, kind) != text:
-            errors.append(f"{f}: not normalized (run `langatlas-validate` write mode)")
+            errors.append("not normalized (re-run the normalizer to fix)")
         for e in errors:
             print(f"{f}: {e}")
         rc = rc or (1 if errors else 0)

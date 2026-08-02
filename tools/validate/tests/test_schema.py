@@ -37,6 +37,21 @@ def test_source_requires_grounding_and_tier():
     assert any("grounding" in e for e in errors)
 
 
+def test_valid_feature_with_populated_summary_and_sources():
+    rec = {
+        "id": "feature-pattern-matching",
+        "slug": "pattern-matching",
+        "name": "Pattern matching",
+        "layer": 1,
+        "summary": {
+            "text": "Destructures values against structural patterns.",
+            "sources": [{"source": "s1", "locator": "p. 1"}],
+        },
+        "provenance": {"claim_origin": "source-derived"},
+    }
+    assert validate_record(rec, "feature") == []
+
+
 def test_unknown_kind_raises():
     with pytest.raises(ValueError):
         validate_record({}, "not-a-kind")

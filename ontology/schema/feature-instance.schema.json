@@ -27,7 +27,7 @@
         "additionalProperties": false,
         "required": ["key", "text", "sources"],
         "properties": {
-          "key": { "type": "string", "pattern": "^c-[a-z0-9]+(-[a-z0-9]+)*$" },
+          "key": { "type": "string", "pattern": "^c-[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$" },
           "text": { "type": "string" },
           "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
         }
@@ -40,7 +40,7 @@
         "additionalProperties": false,
         "required": ["key", "type", "text", "sources"],
         "properties": {
-          "key": { "type": "string", "pattern": "^n-[a-z0-9]+(-[a-z0-9]+)*$" },
+          "key": { "type": "string", "pattern": "^n-[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$" },
           "type": { "enum": ["limitation", "extra", "alternative"] },
           "text": { "type": "string" },
           "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }

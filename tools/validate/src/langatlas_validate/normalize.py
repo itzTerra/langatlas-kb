@@ -7,6 +7,8 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
+from langatlas_validate.schema import RECORD_KINDS
+
 _WS = re.compile(r"\s+")
 _TERMINAL_PUNCT = ".!?;:,"
 
@@ -24,6 +26,8 @@ _SCHEMA_DIR = Path(__file__).resolve().parents[4] / "ontology" / "schema"
 
 @lru_cache(maxsize=None)
 def _key_order(kind: str) -> tuple[str, ...]:
+    if kind not in RECORD_KINDS:
+        raise ValueError(f"unknown record kind: {kind!r}")
     schema = json.loads((_SCHEMA_DIR / f"{kind}.schema.json").read_text())
     return tuple(schema.get("properties", {}).keys())
 
@@ -36,7 +40,9 @@ def _reorder(data, order: tuple[str, ...]):
         if k not in ordered:
             ordered[k] = data[k]
     for k, v in ordered.items():
-        if k in ("characteristics", "notes", "syntax") and isinstance(v, list):
+        if isinstance(v, list) and v and all(
+            isinstance(item, dict) and "key" in item for item in v
+        ):
             ordered[k] = sorted(v, key=lambda item: item.get("key", ""))
     return ordered
 
