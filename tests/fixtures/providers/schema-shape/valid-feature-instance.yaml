@@ -1,0 +1,11 @@
+fixture_id: valid-feature-instance
+kind: schema-shape
+mode: hard
+record_kind: feature-instance
+expect: pass
+record:
+  feature: pattern-matching
+  language: rust
+  status: present
+  provenance:
+    claim_origin: source-derived

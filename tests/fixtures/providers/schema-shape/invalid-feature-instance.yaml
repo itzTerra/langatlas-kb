@@ -1,0 +1,11 @@
+fixture_id: invalid-feature-instance
+kind: schema-shape
+mode: hard
+record_kind: feature-instance
+expect: fail
+record:
+  feature: pattern-matching
+  language: rust
+  status: absent          # absence_scope missing -> must fail
+  provenance:
+    claim_origin: source-derived

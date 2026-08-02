@@ -1303,7 +1303,7 @@ The D48 fixture convention (`fixture_id`, `kind`, `mode: hard|soft`) with a plug
 - Consumes: `validate_record` (Task 3).
 - Produces: `run_regression(fixtures_dir) -> RegressionReport`, `CHECKERS` registry dict.
 
-- [ ] **Step 1: Write two fixtures.**
+- [x] **Step 1: Write two fixtures.**
 
 ```yaml
 # tests/fixtures/providers/schema-shape/valid-feature-instance.yaml
@@ -1335,7 +1335,7 @@ record:
     claim_origin: source-derived
 ```
 
-- [ ] **Step 2: Write the failing test.**
+- [x] **Step 2: Write the failing test.**
 
 ```python
 # tools/validate/tests/test_regression.py
@@ -1361,12 +1361,12 @@ def test_report_counts():
     assert report.ran == report.passed + len(report.failures)
 ```
 
-- [ ] **Step 3: Run the test to verify it fails.**
+- [x] **Step 3: Run the test to verify it fails.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_regression.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.regression'`.
 
-- [ ] **Step 4: Implement `regression.py`.**
+- [x] **Step 4: Implement `regression.py`.**
 
 ```python
 # tools/validate/src/langatlas_validate/regression.py
@@ -1426,12 +1426,12 @@ def run_regression(fixtures_dir: Path) -> RegressionReport:
     return report
 ```
 
-- [ ] **Step 5: Run the test to verify it passes.**
+- [x] **Step 5: Run the test to verify it passes.**
 
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_regression.py -v`
 Expected: PASS.
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/validate/src/langatlas_validate/regression.py tests/fixtures \
