@@ -2844,7 +2844,7 @@ The volume side of the university API. Embeddings go through `/v1/embeddings` wi
 - Consumes: `RunContext` (Task 7), `CompletionClient` (Task 8), `EmbeddingCapability` (Task 1), `load_prompt` (Task 6).
 - Produces: `EmbeddingClient.embed`, `RerankClient.rerank`, `ctx.embed`, `ctx.rerank`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_embedding_rerank.py
@@ -2949,12 +2949,12 @@ def test_rerank_documents_are_delimited_as_untrusted(ctx):
     assert "untrusted-external" in sent
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_embedding_rerank.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...providers.embedding`.
 
-- [ ] **Step 3: Write `embedding.py`.**
+- [x] **Step 3: Write `embedding.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/embedding.py
@@ -3026,7 +3026,7 @@ class EmbeddingClient:
         return [vectors[index] for index in range(len(texts))]
 ```
 
-- [ ] **Step 4: Write `rerank.py`.**
+- [x] **Step 4: Write `rerank.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/rerank.py
@@ -3079,7 +3079,7 @@ class RerankClient:
         return scores
 ```
 
-- [ ] **Step 5: Wire `embed` and `rerank` onto `RunContext`.**
+- [x] **Step 5: Wire `embed` and `rerank` onto `RunContext`.**
 
 Add to `core.py`:
 
@@ -3101,12 +3101,12 @@ Add to `core.py`:
 
 and `self._embedding = None` / `self._rerank = None` to `__init__`.
 
-- [ ] **Step 6: Run the test to verify it passes.**
+- [x] **Step 6: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_embedding_rerank.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers tools/pipeline/tests/test_embedding_rerank.py

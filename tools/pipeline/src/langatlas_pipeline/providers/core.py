@@ -59,6 +59,8 @@ class RunContext:
         self._pinned: dict[str, str] = {}
         self._stopped_by: str | None = None
         self._completion = None
+        self._embedding = None
+        self._rerank = None
 
     @classmethod
     def start(cls, *, kind: str, slug: str, budget: Budget | None = None,
@@ -138,6 +140,20 @@ class RunContext:
             self._completion = CompletionClient(self)
         return self._completion.complete(alias, messages, prompt=prompt, schema=schema,
                                          sampling=sampling)
+
+    def embed(self, texts: list[str], *, model: str) -> list[list[float]]:
+        from langatlas_pipeline.providers.embedding import EmbeddingClient
+
+        if self._embedding is None:
+            self._embedding = EmbeddingClient(self)
+        return self._embedding.embed(texts, model=model)
+
+    def rerank(self, query: str, docs: list[str], *, model: str) -> list[float]:
+        from langatlas_pipeline.providers.rerank import RerankClient
+
+        if self._rerank is None:
+            self._rerank = RerankClient(self)
+        return self._rerank.rerank(query, docs, model=model)
 
     # ---- lifecycle --------------------------------------------------------------
 
