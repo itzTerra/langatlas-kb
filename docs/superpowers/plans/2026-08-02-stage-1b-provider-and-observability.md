@@ -1072,7 +1072,7 @@ D26's hard invariant: the cost log is written by the *same code path* as the tra
 - Consumes: `TranscriptWriter` (Task 2).
 - Produces: `CostRow`, `append_cost_row`, `read_cost_rows`, `CallRecorder.record_call`.
 
-- [ ] **Step 1: Write the failing tests.**
+- [x] **Step 1: Write the failing tests.**
 
 ```python
 # tools/pipeline/tests/test_costlog.py
@@ -1173,12 +1173,12 @@ def test_tool_class_calls_log_counts_not_message_bodies(tmp_path: Path):
     assert read_cost_rows(cost_path)[0].endpoint == "embeddings"
 ```
 
-- [ ] **Step 2: Run them to verify they fail.**
+- [x] **Step 2: Run them to verify they fail.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_costlog.py tests/test_recording.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_pipeline.costlog'`.
 
-- [ ] **Step 3: Write `costlog.py`.**
+- [x] **Step 3: Write `costlog.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/costlog.py
@@ -1223,7 +1223,7 @@ def read_cost_rows(path: Path) -> list[CostRow]:
             for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
 ```
 
-- [ ] **Step 4: Write `recording.py`.**
+- [x] **Step 4: Write `recording.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/recording.py
@@ -1271,12 +1271,12 @@ class CallRecorder:
         return self.writer.seq
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass.**
+- [x] **Step 5: Run the tests to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_costlog.py tests/test_recording.py -v`
 Expected: PASS (6 tests).
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/costlog.py tools/pipeline/src/langatlas_pipeline/recording.py tools/pipeline/tests/test_costlog.py tools/pipeline/tests/test_recording.py
