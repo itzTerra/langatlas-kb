@@ -1437,7 +1437,7 @@ D31's whole implementation: fetched content is delimited as evidence, never inst
 - Consumes: nothing.
 - Produces: `InjectionFlag`, `scan_for_instructions`, `delimit_untrusted`, `is_delimited`, `UNTRUSTED_OPEN_PREFIX`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_injection.py
@@ -1492,12 +1492,12 @@ def test_scanning_never_raises_on_odd_input():
     assert scan_for_instructions("𝕌𝕟𝕚𝕔𝕠𝕕𝕖 ✨") == []
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_injection.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_pipeline.injection'`.
 
-- [ ] **Step 3: Write `injection.py`.**
+- [x] **Step 3: Write `injection.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/injection.py
@@ -1569,12 +1569,12 @@ def is_delimited(text: str) -> bool:
     return UNTRUSTED_OPEN_PREFIX in text and UNTRUSTED_CLOSE in text
 ```
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_injection.py -v`
 Expected: PASS (6 tests).
 
-- [ ] **Step 5: Write the wrapper implementation notes (D31's documentation home).**
+- [x] **Step 5: Write the wrapper implementation notes (D31's documentation home).**
 
 ````markdown
 # langatlas_pipeline — wrapper implementation notes
@@ -1632,7 +1632,7 @@ Streaming to UIs, tool loops on the completion channel, multi-provider routing o
 token-exact tokenization, queueing and scheduling (that is the orchestrator, 1E).
 ````
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/injection.py tools/pipeline/tests/test_injection.py tools/pipeline/README.md
