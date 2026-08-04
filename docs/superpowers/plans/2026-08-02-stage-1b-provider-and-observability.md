@@ -1297,7 +1297,7 @@ D26's cache: keyed on **resolved model id** (not alias) + messages + sampling + 
 - Consumes: `paths.CACHE_PATH` (Task 1).
 - Produces: `cache_key`, `CallCache`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_cache.py
@@ -1348,12 +1348,12 @@ def test_cache_survives_reopen(tmp_path: Path):
     assert CallCache(path).get(key) == {"text": "x"}
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_cache.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_pipeline.cache'`.
 
-- [ ] **Step 3: Write `cache.py`.**
+- [x] **Step 3: Write `cache.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/cache.py
@@ -1410,12 +1410,12 @@ class CallCache:
         self._conn.close()
 ```
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_cache.py -v`
 Expected: PASS (6 tests).
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/cache.py tools/pipeline/tests/test_cache.py
