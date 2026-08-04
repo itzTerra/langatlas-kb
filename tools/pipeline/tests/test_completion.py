@@ -97,9 +97,9 @@ def test_json_schema_mode_is_used_only_when_probed(ctx, monkeypatch):
     client = CompletionClient(ctx, client=fake)
 
     cap = ctx.config.alias("glm")
-    monkeypatch.setattr(ctx.config, "alias",
-                        lambda name: type(cap)(**{**cap.__dict__,
-                                                  "supports_json_schema": True}))
+    monkeypatch.setattr(type(ctx.config), "alias",
+                        lambda self, name: type(cap)(**{**cap.__dict__,
+                                                        "supports_json_schema": True}))
     result = client.complete("glm", prompt.render(), prompt=prompt, schema=Verdict)
     assert result.parsed.verdict == "supported"
     assert fake.responses.requests[0]["response_format"]["type"] == "json_schema"
@@ -111,9 +111,9 @@ def test_json_object_fallback_repairs_once_then_succeeds(ctx, monkeypatch):
     fake = FakeClient([_response("not json at all"), _response(good)])
     client = CompletionClient(ctx, client=fake)
     cap = ctx.config.alias("glm")
-    monkeypatch.setattr(ctx.config, "alias",
-                        lambda name: type(cap)(**{**cap.__dict__,
-                                                  "supports_json_object": True}))
+    monkeypatch.setattr(type(ctx.config), "alias",
+                        lambda self, name: type(cap)(**{**cap.__dict__,
+                                                        "supports_json_object": True}))
     result = client.complete("glm", prompt.render(), prompt=prompt, schema=Verdict)
     assert result.parsed.confidence == 0.9
     assert len(fake.responses.requests) == 2
