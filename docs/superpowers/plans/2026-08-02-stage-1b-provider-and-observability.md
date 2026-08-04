@@ -1656,7 +1656,7 @@ D41's `prompts/<prompt_id>/v-<8hex-content-hash>.md` with a human-readable alias
 - Consumes: `paths.PROMPTS_DIR` (Task 1).
 - Produces: `PromptRef` (with `.render()` and `.ref()`), `version_hash`, `load_prompt`, `mint_prompt_version`, `list_versions`, the `langatlas-prompts` CLI.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_prompts.py
@@ -1746,12 +1746,12 @@ def test_shipped_prompts_load_and_declare_their_variables():
     assert "ownership" in messages[-1]["content"]
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_prompts.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_pipeline.prompts'`.
 
-- [ ] **Step 3: Write `prompts.py`.**
+- [x] **Step 3: Write `prompts.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/prompts.py
@@ -1874,7 +1874,7 @@ def mint_prompt_version(prompt_id: str, text: str, *, note: str = "",
     return PromptRef(prompt_id, version, path, path.read_text(encoding="utf-8"))
 ```
 
-- [ ] **Step 4: Write `prompts_cli.py`.**
+- [x] **Step 4: Write `prompts_cli.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/prompts_cli.py
@@ -1916,7 +1916,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 5: Author the two prompts 1B needs, and mint them through the CLI.**
+- [x] **Step 5: Author the two prompts 1B needs, and mint them through the CLI.**
 
 Write `/tmp/capability-probe.md`:
 
@@ -1958,12 +1958,12 @@ tools/pipeline/.venv/bin/langatlas-prompts mint rerank-score /tmp/rerank-score.m
 ```
 Expected output: `capability-probe@v-xxxxxxxx` and `rerank-score@v-xxxxxxxx`.
 
-- [ ] **Step 6: Run the test to verify it passes.**
+- [x] **Step 6: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_prompts.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/prompts.py tools/pipeline/src/langatlas_pipeline/prompts_cli.py tools/pipeline/tests/test_prompts.py prompts/
