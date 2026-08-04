@@ -36,6 +36,12 @@ class EmbeddingCapability:
 
 
 @dataclass(frozen=True)
+class RerankerCapability:
+    model: str
+    mode: str
+
+
+@dataclass(frozen=True)
 class ProviderConfig:
     providers: dict[str, Any]
     capabilities: dict[str, Any]
@@ -68,6 +74,12 @@ class ProviderConfig:
             raise UnknownAlias(f"unknown embedding model: {model!r}")
         return EmbeddingCapability(model, int(entry["dimensions"]),
                                    int(entry["max_input_tokens"]))
+
+    def reranker(self, model: str) -> RerankerCapability:
+        entry = self.capabilities.get("rerankers", {}).get(model)
+        if entry is None:
+            raise UnknownAlias(f"unknown reranker model: {model!r}")
+        return RerankerCapability(model, entry.get("mode", "completion"))
 
     def budget_defaults(self):
         from langatlas_pipeline.providers.core import Budget

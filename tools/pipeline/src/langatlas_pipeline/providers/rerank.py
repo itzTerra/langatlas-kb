@@ -30,6 +30,11 @@ class RerankClient:
         return self._completer
 
     def rerank(self, query: str, docs: list[str], *, model: str) -> list[float]:
+        # `model` names the reranker (e.g. "qwen3-reranker-4b") per the
+        # provider_capabilities.yaml `rerankers:` table; it must be a known entry
+        # even though every reranker currently dispatches through the constructor's
+        # completion `alias` (D26: no /v1/rerank route, so this is completion-driven).
+        self.ctx.config.reranker(model)
         scores: list[float] = []
         for start in range(0, len(docs), self.batch_size):
             batch = docs[start:start + self.batch_size]

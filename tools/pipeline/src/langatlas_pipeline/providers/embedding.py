@@ -29,6 +29,7 @@ class EmbeddingClient:
         cap = self.ctx.config.embedding(model)
         vectors: dict[int, list[float]] = {}
         pending: list[tuple[int, str, str]] = []
+        cache_hits = 0
 
         for index, text in enumerate(texts):
             estimated = estimate_tokens([{"content": text}])
@@ -40,8 +41,20 @@ class EmbeddingClient:
             hit = self.ctx.cache.get(key) if self.ctx.cache is not None else None
             if hit is not None:
                 vectors[index] = hit["vector"]
+                cache_hits += 1
             else:
                 pending.append((index, text, key))
+
+        if cache_hits:
+            # One aggregate record for the whole embed() call's cache hits, mirroring
+            # how the miss-path below logs one record_call per provider batch rather
+            # than one per text — total silence otherwise (a fully-cached call wrote
+            # zero transcript/cost-log rows before this fix).
+            self.ctx.recorder.record_call(
+                endpoint="embeddings", alias=model, resolved_model=model, messages=[],
+                response_text=None, tokens_in=0, tokens_out=0,
+                latency_ms=0, cache_hit=True, outcome="ok",
+                tool_call={"name": "embed", "args": {"n": cache_hits, "model": model}})
 
         for start in range(0, len(pending), self.batch_size):
             batch = pending[start:start + self.batch_size]
