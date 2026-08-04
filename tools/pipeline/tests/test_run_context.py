@@ -81,7 +81,6 @@ def test_close_finalizes_the_manifest_with_budget_and_facts(ctx):
     assert manifest["kind"] == "verification"
 
 
-@pytest.mark.xfail(reason="CompletionClient lands in Task 8", strict=True)
 def test_no_client_can_be_constructed_without_a_ctx():
     """D26's load-bearing invariant, asserted mechanically."""
     from langatlas_pipeline.providers import completion

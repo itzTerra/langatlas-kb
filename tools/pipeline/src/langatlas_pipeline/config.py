@@ -35,7 +35,7 @@ class EmbeddingCapability:
     max_input_tokens: int
 
 
-@dataclass(frozen=True)
+@dataclass
 class ProviderConfig:
     providers: dict[str, Any]
     capabilities: dict[str, Any]

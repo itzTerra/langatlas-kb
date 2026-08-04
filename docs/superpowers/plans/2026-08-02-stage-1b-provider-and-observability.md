@@ -2318,7 +2318,7 @@ The university-API channel: `openai` SDK with `base_url` swapped and the gateway
 - Consumes: `RunContext` (Task 7), `AliasCapability` (Task 1), `cache_key`/`CallCache` (Task 4), `PromptRef` (Task 6), `CallRecorder` (Task 3).
 - Produces: `Sampling`, `Completion`, `CompletionClient.complete`, `estimate_tokens`, `split_reasoning`, `Throttle`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_completion.py
@@ -2488,12 +2488,12 @@ def test_sampling_defaults_to_temperature_zero(ctx):
     assert Sampling().temperature == 0.0
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_completion.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...providers.completion`.
 
-- [ ] **Step 3: Write `throttle.py`.**
+- [x] **Step 3: Write `throttle.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/throttle.py
@@ -2565,7 +2565,7 @@ def _backoff_seconds(exc: Exception, attempt: int) -> float:
     return min(2 ** (attempt - 1), 30) * (0.5 + random.random())
 ```
 
-- [ ] **Step 4: Write `completion.py`.**
+- [x] **Step 4: Write `completion.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/completion.py
@@ -2795,7 +2795,7 @@ class CompletionClient:
                           reasoning=hit.get("reasoning"))
 ```
 
-- [ ] **Step 5: Simplify `RunContext.complete` now that the client exists.**
+- [x] **Step 5: Simplify `RunContext.complete` now that the client exists.**
 
 In `core.py`, replace the `complete` delegation and the `_completion = None` line with:
 
@@ -2812,16 +2812,16 @@ In `core.py`, replace the `complete` delegation and the `_completion = None` lin
 
 and add `self._completion = None` to `__init__`.
 
-- [ ] **Step 6: Remove the Task-7 xfail marker.**
+- [x] **Step 6: Remove the Task-7 xfail marker.**
 
 Delete the `@pytest.mark.xfail(...)` line above `test_no_client_can_be_constructed_without_a_ctx` in `tests/test_run_context.py`.
 
-- [ ] **Step 7: Run the tests to verify they pass.**
+- [x] **Step 7: Run the tests to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_completion.py tests/test_run_context.py -v`
 Expected: PASS (21 tests).
 
-- [ ] **Step 8: Commit.**
+- [x] **Step 8: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers tools/pipeline/tests/test_completion.py tools/pipeline/tests/test_run_context.py

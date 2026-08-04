@@ -58,6 +58,7 @@ class RunContext:
         self._claude_messages = 0
         self._pinned: dict[str, str] = {}
         self._stopped_by: str | None = None
+        self._completion = None
 
     @classmethod
     def start(cls, *, kind: str, slug: str, budget: Budget | None = None,
@@ -133,11 +134,10 @@ class RunContext:
                  sampling=None):
         from langatlas_pipeline.providers.completion import CompletionClient
 
-        client = self._completion or CompletionClient(self)
-        return client.complete(alias, messages, prompt=prompt, schema=schema,
-                               sampling=sampling)
-
-    _completion = None
+        if self._completion is None:
+            self._completion = CompletionClient(self)
+        return self._completion.complete(alias, messages, prompt=prompt, schema=schema,
+                                         sampling=sampling)
 
     # ---- lifecycle --------------------------------------------------------------
 
