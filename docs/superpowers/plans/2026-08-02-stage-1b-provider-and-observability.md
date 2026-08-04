@@ -1984,7 +1984,7 @@ Ties Tasks 2–6 together: run lifecycle, budget hard-stops that keep the run re
 - Consumes: `ProviderConfig`/`Budget` (Task 1), `TranscriptWriter`/`RunManifest` (Task 2), `CallRecorder` (Task 3), `CallCache` (Task 4), `scan_for_instructions`/`delimit_untrusted` (Task 5).
 - Produces: `RunContext.start`, `check_budget`, `note_usage`, `pin_alias`, `tool_result`, `close`, context-manager protocol.
 
-- [ ] **Step 1: Write `conftest.py` (shared fixtures for this and every later task).**
+- [x] **Step 1: Write `conftest.py` (shared fixtures for this and every later task).**
 
 ```python
 # tools/pipeline/tests/conftest.py
@@ -2016,7 +2016,7 @@ def ctx(workspace) -> RunContext:
         run.close()
 ```
 
-- [ ] **Step 2: Write the failing test.**
+- [x] **Step 2: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_run_context.py
@@ -2111,12 +2111,12 @@ def test_no_client_can_be_constructed_without_a_ctx():
     assert params[1] == "ctx"
 ```
 
-- [ ] **Step 3: Run it to verify it fails.**
+- [x] **Step 3: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_run_context.py -v`
 Expected: FAIL — `ImportError: cannot import name 'RunContext'`.
 
-- [ ] **Step 4: Write `core.py` (replacing the Task-1 stub, keeping `Budget` unchanged).**
+- [x] **Step 4: Write `core.py` (replacing the Task-1 stub, keeping `Budget` unchanged).**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/core.py
@@ -2290,12 +2290,12 @@ class RunContext:
         self.close()
 ```
 
-- [ ] **Step 5: Run the test to verify it passes.**
+- [x] **Step 5: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_run_context.py -v`
 Expected: PASS (9 tests) — except `test_no_client_can_be_constructed_without_a_ctx`, which fails until Task 8. Mark it `@pytest.mark.xfail(reason="CompletionClient lands in Task 8", strict=True)` now and **delete the marker in Task 8, Step 6**.
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers/core.py tools/pipeline/tests/test_run_context.py tools/pipeline/tests/conftest.py
