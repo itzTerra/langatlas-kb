@@ -12,6 +12,41 @@ _VARIABLE = re.compile(r"\{\{(\w+)\}\}")
 _CHANGELOG_LINE = re.compile(r"^- (v\d+) — (v-[0-9a-f]{8}) — ")
 
 
+def _split_by_role_headings(body: str) -> list[str]:
+    """Split body by role headings (# system/user/assistant), ignoring those in code fences.
+
+    Returns list like re.split() with capturing groups: [preamble, role, content, role, content, ...]
+    Code fences (``` ... ```) protect their contents from role-heading recognition.
+    """
+    parts = []
+    current_chunk = ""
+    in_fence = False
+
+    for line in body.split("\n"):
+        # Check if this line toggles the fence state
+        if line.startswith("```"):
+            in_fence = not in_fence
+            current_chunk += line + "\n"
+        # Check if this is a role heading and we're not in a fence
+        elif not in_fence:
+            match = _ROLE_HEADING.match(line)
+            if match:
+                # Save current chunk and the matched role
+                parts.append(current_chunk)
+                parts.append(match.group(1))
+                current_chunk = ""
+            else:
+                current_chunk += line + "\n"
+        else:
+            # Inside fence: just accumulate
+            current_chunk += line + "\n"
+
+    # Add final chunk
+    parts.append(current_chunk)
+
+    return parts
+
+
 def version_hash(text: str) -> str:
     """D41: content-addressed versions, mirroring D16/D23's immutable-id pattern."""
     return "v-" + hashlib.sha256(text.encode("utf-8")).hexdigest()[:8]
@@ -41,7 +76,7 @@ class PromptRef:
         """Split on `# system` / `# user` / `# assistant` headings and substitute
         {{variables}}. Strict in both directions: a missing variable and an unexpected
         one are both errors, because a silently unsubstituted prompt is a silently
-        wrong run."""
+        wrong run. Role headings inside code fences are not recognized as splits."""
         front, body = self._front_matter_and_body()
         declared = set(front.get("variables") or [])
         supplied = set(variables)
@@ -51,7 +86,7 @@ class PromptRef:
             raise KeyError(f"{self.ref()}: undeclared variables {sorted(supplied - declared)}")
 
         messages: list[dict[str, str]] = []
-        parts = _ROLE_HEADING.split(body)
+        parts = _split_by_role_headings(body)
         for role, chunk in zip(parts[1::2], parts[2::2]):
             content = _VARIABLE.sub(lambda m: variables[m.group(1)], chunk).strip()
             messages.append({"role": role, "content": content})

@@ -82,3 +82,36 @@ def test_shipped_prompts_load_and_declare_their_variables():
     scorer = load_prompt("rerank-score")
     messages = scorer.render(query="ownership", documents="1. some text")
     assert "ownership" in messages[-1]["content"]
+
+
+def test_fenced_role_headings_are_not_recognized_as_splits(tmp_path: Path):
+    """Role headings inside code fences should not split the message."""
+    body_with_fenced_heading = """---
+prompt_id: demo
+variables: []
+---
+# system
+Here's an example of a user prompt:
+
+```
+# user
+print("hello")
+```
+
+Some explanation here.
+
+# user
+Actual user message.
+"""
+    ref = mint_prompt_version("demo", body_with_fenced_heading, root=tmp_path)
+    messages = ref.render()
+
+    # Should produce exactly 2 messages: system and user
+    assert len(messages) == 2
+    assert messages[0]["role"] == "system"
+    assert messages[1]["role"] == "user"
+
+    # The fenced heading should stay inside the system message
+    assert "# user" in messages[0]["content"]
+    assert "print(" in messages[0]["content"]
+    assert "Actual user message" in messages[1]["content"]
