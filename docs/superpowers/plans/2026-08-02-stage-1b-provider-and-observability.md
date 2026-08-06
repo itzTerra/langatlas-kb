@@ -3646,7 +3646,7 @@ The judgment channel. Stays agentic (D26): a real `claude_agent_sdk.query()` run
 - `ResultMessage(subtype, duration_ms, is_error, num_turns, session_id, total_cost_usd, usage, result, structured_output, model_usage, api_error_status, terminal_reason)`.
 - `ClaudeAgentOptions` fields used here: `system_prompt`, `tools`, `allowed_tools`, `cwd`, `max_turns`, `model`, `permission_mode`, `output_format`, `add_dirs`, `setting_sources`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_claude_runs.py
@@ -3795,12 +3795,12 @@ def test_live_smoke(ctx):
     assert "ok" in (result.result_text or "").lower()
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_claude_runs.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...providers.claude_runs`.
 
-- [ ] **Step 3: Write `claude_runs.py`.**
+- [x] **Step 3: Write `claude_runs.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/claude_runs.py
@@ -3983,7 +3983,7 @@ class ClaudeRunner:
                                 "turns": result.num_turns}})
 ```
 
-- [ ] **Step 4: Wire `claude_run` onto `RunContext`.**
+- [x] **Step 4: Wire `claude_run` onto `RunContext`.**
 
 Add to `core.py` (and `self._claude = None` in `__init__`):
 
@@ -3996,17 +3996,17 @@ Add to `core.py` (and `self._claude = None` in `__init__`):
         return self._claude.run(prompt, options=options)
 ```
 
-- [ ] **Step 5: Run the offline tests to verify they pass.**
+- [x] **Step 5: Run the offline tests to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_claude_runs.py -v`
 Expected: PASS (9 tests); the `live` test is deselected.
 
-- [ ] **Step 6: Run the live smoke test once, by hand.**
+- [x] **Step 6: Run the live smoke test once, by hand.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_claude_runs.py -m live -v`
 Expected: PASS. Requires the Claude Code CLI on `PATH` and a logged-in subscription. If it fails with `CLINotFoundError`, install/point at the CLI (`ClaudeAgentOptions.cli_path`) — do **not** weaken the test.
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers/claude_runs.py tools/pipeline/src/langatlas_pipeline/providers/core.py tools/pipeline/tests/test_claude_runs.py

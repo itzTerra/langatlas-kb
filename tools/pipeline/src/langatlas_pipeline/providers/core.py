@@ -59,6 +59,7 @@ class RunContext:
         self._pinned: dict[str, str] = {}
         self._stopped_by: str | None = None
         self._completion = None
+        self._claude = None
         self._embedding = None
         self._rerank = None
 
@@ -154,6 +155,13 @@ class RunContext:
         if self._rerank is None:
             self._rerank = RerankClient(self)
         return self._rerank.rerank(query, docs, model=model)
+
+    def claude_run(self, prompt: str, *, options):
+        from langatlas_pipeline.providers.claude_runs import ClaudeRunner
+
+        if self._claude is None:
+            self._claude = ClaudeRunner(self)
+        return self._claude.run(prompt, options=options)
 
     # ---- lifecycle --------------------------------------------------------------
 
