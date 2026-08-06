@@ -100,11 +100,11 @@ only 1E can satisfy. Sub-plan boundaries:
   - **Consumes:** Stage 0's `langatlas-transcripts` repo + workspace wiring.
   - **Produces for 1C–1E:** the provider-call surface + `RunContext` every agent-invoking
     subsystem uses, and the transcript-logging path every logged run writes through.
-  - **Carried over from 1A:** if 1B adds the first `regression.py` fixture for the
-    `provider-record-replay` checker kind (1A shipped it as a stub that always passes), decide
-    then whether a fixture needs `mode: soft` to behave differently from `mode: hard` — 1A's
-    `run_regression` parses the field but both modes currently behave identically since no fixture
-    has needed the distinction yet.
+  - **Carried over from 1A — resolved:** 1B added the first `provider-record-replay`
+    (`mode: hard`) and `prompt-version-rerun` (`mode: soft`) fixtures, so `run_regression`
+    now gives the two modes distinct behavior: soft failures become warnings and never
+    affect the exit code (D41's log-only prompt-version check), hard failures still fail.
+    Fixtures whose checker is not installed in the current environment report as skipped.
 - **1C — Ingestion & retrieval.** D15 ingestion CLI + `source_chunks` schema (§8.2) +
   extraction-QA harness (§4.4) + snapshot store layout + the `search_sources` retrieval tool.
   - **Consumes:** 1A source-record schema + locator grammar; 1B provider abstraction (embeddings

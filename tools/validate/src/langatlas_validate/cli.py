@@ -43,19 +43,25 @@ def cmd_precommit(files: list[str], kind: str) -> int:
     return rc
 
 
-def cmd_ci() -> int:
-    report = run_regression(_FIXTURES)
+def _print_report(report, *, verbose: bool) -> int:
     for failure in report.failures:
-        print(failure)
+        print(f"FAIL {failure}")
+    for warning in report.warnings:
+        print(f"warn {warning}")
+    for skip in report.skipped:
+        print(f"skip {skip}")
+    if verbose:
+        print(f"ran={report.ran} passed={report.passed} failed={len(report.failures)} "
+              f"warned={len(report.warnings)} skipped={len(report.skipped)}")
     return 1 if report.failures else 0
+
+
+def cmd_ci() -> int:
+    return _print_report(run_regression(_FIXTURES), verbose=True)
 
 
 def cmd_regression_run() -> int:
-    report = run_regression(_FIXTURES)
-    for failure in report.failures:
-        print(failure)
-    print(f"ran={report.ran} passed={report.passed} failed={len(report.failures)}")
-    return 1 if report.failures else 0
+    return _print_report(run_regression(_FIXTURES), verbose=True)
 
 
 def main(argv: list[str] | None = None) -> int:

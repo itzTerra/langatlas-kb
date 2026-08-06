@@ -1,0 +1,4 @@
+fixture_id: capability-probe-latest
+kind: prompt-version-rerun
+mode: soft
+prompt_id: capability-probe

@@ -3134,7 +3134,7 @@ D26's testing strategy (replay at the wrapper interface, not HTTP taping) plus t
 
 **Cross-package rule:** `langatlas_validate` must stay installable on its own (it is the pre-commit gate; it may not grow an `openai`/`claude-agent-sdk` dependency). So `langatlas_validate.regression` **soft-imports** the pipeline checkers: if `langatlas_pipeline` is not installed, those fixtures report as *skipped*, never as failures. CI installs both, so they really run there.
 
-- [ ] **Step 1: Write the failing replay test.**
+- [x] **Step 1: Write the failing replay test.**
 
 ```python
 # tools/pipeline/tests/test_replay.py
@@ -3197,12 +3197,12 @@ def test_fixture_path_is_derived_from_the_request(tmp_path: Path):
     assert a.suffix == ".json"
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_replay.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...providers.replay`.
 
-- [ ] **Step 3: Write `replay.py`.**
+- [x] **Step 3: Write `replay.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/providers/replay.py
@@ -3283,12 +3283,12 @@ class ReplayClient:
         return response
 ```
 
-- [ ] **Step 4: Run the replay test to verify it passes.**
+- [x] **Step 4: Run the replay test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_replay.py -v`
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Write the failing regression-checker tests (both packages).**
+- [x] **Step 5: Write the failing regression-checker tests (both packages).**
 
 ```python
 # tools/pipeline/tests/test_regression_checkers.py
@@ -3379,14 +3379,14 @@ def test_pipeline_checkers_are_discovered_when_installed(tmp_path):
     assert "provider-record-replay" in available_checkers()
 ```
 
-- [ ] **Step 6: Run both to verify they fail.**
+- [x] **Step 6: Run both to verify they fail.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_regression_checkers.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...regression_checkers`.
 Run: `cd tools/validate && uv run --extra dev pytest tests/test_regression.py -v`
 Expected: FAIL — `AttributeError: 'RegressionReport' object has no attribute 'warnings'`.
 
-- [ ] **Step 7: Write the fixtures.**
+- [x] **Step 7: Write the fixtures.**
 
 ```yaml
 # tests/fixtures/providers/provider-record-replay/verifier-supported.yaml
@@ -3427,7 +3427,7 @@ print(sorted(p.name for p in Path(RECORD_REPLAY_DIR).glob("*.json")))
 PY
 ```
 
-- [ ] **Step 8: Write `regression_checkers.py`.**
+- [x] **Step 8: Write `regression_checkers.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/regression_checkers.py
@@ -3491,7 +3491,7 @@ CHECKERS = {
 }
 ```
 
-- [ ] **Step 9: Rewrite `langatlas_validate/regression.py` with soft/skip semantics.**
+- [x] **Step 9: Rewrite `langatlas_validate/regression.py` with soft/skip semantics.**
 
 ```python
 # tools/validate/src/langatlas_validate/regression.py
@@ -3567,7 +3567,7 @@ def run_regression(fixtures_dir: Path) -> RegressionReport:
     return report
 ```
 
-- [ ] **Step 10: Surface warnings and skips in the CLI.**
+- [x] **Step 10: Surface warnings and skips in the CLI.**
 
 In `tools/validate/src/langatlas_validate/cli.py`, replace the bodies of `cmd_ci` and
 `cmd_regression_run` with:
@@ -3594,14 +3594,14 @@ def cmd_regression_run() -> int:
     return _print_report(run_regression(_FIXTURES), verbose=True)
 ```
 
-- [ ] **Step 11: Run both suites to verify they pass.**
+- [x] **Step 11: Run both suites to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_regression_checkers.py -v`
 Expected: PASS (4 tests).
 Run: `cd tools/validate && uv pip install -e ../pipeline && uv run --extra dev pytest -v`
 Expected: PASS — the whole 1A suite plus the four new regression tests.
 
-- [ ] **Step 12: Update the cross-stage plan's carried-over note.**
+- [x] **Step 12: Update the cross-stage plan's carried-over note.**
 
 In `docs/superpowers/plans/2026-07-25-langatlas-cross-stage-plan.md`, under **1B**, replace the "Carried over from 1A" bullet with:
 
@@ -3615,7 +3615,7 @@ In `docs/superpowers/plans/2026-07-25-langatlas-cross-stage-plan.md`, under **1B
 
 Leave 1C's identical note in place — it is now informational (the semantics exist), and 1C only needs to add its `questionnaire-shape` fixture.
 
-- [ ] **Step 13: Commit.**
+- [x] **Step 13: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers/replay.py tools/pipeline/src/langatlas_pipeline/regression_checkers.py tools/pipeline/tests/test_replay.py tools/pipeline/tests/test_regression_checkers.py tools/validate/src/langatlas_validate/regression.py tools/validate/src/langatlas_validate/cli.py tools/validate/tests/test_regression.py tests/fixtures/providers docs/superpowers/plans/2026-07-25-langatlas-cross-stage-plan.md

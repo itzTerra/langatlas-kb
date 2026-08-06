@@ -1,0 +1,10 @@
+fixture_id: verifier-supported
+kind: provider-record-replay
+mode: hard
+request:
+  model: glm
+  messages:
+    - {role: user, content: ping}
+  temperature: 0.0
+expect:
+  text: pong
