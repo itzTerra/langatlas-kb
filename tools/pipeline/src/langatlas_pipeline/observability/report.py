@@ -88,15 +88,16 @@ def report_capabilities(config: ProviderConfig | None = None) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="langatlas-report")
+    out_help = "write to a (gitignored) file instead of stdout"
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_cost = sub.add_parser("cost")
     p_cost.add_argument("--cost-log", type=Path, default=None)
     p_cost.add_argument("--transcripts", type=Path, default=None)
+    p_cost.add_argument("--out", type=Path, default=None, help=out_help)
 
-    sub.add_parser("capabilities")
-    parser.add_argument("--out", type=Path, default=None,
-                        help="write to a (gitignored) file instead of stdout")
+    p_caps = sub.add_parser("capabilities")
+    p_caps.add_argument("--out", type=Path, default=None, help=out_help)
 
     args = parser.parse_args(argv)
     if args.command == "cost":
