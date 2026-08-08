@@ -121,6 +121,61 @@ def test_claude_message_budget_stops_the_run(workspace):
     run.close()
 
 
+def test_a_single_claude_run_counts_as_exactly_one_call(ctx):
+    messages = [_assistant("one"), _assistant("two"), _assistant("three"), _result()]
+    ClaudeRunner(ctx, query_fn=scripted(messages)).run("x", options=ClaudeRunOptions())
+    assert ctx._calls == 1
+
+
+def test_a_max_calls_budget_is_tripped_by_a_claude_run(workspace):
+    """Unlike message volume, one claude_run() invocation must count toward
+    max_calls the same way one complete() call does — this could not happen at
+    all before the fix."""
+    from langatlas_pipeline.providers.core import Budget, RunContext
+
+    run = RunContext.start(kind="research", slug="cap", budget=Budget(max_calls=0),
+                           transcripts_root=workspace["transcripts"],
+                           private_dir=workspace["private"])
+    messages = [_assistant("one"), _result()]
+    with pytest.raises(BudgetExceeded) as excinfo:
+        ClaudeRunner(run, query_fn=scripted(messages)).run("x", options=ClaudeRunOptions())
+    assert excinfo.value.kind == "max_calls"
+    run.close()
+
+
+def test_a_claude_limit_signal_mid_stream_still_logs_a_cost_row(ctx, workspace):
+    messages = [
+        _assistant("working"),
+        RateLimitEvent(rate_limit_info=RateLimitInfo(status="rejected", resets_at=1780000000,
+                                                     rate_limit_type="five_hour"),
+                       uuid="u1", session_id="sess-1"),
+    ]
+    with pytest.raises(ClaudeLimitSignal):
+        ClaudeRunner(ctx, query_fn=scripted(messages)).run("x", options=ClaudeRunOptions())
+    row = json.loads((workspace["private"] / "cost-log.jsonl").read_text().splitlines()[-1])
+    assert row["endpoint"] == "claude"
+    assert row["outcome"] == "claude_limit"
+    assert row["tokens_in"] == 100
+    assert row["tokens_out"] == 20
+
+
+def test_a_budget_stop_mid_stream_still_logs_a_cost_row(workspace):
+    from langatlas_pipeline.providers.core import Budget, RunContext
+
+    run = RunContext.start(kind="research", slug="cap", budget=Budget(max_claude_messages=1),
+                           transcripts_root=workspace["transcripts"],
+                           private_dir=workspace["private"])
+    messages = [_assistant("one"), _assistant("two"), _result()]
+    with pytest.raises(BudgetExceeded):
+        ClaudeRunner(run, query_fn=scripted(messages)).run("x", options=ClaudeRunOptions())
+    row = json.loads((workspace["private"] / "cost-log.jsonl").read_text().splitlines()[-1])
+    assert row["endpoint"] == "claude"
+    assert row["outcome"] == "budget_stop"
+    assert row["tokens_in"] == 100
+    assert row["tokens_out"] == 20
+    run.close()
+
+
 def test_a_budget_stop_is_not_a_limit_signal(workspace):
     """D41: the two must stay distinguishable — one is ours, one is Anthropic's."""
     assert not issubclass(BudgetExceeded, ClaudeLimitSignal)

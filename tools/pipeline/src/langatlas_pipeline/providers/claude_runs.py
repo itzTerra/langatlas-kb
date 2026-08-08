@@ -7,7 +7,7 @@ from claude_agent_sdk import (
     AssistantMessage, ClaudeAgentOptions, RateLimitEvent, ResultMessage, ServerToolUseBlock,
     TextBlock, ThinkingBlock, ToolResultBlock, ToolUseBlock, UserMessage, query as sdk_query,
 )
-from langatlas_pipeline.errors import ClaudeLimitSignal
+from langatlas_pipeline.errors import BudgetExceeded, ClaudeLimitSignal
 from langatlas_pipeline.transcripts.writer import utc_now
 
 _LIMIT_ERRORS = {"rate_limit": "rate_limited", "authentication_failed": "auth",
@@ -77,20 +77,38 @@ class ClaudeRunner:
 
     async def _run(self, prompt: str, options: ClaudeRunOptions) -> AgentRunResult:
         started = time.monotonic()
+        # One claude_run() invocation is one logical unit of work from the caller's
+        # perspective (like one complete() call) — count it toward max_calls before
+        # the run starts, distinct from the per-message max_claude_messages check
+        # inside _handle_assistant which caps message volume mid-stream.
+        self.ctx.check_budget(calls=1)
         self.ctx.writer.append(role="user", content=prompt, agent="claude")
         result = AgentRunResult(session_id=None, result_text=None, structured_output=None,
                                 num_turns=0, is_error=False, tokens_in=0, tokens_out=0,
                                 cost_usd=None)
         stream = self.query_fn(prompt=prompt, options=build_agent_options(options))
+        outcome = "ok"
         try:
-            async for message in stream:
-                self._handle(message, result)
+            try:
+                async for message in stream:
+                    self._handle(message, result)
+            finally:
+                aclose = getattr(stream, "aclose", None)
+                if aclose is not None:
+                    await aclose()
+            outcome = "error" if result.is_error else "ok"
+        except ClaudeLimitSignal:
+            outcome = "claude_limit"
+            raise
+        except BudgetExceeded:
+            outcome = "budget_stop"
+            raise
         finally:
-            aclose = getattr(stream, "aclose", None)
-            if aclose is not None:
-                await aclose()
-        self._record(result, int((time.monotonic() - started) * 1000),
-                     outcome="error" if result.is_error else "ok")
+            # D26: log whatever usage was accumulated so far even when the loop was
+            # interrupted partway through — a real API call already happened and
+            # must not be invisible in the cost log just because it didn't finish.
+            self._record(result, int((time.monotonic() - started) * 1000),
+                         outcome=outcome)
         return result
 
     def _handle(self, message, result: AgentRunResult) -> None:
