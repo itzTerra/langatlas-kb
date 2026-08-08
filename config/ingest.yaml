@@ -1,0 +1,20 @@
+# config/ingest.yaml — D15 ingestion + retrieval knobs.
+# Model ids are configuration, never hardcoded: D22's Stage 2 benchmark may replace them
+# per table, and the benchmark itself needs several candidates side by side.
+chunking:
+  target_tokens: 600          # D15: structure-aware 400-800 token chunks
+  max_tokens: 800
+  overlap_tokens: 60
+models:
+  embedding: qwen3-embedding-4b     # D15 incumbent for the source corpus until D22 says otherwise
+  reranker: qwen3-reranker-4b
+  rerank_default_on: true           # D15 ratified: reranker default-on
+retrieval:
+  k: 5                              # §8.1
+  candidates: 50                    # pre-rerank pool per branch
+  rrf_k: 60                         # standard RRF damping constant
+  relevance_floor: 0.0              # §8.1; raised once Stage 2's golden set can measure it
+extraction:
+  pdf_backend: pymupdf              # or `docling` (optional extra); see plan assumption
+database:
+  dsn: postgresql://langatlas:langatlas@localhost:55432/langatlas

@@ -268,14 +268,14 @@ Stands up the third Python package and the one config file everything else reads
 - Consumes: `langatlas_pipeline.paths.PRIVATE_DIR`.
 - Produces: `IngestConfig.load()`, `snapshot_dir()`, every error class, console script `langatlas-sources`.
 
-- [ ] **Step 1: Commit this plan file first (per project CLAUDE.md).**
+- [x] **Step 1: Commit this plan file first (per project CLAUDE.md).**
 
 ```bash
 git add docs/superpowers/plans/2026-08-08-stage-1c-ingestion-and-retrieval.md
 git commit -m "docs(#stage-1c): add ingestion and retrieval plan"
 ```
 
-- [ ] **Step 2: Write `tools/ingest/pyproject.toml`.**
+- [x] **Step 2: Write `tools/ingest/pyproject.toml`.**
 
 ```toml
 # tools/ingest/pyproject.toml
@@ -321,7 +321,7 @@ markers = [
 addopts = "-m 'not live'"
 ```
 
-- [ ] **Step 3: Write `__init__.py`, `paths.py`, `errors.py`.**
+- [x] **Step 3: Write `__init__.py`, `paths.py`, `errors.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/__init__.py
@@ -382,7 +382,7 @@ class SnapshotMissing(IngestError):
         self.source_id = source_id
 ```
 
-- [ ] **Step 4: Write the failing config test.**
+- [x] **Step 4: Write the failing config test.**
 
 ```python
 # tools/ingest/tests/test_config.py
@@ -411,12 +411,12 @@ def test_dsn_env_wins(monkeypatch):
     assert IngestConfig.load().dsn == "postgresql://example/db"
 ```
 
-- [ ] **Step 5: Run it and watch it fail.**
+- [x] **Step 5: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_config.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.config'`
 
-- [ ] **Step 6: Write `config/ingest.yaml`.**
+- [x] **Step 6: Write `config/ingest.yaml`.**
 
 ```yaml
 # config/ingest.yaml — D15 ingestion + retrieval knobs.
@@ -441,7 +441,7 @@ database:
   dsn: postgresql://langatlas:langatlas@localhost:55432/langatlas
 ```
 
-- [ ] **Step 7: Write `config.py`.**
+- [x] **Step 7: Write `config.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/config.py
@@ -493,7 +493,7 @@ class IngestConfig:
         return replace(config, **overrides) if overrides else config
 ```
 
-- [ ] **Step 8: Write the minimal `cli.py` so the console script exists.**
+- [x] **Step 8: Write the minimal `cli.py` so the console script exists.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/cli.py
@@ -517,7 +517,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 9: Write `tests/test_paths.py` and `tests/conftest.py`.**
+- [x] **Step 9: Write `tests/test_paths.py` and `tests/conftest.py`.**
 
 ```python
 # tools/ingest/tests/test_paths.py
@@ -554,12 +554,12 @@ def snapshot_root(tmp_path, monkeypatch):
     return root
 ```
 
-- [ ] **Step 10: Install and run the tests.**
+- [x] **Step 10: Install and run the tests.**
 
 Run: `cd tools/ingest && uv sync --extra dev && uv run pytest -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 11: Add the private tier and pgdata to `.gitignore`.**
+- [x] **Step 11: Add the private tier and pgdata to `.gitignore`.**
 
 Append to `.gitignore`:
 
@@ -567,7 +567,7 @@ Append to `.gitignore`:
 .pgdata/
 ```
 
-- [ ] **Step 12: Commit.**
+- [x] **Step 12: Commit.**
 
 ```bash
 git add tools/ingest config/ingest.yaml .gitignore \
