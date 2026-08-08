@@ -928,7 +928,7 @@ The private tier D15 requires: originals, extracted text, and QA reports on disk
 - Consumes: `paths.snapshot_dir` (Task 1).
 - Produces: `SnapshotStore` (`put`, `fetch_url`, `get`, `write_extracted`, `read_extracted`, `write_qa`), `Snapshot`, `savepagenow`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_snapshot.py
@@ -1032,12 +1032,12 @@ def test_extracted_document_round_trips(snapshot_root, tmp_path):
     assert store.read_extracted("s").blocks[0].page == 1
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_snapshot.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.snapshot'`
 
-- [ ] **Step 3: Write `snapshot.py`.**
+- [x] **Step 3: Write `snapshot.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/snapshot.py
@@ -1186,12 +1186,12 @@ def _default_fetcher(url: str) -> tuple[bytes, str]:
     return response.content, media_type
 ```
 
-- [ ] **Step 4: Run the tests.**
+- [x] **Step 4: Run the tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_snapshot.py -v`
 Expected: FAIL on the two tests importing `langatlas_ingest.extract` (Task 4 builds it); the other six PASS.
 
-- [ ] **Step 5: Mark the two extract-dependent tests and re-run.**
+- [x] **Step 5: Mark the two extract-dependent tests and re-run.**
 
 Add `@pytest.mark.xfail(reason="langatlas_ingest.extract lands in Task 4", strict=True)` above
 `test_extracted_document_round_trips`, and delete the xfail in Task 4 Step 8.
@@ -1199,7 +1199,7 @@ Add `@pytest.mark.xfail(reason="langatlas_ingest.extract lands in Task 4", stric
 Run: `cd tools/ingest && uv run pytest tests/test_snapshot.py -v`
 Expected: PASS (6 passed, 1 xfailed)
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/ingest
