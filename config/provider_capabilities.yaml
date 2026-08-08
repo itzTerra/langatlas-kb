@@ -2,50 +2,56 @@
 # auto-committed: run `langatlas-probe` and commit its reviewed diff.
 # `null` means "not probed yet" and is treated as unsupported until proven.
 version: 1
-probed_at: null
+probed_at: '2026-08-08T09:04:24Z'
 aliases:
   glm:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
-    reasoning_field: null
+    resolved_model: glm
+    supports_json_schema: true
+    supports_json_object: true
+    reasoning_field:
     max_input_tokens: 131072
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
   kimi:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
-    reasoning_field: null
+    resolved_model: kimi
+    supports_json_schema: true
+    supports_json_object: true
+    reasoning_field:
     max_input_tokens: 131072
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
   deepseek:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
-    reasoning_field: null
+    resolved_model: deepseek
+    supports_json_schema: true
+    supports_json_object: true
+    reasoning_field:
     max_input_tokens: 131072
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
   deepseek-thinking:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
+    resolved_model: deepseek-thinking
+    supports_json_schema: true
+    supports_json_object: true
     reasoning_field: inline-think     # <think>...</think> arrives in-band
     max_input_tokens: 131072
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
   mini:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
-    reasoning_field: null
+    resolved_model: mini
+    supports_json_schema: true
+    supports_json_object: true
+    reasoning_field:
     max_input_tokens: 32768
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
   coder:
-    resolved_model: null
-    supports_json_schema: null
-    supports_json_object: null
-    reasoning_field: null
+    resolved_model: coder
+    supports_json_schema: true
+    supports_json_object: true
+    reasoning_field:
     max_input_tokens: 131072
-    default_sampling: {temperature: 0.0}
+    default_sampling:
+      temperature: 0.0
 embeddings:
   qwen3-embedding-4b: {dimensions: 2560, max_input_tokens: 40960}
   nomic-embed-text-v1.5: {dimensions: 768, max_input_tokens: 8192}

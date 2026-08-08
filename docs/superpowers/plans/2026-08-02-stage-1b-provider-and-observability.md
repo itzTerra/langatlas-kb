@@ -4593,7 +4593,7 @@ D41's `probe_capabilities.py`: probe each alias, **diff against the committed ta
 - Consumes: `ProviderConfig` (Task 1), `CompletionClient`/`build_client` (Task 8), `load_prompt` (Task 6), `RunContext` (Task 7).
 - Produces: `probe_alias`, `probe_all`, `diff_capabilities`, `apply_probe`, the `langatlas-probe` CLI.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_probe.py
@@ -4683,12 +4683,12 @@ def test_apply_probe_writes_the_table_and_preserves_comments(tmp_path: Path):
     assert reloaded["aliases"]["kimi"]["resolved_model"] is None, "unprobed aliases survive"
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_probe.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...observability.probe`.
 
-- [ ] **Step 3: Write `probe.py`.**
+- [x] **Step 3: Write `probe.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/observability/probe.py
@@ -4819,12 +4819,12 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run the test to verify it passes.**
+- [x] **Step 4: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_probe.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Run the first real probe (the Stage 1 exit deliverable).**
+- [x] **Step 5: Run the first real probe (the Stage 1 exit deliverable).**
 
 This is the one step in 1B that needs the university gateway. Set the two env vars first:
 
@@ -4847,7 +4847,7 @@ If the gateway is not reachable yet, stop here and record it: the table stays un
 and **Stage 1's exit gate is not satisfiable until this step runs** (it is listed in the
 cross-stage plan's Stage 1 "Produces" as a *completed* first probe).
 
-- [ ] **Step 6: Commit.**
+- [x] **Step 6: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/observability tools/pipeline/tests/test_probe.py config/provider_capabilities.yaml
