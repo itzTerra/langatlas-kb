@@ -5,7 +5,8 @@ from pydantic import BaseModel
 from ruamel.yaml import YAML
 from langatlas_pipeline.paths import CONFIG_DIR
 from langatlas_pipeline.prompts import load_prompt
-from langatlas_pipeline.providers.completion import CompletionClient
+from langatlas_pipeline.errors import BudgetExceeded
+from langatlas_pipeline.providers.completion import CompletionClient, estimate_tokens
 from langatlas_pipeline.providers.core import Budget, RunContext
 from langatlas_pipeline.transcripts.writer import utc_now
 
@@ -23,6 +24,11 @@ def _try_mode(client_wrapper, alias: str, prompt, schema, mode: str) -> bool:
     try:
         client_wrapper.complete_with_mode(alias, prompt.render(), prompt=prompt,
                                           schema=schema, mode=mode)
+    except BudgetExceeded:
+        # A budget stop is a decision about the run, not evidence about the gateway —
+        # swallowing it here would silently record "mode unsupported" for a call that
+        # was never made.
+        raise
     except Exception:
         return False
     return True
@@ -81,17 +87,24 @@ class _ProbeClient(CompletionClient):
     last_resolved_model: str | None = None
 
     def complete_with_mode(self, alias, messages, *, prompt, schema, mode):
+        # The probe is a provider call like any other: it goes through the same budget
+        # gate and the same usage accounting as CompletionClient.complete, otherwise the
+        # probe run's own Budget(max_calls=...) is unenforceable and its manifest stats
+        # report zero calls for a run that hit the gateway repeatedly.
+        self.ctx.check_budget(calls=1, tokens=estimate_tokens(messages))
         response = self.throttle.run(
             lambda: self.client.chat.completions.create(
                 model=alias, messages=messages, temperature=0.0,
                 **self._structured_kwargs(mode, schema)))
         self.last_resolved_model = getattr(response, "model", None)
+        tokens_in = getattr(response.usage, "prompt_tokens", 0)
+        tokens_out = getattr(response.usage, "completion_tokens", 0)
+        self.ctx.note_usage(calls=1, tokens=tokens_in + tokens_out)
         schema.model_validate_json(response.choices[0].message.content)
         self.ctx.recorder.record_call(
             endpoint="chat", alias=alias, resolved_model=self.last_resolved_model,
             messages=messages, response_text=response.choices[0].message.content,
-            tokens_in=getattr(response.usage, "prompt_tokens", 0),
-            tokens_out=getattr(response.usage, "completion_tokens", 0),
+            tokens_in=tokens_in, tokens_out=tokens_out,
             latency_ms=0, cache_hit=False, outcome="ok", prompt_id=prompt.prompt_id,
             prompt_version=prompt.version)
         return response

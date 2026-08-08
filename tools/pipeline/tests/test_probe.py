@@ -1,4 +1,5 @@
 import json
+import pytest
 from pathlib import Path
 from ruamel.yaml import YAML
 from langatlas_pipeline.observability.probe import (
@@ -144,3 +145,38 @@ def test_apply_probe_writes_the_table_and_preserves_comments(tmp_path: Path):
     assert reloaded["aliases"]["glm"]["supports_json_object"] is True
     assert reloaded["probed_at"] == "2026-08-02T10:00:00Z"
     assert reloaded["aliases"]["kimi"]["resolved_model"] is None, "unprobed aliases survive"
+
+
+def test_the_probe_is_budget_gated_and_counted(ctx):
+    """Finding 3: complete_with_mode called the throttle directly, so the probe's own
+    Budget(max_calls=...) was unenforceable and the run's stats reported zero calls."""
+    from langatlas_pipeline.observability.probe import ProbeAnswer, _ProbeClient
+    from langatlas_pipeline.prompts import load_prompt
+
+    prompt = load_prompt("capability-probe")
+    wrapper = _ProbeClient(ctx, client=FakeGateway(schema_ok=True))
+    wrapper.complete_with_mode("glm", prompt.render(), prompt=prompt, schema=ProbeAnswer,
+                               mode="json_object")
+    assert ctx._calls == 1
+    assert ctx._tokens == 20, "12 prompt + 8 completion tokens from the fake gateway"
+
+
+def test_probe_alias_stops_at_the_budget_cap(workspace):
+    from langatlas_pipeline.config import ProviderConfig
+    from langatlas_pipeline.errors import BudgetExceeded
+    from langatlas_pipeline.providers.core import Budget, RunContext
+
+    run = RunContext.start(kind="probe", slug="budget", budget=Budget(max_calls=2),
+                           config=ProviderConfig.load(),
+                           transcripts_root=workspace["transcripts"],
+                           private_dir=workspace["private"], no_cache=True)
+    gateway = FakeGateway(schema_ok=True)
+    try:
+        # One call per alias (json_schema succeeding short-circuits the json_object
+        # confirmation), so the third alias is the one that crosses the cap.
+        with pytest.raises(BudgetExceeded) as excinfo:
+            probe_all(run, client=gateway)
+        assert excinfo.value.kind == "max_calls"
+        assert len(gateway.seen) == 2, "the refused call never reached the gateway"
+    finally:
+        run.close()

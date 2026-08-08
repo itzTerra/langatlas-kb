@@ -30,10 +30,23 @@ def _normalize_numerics(obj: Any) -> Any:
 def cache_key(*, endpoint: str, resolved_model: str, messages: list[dict],
               sampling: dict[str, Any], schema_name: str | None,
               prompt_ref: str | None) -> str:
-    """D26: keyed on the *resolved* model id, so an alias silently floating to a new
-    model version is a cache miss, not a stale hit. sort_keys makes dict ordering
-    irrelevant; facts derived from a cached response are exactly as good, so entries
-    are kept forever (no eviction)."""
+    """D26: keyed on the *resolved* model id, so a response is only ever re-served for
+    the model that produced it. What this actually guarantees, precisely:
+
+    - Entries are written under the model id the gateway reported on the response, and
+      `CompletionClient` reads under the alias's run pin once one exists. So *within a
+      run*, an alias floating to a different model is a miss, and the following
+      `pin_alias` raises `AliasDrift`.
+    - The first call of a run has no pin yet, so it reads under the configured
+      `resolved_model` from `config/provider_capabilities.yaml`. If that value is stale
+      (the probe runs monthly), that read simply misses — it cannot serve a response
+      from a different model, but it also cannot *detect* the drift.
+    - Nothing here consults the gateway's `/v1/model/info` route, so drift between probe
+      cycles is invisible until a real call reports a different model id. Detecting it
+      earlier would require querying that route; no code currently does.
+
+    sort_keys makes dict ordering irrelevant; facts derived from a cached response are
+    exactly as good, so entries are kept forever (no eviction)."""
     payload_dict = {
         "endpoint": endpoint, "resolved_model": resolved_model,
         "messages": messages, "sampling": sampling, "schema": schema_name,

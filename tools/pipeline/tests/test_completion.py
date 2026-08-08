@@ -228,3 +228,51 @@ def test_the_manifest_prompt_list_does_not_duplicate(ctx):
     client.complete("glm", [{"role": "user", "content": "one"}], prompt=prompt)
     client.complete("glm", [{"role": "user", "content": "two"}], prompt=prompt)
     assert ctx.manifest.prompts == [prompt.ref()]
+
+
+def test_cache_key_follows_the_run_pin_not_the_configured_model(ctx):
+    """Finding 5: the config says glm resolves to 'glm', but the gateway answers as
+    'glm-5.2'. Once the run has pinned the observed id, the key must follow the pin."""
+    from langatlas_pipeline.cache import cache_key
+
+    prompt = load_prompt("capability-probe")
+    messages = prompt.render()
+    assert ctx.config.alias("glm").resolved_model == "glm"
+
+    def key_under(model):
+        return cache_key(endpoint="chat", resolved_model=model, messages=messages,
+                         sampling={"temperature": 0.0}, schema_name=None,
+                         prompt_ref=prompt.ref())
+
+    fake = FakeClient([_response("pong")])
+    client = CompletionClient(ctx, client=fake)
+    client.complete("glm", messages, prompt=prompt)
+
+    assert ctx.pinned_model("glm") == "glm-5.2"
+    assert key_under("glm") != key_under("glm-5.2"), "sanity: the two ids key differently"
+    assert ctx.cache.get(key_under("glm-5.2")) is not None, \
+        "the entry is stored under the observed model id"
+    assert ctx.cache.get(key_under("glm")) is None, \
+        "nothing is stored under the (stale) configured id"
+
+    again = client.complete("glm", messages, prompt=prompt)
+    assert again.cache_hit is True, "the second read follows the pin and hits"
+    assert len(fake.responses.requests) == 1
+
+
+def test_a_stale_entry_under_the_configured_id_is_not_served_after_pinning(ctx):
+    from langatlas_pipeline.cache import cache_key
+
+    prompt = load_prompt("capability-probe")
+    messages = prompt.render()
+    stale_key = cache_key(endpoint="chat", resolved_model="glm", messages=messages,
+                          sampling={"temperature": 0.0}, schema_name=None,
+                          prompt_ref=prompt.ref())
+    ctx.cache.put(stale_key, {"text": "STALE", "resolved_model": "glm",
+                              "tokens_in": 1, "tokens_out": 1})
+    ctx.pin_alias("glm", "glm-5.2")
+
+    fake = FakeClient([_response("fresh")])
+    result = CompletionClient(ctx, client=fake).complete("glm", messages, prompt=prompt)
+    assert result.text == "fresh"
+    assert result.cache_hit is False

@@ -115,10 +115,19 @@ class CompletionClient:
         self.ctx.check_budget(calls=1, tokens=estimated)
 
         resolved_hint = cap.resolved_model or alias
-        key = cache_key(endpoint="chat", resolved_model=resolved_hint, messages=messages,
-                        sampling=sampling.as_dict(),
-                        schema_name=schema.__name__ if schema else None,
-                        prompt_ref=prompt.ref())
+        # Prefer what this run has actually *observed* over what the config claims. The
+        # pin is set by the first real call in the run; keying against it means a mid-run
+        # drift changes the key (miss) and then trips AliasDrift on pin_alias below,
+        # instead of being masked by a stale hit under the configured id.
+        key_model = self.ctx.pinned_model(alias) or resolved_hint
+
+        def key_for(model: str) -> str:
+            return cache_key(endpoint="chat", resolved_model=model, messages=messages,
+                             sampling=sampling.as_dict(),
+                             schema_name=schema.__name__ if schema else None,
+                             prompt_ref=prompt.ref())
+
+        key = key_for(key_model)
         if self.ctx.cache is not None:
             hit = self.ctx.cache.get(key)
             if hit is not None:
@@ -188,10 +197,13 @@ class CompletionClient:
                                 finish_reason=getattr(choice, "finish_reason", None),
                                 reasoning=reasoning)
             if self.ctx.cache is not None:
-                self.ctx.cache.put(key, {"text": body, "resolved_model": resolved,
-                                         "tokens_in": tokens_in, "tokens_out": tokens_out,
-                                         "reasoning": reasoning,
-                                         "finish_reason": result.finish_reason})
+                # Stored under the *observed* model's key, so the entry is only ever
+                # re-served for the model that actually produced it.
+                self.ctx.cache.put(key_for(resolved),
+                                   {"text": body, "resolved_model": resolved,
+                                    "tokens_in": tokens_in, "tokens_out": tokens_out,
+                                    "reasoning": reasoning,
+                                    "finish_reason": result.finish_reason})
             return result
 
         raise StructuredOutputError(alias, last_text, attempts)
