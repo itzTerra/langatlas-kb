@@ -4307,7 +4307,7 @@ The last mile of D18: one commit per run into the public CC0 repo Stage 0 create
 - Consumes: `RunContext.close` (Task 7), run directories (Task 2).
 - Produces: `PublishResult`, `publish_run`, `ctx.close(publish=True)`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_publish.py
@@ -4389,12 +4389,12 @@ def test_ctx_close_publishes_only_when_asked(workspace, monkeypatch):
     assert calls == [run2.run_dir]
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_publish.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...transcripts.publish`.
 
-- [ ] **Step 3: Write `publish.py`.**
+- [x] **Step 3: Write `publish.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/publish.py
@@ -4441,7 +4441,7 @@ def publish_run(run_dir: Path, *, repo_root: Path, push: bool = True,
     return PublishResult("published")
 ```
 
-- [ ] **Step 4: Wire publishing into `RunContext.close`.**
+- [x] **Step 4: Wire publishing into `RunContext.close`.**
 
 In `core.py`, at the end of `close()` before `return path`:
 
@@ -4461,12 +4461,12 @@ In `core.py`, at the end of `close()` before `return path`:
 `langatlas_pipeline.transcripts.publish.publish_run`, so the module — not the function —
 must be imported here.)
 
-- [ ] **Step 5: Run the test to verify it passes.**
+- [x] **Step 5: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_publish.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Add the gitleaks workflow to the transcripts repo.**
+- [x] **Step 6: Add the gitleaks workflow to the transcripts repo.**
 
 ```yaml
 # ../langatlas-transcripts/.github/workflows/gitleaks.yml
@@ -4493,7 +4493,7 @@ jobs:
 The docker invocation is deliberate: it needs no licence key and no marketplace action,
 matching the project's boring-infrastructure posture.
 
-- [ ] **Step 7: Write `REDACTIONS.md`.**
+- [x] **Step 7: Write `REDACTIONS.md`.**
 
 ```markdown
 # Redaction log
@@ -4524,7 +4524,7 @@ _(no redactions yet)_
 -->
 ```
 
-- [ ] **Step 8: Update the transcripts README.**
+- [x] **Step 8: Update the transcripts README.**
 
 Replace the "This repo is currently **empty scaffolding**…" paragraph with:
 
@@ -4549,7 +4549,7 @@ private snapshot store, because the excerpt limit is a copyright control.
 History rewrites happen only for the incidents listed in [REDACTIONS.md](REDACTIONS.md).
 ```
 
-- [ ] **Step 9: Commit both repos.**
+- [x] **Step 9: Commit both repos.**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
@@ -4561,7 +4561,7 @@ git add .github/workflows/gitleaks.yml REDACTIONS.md README.md
 git commit -m "chore: gitleaks CI, redaction log, and transcript layout docs"
 ```
 
-- [ ] **Step 10: Prove the loop end to end.**
+- [x] **Step 10: Prove the loop end to end.**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/pipeline

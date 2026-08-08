@@ -1,3 +1,4 @@
+import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -181,6 +182,15 @@ class RunContext:
         if self.cache is not None:
             self.cache.close()
         self.closed = True
+        if publish is None:
+            publish = bool(self.config.providers.get("transcripts", {}).get("publish", False)) \
+                or os.environ.get("LANGATLAS_PUBLISH_TRANSCRIPTS") == "1"
+        if publish:
+            from langatlas_pipeline.transcripts import publish as publish_module
+
+            result = publish_module.publish_run(self.run_dir,
+                                                repo_root=self.run_dir.parents[2])
+            self.manifest.stats["publish"] = result.status
         return path
 
     def __enter__(self) -> "RunContext":
