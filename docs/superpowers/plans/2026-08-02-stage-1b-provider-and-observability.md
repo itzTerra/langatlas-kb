@@ -4870,7 +4870,7 @@ D41's observability surface: a CLI reading the cost log and the transcripts repo
 - Consumes: `read_cost_rows` (Task 3), run manifests (Task 2), `ProviderConfig` (Task 1).
 - Produces: `report_cost`, `report_capabilities`, the `langatlas-report` CLI.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_report.py
@@ -4942,12 +4942,12 @@ def test_cli_writes_to_stdout_and_never_commits(capsys, tmp_path: Path):
     assert "| alias |" in capsys.readouterr().out.lower()
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_report.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...observability.report`.
 
-- [ ] **Step 3: Write `report.py`.**
+- [x] **Step 3: Write `report.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/observability/report.py
@@ -5067,7 +5067,7 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Write the spec-path shim and gitignore report snapshots.**
+- [x] **Step 4: Write the spec-path shim and gitignore report snapshots.**
 
 ```python
 # tools/observability/report.py
@@ -5088,12 +5088,12 @@ reports/
 *.report.md
 ```
 
-- [ ] **Step 5: Run the test to verify it passes.**
+- [x] **Step 5: Run the test to verify it passes.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_report.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Run the whole 1B suite plus 1A's, and eyeball a real report.**
+- [x] **Step 6: Run the whole 1B suite plus 1A's, and eyeball a real report.**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/pipeline && uv run --extra dev pytest -v
@@ -5103,7 +5103,7 @@ cd ../pipeline && uv run --extra dev langatlas-report capabilities
 Expected: both suites green; the capabilities report shows real probed values from Task 14
 (or the "never been probed" warning if the gateway was unreachable).
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
