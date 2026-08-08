@@ -591,7 +591,7 @@ The one-way-derived data plane. `source_chunks` is the table D15 promised: writt
 - Consumes: `IngestConfig.dsn` (Task 1).
 - Produces: `connect()`, `migrate()`, `ensure_embedding_table()`; the `db` compose service; the `source_chunks` / `source_ingestions` / `sourcing_queue` tables every later task reads and writes.
 
-- [ ] **Step 1: Write `docker-compose.yml`.**
+- [x] **Step 1: Write `docker-compose.yml`.**
 
 ```yaml
 # docker compose up -d db  — the local RAG/MCP data plane (D7, D58).
@@ -616,7 +616,7 @@ services:
       retries: 20
 ```
 
-- [ ] **Step 2: Write `db/0001_source_chunks.sql`.**
+- [x] **Step 2: Write `db/0001_source_chunks.sql`.**
 
 ```sql
 -- 0001_source_chunks.sql — D15's second table plus its ingestion bookkeeping.
@@ -678,7 +678,7 @@ CREATE TABLE IF NOT EXISTS sourcing_queue (
 );
 ```
 
-- [ ] **Step 3: Write `db/0002_indexes.sql`.**
+- [x] **Step 3: Write `db/0002_indexes.sql`.**
 
 ```sql
 -- 0002_indexes.sql — the FTS half of D15's hybrid retrieval, plus the filter-first paths.
@@ -692,7 +692,7 @@ CREATE INDEX IF NOT EXISTS sourcing_queue_open_idx   ON sourcing_queue (kind, so
     WHERE resolved_at IS NULL;
 ```
 
-- [ ] **Step 4: Write the failing database test.**
+- [x] **Step 4: Write the failing database test.**
 
 ```python
 # tools/ingest/tests/test_db.py
@@ -745,7 +745,7 @@ def test_sourcing_queue_rejects_an_unknown_reason(db_conn):
                         " VALUES ('pending-source', 's', 'invented-reason')")
 ```
 
-- [ ] **Step 5: Add the `db_conn` fixture to `conftest.py`.**
+- [x] **Step 5: Add the `db_conn` fixture to `conftest.py`.**
 
 ```python
 # append to tools/ingest/tests/conftest.py
@@ -781,12 +781,12 @@ def db_conn(dsn):
         yield conn
 ```
 
-- [ ] **Step 6: Start Postgres, then run the tests and watch them fail.**
+- [x] **Step 6: Start Postgres, then run the tests and watch them fail.**
 
 Run: `docker compose up -d db && cd tools/ingest && uv run pytest tests/test_db.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.db'`
 
-- [ ] **Step 7: Write `db.py`.**
+- [x] **Step 7: Write `db.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/db.py
@@ -860,12 +860,12 @@ def ensure_embedding_table(conn, model_id: str, dimensions: int) -> str:
     return table
 ```
 
-- [ ] **Step 8: Run the tests and confirm they pass.**
+- [x] **Step 8: Run the tests and confirm they pass.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_db.py -m db -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 9: Wire `langatlas-sources db` into the CLI.**
+- [x] **Step 9: Wire `langatlas-sources db` into the CLI.**
 
 Replace `build_parser`/`main` in `cli.py`:
 
@@ -902,12 +902,12 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 10: Run the migration through the CLI against the real database.**
+- [x] **Step 10: Run the migration through the CLI against the real database.**
 
 Run: `cd tools/ingest && uv run langatlas-sources db`
 Expected: prints `0001_source_chunks.sql` and `0002_indexes.sql`; a second run prints `schema already up to date`.
 
-- [ ] **Step 11: Commit.**
+- [x] **Step 11: Commit.**
 
 ```bash
 git add docker-compose.yml db tools/ingest

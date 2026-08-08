@@ -1,0 +1,20 @@
+# docker compose up -d db  — the local RAG/MCP data plane (D7, D58).
+# Always a derived artifact: dropping this volume and re-running `langatlas-sources ingest`
+# from the private snapshot store must reproduce it exactly (D1).
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    container_name: langatlas-db
+    environment:
+      POSTGRES_USER: langatlas
+      POSTGRES_PASSWORD: langatlas
+      POSTGRES_DB: langatlas
+    ports:
+      - "55432:5432"          # non-default host port: never fight a system Postgres
+    volumes:
+      - ./.pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U langatlas -d langatlas"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
