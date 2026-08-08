@@ -4028,7 +4028,7 @@ D18's second tap: interactive and externally-run Claude Code sessions don't go t
 - Consumes: `TranscriptWriter`/`RunManifest`/`mint_run_id` (Task 2).
 - Produces: `import_session`, `find_session_files`, the `langatlas-transcript import` CLI.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/pipeline/tests/test_import_sessions.py
@@ -4110,12 +4110,12 @@ def test_find_session_files_sorts_newest_last(tmp_path: Path):
     assert find_session_files(tmp_path)[-1] == newer
 ```
 
-- [ ] **Step 2: Run it to verify it fails.**
+- [x] **Step 2: Run it to verify it fails.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_import_sessions.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...transcripts.import_sessions`.
 
-- [ ] **Step 3: Write `import_sessions.py`.**
+- [x] **Step 3: Write `import_sessions.py`.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/import_sessions.py
@@ -4211,7 +4211,7 @@ def import_session(jsonl_path: Path, *, kind: str = "interactive", slug: str | N
     return run_dir
 ```
 
-- [ ] **Step 4: Write the transcripts CLI.**
+- [x] **Step 4: Write the transcripts CLI.**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/transcripts/cli.py
@@ -4260,12 +4260,12 @@ if __name__ == "__main__":
 
 Note: this CLI imports `publish_run`, which lands in Task 13 — run its tests after Task 13.
 
-- [ ] **Step 5: Run the import tests to verify they pass.**
+- [x] **Step 5: Run the import tests to verify they pass.**
 
 Run: `cd tools/pipeline && uv run --extra dev pytest tests/test_import_sessions.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Sanity-check the normalizer against a real session file.**
+- [x] **Step 6: Sanity-check the normalizer against a real session file.**
 
 ```bash
 cd tools/pipeline
@@ -4283,7 +4283,7 @@ carries block or line types the normalizer skips, check the manifest's
 `skipped_line_types` and add handling for anything content-bearing (a tool result or text
 must never be dropped); purely structural line types staying in the skip counter is fine.
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/transcripts/import_sessions.py tools/pipeline/src/langatlas_pipeline/transcripts/cli.py tools/pipeline/tests/test_import_sessions.py
