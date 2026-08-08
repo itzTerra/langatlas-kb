@@ -86,24 +86,58 @@ class _ProbeClient(CompletionClient):
 
     last_resolved_model: str | None = None
 
+    def _record_rejection(self, alias, messages, prompt, mode, detail, *,
+                          tokens_in: int = 0, tokens_out: int = 0,
+                          response_text: str | None = None) -> None:
+        """A refused mode is still a call the gateway served and billed. Logging it under
+        its own outcome keeps the run's budget and the public transcript honest about how
+        many calls a probe made, and leaves the evidence for *why* a mode was recorded as
+        unsupported in the transcript rather than only in the capability table."""
+        self.ctx.recorder.record_call(
+            endpoint="chat", alias=alias, resolved_model=self.last_resolved_model,
+            messages=messages,
+            response_text=response_text if response_text is not None
+            else f"[{mode} rejected] {type(detail).__name__}: {detail}",
+            tokens_in=tokens_in, tokens_out=tokens_out, latency_ms=0, cache_hit=False,
+            outcome="mode_rejected", prompt_id=prompt.prompt_id,
+            prompt_version=prompt.version)
+
     def complete_with_mode(self, alias, messages, *, prompt, schema, mode):
         # The probe is a provider call like any other: it goes through the same budget
         # gate and the same usage accounting as CompletionClient.complete, otherwise the
         # probe run's own Budget(max_calls=...) is unenforceable and its manifest stats
         # report zero calls for a run that hit the gateway repeatedly.
         self.ctx.check_budget(calls=1, tokens=estimate_tokens(messages))
-        response = self.throttle.run(
-            lambda: self.client.chat.completions.create(
-                model=alias, messages=messages, temperature=0.0,
-                **self._structured_kwargs(mode, schema)))
+        try:
+            response = self.throttle.run(
+                lambda: self.client.chat.completions.create(
+                    model=alias, messages=messages, temperature=0.0,
+                    **self._structured_kwargs(mode, schema)))
+        except BudgetExceeded:
+            # Not a call: nothing was sent, so nothing is counted or logged.
+            raise
+        except Exception as exc:
+            # Token counts are unknowable for a call that never returned a usage block;
+            # the call itself is not, so it is counted.
+            self.ctx.note_usage(calls=1)
+            self._record_rejection(alias, messages, prompt, mode, exc)
+            raise
         self.last_resolved_model = getattr(response, "model", None)
         tokens_in = getattr(response.usage, "prompt_tokens", 0)
         tokens_out = getattr(response.usage, "completion_tokens", 0)
         self.ctx.note_usage(calls=1, tokens=tokens_in + tokens_out)
-        schema.model_validate_json(response.choices[0].message.content)
+        raw = response.choices[0].message.content
+        try:
+            schema.model_validate_json(raw)
+        except Exception as exc:
+            # The gateway accepted the mode and then ignored it — for probe purposes that
+            # is the same verdict as an outright refusal, and just as much a real call.
+            self._record_rejection(alias, messages, prompt, mode, exc, tokens_in=tokens_in,
+                                   tokens_out=tokens_out, response_text=raw)
+            raise
         self.ctx.recorder.record_call(
             endpoint="chat", alias=alias, resolved_model=self.last_resolved_model,
-            messages=messages, response_text=response.choices[0].message.content,
+            messages=messages, response_text=raw,
             tokens_in=tokens_in, tokens_out=tokens_out,
             latency_ms=0, cache_hit=False, outcome="ok", prompt_id=prompt.prompt_id,
             prompt_version=prompt.version)

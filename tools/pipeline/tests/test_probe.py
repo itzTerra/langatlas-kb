@@ -180,3 +180,42 @@ def test_probe_alias_stops_at_the_budget_cap(workspace):
         assert len(gateway.seen) == 2, "the refused call never reached the gateway"
     finally:
         run.close()
+
+
+def test_a_rejected_mode_is_still_counted_and_still_logged(ctx):
+    """Fix B: a mode the gateway refuses is a call it served and billed. It used to reach
+    neither note_usage nor the transcript, so a probe run under-reported its own calls and
+    the public log had no trace of why a mode was recorded unsupported."""
+    gateway = FakeGateway(schema_ok=False)
+    result = probe_alias(ctx, "glm", client=gateway)
+
+    assert result["supports_json_schema"] is False, "the fallback still works unchanged"
+    assert result["supports_json_object"] is True
+    assert ctx._calls == 2, "the refused json_schema call is counted alongside the good one"
+    assert ctx._tokens == 20, "a failed call reports no usage, so it adds no tokens"
+
+    events = [json.loads(line)
+              for line in (ctx.run_dir / "transcript.jsonl").read_text().splitlines()]
+    rejected = [e for e in events if "[json_schema rejected]" in e["content"]]
+    assert len(rejected) == 1, "the failed attempt appears in the public transcript"
+
+    rows = [json.loads(line)
+            for line in (ctx.private_dir / "cost-log.jsonl").read_text().splitlines()]
+    assert [row["outcome"] for row in rows] == ["mode_rejected", "ok"]
+
+
+def test_a_budget_stop_is_not_recorded_as_a_call(ctx):
+    """The budget gate fires before anything is sent, so it must not be counted or logged
+    the way a genuine mode rejection is."""
+    from langatlas_pipeline.errors import BudgetExceeded
+    from langatlas_pipeline.observability.probe import ProbeAnswer, _ProbeClient
+    from langatlas_pipeline.prompts import load_prompt
+
+    prompt = load_prompt("capability-probe")
+    wrapper = _ProbeClient(ctx, client=FakeGateway(schema_ok=True))
+    ctx.budget.max_calls = 0
+    with pytest.raises(BudgetExceeded):
+        wrapper.complete_with_mode("glm", prompt.render(), prompt=prompt,
+                                   schema=ProbeAnswer, mode="json_object")
+    assert ctx._calls == 0
+    assert not (ctx.private_dir / "cost-log.jsonl").exists()
