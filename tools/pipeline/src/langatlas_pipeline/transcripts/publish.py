@@ -5,7 +5,11 @@ from pathlib import Path
 
 @dataclass
 class PublishResult:
-    status: str            # published | noop | push_failed | no_repo
+    # published | noop | commit_failed | push_failed | no_repo. `commit_failed` and
+    # `push_failed` are deliberately distinct: a rejected commit is a local problem
+    # (hooks, identity, index), a rejected push is a remote one, and an orchestrator
+    # retrying a publish needs to tell them apart.
+    status: str
     detail: str | None = None
 
 
@@ -30,7 +34,8 @@ def publish_run(run_dir: Path, *, repo_root: Path, push: bool = True,
 
     commit = _git(["commit", "-q", "-m", run_dir.name], repo_root)
     if commit.returncode != 0:
-        return PublishResult("push_failed", commit.stderr.strip() or commit.stdout.strip())
+        return PublishResult("commit_failed",
+                             commit.stderr.strip() or commit.stdout.strip())
 
     if not push:
         return PublishResult("published")

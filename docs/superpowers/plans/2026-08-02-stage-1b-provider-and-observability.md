@@ -83,7 +83,7 @@ class TranscriptWriter:
     def append(self, *, role: str, content: str, **fields) -> TranscriptEvent
     def finalize(self, **manifest_updates) -> Path
 # langatlas_pipeline.transcripts.publish
-@dataclass class PublishResult:     # status: "published" | "noop" | "push_failed" | "no_repo"
+@dataclass class PublishResult:     # status: "published" | "noop" | "commit_failed" | "push_failed" | "no_repo"
 def publish_run(run_dir: Path, *, repo_root: Path, push: bool = True) -> PublishResult
 # langatlas_pipeline.transcripts.import_sessions
 def import_session(jsonl_path: Path, *, kind: str = "interactive", slug: str | None = None,
@@ -152,7 +152,7 @@ class RunContext:
     def rerank(self, query: str, docs: list[str], *, model: str) -> list[float]
     def claude_run(self, prompt: str, *, options: "ClaudeRunOptions") -> "AgentRunResult"
     def close(self, *, resulting_fact_ids: Sequence[str] = (),
-              publish: bool | None = None) -> Path
+              publish: bool | None = None, push: bool | None = None) -> Path
     def __enter__(self) -> "RunContext"; def __exit__(self, *exc) -> None
 
 # langatlas_pipeline.providers.completion

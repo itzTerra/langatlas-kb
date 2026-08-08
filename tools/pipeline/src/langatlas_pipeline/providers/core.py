@@ -167,7 +167,7 @@ class RunContext:
     # ---- lifecycle --------------------------------------------------------------
 
     def close(self, *, resulting_fact_ids: Sequence[str] = (),
-              publish: bool | None = None) -> Path:
+              publish: bool | None = None, push: bool | None = None) -> Path:
         if self.closed:
             return self.run_dir / "manifest.yaml"
         self.manifest.stats = {
@@ -182,14 +182,21 @@ class RunContext:
         if self.cache is not None:
             self.cache.close()
         self.closed = True
+        transcripts_config = self.config.providers.get("transcripts", {})
         if publish is None:
-            publish = bool(self.config.providers.get("transcripts", {}).get("publish", False)) \
+            publish = bool(transcripts_config.get("publish", False)) \
                 or os.environ.get("LANGATLAS_PUBLISH_TRANSCRIPTS") == "1"
+        if push is None:
+            # Publishing (a local commit) and pushing are separate decisions: a caller may
+            # legitimately want the run committed without a network round trip. Default
+            # stays True so nobody's behaviour changes by not opting in.
+            push = bool(transcripts_config.get("push", True))
         if publish:
             from langatlas_pipeline.transcripts import publish as publish_module
 
             result = publish_module.publish_run(self.run_dir,
-                                                repo_root=self.run_dir.parents[2])
+                                                repo_root=self.run_dir.parents[2],
+                                                push=push)
             self.manifest.stats["publish"] = result.status
         return path
 
