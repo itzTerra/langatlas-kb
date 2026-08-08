@@ -7,6 +7,69 @@ from langatlas_pipeline.observability.probe import (
 
 _yaml = YAML(typ="safe")
 
+# Snapshot of config/provider_capabilities.yaml's unprobed shape as Task 1 first shipped it
+# (commit 869084d), before the capability probe (Task 14) ever ran against it. Reading the
+# live repo file here would be both semantically wrong (it's genuinely probed now, D41) and
+# cwd-sensitive (a relative "config/..." path only resolves when pytest is invoked from the
+# tools/pipeline directory) — so this test carries its own fixed starting-point content.
+_UNPROBED_CAPABILITIES_SOURCE = """\
+# Per-alias capability table (D41). NEVER hand-edited from guesses and never
+# auto-committed: run `langatlas-probe` and commit its reviewed diff.
+# `null` means "not probed yet" and is treated as unsupported until proven.
+version: 1
+probed_at: null
+aliases:
+  glm:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: null
+    max_input_tokens: 131072
+    default_sampling: {temperature: 0.0}
+  kimi:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: null
+    max_input_tokens: 131072
+    default_sampling: {temperature: 0.0}
+  deepseek:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: null
+    max_input_tokens: 131072
+    default_sampling: {temperature: 0.0}
+  deepseek-thinking:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: inline-think     # <think>...</think> arrives in-band
+    max_input_tokens: 131072
+    default_sampling: {temperature: 0.0}
+  mini:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: null
+    max_input_tokens: 32768
+    default_sampling: {temperature: 0.0}
+  coder:
+    resolved_model: null
+    supports_json_schema: null
+    supports_json_object: null
+    reasoning_field: null
+    max_input_tokens: 131072
+    default_sampling: {temperature: 0.0}
+embeddings:
+  qwen3-embedding-4b: {dimensions: 2560, max_input_tokens: 40960}
+  nomic-embed-text-v1.5: {dimensions: 768, max_input_tokens: 8192}
+  mxbai-embed-large: {dimensions: 1024, max_input_tokens: 512}
+  multilingual-e5-large-instruct: {dimensions: 1024, max_input_tokens: 512}
+rerankers:
+  qwen3-reranker-4b: {mode: completion}
+"""
+
 
 class FakeGateway:
     """json_schema is rejected the way a gateway without guided decoding rejects it;
@@ -66,9 +129,8 @@ def test_diff_reports_drift_and_silence_when_unchanged():
 
 
 def test_apply_probe_writes_the_table_and_preserves_comments(tmp_path: Path):
-    source = Path("config/provider_capabilities.yaml").read_text()
     target = tmp_path / "provider_capabilities.yaml"
-    target.write_text(source)
+    target.write_text(_UNPROBED_CAPABILITIES_SOURCE)
     apply_probe(target, {"probed_at": "2026-08-02T10:00:00Z",
                          "aliases": {"glm": {"resolved_model": "glm-5.2",
                                              "supports_json_schema": False,
