@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-from langatlas_pipeline.injection import delimit_untrusted
 from langatlas_pipeline.prompts import load_prompt
 
 
@@ -38,8 +37,13 @@ class RerankClient:
         scores: list[float] = []
         for start in range(0, len(docs), self.batch_size):
             batch = docs[start:start + self.batch_size]
+            # Through the D31 door, not around it: a rerank candidate is untrusted
+            # external text like any other fetched chunk, so it gets the same lexical
+            # instruction scan and the same logged flags, not just the delimiters.
             rendered = "\n\n".join(
-                f"{i + 1}. {delimit_untrusted(doc, source_id=None, kind='rerank-candidate')}"
+                f"{i + 1}. " + self.ctx.tool_result(
+                    tool="rerank-candidate", text=doc, source_id=None,
+                    kind="rerank-candidate")
                 for i, doc in enumerate(batch))
             messages = self.prompt.render(query=query, documents=rendered)
             result = self.completer.complete(self.alias, messages, prompt=self.prompt,

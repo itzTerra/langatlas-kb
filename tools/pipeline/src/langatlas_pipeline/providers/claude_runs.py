@@ -8,6 +8,7 @@ from claude_agent_sdk import (
     TextBlock, ThinkingBlock, ToolResultBlock, ToolUseBlock, UserMessage, query as sdk_query,
 )
 from langatlas_pipeline.errors import BudgetExceeded, ClaudeLimitSignal
+from langatlas_pipeline.injection import scan_for_instructions
 from langatlas_pipeline.transcripts.writer import utc_now
 
 _LIMIT_ERRORS = {"rate_limit": "rate_limited", "authentication_failed": "auth",
@@ -163,10 +164,17 @@ class ClaudeRunner:
             if isinstance(block, ToolResultBlock):
                 body = block.content
                 text = body if isinstance(body, str) else str(body)
+                # D31 applies to this channel too: a WebFetch result here is exactly the
+                # untrusted external text `ctx.tool_result()` scans on the completion
+                # side. Same flag naming, same log-and-continue posture.
+                flags = [f"injection:{flag.pattern_id}"
+                         for flag in scan_for_instructions(text)]
+                if block.is_error:
+                    flags.append("tool-error")
                 self.ctx.writer.append(role="tool", content=text,
                                        tool_name="tool_result",
                                        tool_args={"tool_use_id": block.tool_use_id},
-                                       flags=["tool-error"] if block.is_error else None)
+                                       flags=flags)
             elif isinstance(block, TextBlock):
                 self.ctx.writer.append(role="user", content=block.text, agent="claude")
 

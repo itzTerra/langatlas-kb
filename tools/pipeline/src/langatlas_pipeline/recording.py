@@ -20,6 +20,13 @@ class CallRecorder:
                     tokens_if_uncached: int | None = None, cost_usd: float | None = None,
                     agent: str | None = None, tool_call: dict | None = None) -> int:
         """Returns the seq of the last event written (the anchor a manifest can point at)."""
+        # Recorded here rather than in any one channel: this is the single choke point
+        # every channel passes through, including cache hits and the capability probe,
+        # so the manifest's prompt list can never miss a call that used a prompt.
+        if prompt_id is not None and prompt_version is not None:
+            ref = f"{prompt_id}@{prompt_version}"
+            if ref not in self.writer.manifest.prompts:
+                self.writer.manifest.prompts.append(ref)
         for message in messages:
             self.writer.append(role=message["role"], content=str(message.get("content", "")),
                                agent=agent, model=resolved_model)

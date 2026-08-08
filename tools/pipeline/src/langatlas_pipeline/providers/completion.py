@@ -180,8 +180,6 @@ class CompletionClient:
                 tokens_out=tokens_out, latency_ms=latency_ms, cache_hit=False,
                 outcome=outcome, prompt_id=prompt.prompt_id,
                 prompt_version=prompt.version)
-            if prompt.ref() not in self.ctx.manifest.prompts:
-                self.ctx.manifest.prompts.append(prompt.ref())
 
             result = Completion(text=body, parsed=parsed, alias=alias,
                                 resolved_model=resolved, tokens_in=tokens_in,

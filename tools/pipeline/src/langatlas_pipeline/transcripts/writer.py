@@ -2,6 +2,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from ruamel.yaml import YAML
 from langatlas_pipeline import __version__
+from langatlas_pipeline.injection import is_delimited
 from langatlas_pipeline.paths import TRANSCRIPTS_ROOT
 from langatlas_pipeline.transcripts.events import RunManifest, TranscriptEvent
 from langatlas_pipeline.transcripts.redaction import scrub_secrets, truncate_tool_result
@@ -38,7 +39,8 @@ def mint_run_id(kind: str, slug: str, *, root: Path | None = None,
 
 class TranscriptWriter:
     """Appends events to transcript.jsonl and owns manifest.yaml. Every event passes the
-    secret scrub; tool results additionally pass the copyright truncation rule."""
+    secret scrub; tool results — and any event whose content is delimited untrusted text,
+    whatever its role — additionally pass the copyright truncation rule."""
 
     def __init__(self, run_dir: Path, manifest: RunManifest):
         self.run_dir = run_dir
@@ -55,7 +57,14 @@ class TranscriptWriter:
                flags: list[str] | None = None) -> TranscriptEvent:
         flags = list(flags or [])
         result_ref = None
-        if role == "tool":
+        # D18 copyright truncation follows the *content*, not the role. `ctx.tool_result()`
+        # returns the full delimited text so it can reach the model, and call sites hand
+        # that same text back as a user-role message — logging it verbatim there would
+        # undo the truncation applied one event earlier.
+        carries_untrusted = role != "tool" and is_delimited(content)
+        if role == "tool" or carries_untrusted:
+            if carries_untrusted:
+                flags.append("delimited-untrusted")
             content, result_ref = truncate_tool_result(content, source_id=source_id)
             if result_ref["truncated"]:
                 flags.append("truncated")

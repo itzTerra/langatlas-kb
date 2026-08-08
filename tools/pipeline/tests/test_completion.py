@@ -162,3 +162,69 @@ def test_sampling_defaults_to_temperature_zero(ctx):
     CompletionClient(ctx, client=fake).complete("glm", prompt.render(), prompt=prompt)
     assert fake.responses.requests[0]["temperature"] == 0.0
     assert Sampling().temperature == 0.0
+
+
+# ---- whole-branch review fixes ------------------------------------------------------
+
+def _events(ctx):
+    return [json.loads(line)
+            for line in (ctx.run_dir / "transcript.jsonl").read_text().splitlines()]
+
+
+def test_truncation_survives_into_the_prompt_message_that_carries_it(ctx):
+    """Finding 1: ctx.tool_result() truncates the tool-role event but returns the full
+    delimited text, which the caller then puts into a user message. That message must be
+    truncated too, or the copyright control is undone one event later."""
+    prompt = load_prompt("capability-probe")
+    body = "COPYRIGHTED " * 220          # comfortably over TOOL_RESULT_MAX_BYTES
+    delimited = ctx.tool_result(tool="WebFetch", text=body, source_id="src-1",
+                                kind="web-fetch")
+    assert "COPYRIGHTED COPYRIGHTED" in delimited, "the model still gets the full text"
+
+    client = CompletionClient(ctx, client=FakeClient([_response("pong")]))
+    client.complete("glm", [{"role": "user", "content": delimited}], prompt=prompt)
+
+    events = _events(ctx)
+    tool_event = [e for e in events if e["role"] == "tool"][0]
+    assert tool_event["tool_result_ref"]["truncated"] is True
+    assert "truncated" in tool_event["flags"]
+
+    user_event = [e for e in events if e["role"] == "user"][0]
+    assert user_event["tool_result_ref"] is not None, \
+        "a truncated user message still needs its hash/excerpt record"
+    assert user_event["tool_result_ref"]["truncated"] is True
+    assert "truncated" in user_event["flags"]
+    assert "delimited-untrusted" in user_event["flags"]
+    assert len(user_event["content"]) < len(delimited)
+    assert user_event["content"].count("COPYRIGHTED") < 200
+
+
+def test_short_delimited_content_is_recorded_but_not_mangled(ctx):
+    ctx.writer.append(role="user",
+                      content=delimit_untrusted("short body", source_id="s",
+                                                kind="web-fetch"))
+    event = _events(ctx)[-1]
+    assert "short body" in event["content"]
+    assert event["tool_result_ref"]["truncated"] is False
+    assert "truncated" not in event["flags"]
+
+
+def test_a_cache_hit_still_registers_the_prompt_in_the_manifest(ctx):
+    """Finding 4: manifest.prompts was appended only on the live-call path."""
+    prompt = load_prompt("capability-probe")
+    fake = FakeClient([_response("pong")])
+    client = CompletionClient(ctx, client=fake)
+    client.complete("glm", prompt.render(), prompt=prompt)
+    ctx.manifest.prompts.clear()
+
+    again = client.complete("glm", prompt.render(), prompt=prompt)
+    assert again.cache_hit is True
+    assert ctx.manifest.prompts == [prompt.ref()]
+
+
+def test_the_manifest_prompt_list_does_not_duplicate(ctx):
+    prompt = load_prompt("capability-probe")
+    client = CompletionClient(ctx, client=FakeClient([_response("a"), _response("b")]))
+    client.complete("glm", [{"role": "user", "content": "one"}], prompt=prompt)
+    client.complete("glm", [{"role": "user", "content": "two"}], prompt=prompt)
+    assert ctx.manifest.prompts == [prompt.ref()]
