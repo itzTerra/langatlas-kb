@@ -119,7 +119,6 @@ def test_savepagenow_rejects_a_malformed_content_location():
     assert savepagenow("https://example.org/x", client=FakeClient()) is None
 
 
-@pytest.mark.xfail(reason="langatlas_ingest.extract lands in Task 4", strict=True)
 def test_extracted_document_round_trips(snapshot_root, tmp_path):
     from langatlas_ingest.extract import Block, ExtractedDocument
 

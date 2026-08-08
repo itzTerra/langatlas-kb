@@ -8,7 +8,7 @@ license = "MIT"
 dependencies = [
   "psycopg[binary]>=3.2",
   "pymupdf>=1.24",
-  "trafilatura>=1.12",
+  "trafilatura>=2.2,<3",  # backends/html.py hard-depends on 2.x's title/heading-demotion heuristics
   "ruamel.yaml>=0.18",
   "httpx>=0.27",
   "langatlas-validate",

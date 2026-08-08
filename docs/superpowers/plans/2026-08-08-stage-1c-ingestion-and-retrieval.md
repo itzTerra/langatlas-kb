@@ -1221,7 +1221,7 @@ Turns a stored original into a flat list of blocks that know their page, their h
 - Consumes: `IngestConfig.pdf_backend` (Task 1), `SnapshotStore` (Task 3).
 - Produces: `Block`, `ExtractedDocument`, the `PdfBackend` protocol, `extract_document()`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_extract.py
@@ -1334,12 +1334,12 @@ def test_a_custom_backend_can_be_injected(tmp_path):
     assert doc.backend == "fake"
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_extract.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.extract'`
 
-- [ ] **Step 3: Write `extract.py`.**
+- [x] **Step 3: Write `extract.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/extract.py
@@ -1428,7 +1428,7 @@ def extract_document(path: Path, *, source_id: str, media_type: str,
     return doc
 ```
 
-- [ ] **Step 4: Write the PyMuPDF backend.**
+- [x] **Step 4: Write the PyMuPDF backend.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/backends/pymupdf_backend.py
@@ -1537,7 +1537,7 @@ class DoclingBackend:
                                  outline=outline)
 ```
 
-- [ ] **Step 5: Write the HTML backend.**
+- [x] **Step 5: Write the HTML backend.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/backends/html.py
@@ -1615,17 +1615,17 @@ def extract_html(path: Path, *, source_id: str) -> ExtractedDocument:
 # tools/ingest/src/langatlas_ingest/backends/__init__.py
 ```
 
-- [ ] **Step 6: Run the extraction tests.**
+- [x] **Step 6: Run the extraction tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_extract.py -v`
 Expected: PASS (6 tests)
 
-- [ ] **Step 7: Remove the xfail added in Task 3 Step 5 and re-run the snapshot tests.**
+- [x] **Step 7: Remove the xfail added in Task 3 Step 5 and re-run the snapshot tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_snapshot.py -v`
 Expected: PASS (7 tests)
 
-- [ ] **Step 8: Commit.**
+- [x] **Step 8: Commit.**
 
 ```bash
 git add tools/ingest
