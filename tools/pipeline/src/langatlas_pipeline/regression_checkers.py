@@ -36,19 +36,39 @@ def _provider_record_replay(fixture: dict) -> str | None:
     return None
 
 
+RERUN_DIR = FIXTURES_DIR / "prompt-version-rerun"
+
+
 def _prompt_version_rerun(fixture: dict) -> str | None:
     """D41: a new prompt version triggers a *soft* (log-only) check that a regression
-    fixture exists for it. Never blocks CI — it is a nudge, not a gate."""
+    fixture exists for it. Never blocks CI — it is a nudge, not a gate.
+
+    Two fixture shapes share this kind, distinguished by the `version` key:
+
+    - a *tracker* (no `version`) — "prompt X should have rerun coverage for whatever its
+      newest version is"; this is the check that warns.
+    - a *coverage record* (`version: v-xxxxxxxx`) — the evidence that satisfies a
+      tracker, named `<prompt_id>-<version>.yaml` in this same directory. Checking it
+      only means confirming its version is still a registered one, so a coverage file
+      left behind for a deleted version is visible rather than silently reassuring.
+    """
     prompt_id = fixture["prompt_id"]
     versions = list_versions(prompt_id)
     if not versions:
         return f"{prompt_id}: no registered versions"
+    declared = fixture.get("version")
+    if declared is not None:
+        if declared not in versions:
+            return (f"{prompt_id}: rerun coverage recorded for {declared}, which is not a "
+                    f"registered version (soft: log only)")
+        return None
     latest = versions[-1]
-    covered = {path.stem for path in (FIXTURES_DIR / "prompt-rerun").glob("*")} \
-        if (FIXTURES_DIR / "prompt-rerun").exists() else set()
+    covered = {path.stem for path in RERUN_DIR.glob("*.yaml")} \
+        if RERUN_DIR.exists() else set()
     if f"{prompt_id}-{latest}" not in covered:
-        return (f"{prompt_id}: newest version {latest} has no regression fixture under "
-                f"tests/fixtures/providers/prompt-rerun/ (soft: log only)")
+        return (f"{prompt_id}: newest version {latest} has no rerun coverage — add "
+                f"tests/fixtures/providers/prompt-version-rerun/{prompt_id}-{latest}.yaml "
+                f"(soft: log only)")
     return None
 
 

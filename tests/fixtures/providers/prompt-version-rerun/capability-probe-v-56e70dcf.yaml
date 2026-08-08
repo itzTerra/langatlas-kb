@@ -1,0 +1,9 @@
+# Rerun coverage record (D41): the presence of this file, named
+# <prompt_id>-<version>.yaml, is what clears the soft warning raised by the
+# capability-probe tracker fixture next to it. Minting a new capability-probe version
+# makes the tracker warn again until a matching record is added here.
+fixture_id: capability-probe-v-56e70dcf
+kind: prompt-version-rerun
+mode: soft
+prompt_id: capability-probe
+version: v-56e70dcf

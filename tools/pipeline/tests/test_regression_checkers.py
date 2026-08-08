@@ -25,8 +25,47 @@ def test_record_replay_checker_reports_a_changed_response():
     assert "definitely-not" in (CHECKERS["provider-record-replay"](fixture) or "")
 
 
-def test_prompt_version_checker_flags_a_prompt_with_no_fixture():
+def test_prompt_version_checker_finds_the_shipped_coverage_record():
+    """Finding 6: the checker looked under tests/fixtures/providers/prompt-rerun/, a
+    directory that does not exist, so the soft warning was permanently unclearable."""
+    fixture = {"fixture_id": "y", "kind": "prompt-version-rerun", "mode": "soft",
+               "prompt_id": "capability-probe"}
+    assert CHECKERS["prompt-version-rerun"](fixture) is None
+
+
+def test_prompt_version_checker_warns_when_coverage_is_missing(monkeypatch):
+    import langatlas_pipeline.regression_checkers as checkers
+
+    monkeypatch.setattr(checkers, "RERUN_DIR", REPO_ROOT / "tests/fixtures/does-not-exist")
     fixture = {"fixture_id": "y", "kind": "prompt-version-rerun", "mode": "soft",
                "prompt_id": "capability-probe"}
     result = CHECKERS["prompt-version-rerun"](fixture)
-    assert result is None or "capability-probe" in result
+    assert result is not None
+    assert "capability-probe" in result
+    assert "prompt-version-rerun" in result, "the warning names the real fixture directory"
+
+
+def test_prompt_version_checker_names_the_file_a_developer_should_add(monkeypatch):
+    import langatlas_pipeline.regression_checkers as checkers
+    from langatlas_pipeline.prompts import list_versions
+
+    monkeypatch.setattr(checkers, "RERUN_DIR", REPO_ROOT / "tests/fixtures/does-not-exist")
+    latest = list_versions("capability-probe")[-1]
+    result = CHECKERS["prompt-version-rerun"](
+        {"fixture_id": "y", "kind": "prompt-version-rerun", "mode": "soft",
+         "prompt_id": "capability-probe"})
+    assert f"capability-probe-{latest}.yaml" in result
+
+
+def test_a_coverage_record_passes_and_a_stale_one_warns():
+    from ruamel.yaml import YAML
+    from langatlas_pipeline.prompts import list_versions
+
+    latest = list_versions("capability-probe")[-1]
+    shipped = YAML(typ="safe").load(
+        (REPO_ROOT / "tests/fixtures/providers/prompt-version-rerun/"
+                     f"capability-probe-{latest}.yaml").read_text())
+    assert CHECKERS["prompt-version-rerun"](shipped) is None
+
+    stale = {**shipped, "version": "v-deadbeef"}
+    assert "not a registered version" in (CHECKERS["prompt-version-rerun"](stale) or "")
