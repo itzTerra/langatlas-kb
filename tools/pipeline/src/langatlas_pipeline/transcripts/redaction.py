@@ -1,5 +1,6 @@
 import hashlib
 import re
+from langatlas_pipeline.injection import find_untrusted_spans
 
 # D18: the wrapper logs message content only — auth headers and endpoint config never
 # enter a transcript by construction. These patterns are the belt-and-suspenders layer
@@ -42,3 +43,43 @@ def truncate_tool_result(text: str, *, source_id: str | None) -> tuple[str, dict
         return text, ref
     ref["truncated"] = True
     return text[:TOOL_RESULT_EXCERPT_CHARS] + "\n…[truncated]", ref
+
+
+def truncate_untrusted_spans(text: str, *, source_id: str | None) -> tuple[str, dict]:
+    """The copyright rule protects *fetched source text*, not the prompt that carries it.
+    A composite message ("evaluate this claim against the following evidence: <block>,
+    now answer yes/no") must keep its instructions verbatim, so only the body of each
+    `<fetched-source>` block is clipped — everything outside every block is untouched.
+
+    The returned ref keeps `truncate_tool_result`'s shape (`truncated`/`bytes`/`sha256`/
+    `source_id`) and adds a per-span `spans` list. With a single block — the common case —
+    the top-level fields describe that block, including its real `source_id` read off the
+    block's own `id` attribute, so the tool-role and carrying-message records of the same
+    chunk correlate on a field rather than on a substring."""
+    spans = find_untrusted_spans(text)
+    if not spans:
+        # is_delimited() is a loose check; if no well-formed block is actually there, fall
+        # back to the conservative whole-content rule rather than logging it verbatim.
+        return truncate_tool_result(text, source_id=source_id)
+
+    pieces: list[str] = []
+    refs: list[dict] = []
+    cursor = 0
+    for span in spans:
+        body = text[span.body_start:span.body_end]
+        new_body, ref = truncate_tool_result(body, source_id=span.source_id or source_id)
+        pieces.append(text[cursor:span.body_start])
+        pieces.append(new_body)
+        refs.append(ref)
+        cursor = span.body_end
+    pieces.append(text[cursor:])
+
+    if len(refs) == 1:
+        return "".join(pieces), {**refs[0], "spans": refs}
+    return "".join(pieces), {
+        "truncated": any(ref["truncated"] for ref in refs),
+        "bytes": sum(ref["bytes"] for ref in refs),
+        "sha256": None,                # no single body to hash; see `spans`
+        "source_id": None,
+        "spans": refs,
+    }

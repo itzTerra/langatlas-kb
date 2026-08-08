@@ -5,7 +5,9 @@ from langatlas_pipeline import __version__
 from langatlas_pipeline.injection import is_delimited
 from langatlas_pipeline.paths import TRANSCRIPTS_ROOT
 from langatlas_pipeline.transcripts.events import RunManifest, TranscriptEvent
-from langatlas_pipeline.transcripts.redaction import scrub_secrets, truncate_tool_result
+from langatlas_pipeline.transcripts.redaction import (
+    scrub_secrets, truncate_tool_result, truncate_untrusted_spans,
+)
 
 REDACTION_RULES_VERSION = "1"
 
@@ -40,7 +42,8 @@ def mint_run_id(kind: str, slug: str, *, root: Path | None = None,
 class TranscriptWriter:
     """Appends events to transcript.jsonl and owns manifest.yaml. Every event passes the
     secret scrub; tool results — and any event whose content is delimited untrusted text,
-    whatever its role — additionally pass the copyright truncation rule."""
+    whatever its role — additionally pass the copyright truncation rule, wholesale for a
+    raw tool result and per `<fetched-source>` block for anything else."""
 
     def __init__(self, run_dir: Path, manifest: RunManifest):
         self.run_dir = run_dir
@@ -62,12 +65,18 @@ class TranscriptWriter:
         # that same text back as a user-role message — logging it verbatim there would
         # undo the truncation applied one event earlier.
         carries_untrusted = role != "tool" and is_delimited(content)
-        if role == "tool" or carries_untrusted:
-            if carries_untrusted:
-                flags.append("delimited-untrusted")
+        if role == "tool":
+            # A raw tool result is entirely fetched material — there is no instruction
+            # text mixed in to protect, so the whole-content rule is the right one.
             content, result_ref = truncate_tool_result(content, source_id=source_id)
-            if result_ref["truncated"]:
-                flags.append("truncated")
+        elif carries_untrusted:
+            # A prompt that carries evidence is composite. Clipping it wholesale would
+            # silently drop the surrounding task instructions, which are the project's
+            # own text and the record of what the model was actually asked.
+            flags.append("delimited-untrusted")
+            content, result_ref = truncate_untrusted_spans(content, source_id=source_id)
+        if result_ref is not None and result_ref["truncated"]:
+            flags.append("truncated")
         content, secret_kinds = scrub_secrets(content)
         if secret_kinds:
             flags.append("secret-scrubbed")
