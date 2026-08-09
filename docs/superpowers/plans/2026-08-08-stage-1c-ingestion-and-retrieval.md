@@ -1646,7 +1646,7 @@ git commit -m "feat(#stage-1c): extract PDFs and HTML into a locatable block doc
 - Consumes: `langatlas_validate.locators.validate_locator_shape` (1A).
 - Produces: `LocatorRange`, `parse_locator`, `ranges_overlap`, `format_pages`, `format_section`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_locators.py
@@ -1744,12 +1744,12 @@ def test_formatters_emit_shapes_1a_accepts():
     assert validate_locator_shape(format_section("Match expressions")) == "named-section"
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_locators.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.locators'`
 
-- [ ] **Step 3: Write `locators.py`.**
+- [x] **Step 3: Write `locators.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/locators.py
@@ -1885,12 +1885,12 @@ def format_section(section: str) -> str:
     return f"§{section}" if re.fullmatch(r"\d+(\.\d+)*", section) else f"§ {section}"
 ```
 
-- [ ] **Step 4: Run the tests.**
+- [x] **Step 4: Run the tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_locators.py -v`
 Expected: PASS (22 tests)
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/ingest
