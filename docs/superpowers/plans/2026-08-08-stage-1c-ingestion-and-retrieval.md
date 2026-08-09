@@ -2531,7 +2531,7 @@ Wires Tasks 3–7 into the command Stage 2 will actually run: `langatlas-sources
 - Consumes: `db.connect`/`migrate` (Task 2), `SnapshotStore` (Task 3), `extract_document` (Task 4), `chunk_document` (Task 6), `run_qa` (Task 7).
 - Produces: `SourceChunk`, `SourceChunksStore`, `SourcingQueue`, `ingest_source()`, `DEFAULT_LOCATOR_KINDS`, CLI subcommands `ingest` / `qa` / `queue`.
 
-- [ ] **Step 1: Write the failing store test.**
+- [x] **Step 1: Write the failing store test.**
 
 ```python
 # tools/ingest/tests/test_store.py
@@ -2630,12 +2630,12 @@ def test_queue_refiles_rather_than_duplicating(db_conn):
     assert [e["reason"] for e in queue.open_entries()] == ["paywalled"]
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_store.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.store'`
 
-- [ ] **Step 3: Write `store.py`.**
+- [x] **Step 3: Write `store.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/store.py
@@ -2791,12 +2791,12 @@ class SourcingQueue:
             return cur.rowcount
 ```
 
-- [ ] **Step 4: Run the store tests.**
+- [x] **Step 4: Run the store tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_store.py -m db -v`
 Expected: PASS (8 tests)
 
-- [ ] **Step 5: Write the failing pipeline test.**
+- [x] **Step 5: Write the failing pipeline test.**
 
 ```python
 # tools/ingest/tests/test_pipeline.py
@@ -2882,12 +2882,12 @@ def test_ingest_resolves_a_pending_source_entry(db_conn, prepared):
     assert SourcingQueue(db_conn).open_entries() == []
 ```
 
-- [ ] **Step 6: Run it and watch it fail.**
+- [x] **Step 6: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_pipeline.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.pipeline'`
 
-- [ ] **Step 7: Write `pipeline.py`.**
+- [x] **Step 7: Write `pipeline.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/pipeline.py
@@ -2956,12 +2956,12 @@ def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
                         qa_status=report.status, qa_report_path=str(report_path))
 ```
 
-- [ ] **Step 8: Run the pipeline tests.**
+- [x] **Step 8: Run the pipeline tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_pipeline.py -m db -v`
 Expected: PASS (4 tests)
 
-- [ ] **Step 9: Add the `ingest`, `qa`, and `queue` CLI subcommands.**
+- [x] **Step 9: Add the `ingest`, `qa`, and `queue` CLI subcommands.**
 
 Add these imports to the top of `cli.py`: `from pathlib import Path` and
 `from langatlas_ingest.snapshot import SnapshotStore`. Then add the three handlers:
@@ -3037,7 +3037,7 @@ def _cmd_queue(args) -> int:
     queue.set_defaults(func=_cmd_queue)
 ```
 
-- [ ] **Step 10: Write `tests/test_cli.py`.**
+- [x] **Step 10: Write `tests/test_cli.py`.**
 
 ```python
 # tools/ingest/tests/test_cli.py
@@ -3064,7 +3064,7 @@ def test_unknown_command_is_rejected():
 Run: `cd tools/ingest && uv run pytest tests/test_cli.py -v`
 Expected: PASS (3 tests)
 
-- [ ] **Step 11: Ingest a real book end to end.**
+- [x] **Step 11: Ingest a real book end to end.**
 
 Run:
 ```bash
@@ -3076,7 +3076,7 @@ uv run langatlas-sources qa vanroy-haridi-2003 | head -30
 ```
 Expected: a chunk count in the low thousands and a QA report naming every check. If the hard gate fires, that is the harness doing its job — read the report before touching any code, and record what it said in the commit message.
 
-- [ ] **Step 12: Commit.**
+- [x] **Step 12: Commit.**
 
 ```bash
 git add tools/ingest

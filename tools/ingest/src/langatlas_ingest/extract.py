@@ -78,6 +78,25 @@ def extract_document(path: Path, *, source_id: str, media_type: str,
         raise ExtractionFailed(source_id, f"unsupported media type {media_type!r}")
 
     doc.source_url = source_url
+    _strip_nuls(doc)
     if doc.char_count == 0:
         raise ExtractionFailed(source_id, "extractor returned no text")
     return doc
+
+
+def _strip_nuls(doc: ExtractedDocument) -> None:
+    """A PDF whose embedded font carries no unicode mapping makes PyMuPDF emit runs of
+    U+0000 for the affected glyphs (Van Roy & Haridi 2003 does this on 22 blocks around
+    p. 685). Postgres `text` cannot store a NUL at all, so an unstripped one aborts the
+    whole `replace_source` write with `DataError` — and the character carries no
+    information to lose. Stripped here, at the one entry point every backend passes
+    through, so no downstream stage has to know about it and the stored text always
+    matches the extracted text on disk.
+
+    `block.anchor` is deliberately not stripped: today anchors come only from HTML `id`
+    attributes, which cannot carry a NUL. A backend that ever synthesizes an anchor from
+    extracted glyphs must add it here — `anchor` lands in a Postgres `text` column too."""
+    for block in doc.blocks:
+        if "\x00" in block.text:
+            block.text = block.text.replace("\x00", "")
+    doc.outline = [entry.replace("\x00", "") for entry in doc.outline]

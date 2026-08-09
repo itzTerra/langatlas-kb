@@ -559,3 +559,26 @@ def test_a_custom_backend_can_be_injected(tmp_path):
     doc = extract_document(path, source_id="s", media_type="application/pdf",
                            config=IngestConfig.load(), backend=FakeBackend())
     assert doc.backend == "fake"
+
+
+def test_nul_bytes_are_stripped_at_the_extraction_boundary(tmp_path):
+    """A PDF with an unmapped embedded font makes PyMuPDF emit U+0000 runs; Postgres
+    `text` cannot store one, so it must not survive extraction (real case: Van Roy &
+    Haridi 2003, 22 blocks near p. 685)."""
+    class NulBackend:
+        name = "fake"
+        version = "9"
+
+        def extract(self, path, *, source_id):
+            return ExtractedDocument(source_id=source_id, media_type="application/pdf",
+                                     backend=self.name, backend_version=self.version,
+                                     page_count=1,
+                                     blocks=[Block(text="lazy\x00 evaluation", page=1)],
+                                     outline=["Chapter\x00 4"])
+
+    path = tmp_path / "x.pdf"
+    path.write_bytes(b"%PDF-")
+    doc = extract_document(path, source_id="s", media_type="application/pdf",
+                           config=IngestConfig.load(), backend=NulBackend())
+    assert doc.blocks[0].text == "lazy evaluation"
+    assert doc.outline == ["Chapter 4"]
