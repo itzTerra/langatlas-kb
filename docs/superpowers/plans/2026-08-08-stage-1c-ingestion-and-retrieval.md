@@ -1911,7 +1911,7 @@ D15's core transform: blocks → 400–800-token chunks with breadcrumb prefixes
 - Consumes: `ExtractedDocument`/`Block` (Task 4), `format_pages`/`format_section` (Task 5), `IngestConfig` (Task 1), `validate_locator_shape` (1A).
 - Produces: `Chunk`, `count_tokens`, `chunk_document`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_chunker.py
@@ -2042,12 +2042,28 @@ def test_count_tokens_is_the_documented_chars_over_four_rule():
     assert count_tokens("abcd" * 10) == 10
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_chunker.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.chunker'`
 
-- [ ] **Step 3: Write `chunker.py`.**
+- [x] **Step 3: Write `chunker.py`.**
+
+> **Note (post-implementation):** the reference block below has known bugs, fixed in the
+> shipped `tools/ingest/src/langatlas_ingest/chunker.py` — do not copy it verbatim into a
+> later task. Confirmed by test and review: (1) the max-token check compared body-only
+> token counts against `chunk_max_tokens` without reserving room for the breadcrumb prefix
+> and inter-piece `\n\n` joins that end up in the final embedded text; (2) a carry-flush's
+> fresh overlap buffer could itself be flushed as a standalone chunk with no new content
+> appended to it, emitting a duplicate-`content_hash` chunk of the tail of the chunk it was
+> carried from (fires at every piece boundary at production-scale config); (3) an empty-
+> buffer `flush()` returned before resetting `self.pages`, letting a heading's page leak
+> into the next section's `page_start`/`page_end` when a section produced no chunk of its
+> own — a wrong citation; (4) `_split` could append a single word wider than the whole
+> budget unmodified, emitting an over-limit piece, and `_carry` could carry an entire body
+> forward verbatim when it was one such piece, duplicating the chunk. See
+> `.superpowers/sdd/2026-08-08-stage-1c-ingestion-and-retrieval/task-6-report.md` for the
+> full account.
 
 ```python
 # tools/ingest/src/langatlas_ingest/chunker.py
@@ -2225,12 +2241,12 @@ def chunk_document(doc: ExtractedDocument, *, config: IngestConfig,
     return accumulator.chunks
 ```
 
-- [ ] **Step 4: Run the tests.**
+- [x] **Step 4: Run the tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_chunker.py -v`
 Expected: PASS (12 tests)
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/ingest
