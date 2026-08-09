@@ -2267,7 +2267,7 @@ The gate that keeps a mojibake'd or collapsed extraction out of `source_chunks`.
 - Consumes: `ExtractedDocument` (Task 4), `Chunk` (Task 6).
 - Produces: `QaCheck`, `QaReport`, `run_qa`.
 
-- [ ] **Step 1: Write the failing test.**
+- [x] **Step 1: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_qa.py
@@ -2376,12 +2376,12 @@ def test_markdown_report_names_every_failing_check():
     assert "outline-coverage" in markdown and "3 Concurrency" in markdown
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_qa.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.qa'`
 
-- [ ] **Step 3: Write `qa.py`.**
+- [x] **Step 3: Write `qa.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/qa.py
@@ -2504,12 +2504,12 @@ def run_qa(doc, chunks) -> QaReport:
     return report
 ```
 
-- [ ] **Step 4: Run the tests.**
+- [x] **Step 4: Run the tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_qa.py -v`
 Expected: PASS (8 tests)
 
-- [ ] **Step 5: Commit.**
+- [x] **Step 5: Commit.**
 
 ```bash
 git add tools/ingest
