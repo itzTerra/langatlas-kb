@@ -76,6 +76,28 @@ def _cmd_embed(args) -> int:
     return 0
 
 
+def _cmd_search(args) -> int:
+    from langatlas_pipeline.providers.core import RunContext
+    from langatlas_ingest.search import SourceSearch
+
+    config = IngestConfig.load()
+    # `False if --no-rerank else None`, not `not args.no_rerank`: the flag is an opt-out,
+    # so its absence must leave the decision to `models.rerank_default_on` rather than
+    # silently forcing the reranker on for a config that turned it off.
+    rerank = False if args.no_rerank else None
+    with RunContext.start(kind="search", slug="cli") as ctx:
+        with connect(config.dsn) as conn:
+            hits = SourceSearch(conn, ctx, config=config, rerank=rerank).search(
+                args.query, k=args.k, source_ids=args.source or None)
+    for hit in hits:
+        print(f"[{hit.score:.4f}] {hit.chunk.source_id} {hit.chunk.locator}"
+              f"  {hit.chunk.breadcrumb}")
+        print(f"    {hit.chunk.text[:200].replace(chr(10), ' ')}")
+    if not hits:
+        print("no hits")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="langatlas-sources")
     parser.add_argument("--version", action="version", version=__version__)
@@ -105,6 +127,13 @@ def build_parser() -> argparse.ArgumentParser:
                        help="omit to embed every unembedded chunk in the corpus")
     embed.add_argument("--batch-size", type=int, default=32)
     embed.set_defaults(func=_cmd_embed)
+
+    search = sub.add_parser("search", help="hybrid search over source_chunks (pipeline-only)")
+    search.add_argument("query")
+    search.add_argument("-k", type=int, default=None)
+    search.add_argument("--source", nargs="*", default=[])
+    search.add_argument("--no-rerank", action="store_true")
+    search.set_defaults(func=_cmd_search)
     return parser
 
 

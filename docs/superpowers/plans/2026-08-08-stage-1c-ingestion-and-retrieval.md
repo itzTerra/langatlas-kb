@@ -3335,7 +3335,7 @@ The read side: filter-first hybrid FTS + vector fused with RRF, reranker default
 - Consumes: `SourceChunksStore` (Task 8), `embed_source`/`vector_literal` (Task 9), `parse_locator` (Task 5), `ctx.embed`/`ctx.rerank` (1B).
 - Produces: `SearchHit`, `SourceSearch.search`/`get_section`, `PostgresSourceChunksIndex.resolve`, CLI subcommand `search`.
 
-- [ ] **Step 1: Write the failing index test.**
+- [x] **Step 1: Write the failing index test.**
 
 ```python
 # tools/ingest/tests/test_index.py
@@ -3413,12 +3413,12 @@ def test_1as_validate_locator_accepts_this_index(index):
     assert missing.shape_ok and not missing.resolved
 ```
 
-- [ ] **Step 2: Run it and watch it fail.**
+- [x] **Step 2: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_index.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.index'`
 
-- [ ] **Step 3: Write `index.py`.**
+- [x] **Step 3: Write `index.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/index.py
@@ -3436,7 +3436,52 @@ class PostgresSourceChunksIndex:
     by a chunk covering pages 10-12, and a citation to a whole section is backed by any
     chunk inside it. The overlap rules live in `locators.ranges_overlap` for the in-memory
     case; here the same rules are expressed as SQL against the indexed columns, so a
-    resolution never scans chunk text."""
+    resolution never scans chunk text. `test_sql_resolution_agrees_with_ranges_overlap`
+    pins the two expressions of the rule together so they cannot drift apart.
+
+    FOUR differences from `ranges_overlap`. The first two are deliberate and widen what
+    resolves; the last two are gaps that let *too much* resolve, and the D24 verifier
+    trusts this join completely — a false positive here attaches a fact to a passage that
+    does not support it. `test_sql_resolution_agrees_with_ranges_overlap` pins the kinds
+    that agree, and the `*_diverges_from_ranges_overlap` tests pin each gap below, so none
+    of this is invisible.
+
+    Deliberate (this side has the chunk's *columns*, not only its display locator):
+
+    1. The comparable span comes from `page_start`/`page_end` (and `line_start`/`line_end`),
+       not from parsing `locator` — a chunk labelled `p. 10` may genuinely cover pages
+       10-12, and `ranges_overlap` reading its locator alone would miss that.
+    2. `locator_kind` is not required to match the citation's kind. A chunk of a PDF
+       carries pages whatever locator kind it prefers to display, and refusing to back
+       `p. 11` with it would be a false negative — the failure mode that makes a true
+       fact look unverifiable. `named-section` also resolves through `section_path`
+       containment, a relation `ranges_overlap` cannot express at all.
+
+    Known gaps (these resolve MORE than `ranges_overlap` would, in the false-positive
+    direction — fix before Stage 2 leans on these kinds):
+
+    3. `design-doc` never compares `doc_kind`/`doc_number`, so the cited document's own
+       identity is never checked. This is NOT limited to whole-document citations:
+       - `RFC 1` and `PEP 484` each become `TRUE` and resolve to *every* chunk of the
+         cited source, even when that source is PEP 8;
+       - a heading-qualified citation is equally blind — `RFC 2119 §Indentation` and
+         `PEP 8 §Indentation` compile to the *same* `section_path` clause, so the former
+         resolves against a PEP 8 chunk. A section-qualified citation looks precise and
+         is not.
+       Scoping by `source_id` is the only thing containing this today.
+    4. `repo-file` ignores the `commit`, and `multipage-docs` ignores the `path` — both
+       match on `anchor` alone. Two files sharing a fragment id, or the same path at a
+       different commit, resolve to each other. Line numbers move between commits, so
+       the `repo-file` case can genuinely cite the wrong lines.
+
+    None of gaps 3 and 4 is one SQL clause away. `source_chunks` stores no `doc_kind`,
+    `doc_number`, `commit`, or `path` column — only the raw `locator` string, `anchor`,
+    and `section_path` (see `db/0001_source_chunks.sql`). Closing any of the three
+    therefore costs the same thing: either a schema change adding the missing columns
+    (and a chunker change to populate them), or re-parsing the stored `locator` text at
+    query time — and the latter is exactly the "stop comparing indexed columns" tension
+    that justified expressing these rules in SQL in the first place. All three are
+    carried forward as one Stage 2 developer decision, not as cheap follow-ups."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -3457,12 +3502,15 @@ class PostgresSourceChunksIndex:
     def _query(self, parsed) -> tuple[str, tuple] | None:
         if parsed.kind == "book-page":
             start, end = parsed.pages
-            return ("page_start IS NOT NULL AND page_start <= %s AND page_end >= %s",
-                    (end, start))
+            # COALESCE, not a bare `page_end`: a single-page chunk that recorded only
+            # `page_start` would otherwise compare NULL and drop out silently.
+            return ("page_start IS NOT NULL AND page_start <= %s"
+                    " AND COALESCE(page_end, page_start) >= %s", (end, start))
         if parsed.kind == "numbered-section":
             number = parsed.section_number
             # Either direction of containment: the citation may name an ancestor of the
-            # chunk's section or one of its descendants.
+            # chunk's section or one of its descendants. The trailing dot is what keeps
+            # §13.2 from matching §13.20 — component containment, not string prefix.
             return ("(section_number = %s OR section_number LIKE %s"
                     " OR %s LIKE section_number || '.%%')",
                     (number, number + ".%", number))
@@ -3475,8 +3523,8 @@ class PostgresSourceChunksIndex:
             return ("anchor = %s", (parsed.anchor,))
         if parsed.kind == "repo-file":
             start, end = parsed.lines
-            return ("anchor = %s AND line_start IS NOT NULL"
-                    " AND line_start <= %s AND line_end >= %s",
+            return ("anchor = %s AND line_start IS NOT NULL AND line_start <= %s"
+                    " AND COALESCE(line_end, line_start) >= %s",
                     (parsed.path, end, start))
         # `video` has no ingestion backend in 1C (no transcript extractor), so a video
         # citation resolves to nothing and the claim parks in the sourcing queue — which
@@ -3484,7 +3532,7 @@ class PostgresSourceChunksIndex:
         return None
 ```
 
-- [ ] **Step 4: Run the index tests.**
+- [x] **Step 4: Run the index tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_index.py -m db -v`
 Expected: PASS (7 tests)
@@ -3493,7 +3541,7 @@ Note: `test_named_sections_resolve_against_the_section_path` relies on `parse_lo
 lower-casing and whitespace-collapsing headings — the same `_key` normalization the
 chunker's `section_path` values are compared against with `lower(btrim(part))`.
 
-- [ ] **Step 5: Write the failing search test.**
+- [x] **Step 5: Write the failing search test.**
 
 ```python
 # tools/ingest/tests/test_search.py
@@ -3586,12 +3634,12 @@ def test_a_query_matching_nothing_returns_nothing(searchable, fake_ctx):
     assert search.search("zzzz", source_ids=["nonexistent-source"]) == []
 ```
 
-- [ ] **Step 6: Run it and watch it fail.**
+- [x] **Step 6: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_search.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.search'`
 
-- [ ] **Step 7: Write `search.py`.**
+- [x] **Step 7: Write `search.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/search.py
@@ -3600,9 +3648,37 @@ from typing import Sequence
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import embedding_table_name
 from langatlas_ingest.embed import vector_literal
+from langatlas_ingest.errors import IngestError
 from langatlas_ingest.store import SourceChunk, SourceChunksStore, _COLUMNS
 
 _CHUNK_COLUMNS = ", ".join(f"c.{name}" for name in _COLUMNS)
+
+# pgvector's own default and documented ceiling for `hnsw.ef_search`.
+_EF_SEARCH_DEFAULT = 40
+_EF_SEARCH_MAX = 1000
+
+
+class MissingEmbeddingTable(IngestError):
+    """Searching before `langatlas-sources embed` has ever run. Typed, because the
+    alternative is an `UndefinedTable` from psycopg that reads like a schema bug."""
+
+    def __init__(self, model: str, table: str):
+        super().__init__(f"no embeddings for model {model!r} (table {table} does not "
+                         f"exist); run `langatlas-sources embed` first")
+        self.model = model
+        self.table = table
+
+
+def embedding_dimensions(conn, table: str) -> int:
+    """The dimension that *built* the table, read the same way `ensure_embedding_table`
+    reads it — `pg_attribute.atttypmod` is the single source of truth. Config could
+    disagree with what is on disk; the halfvec cast has to match the ruled index, not
+    the config file."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT atttypmod FROM pg_attribute"
+                    " WHERE attrelid = to_regclass(%s) AND attname = 'embedding'", (table,))
+        row = cur.fetchone()
+    return row[0] if row else 0
 
 
 @dataclass
@@ -3626,41 +3702,102 @@ class SourceSearch:
         self.rerank = self.config.rerank_default_on if rerank is None else rerank
         self.store = SourceChunksStore(conn)
 
-    def search(self, query: str, *, k: int | None = None,
-               source_ids: Sequence[str] | None = None) -> list[SearchHit]:
-        k = k or self.config.retrieval_k
-        candidates = self.config.retrieval_candidates
+    def build_query(self, query: str, *, vector: str, k: int,
+                    source_ids: Sequence[str] | None) -> tuple[str, dict]:
+        """Built as one statement so the filter, both branches, and the fusion are a
+        single planner problem — and exposed so a test can EXPLAIN exactly what runs.
+
+        Each branch is ranked *inside* its own subquery (`ORDER BY ... LIMIT`), then
+        numbered by `row_number()`. The brief's shape put `row_number()` in the outer
+        select of the CTE with a bare `LIMIT` under it, which asks Postgres for an
+        arbitrary `candidates` rows of an unordered set and would also have kept the
+        vector branch off its index — `ORDER BY <distance> LIMIT n` is the only form
+        HNSW can serve.
+        """
         table = embedding_table_name(self.config.embedding_model)
-        vector = vector_literal(self.ctx.embed([query], model=self.config.embedding_model)[0])
-        filter_sql = " AND c.source_id = ANY(%s)" if source_ids else ""
-        filter_params: tuple = (list(source_ids),) if source_ids else ()
+        dimensions = embedding_dimensions(self.conn, table)
+        if dimensions <= 0:
+            raise MissingEmbeddingTable(self.config.embedding_model, table)
+        # Both sides cast to halfvec at the stored dimension: `ensure_embedding_table`
+        # rules the HNSW index on `(embedding::halfvec(N)) halfvec_cosine_ops` because
+        # pgvector caps `vector` HNSW at 2000 dimensions and the incumbent model is
+        # 2560-dim. A plain `<=> %s::vector` does not match that expression index and
+        # silently degrades to a sequential scan over the whole corpus.
+        distance = (f"e.embedding::halfvec({dimensions})"
+                    f" <=> %(vector)s::halfvec({dimensions})")
+        filter_sql = " AND c.source_id = ANY(%(sources)s)" if source_ids else ""
+        # The vector branch must not join `source_chunks` just to reach the filter
+        # column: any join above the scan stops the planner from answering
+        # `ORDER BY <distance> LIMIT n` from the HNSW index and leaves it sorting the
+        # whole table. Unfiltered, the branch reads the embedding table alone; filtered,
+        # §8.1's filter-first shape is a semi-join restricting the rows considered.
+        vec_filter = ("\n                WHERE e.chunk_id IN (SELECT chunk_id FROM"
+                      " source_chunks WHERE source_id = ANY(%(sources)s))"
+                      if source_ids else "")
+        candidates = max(int(self.config.retrieval_candidates), int(k))
 
         sql = f"""
         WITH fts AS (
-            SELECT c.chunk_id,
-                   row_number() OVER (ORDER BY ts_rank_cd(c.tsv, q.query) DESC) AS rank
-            FROM source_chunks c, plainto_tsquery('english', %s) AS q(query)
-            WHERE c.tsv @@ q.query{filter_sql}
-            LIMIT {int(candidates)}
+            SELECT chunk_id, row_number() OVER (ORDER BY lexical DESC, chunk_id) AS rank
+            FROM (
+                SELECT c.chunk_id, ts_rank_cd(c.tsv, q.query) AS lexical
+                FROM source_chunks c, plainto_tsquery('english', %(query)s) AS q(query)
+                WHERE c.tsv @@ q.query{filter_sql}
+                ORDER BY lexical DESC, c.chunk_id
+                LIMIT {int(candidates)}
+            ) ranked
         ), vec AS (
-            SELECT c.chunk_id,
-                   row_number() OVER (ORDER BY e.embedding <=> %s::vector) AS rank
-            FROM source_chunks c JOIN {table} e ON e.chunk_id = c.chunk_id
-            WHERE TRUE{filter_sql}
-            LIMIT {int(candidates)}
+            SELECT chunk_id, row_number() OVER (ORDER BY distance, chunk_id) AS rank
+            FROM (
+                SELECT e.chunk_id, {distance} AS distance
+                FROM {table} e{vec_filter}
+                ORDER BY {distance}
+                LIMIT {int(candidates)}
+            ) ranked
         )
         SELECT {_CHUNK_COLUMNS}, fts.rank, vec.rank,
-               COALESCE(1.0 / (%s + fts.rank), 0) + COALESCE(1.0 / (%s + vec.rank), 0) AS score
+               COALESCE(1.0 / (%(rrf_k)s + fts.rank), 0)
+             + COALESCE(1.0 / (%(rrf_k)s + vec.rank), 0) AS score
         FROM source_chunks c
         LEFT JOIN fts ON fts.chunk_id = c.chunk_id
         LEFT JOIN vec ON vec.chunk_id = c.chunk_id
         WHERE fts.chunk_id IS NOT NULL OR vec.chunk_id IS NOT NULL
-        ORDER BY score DESC
+        ORDER BY score DESC, c.chunk_id
         LIMIT {int(candidates)}
         """
-        params = ((query, *filter_params, vector, *filter_params,
-                   self.config.rrf_k, self.config.rrf_k))
+        params = {"query": query, "vector": vector, "rrf_k": self.config.rrf_k,
+                  "sources": list(source_ids) if source_ids else []}
+        return sql, params
+
+    def tune_ef_search(self, cur, *, k: int) -> int:
+        """pgvector's `hnsw.ef_search` defaults to 40 and is a hard ceiling on how many
+        rows an HNSW scan can return, whatever the query's LIMIT says. With
+        `retrieval.candidates: 50` the vector branch therefore yielded only 40 rows, and
+        any future raise of that config value would have been silently clamped — the
+        pre-rerank pool, and recall with it, quietly smaller than what is configured.
+
+        Plain `SET`, not `SET LOCAL`: `db.connect()` opens autocommit connections, so
+        there is no surrounding transaction for `LOCAL` to scope to and it would be a
+        no-op. This is a session GUC on the search connection, which is what we want.
+        """
+        # Never *lower* recall below pgvector's own default, and stay inside the
+        # documented 1..1000 range.
+        wanted = max(int(self.config.retrieval_candidates), int(k), _EF_SEARCH_DEFAULT)
+        ef_search = min(wanted, _EF_SEARCH_MAX)
+        cur.execute(f"SET hnsw.ef_search = {int(ef_search)}")
+        return ef_search
+
+    def search(self, query: str, *, k: int | None = None,
+               source_ids: Sequence[str] | None = None) -> list[SearchHit]:
+        # `is None`, not truthiness: `k=0` is an honest "give me nothing" (a caller
+        # draining a budget), not a request for the configured default.
+        k = self.config.retrieval_k if k is None else int(k)
+        if k <= 0:
+            return []
+        vector = vector_literal(self.ctx.embed([query], model=self.config.embedding_model)[0])
+        sql, params = self.build_query(query, vector=vector, k=k, source_ids=source_ids)
         with self.conn.cursor() as cur:
+            self.tune_ef_search(cur, k=k)
             cur.execute(sql, params)
             rows = cur.fetchall()
 
@@ -3680,7 +3817,7 @@ class SourceSearch:
         method must not build its own prompt around raw chunk text."""
         scores = self.ctx.rerank(query, [hit.chunk.text for hit in hits],
                                  model=self.config.reranker_model)
-        for hit, score in zip(hits, scores):
+        for hit, score in zip(hits, scores, strict=True):
             hit.rerank_score = float(score)
         return sorted(hits, key=lambda hit: hit.rerank_score, reverse=True)
 
@@ -3695,12 +3832,12 @@ class SourceSearch:
         return self.store.children_of(chunk.parent_section_id)
 ```
 
-- [ ] **Step 8: Run the search tests.**
+- [x] **Step 8: Run the search tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_search.py -m db -v`
 Expected: PASS (9 tests)
 
-- [ ] **Step 9: Add the `search` CLI subcommand (a developer-facing debugging view).**
+- [x] **Step 9: Add the `search` CLI subcommand (a developer-facing debugging view).**
 
 ```python
 def _cmd_search(args) -> int:
@@ -3708,10 +3845,13 @@ def _cmd_search(args) -> int:
     from langatlas_ingest.search import SourceSearch
 
     config = IngestConfig.load()
+    # `False if --no-rerank else None`, not `not args.no_rerank`: the flag is an opt-out,
+    # so its absence must leave the decision to `models.rerank_default_on` rather than
+    # silently forcing the reranker on for a config that turned it off.
+    rerank = False if args.no_rerank else None
     with RunContext.start(kind="search", slug="cli") as ctx:
         with connect(config.dsn) as conn:
-            hits = SourceSearch(conn, ctx, config=config,
-                                rerank=not args.no_rerank).search(
+            hits = SourceSearch(conn, ctx, config=config, rerank=rerank).search(
                 args.query, k=args.k, source_ids=args.source or None)
     for hit in hits:
         print(f"[{hit.score:.4f}] {hit.chunk.source_id} {hit.chunk.locator}"
@@ -3733,7 +3873,7 @@ Register it:
     search.set_defaults(func=_cmd_search)
 ```
 
-- [ ] **Step 10: Commit.**
+- [x] **Step 10: Commit.**
 
 ```bash
 git add tools/ingest
