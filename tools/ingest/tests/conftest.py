@@ -1,5 +1,6 @@
 import os
 import pytest
+from dataclasses import dataclass
 from langatlas_ingest.config import IngestConfig
 
 
@@ -41,3 +42,52 @@ def db_conn(dsn):
         with conn.cursor() as cur:
             cur.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public")
         yield conn
+
+
+class FakeEmbeddingConfig:
+    """Stands in for 1B's ProviderConfig: only `embedding()` is exercised here."""
+
+    def __init__(self, dimensions: int = 4):
+        self.dimensions = dimensions
+
+    def embedding(self, model: str):
+        @dataclass
+        class Cap:
+            model: str
+            dimensions: int
+            max_input_tokens: int = 8192
+
+        return Cap(model=model, dimensions=self.dimensions)
+
+
+class FakeCtx:
+    """A RunContext stand-in. Deliberately records every call: the point of routing
+    embeddings through `ctx` is that nothing reaches a provider unobserved (D26/D18)."""
+
+    def __init__(self, dimensions: int = 4):
+        self.config = FakeEmbeddingConfig(dimensions)
+        self.dimensions = dimensions
+        self.embed_calls: list[list[str]] = []
+        self.rerank_calls: list[tuple[str, list[str]]] = []
+        self.tool_results: list[tuple[str, str]] = []
+        self.rerank_scores: list[float] | None = None
+
+    def embed(self, texts, *, model):
+        self.embed_calls.append(list(texts))
+        return [[float(len(text) % 10) / 10] + [0.0] * (self.dimensions - 1)
+                for text in texts]
+
+    def rerank(self, query, docs, *, model):
+        self.rerank_calls.append((query, list(docs)))
+        if self.rerank_scores is not None:
+            return self.rerank_scores[:len(docs)]
+        return [1.0 / (index + 1) for index in range(len(docs))]
+
+    def tool_result(self, *, tool, text, source_id=None, kind="source-chunk"):
+        self.tool_results.append((tool, text))
+        return f"<untrusted source={source_id}>\n{text}\n</untrusted>"
+
+
+@pytest.fixture
+def fake_ctx():
+    return FakeCtx()

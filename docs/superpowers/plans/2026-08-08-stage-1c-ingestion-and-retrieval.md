@@ -3098,7 +3098,7 @@ D15's "overnight batch embed on `qwen3-embedding-4b`". Every vector is produced 
 - Consumes: `RunContext.embed` + `ProviderConfig.embedding` (1B), `SourceChunksStore.unembedded` (Task 8), `ensure_embedding_table` (Task 2).
 - Produces: `embed_source()`, `vector_literal()`, CLI subcommand `embed`.
 
-- [ ] **Step 1: Add a fake `RunContext` to `conftest.py`.**
+- [x] **Step 1: Add a fake `RunContext` to `conftest.py`.**
 
 ```python
 # append to tools/ingest/tests/conftest.py
@@ -3154,7 +3154,7 @@ def fake_ctx():
     return FakeCtx()
 ```
 
-- [ ] **Step 2: Write the failing test.**
+- [x] **Step 2: Write the failing test.**
 
 ```python
 # tools/ingest/tests/test_embed.py
@@ -3233,12 +3233,12 @@ def test_embedding_batches_respect_the_batch_size(db_conn, fake_ctx):
     assert [len(call) for call in fake_ctx.embed_calls] == [2, 2, 1]
 ```
 
-- [ ] **Step 3: Run it and watch it fail.**
+- [x] **Step 3: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_embed.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.embed'`
 
-- [ ] **Step 4: Write `embed.py`.**
+- [x] **Step 4: Write `embed.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/embed.py
@@ -3282,12 +3282,12 @@ def embed_source(ctx, conn, *, source_id: str | None = None,
     return written
 ```
 
-- [ ] **Step 5: Run the tests.**
+- [x] **Step 5: Run the tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_embed.py -m db -v`
 Expected: PASS (6 tests)
 
-- [ ] **Step 6: Add the `embed` CLI subcommand.**
+- [x] **Step 6: Add the `embed` CLI subcommand.**
 
 ```python
 def _cmd_embed(args) -> int:
@@ -3313,7 +3313,7 @@ Register it in `build_parser`:
     embed.set_defaults(func=_cmd_embed)
 ```
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/ingest

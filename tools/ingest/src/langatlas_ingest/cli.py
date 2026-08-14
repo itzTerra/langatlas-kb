@@ -63,6 +63,19 @@ def _cmd_queue(args) -> int:
     return 0
 
 
+def _cmd_embed(args) -> int:
+    from langatlas_pipeline.providers.core import RunContext
+    from langatlas_ingest.embed import embed_source
+
+    config = IngestConfig.load()
+    with RunContext.start(kind="ingest", slug=args.source_id or "corpus") as ctx:
+        with connect(config.dsn) as conn:
+            written = embed_source(ctx, conn, source_id=args.source_id, config=config,
+                                   batch_size=args.batch_size)
+    print(f"embedded {written} chunks on {config.embedding_model}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="langatlas-sources")
     parser.add_argument("--version", action="version", version=__version__)
@@ -86,6 +99,12 @@ def build_parser() -> argparse.ArgumentParser:
     queue = sub.add_parser("queue", help="list open sourcing-queue entries")
     queue.add_argument("--kind", choices=["pending-source", "link-checker", "edition-check"])
     queue.set_defaults(func=_cmd_queue)
+
+    embed = sub.add_parser("embed", help="batch-embed unembedded chunks through RunContext")
+    embed.add_argument("source_id", nargs="?", default=None,
+                       help="omit to embed every unembedded chunk in the corpus")
+    embed.add_argument("--batch-size", type=int, default=32)
+    embed.set_defaults(func=_cmd_embed)
     return parser
 
 
