@@ -10,6 +10,14 @@ from langatlas_validate.locators import validate_locator_shape
 
 _CHARS_PER_TOKEN = 4
 _NUMBERED_HEADING = re.compile(r"^(\d+(?:\.\d+)*)[.)]?\s+\S")
+# Share of chunk_max_tokens the breadcrumb prefix may consume in the embedded text.
+# Heading text is capped per level (`_HEADING_MAX_CHARS`, 120) but section *depth* is
+# not, so a deeply nested section's full breadcrumb can exceed the whole token budget:
+# `split_budget` would then clamp to 1 and every chunk of that section would silently
+# come out over chunk_max_tokens. A quarter leaves the body the clear majority of the
+# budget while still carrying enough breadcrumb for retrieval context.
+_BREADCRUMB_BUDGET_SHARE = 0.25
+_BREADCRUMB_ELISION = "… > "
 
 
 def count_tokens(text: str) -> int:
@@ -87,8 +95,32 @@ class _Accumulator:
         # at the one call site that first exposed it.
         self.pure_carry = False
 
-    def _prefix(self, section: _Section) -> str:
+    def _embedded_breadcrumb(self, section: _Section) -> str:
+        """The breadcrumb as it appears in the *embedded* text, capped at
+        `_BREADCRUMB_BUDGET_SHARE` of the token budget. The full breadcrumb is still
+        stored on the Chunk (it is the citation surface); only the copy that competes
+        with the body for chunk_max_tokens is capped.
+
+        The shallowest levels go first: the deepest heading is the most specific thing a
+        chunk can say about itself, and an elision marker leading the breadcrumb makes
+        the truncation visible rather than passing a partial path off as the whole one."""
         breadcrumb = " > ".join(section.path)
+        limit = (max(1, int(self.config.chunk_max_tokens * _BREADCRUMB_BUDGET_SHARE))
+                 * _CHARS_PER_TOKEN)
+        if len(breadcrumb) <= limit:
+            return breadcrumb
+        levels = list(section.path)
+        while levels:
+            candidate = _BREADCRUMB_ELISION + " > ".join(levels)
+            if len(candidate) <= limit:
+                return candidate
+            levels.pop(0)
+        # Even the deepest heading alone is wider than the whole allowance: hard-cut it,
+        # the same way `_split` hard-cuts an unsplittable oversized word.
+        return (_BREADCRUMB_ELISION + section.path[-1])[:limit]
+
+    def _prefix(self, section: _Section) -> str:
+        breadcrumb = self._embedded_breadcrumb(section)
         return f"{breadcrumb}\n\n" if breadcrumb else ""
 
     def _text_for(self, section: _Section, buffer: list[str]) -> str:
@@ -179,8 +211,13 @@ class _Accumulator:
             self.pure_carry = False
             return
         body = "\n\n".join(self.buffer)
+        # Two breadcrumbs on purpose: the stored one is the full path (a citation
+        # surface, never truncated), the embedded one is capped so a deeply nested
+        # section cannot push every chunk of itself over chunk_max_tokens — see
+        # `_embedded_breadcrumb`. `_prefix` uses the same capped form, so the split
+        # budget and the emitted text agree.
         breadcrumb = " > ".join(section.path)
-        text = f"{breadcrumb}\n\n{body}" if breadcrumb else body
+        text = self._prefix(section) + body
         pages = (min(self.pages), max(self.pages)) if self.pages else (None, None)
         kind, locator = _locator_for(section, pages, self.kinds, self.doc.source_id)
         ordinal = len(self.chunks)

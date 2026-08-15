@@ -73,6 +73,12 @@ class SourceChunksStore:
                         " ORDER BY ordinal", (source_id,))
             return [_row(row) for row in cur.fetchall()]
 
+    def count_by_source(self, source_id: str) -> int:
+        with self.conn.cursor() as cur:
+            cur.execute("SELECT count(*) FROM source_chunks WHERE source_id = %s",
+                        (source_id,))
+            return cur.fetchone()[0]
+
     def children_of(self, parent_section_id: str) -> list[SourceChunk]:
         with self.conn.cursor() as cur:
             cur.execute(f"SELECT {_SELECT} FROM source_chunks"
@@ -93,19 +99,34 @@ class SourceChunksStore:
             return [_row(row) for row in cur.fetchall()]
 
     def record_ingestion(self, source_id: str, *, content_hash: str, backend: str,
-                         backend_version: str, chunk_count: int, qa, promoted: bool) -> None:
+                         backend_version: str, chunk_count: int, qa, promoted: bool,
+                         locator_kinds: Sequence[str] = ()) -> None:
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO source_ingestions (source_id, content_hash, backend,"
-                " backend_version, chunk_count, qa_status, qa_report, promoted)"
-                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                " backend_version, chunk_count, qa_status, qa_report, promoted,"
+                " locator_kinds)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 " ON CONFLICT (source_id) DO UPDATE SET content_hash = EXCLUDED.content_hash,"
                 " backend = EXCLUDED.backend, backend_version = EXCLUDED.backend_version,"
                 " chunk_count = EXCLUDED.chunk_count, qa_status = EXCLUDED.qa_status,"
                 " qa_report = EXCLUDED.qa_report, promoted = EXCLUDED.promoted,"
-                " ingested_at = now()",
+                " locator_kinds = EXCLUDED.locator_kinds, ingested_at = now()",
                 (source_id, content_hash, backend, backend_version, chunk_count,
-                 qa.status, json.dumps(qa.to_dict()), promoted))
+                 qa.status, json.dumps(qa.to_dict()), promoted, list(locator_kinds)))
+
+    def ingestion(self, source_id: str) -> dict | None:
+        """The last recorded run for a source, or None. `ingest_source` compares this
+        against the current run's inputs to decide whether re-extracting and re-writing
+        the source would change anything — a blind `replace_source` cascades every
+        embedding of that source away and costs a full re-embed on the paid provider."""
+        names = ("source_id", "content_hash", "backend", "backend_version", "chunk_count",
+                 "qa_status", "promoted", "locator_kinds")
+        with self.conn.cursor() as cur:
+            cur.execute(f"SELECT {', '.join(names)} FROM source_ingestions"
+                        " WHERE source_id = %s", (source_id,))
+            row = cur.fetchone()
+        return dict(zip(names, row)) if row else None
 
 
 class SourcingQueue:

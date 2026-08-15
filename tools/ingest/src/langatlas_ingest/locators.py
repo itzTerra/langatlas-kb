@@ -15,8 +15,28 @@ _FRAGMENT = re.compile(r"^#([^#]+)$")
 _VIDEO = re.compile(r"^t=(\d{2}):(\d{2}):(\d{2})$")
 
 
-def _key(text: str) -> str:
-    return re.sub(r"\s+", " ", unicodedata.normalize("NFC", text)).strip().lower()
+def canonical_text(text: str) -> str:
+    """The one canonical spelling of any heading-derived text: NFC, internal whitespace
+    runs collapsed to a single space, stripped.
+
+    This lives here, beside the comparison semantics, because it *is* part of them. Three
+    copies of this rule used to exist (here, `qa._key`, `backends/html._key`) while the
+    extraction backends applied only *part* of it — `pymupdf_backend` normalized and
+    stripped but never collapsed, and its span joining (`" ".join(...)`) manufactures
+    multi-space runs routinely: 975 of the real corpus's 1263 chunks carry a
+    `section_path` entry with an internal whitespace run. The SQL side of the same join
+    (`index.PostgresSourceChunksIndex._query`) compared only `lower(btrim(...))`, so a
+    `named-section` citation matched neither the raw nor the collapsed spelling and the
+    D24 verifier would have seen a true, well-sourced fact as unverifiable. The fix is to
+    canonicalize once at extraction with this function; everything downstream then
+    compares like with like."""
+    return re.sub(r"\s+", " ", unicodedata.normalize("NFC", text)).strip()
+
+
+def normalize_heading(text: str) -> str:
+    """`canonical_text` plus case folding — the comparison key for heading text.
+    Stored text keeps its case (it is a citation surface); only the key is lowered."""
+    return canonical_text(text).lower()
 
 
 @dataclass(frozen=True)
@@ -62,15 +82,15 @@ def parse_locator(locator: str, kind: str | None = None) -> LocatorRange:
     if kind == "named-section":
         match = _NAMED.match(locator)
         if match.group(1):
-            return LocatorRange(kind, heading=_key(f"chapter {match.group(1)}"),
+            return LocatorRange(kind, heading=normalize_heading(f"chapter {match.group(1)}"),
                                 section_number=match.group(1))
-        return LocatorRange(kind, heading=_key(match.group(2)))
+        return LocatorRange(kind, heading=normalize_heading(match.group(2)))
     if kind == "design-doc":
         match = _DESIGN.match(locator)
         section = match.group(3)
         return LocatorRange(kind, doc_kind=match.group(1).lower(),
                             doc_number=int(match.group(2)),
-                            heading=_key(section) if section else None)
+                            heading=normalize_heading(section) if section else None)
     if kind == "repo-file":
         match = _REPO.match(locator)
         start = int(match.group(3))

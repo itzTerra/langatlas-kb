@@ -118,3 +118,34 @@ def test_a_missing_golden_directory_is_distinguishable_from_an_empty_one(
     assert result.queries == 0
     assert result.golden_dir_missing is True
     assert "WARNING" in result.to_markdown()
+
+
+def test_rerank_can_be_switched_off_for_the_no_rerank_arm(corpus, fake_ctx, tmp_path):
+    """§8.6 asks for a rerank-vs-no-rerank comparison, which the harness could not run at
+    all while it always built its search with the configured default. It is also the cost
+    question: with reranking on, every query spends a completion round-trip per 8
+    candidates, so a 60-query set is hundreds of sequential calls."""
+    golden = write_golden(tmp_path, [
+        {"id": "q1", "query": "pattern matching destructures",
+         "expected_chunks": ["ctm#c00002"]}])
+
+    run_eval(corpus, fake_ctx, golden_dir=golden, config=CONFIG, rerank=False)
+    assert fake_ctx.rerank_calls == []
+
+    run_eval(corpus, fake_ctx, golden_dir=golden, config=CONFIG, rerank=True)
+    assert len(fake_ctx.rerank_calls) == 1
+
+
+def test_rerank_defaults_to_the_configured_flag(corpus, fake_ctx, tmp_path):
+    """Absent an explicit argument the decision stays with `models.rerank_default_on` —
+    the same opt-out shape the CLI uses, never a silent override of the config."""
+    golden = write_golden(tmp_path, [
+        {"id": "q1", "query": "lazy evaluation", "expected_chunks": ["ctm#c00000"]}])
+    off = IngestConfig.load(overrides={"retrieval_k": 5, "retrieval_candidates": 10,
+                                       "rerank_default_on": False})
+
+    run_eval(corpus, fake_ctx, golden_dir=golden, config=off)
+    assert fake_ctx.rerank_calls == []
+
+    run_eval(corpus, fake_ctx, golden_dir=golden, config=CONFIG)
+    assert len(fake_ctx.rerank_calls) == 1

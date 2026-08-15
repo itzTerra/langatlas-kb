@@ -114,7 +114,13 @@ def _score(entry: dict, hits: list) -> tuple[float, float, float, int | None]:
 
 
 def run_eval(conn, ctx, *, golden_dir: Path | None = None,
-             config: IngestConfig | None = None) -> EvalResult:
+             config: IngestConfig | None = None, rerank: bool | None = None) -> EvalResult:
+    """`rerank` is threaded through to `SourceSearch` (None leaves the decision to
+    `models.rerank_default_on`, exactly as the CLI's `--no-rerank` opt-out does).
+    §8.6 asks for a rerank-vs-no-rerank comparison, which this harness could not perform
+    at all while it always constructed the search with the configured default — and the
+    no-rerank arm is also the cheap one: with reranking on, a 60-query golden set spends
+    a completion round-trip per 8 candidates per query."""
     config = config or IngestConfig.load()
     golden_dir = golden_dir or GOLDEN_RETRIEVAL_DIR
     entries = _load(golden_dir)
@@ -123,7 +129,7 @@ def run_eval(conn, ctx, *, golden_dir: Path | None = None,
     if not entries:
         return EvalResult(golden_dir_missing=not Path(golden_dir).is_dir())
 
-    search = SourceSearch(conn, ctx, config=config)
+    search = SourceSearch(conn, ctx, config=config, rerank=rerank)
     recalls, reciprocals, gains, latencies, per_query = [], [], [], [], []
     for entry in entries:
         began = time.monotonic()

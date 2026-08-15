@@ -21,3 +21,14 @@ def test_overrides_win_over_file(tmp_path):
 def test_dsn_env_wins(monkeypatch):
     monkeypatch.setenv("LANGATLAS_DSN", "postgresql://example/db")
     assert IngestConfig.load().dsn == "postgresql://example/db"
+
+
+def test_the_provider_cost_knobs_load():
+    """`rerank_candidates` is deliberately not `retrieval_candidates`: RRF fuses the wide
+    pool in one SQL statement, but reranking spends one completion round-trip per 8
+    documents on a slow API. `max_section_tokens` bounds the one path that injects text
+    into a session without any budget accounting (`get_source_section`)."""
+    config = IngestConfig.load()
+    assert config.rerank_candidates <= config.retrieval_candidates
+    assert config.rerank_candidates >= config.retrieval_k
+    assert config.max_section_tokens > config.chunk_max_tokens

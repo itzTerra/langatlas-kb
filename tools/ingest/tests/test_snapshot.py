@@ -134,3 +134,49 @@ def test_extracted_document_round_trips(snapshot_root, tmp_path):
     path = store.write_extracted("s", doc)
     assert json.loads(path.read_text())["blocks"][0]["text"] == "Hello"
     assert store.read_extracted("s").blocks[0].page == 1
+
+
+def test_locator_kinds_round_trip_through_the_manifest(snapshot_root, tmp_path):
+    """D1: re-running ingestion from the snapshot store must reproduce the database
+    exactly, and `locator_kinds` decides every locator a source emits. Stored only in a
+    CLI flag, it was discarded after the run and a re-ingest that forgot the flag
+    silently produced different public citations."""
+    pdf = tmp_path / "book.pdf"
+    pdf.write_bytes(b"x")
+    store = SnapshotStore(snapshot_root)
+
+    store.put("s", pdf, media_type="application/pdf", locator_kinds=["book-page"])
+    assert store.get("s").locator_kinds == ["book-page"]
+
+    # re-acquiring the original must not forget the declared preference
+    store.put("s", pdf, media_type="application/pdf")
+    assert store.get("s").locator_kinds == ["book-page"]
+
+    store.set_locator_kinds("s", ["numbered-section", "book-page"])
+    assert store.get("s").locator_kinds == ["numbered-section", "book-page"]
+
+
+def test_a_snapshot_without_stored_locator_kinds_reads_as_unset(snapshot_root, tmp_path):
+    """Manifests written before the field existed must still load — `None` means 'never
+    declared', which is what makes the DEFAULT_LOCATOR_KINDS fallback correct."""
+    pdf = tmp_path / "book.pdf"
+    pdf.write_bytes(b"x")
+    store = SnapshotStore(snapshot_root)
+    store.put("s", pdf, media_type="application/pdf")
+    manifest = snapshot_root / "s" / "snapshot.yaml"
+    manifest.write_text("\n".join(line for line in manifest.read_text().splitlines()
+                                  if not line.startswith("locator_kinds")) + "\n")
+    assert store.get("s").locator_kinds is None
+
+
+def test_sources_enumerates_every_stored_snapshot(snapshot_root, tmp_path):
+    """The enumeration D1's regeneration loop runs over: without it, 'drop the database
+    and re-ingest' is a list the developer reconstructs from memory."""
+    pdf = tmp_path / "book.pdf"
+    pdf.write_bytes(b"x")
+    store = SnapshotStore(snapshot_root)
+    assert store.sources() == []
+    store.put("b-source", pdf, media_type="application/pdf")
+    store.put("a-source", pdf, media_type="application/pdf")
+    (snapshot_root / "half-written").mkdir()      # no manifest: not a stored source
+    assert store.sources() == ["a-source", "b-source"]

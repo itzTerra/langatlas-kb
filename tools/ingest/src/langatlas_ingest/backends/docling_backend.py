@@ -1,5 +1,6 @@
 from pathlib import Path
 from langatlas_ingest.extract import Block, ExtractedDocument
+from langatlas_ingest.locators import canonical_text
 
 
 class DoclingBackend:
@@ -20,7 +21,12 @@ class DoclingBackend:
         blocks: list[Block] = []
         outline: list[str] = []
         for item, _level in result.iterate_items():
-            text = (getattr(item, "text", "") or "").strip()
+            # `canonical_text`, not `.strip()`: the same NFC + whitespace-collapse rule
+            # every other backend applies (`locators.canonical_text`), so a heading this
+            # backend produces keys identically to the same heading via pymupdf or HTML.
+            # Bare `.strip()` left both an unnormalized form and internal whitespace runs
+            # in `section_path`, which the §4.3 named-section join compares.
+            text = canonical_text(getattr(item, "text", "") or "")
             if not text:
                 continue
             label = str(getattr(item, "label", ""))

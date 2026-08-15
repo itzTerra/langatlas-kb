@@ -164,7 +164,14 @@ class SourceSearch:
                 for row in rows]
         hits = [hit for hit in hits if hit.score >= self.config.relevance_floor]
         if self.rerank and hits:
-            hits = self._rerank(query, hits)
+            # Only the top of the fused pool is reranked. The full
+            # `retrieval_candidates` pool is still fused and ranked by RRF above — that
+            # is one SQL statement — but 1B's rerank client is completion-driven and
+            # batches 8 documents per call, so reranking 50 candidates cost 7 sequential
+            # completions on a slow API for every single search. `max(..., k)` so a
+            # caller asking for more hits than the rerank pool is never starved.
+            depth = max(int(self.config.rerank_candidates), k)
+            hits = self._rerank(query, hits[:depth]) + hits[depth:]
         return hits[:k]
 
     def _rerank(self, query: str, hits: list[SearchHit]) -> list[SearchHit]:

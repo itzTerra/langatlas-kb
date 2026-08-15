@@ -94,8 +94,17 @@ class PostgresSourceChunksIndex:
         if parsed.kind in ("named-section", "design-doc"):
             if parsed.heading is None:
                 return ("TRUE", ())      # a whole-document citation
+            # `regexp_replace(..., '\s+', ' ', 'g')` mirrors `locators.canonical_text`'s
+            # whitespace collapse, which `parsed.heading` has already had applied to it.
+            # Belt and braces: extraction now canonicalizes heading text before it ever
+            # becomes a `section_path` entry, but 975 of the real corpus's 1263 chunks
+            # were ingested before that fix and still carry runs like
+            # "11.8 Partial   failure". Without the collapse here, *neither* spelling of
+            # the citation resolved against them — a false negative in the join the D24
+            # verifier trusts, which makes a true fact look unverifiable.
             return ("EXISTS (SELECT 1 FROM unnest(section_path) part"
-                    " WHERE lower(btrim(part)) = %s)", (parsed.heading,))
+                    r" WHERE lower(btrim(regexp_replace(part, '\s+', ' ', 'g'))) = %s)",
+                    (parsed.heading,))
         if parsed.kind in ("web-fragment", "multipage-docs"):
             return ("anchor = %s", (parsed.anchor,))
         if parsed.kind == "repo-file":

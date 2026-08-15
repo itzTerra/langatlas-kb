@@ -1,15 +1,20 @@
 import statistics
-import unicodedata
 from pathlib import Path
 from langatlas_ingest.errors import ExtractionFailed
 from langatlas_ingest.extract import Block, ExtractedDocument
+from langatlas_ingest.locators import canonical_text
 
 _HEADING_RATIO = 1.15      # a span this much larger than body text is a heading
 _HEADING_MAX_CHARS = 120   # ...and headings are short; a big-font paragraph is not one
 
-
-def _normalize(text: str) -> str:
-    return unicodedata.normalize("NFC", text).strip()
+# NFC + strip *and* whitespace collapse — `locators.canonical_text`, not a local subset
+# of it. `_collect` joins spans with " ", and PDF text extraction hands back spans that
+# already carry leading/trailing spaces, so a heading routinely comes out as
+# "7.7.2 Introduction   to   Java   programming". Uncollapsed, that run reached two
+# places it must never reach: the `section_path` the §4.3 named-section join compares
+# (975 of the real corpus's 1263 chunks carry one), and the emitted locator string
+# itself — a public citation rendering its own triple spaces.
+_normalize = canonical_text
 
 
 class PyMuPdfBackend:

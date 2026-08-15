@@ -209,3 +209,41 @@ def test_a_single_unbreakable_oversized_word_is_hard_cut_within_budget():
     chunks = chunk_document(doc, config=CONFIG, locator_kinds=["book-page"])
     assert chunks
     assert all(c.token_count <= CONFIG.chunk_max_tokens for c in chunks)
+
+
+def test_a_breadcrumb_wider_than_the_budget_does_not_push_chunks_over_the_max():
+    # Heading text is capped per level (_HEADING_MAX_CHARS = 120) but section *depth*
+    # is not, so a deeply nested section's full breadcrumb can exceed
+    # chunk_max_tokens * 4 characters on its own. That clamped `split_budget` to 1 and
+    # silently emitted every chunk of that section over budget -- no error, just
+    # oversized chunks. The stored breadcrumb stays complete (it is the citation
+    # surface); only the copy embedded in the text is capped.
+    levels = [f"{i + 1} " + f"Heading{i} " * 12 for i in range(8)]
+    blocks = []
+    for depth, title in enumerate(levels, start=1):
+        blocks.append(Block(text=title.strip(), page=1, heading_level=depth))
+    blocks.append(Block(text=body(400), page=1))
+    doc = ExtractedDocument(source_id="deep", media_type="application/pdf", backend="f",
+                            backend_version="0", page_count=1, outline=[], blocks=blocks)
+
+    chunks = chunk_document(doc, config=CONFIG, locator_kinds=["book-page"])
+
+    assert chunks
+    breadcrumb = chunks[-1].breadcrumb
+    assert len(breadcrumb) > CONFIG.chunk_max_tokens * 4, \
+        "the fixture must actually produce a breadcrumb wider than the whole budget"
+    assert breadcrumb == " > ".join(level.strip() for level in levels), \
+        "the stored breadcrumb is the citation surface and stays complete"
+    assert all(c.token_count <= CONFIG.chunk_max_tokens for c in chunks)
+    assert all(count_tokens(c.text) <= CONFIG.chunk_max_tokens for c in chunks)
+    assert chunks[-1].text.startswith("… > "), "the elision must be visible, not silent"
+    # and the body actually survived: a capped breadcrumb must not eat the content
+    assert "evaluation" in chunks[-1].text
+
+
+def test_a_production_config_keeps_ordinary_breadcrumbs_verbatim():
+    """The cap is a guard against pathological depth, not a general rewrite: an
+    ordinary breadcrumb must reach the embedded text unchanged."""
+    chunks = chunk_document(html_doc(), config=CONFIG, locator_kinds=["web-fragment"])
+    assert chunks[-1].text.startswith("Expressions > Match expressions\n\n")
+    assert "…" not in chunks[-1].text

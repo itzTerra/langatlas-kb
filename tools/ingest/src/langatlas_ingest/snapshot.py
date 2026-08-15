@@ -4,6 +4,7 @@ import shutil
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Sequence
 from ruamel.yaml import YAML
 from langatlas_ingest import paths
 from langatlas_ingest.errors import SnapshotMissing
@@ -27,6 +28,15 @@ class Snapshot:
     retrieved_at: str
     source_url: str | None = None
     archive_url: str | None = None
+    # The source record's `custom.locator_kinds` (§4.1), remembered here because it
+    # materially determines every emitted `locator`/`locator_kind` for this source and
+    # D1 requires that dropping the database and re-running ingestion from the snapshot
+    # store reproduces it *exactly*. It used to live only in an ad-hoc `--locator-kinds`
+    # CLI flag and was discarded after the run, so a re-ingest that forgot the flag
+    # silently produced different locators — the public citation surface — than the
+    # first one did. `None` means "never set": ingestion then falls back to
+    # `pipeline.DEFAULT_LOCATOR_KINDS`.
+    locator_kinds: list[str] | None = None
 
 
 def savepagenow(url: str, *, client=None) -> str | None:
@@ -66,7 +76,8 @@ class SnapshotStore:
         return self.root / source_id
 
     def put(self, source_id: str, path: Path, *, media_type: str,
-            source_url: str | None = None, archive_url: str | None = None) -> Snapshot:
+            source_url: str | None = None, archive_url: str | None = None,
+            locator_kinds: Sequence[str] | None = None) -> Snapshot:
         target_dir = self.dir_for(source_id) / "original"
         target_dir.mkdir(parents=True, exist_ok=True)
         target = target_dir / (Path(path).name or f"source{_EXTENSIONS.get(media_type, '')}")
@@ -74,11 +85,13 @@ class SnapshotStore:
         snapshot = Snapshot(
             source_id=source_id, original_path=target, media_type=media_type,
             content_hash=hashlib.sha256(target.read_bytes()).hexdigest(),
-            retrieved_at=utc_now(), source_url=source_url, archive_url=archive_url)
+            retrieved_at=utc_now(), source_url=source_url, archive_url=archive_url,
+            locator_kinds=self._kinds_for(source_id, locator_kinds))
         self._write_manifest(snapshot)
         return snapshot
 
-    def fetch_url(self, source_id: str, url: str, *, fetcher=None, archiver=None) -> Snapshot:
+    def fetch_url(self, source_id: str, url: str, *, fetcher=None, archiver=None,
+                  locator_kinds: Sequence[str] | None = None) -> Snapshot:
         fetcher = fetcher or _default_fetcher
         archiver = archiver or savepagenow
         body, media_type = fetcher(url)
@@ -93,9 +106,39 @@ class SnapshotStore:
         snapshot = Snapshot(
             source_id=source_id, original_path=target, media_type=media_type,
             content_hash=hashlib.sha256(body).hexdigest(), retrieved_at=utc_now(),
-            source_url=url, archive_url=archive_url)
+            source_url=url, archive_url=archive_url,
+            locator_kinds=self._kinds_for(source_id, locator_kinds))
         self._write_manifest(snapshot)
         return snapshot
+
+    def _kinds_for(self, source_id: str, locator_kinds: Sequence[str] | None):
+        """Re-acquiring an original (a new edition, a re-fetch) must not silently forget
+        the source's declared locator preference — that would change every locator it
+        emits. An explicit argument wins; otherwise whatever the stored manifest already
+        says is carried forward."""
+        if locator_kinds is not None:
+            return list(locator_kinds)
+        try:
+            return self.get(source_id).locator_kinds
+        except SnapshotMissing:
+            return None
+
+    def set_locator_kinds(self, source_id: str, locator_kinds: Sequence[str]) -> Snapshot:
+        """Record an explicit `--locator-kinds` override against an already-stored
+        snapshot, so the next re-ingest reproduces this run rather than the one before it."""
+        snapshot = self.get(source_id)
+        snapshot.locator_kinds = list(locator_kinds)
+        self._write_manifest(snapshot)
+        return snapshot
+
+    def sources(self) -> list[str]:
+        """Every source with a stored snapshot, in id order — what makes "drop the
+        database and regenerate it" (D1) a loop a command can run rather than a list the
+        developer has to reconstruct from memory."""
+        if not self.root.is_dir():
+            return []
+        return sorted(directory.name for directory in self.root.iterdir()
+                      if (directory / "snapshot.yaml").exists())
 
     def get(self, source_id: str) -> Snapshot:
         manifest = self.dir_for(source_id) / "snapshot.yaml"

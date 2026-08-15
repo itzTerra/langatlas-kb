@@ -11,9 +11,20 @@ models:
   rerank_default_on: true           # D15 ratified: reranker default-on
 retrieval:
   k: 5                              # §8.1
-  candidates: 50                    # pre-rerank pool per branch
+  candidates: 50                    # per-branch pool fused by RRF
+  # How many of the fused candidates actually reach the reranker. 1B's rerank client is
+  # completion-driven and batches 8 documents per call, so reranking all 50 made every
+  # search 1 embed + 7 completions = 8 sequential round-trips against a slow API — and
+  # §8.6's 40-60-query golden set 320-480 calls against a 500-call provider budget.
+  rerank_candidates: 20
   rrf_k: 60                         # standard RRF damping constant
   relevance_floor: 0.0              # §8.1; raised once Stage 2's golden set can measure it
+  # Ceiling on the text `get_source_section` returns in one tool result. Sections in the
+  # real corpus reach ~19,000 tokens, and raw tool-result injection carries no budget
+  # signal at all (embedding/completion calls do), so an uncapped expansion silently
+  # fills a Claude-channel context — and D31's transcript log truncates at 2KB, so it
+  # would not even show what was injected.
+  max_section_tokens: 5000
 extraction:
   pdf_backend: pymupdf              # or `docling` (optional extra); see plan assumption
 database:

@@ -17,8 +17,13 @@ class IngestConfig:
     rerank_default_on: bool
     retrieval_k: int
     retrieval_candidates: int
+    # Deliberately decoupled from `retrieval_candidates`: RRF fusion over a wide pool is
+    # one SQL statement, but reranking is 1B's 8-documents-per-call completion client, so
+    # the rerank pool is what actually costs sequential provider round-trips.
+    rerank_candidates: int
     rrf_k: int
     relevance_floor: float
+    max_section_tokens: int
     pdf_backend: str
     dsn: str
 
@@ -36,8 +41,10 @@ class IngestConfig:
             rerank_default_on=bool(models["rerank_default_on"]),
             retrieval_k=int(retrieval["k"]),
             retrieval_candidates=int(retrieval["candidates"]),
+            rerank_candidates=int(retrieval["rerank_candidates"]),
             rrf_k=int(retrieval["rrf_k"]),
             relevance_floor=float(retrieval["relevance_floor"]),
+            max_section_tokens=int(retrieval["max_section_tokens"]),
             pdf_backend=extraction["pdf_backend"],
             # The DSN carries a password, so the env var has to win: CI and the
             # orchestrator (1E) both supply their own.

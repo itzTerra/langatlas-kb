@@ -20,22 +20,50 @@ def _cmd_ingest(args) -> int:
 
     config = IngestConfig.load()
     snapshots = SnapshotStore()
+    # The flag rides along to the snapshot so a first ingest stores the source's locator
+    # preference; without a flag, an existing snapshot's stored value is carried forward.
+    kinds = args.locator_kinds or None
     if args.url:
-        snapshots.fetch_url(args.source_id, args.url)
+        snapshots.fetch_url(args.source_id, args.url, locator_kinds=kinds)
     elif args.file:
-        snapshots.put(args.source_id, Path(args.file), media_type=args.media_type)
+        snapshots.put(args.source_id, Path(args.file), media_type=args.media_type,
+                      locator_kinds=kinds)
     with connect(config.dsn) as conn:
         try:
             result = ingest_source(args.source_id, conn=conn, config=config,
-                                   snapshots=snapshots,
-                                   locator_kinds=args.locator_kinds or None)
+                                   snapshots=snapshots, locator_kinds=kinds)
         except QaHardGate as gate:
             report = snapshots.dir_for(args.source_id) / "qa" / "report.md"
             print(f"QA hard gate: {gate}\nreport: {report}")
             return 2
-    print(f"{result.source_id}: {result.chunk_count} chunks, QA {result.qa_status}\n"
+    state = " (unchanged, skipped)" if result.skipped else ""
+    print(f"{result.source_id}: {result.chunk_count} chunks, QA {result.qa_status}{state}\n"
           f"report: {result.qa_report_path}")
     return 0
+
+
+def _cmd_reingest(args) -> int:
+    """D1's regeneration path: drop the database, `db`, then this. Every stored snapshot
+    is re-ingested with its own stored `locator_kinds`, so the regenerated locators match
+    the published ones."""
+    from langatlas_ingest.errors import IngestError
+    from langatlas_ingest.pipeline import reingest_all
+
+    config = IngestConfig.load()
+    with connect(config.dsn) as conn:
+        results = reingest_all(conn=conn, config=config, snapshots=SnapshotStore())
+    failed = 0
+    for source_id, result in results.items():
+        if isinstance(result, IngestError):
+            failed += 1
+            print(f"{source_id}: FAILED: {result}")
+        elif result.skipped:
+            print(f"{source_id}: unchanged, skipped ({result.chunk_count} chunks)")
+        else:
+            print(f"{source_id}: {result.chunk_count} chunks, QA {result.qa_status}")
+    if not results:
+        print("no stored snapshots")
+    return 2 if failed else 0
 
 
 def _cmd_qa(args) -> int:
@@ -103,9 +131,12 @@ def _cmd_eval(args) -> int:
     from langatlas_ingest.eval import run_eval
 
     config = IngestConfig.load()
+    # Same opt-out shape as `search` — absent, the config decides (§8.6's comparison runs
+    # the harness twice, once with the flag).
+    rerank = False if args.no_rerank else None
     with RunContext.start(kind="eval", slug="retrieval") as ctx:
         with connect(config.dsn) as conn:
-            result = run_eval(conn, ctx, config=config)
+            result = run_eval(conn, ctx, config=config, rerank=rerank)
     print(result.to_markdown())
     return 0
 
@@ -123,8 +154,15 @@ def build_parser() -> argparse.ArgumentParser:
     ingest.add_argument("--url", help="fetch and archive a URL as the snapshot first")
     ingest.add_argument("--media-type", default="application/pdf")
     ingest.add_argument("--locator-kinds", nargs="*", default=[],
-                        help="preference order; defaults to DEFAULT_LOCATOR_KINDS")
+                        help="preference order; stored on the snapshot and reused by"
+                             " later runs. Omit to reuse the stored order (or"
+                             " DEFAULT_LOCATOR_KINDS for a source that never had one)")
     ingest.set_defaults(func=_cmd_ingest)
+
+    reingest = sub.add_parser("reingest",
+                              help="re-ingest every stored snapshot (D1: regenerate the"
+                                   " database), each with its own stored locator kinds")
+    reingest.set_defaults(func=_cmd_reingest)
 
     qa = sub.add_parser("qa", help="print a stored extraction-QA report")
     qa.add_argument("source_id")
@@ -148,6 +186,8 @@ def build_parser() -> argparse.ArgumentParser:
     search.set_defaults(func=_cmd_search)
 
     evaluate = sub.add_parser("eval", help="score the retrieval golden set")
+    evaluate.add_argument("--no-rerank", action="store_true",
+                          help="score the no-rerank arm of §8.6's comparison")
     evaluate.set_defaults(func=_cmd_eval)
     return parser
 

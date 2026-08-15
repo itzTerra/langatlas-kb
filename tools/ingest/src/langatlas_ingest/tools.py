@@ -13,6 +13,7 @@ Both paths put every chunk through `ctx.tool_result()` — the D31 door — so r
 is scanned, logged, and delimited as data rather than instructions.
 """
 from typing import Sequence
+from langatlas_ingest.chunker import count_tokens
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.search import SourceSearch
 
@@ -35,11 +36,19 @@ _SECTION_DESCRIPTION = (
 # mandatory even though the handlers below treat them as optional (`args.get(...)`).
 # A model that dutifully supplies a hallucinated `source_ids` would silently filter
 # retrieval to zero hits instead of getting a schema that lets it omit the argument.
+#
+# `k` also carries a server-side ceiling. Retrieval's configured k is 5 (§8.1); this
+# leaves generous room to ask for more while making a hallucinated `k: 100000` a schema
+# violation the SDK's own validation rejects before it reaches `SourceSearch` — an
+# unbounded integer had the retrieval layer dutifully assemble, rerank and inject an
+# arbitrarily large result set on request.
+_MAX_K = 20
+
 _SEARCH_SCHEMA = {
     "type": "object",
     "properties": {
         "query": {"type": "string"},
-        "k": {"type": "integer"},
+        "k": {"type": "integer", "minimum": 1, "maximum": _MAX_K},
         "source_ids": {"type": "array", "items": {"type": "string"}},
     },
     "required": ["query"],
@@ -96,8 +105,31 @@ def search_sources(ctx, query: str, *, k: int | None = None,
             conn.close()
 
 
+def _within_budget(chunks: list, budget: int) -> tuple[list, int]:
+    """The prefix of a section that fits `budget` tokens, plus how many chunks were left
+    out. Always keeps at least one chunk: a section whose very first chunk is over budget
+    still has to answer the question that was asked, and a silently empty section reads
+    as "nothing here" rather than "too big"."""
+    kept, spent = [], 0
+    for chunk in chunks:
+        tokens = count_tokens(chunk.text)
+        if kept and spent + tokens > budget:
+            break
+        kept.append(chunk)
+        spent += tokens
+    return kept, len(chunks) - len(kept)
+
+
 def get_source_section(ctx, chunk_id: str, *, expand: str = "parent", conn=None,
                        config: IngestConfig | None = None) -> dict:
+    """Capped at `retrieval.max_section_tokens`. `children_of` returns a whole section
+    with no ceiling — a real section in the ingested corpus runs to ~19,000 tokens — and
+    the SDK handler passes it straight into a Claude-channel session. Provider calls are
+    budget-accounted (D26); raw tool-result injection is not, so an uncapped section is
+    the one way this package can flood a context with no cost signal anywhere, and D31's
+    transcript truncates at 2KB so the log would not even show what went in. The omitted
+    remainder is announced rather than silently dropped: an agent must be able to tell a
+    partial section from a complete one before it reasons about what the section 'says'."""
     config = config or IngestConfig.load()
     owned = conn is None
     if owned:
@@ -106,11 +138,19 @@ def get_source_section(ctx, chunk_id: str, *, expand: str = "parent", conn=None,
         conn = connect(config.dsn)
     try:
         chunks = SourceSearch(conn, ctx, config=config).get_section(chunk_id, expand=expand)
+        chunks, omitted = _within_budget(chunks, config.max_section_tokens)
+        # Only the chunks actually returned go through the D31 door — a chunk dropped for
+        # budget is never scanned, logged, or injected.
         for chunk in chunks:
             ctx.tool_result(tool="get_source_section", text=chunk.text,
                             source_id=chunk.source_id, kind="source-chunk")
-        return {"source_id": chunks[0].source_id if chunks else None,
-                "chunks": [_chunk_record(chunk) for chunk in chunks]}
+        result = {"source_id": chunks[0].source_id if chunks else None,
+                  "chunks": [_chunk_record(chunk) for chunk in chunks],
+                  "truncated": bool(omitted), "omitted_chunks": omitted, "notice": ""}
+        if omitted:
+            result["notice"] = (f"[... {omitted} more chunks omitted, section exceeds "
+                                f"{config.max_section_tokens} tokens ...]")
+        return result
     finally:
         if owned:
             conn.close()
@@ -168,9 +208,13 @@ def sdk_source_tools(ctx, conn, *, config: IngestConfig | None = None):
         result = get_source_section(ctx, args["chunk_id"],
                                     expand=args.get("expand", "parent"), conn=conn,
                                     config=config)
-        return {"content": [{"type": "text",
-                             "text": render_for_prompt(ctx, result["chunks"],
-                                                        tool="get_source_section")}]}
+        rendered = render_for_prompt(ctx, result["chunks"], tool="get_source_section")
+        # The truncation marker is ours, not document-derived, so it sits *outside* the
+        # delimited blocks: it is the one part of this result the model should read as a
+        # statement about the tool rather than as source material.
+        if result["notice"]:
+            rendered = f"{rendered}\n\n{result['notice']}"
+        return {"content": [{"type": "text", "text": rendered}]}
 
     return create_sdk_mcp_server(name=SERVER_NAME, version="0.1.0",
                                  tools=[_search, _section])

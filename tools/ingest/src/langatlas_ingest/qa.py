@@ -1,7 +1,7 @@
 import re
 import statistics
-import unicodedata
 from dataclasses import asdict, dataclass, field
+from langatlas_ingest.locators import normalize_heading
 
 # UTF-8 read as latin-1 leaves a lead byte (U+00C2/U+00C3) followed by a continuation
 # byte in U+0080-U+00BF; U+FFFD is the decoder giving up outright. But the *dominant*
@@ -82,8 +82,11 @@ class QaReport:
 
 
 def _key(text: str) -> str:
-    normalized = re.sub(r"\s+", " ", unicodedata.normalize("NFC", text)).strip().lower()
-    return _NUMBER_PREFIX.sub(r"\1 ", normalized)
+    """`locators.normalize_heading` (the one canonical heading key) plus this harness's
+    own numbering-punctuation tolerance. The normalization half used to be a
+    byte-identical copy of the locator module's; it is imported now so the outline diff
+    and the §4.3 join can never disagree about what "the same heading" means."""
+    return _NUMBER_PREFIX.sub(r"\1 ", normalize_heading(text))
 
 
 def run_qa(doc, chunks) -> QaReport:

@@ -3,7 +3,8 @@ import pytest
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import migrate
 from langatlas_ingest.errors import ExtractionFailed, QaHardGate, SnapshotMissing
-from langatlas_ingest.pipeline import ingest_source
+from langatlas_ingest.embed import embed_source
+from langatlas_ingest.pipeline import ingest_source, reingest_all
 from langatlas_ingest.snapshot import SnapshotStore
 from langatlas_ingest.store import SourceChunksStore, SourcingQueue
 
@@ -158,3 +159,146 @@ def test_ingest_resolves_a_pending_source_entry(db_conn, prepared):
     ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
                   locator_kinds=["web-fragment"])
     assert SourcingQueue(db_conn).open_entries() == []
+
+
+# --- D1 regenerability and the re-embed short-circuit ---------------------------------
+
+def _drop_the_database(db_conn):
+    """Simulate D1's "drop the database and re-run ingestion from the snapshot store":
+    the derived rows go, the private snapshot tier stays."""
+    with db_conn.cursor() as cur:
+        cur.execute("DELETE FROM source_chunks")
+        cur.execute("DELETE FROM source_ingestions")
+
+
+def test_locator_kinds_are_stored_and_reused_when_no_flag_is_given(db_conn, prepared):
+    """`locator_kinds` decides every emitted locator — the public citation surface — and
+    used to live only in an ad-hoc CLI flag that was discarded after the run. Re-ingesting
+    without remembering the flag silently produced DIFFERENT locators (DEFAULT_LOCATOR_KINDS
+    prefers `web-fragment` here, which is exactly what a forgotten flag would have given)."""
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["named-section"])
+    assert prepared.get("rust-ref").locator_kinds == ["named-section"]
+    before = [c.locator for c in SourceChunksStore(db_conn).by_source("rust-ref")]
+    assert all(locator.startswith("§ ") for locator in before)
+
+    _drop_the_database(db_conn)
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared)
+
+    after = [c.locator for c in SourceChunksStore(db_conn).by_source("rust-ref")]
+    assert after == before, "a re-ingest with no flag must reproduce the stored locators"
+
+
+def test_an_explicit_flag_overrides_and_updates_the_stored_kinds(db_conn, prepared):
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["named-section"])
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["web-fragment"])
+
+    assert prepared.get("rust-ref").locator_kinds == ["web-fragment"]
+    locators = [c.locator for c in SourceChunksStore(db_conn).by_source("rust-ref")]
+    assert all(locator.startswith("#") for locator in locators), \
+        "a changed preference order must re-run the pipeline, not be skipped as unchanged"
+
+
+def test_reingest_all_regenerates_every_stored_source(db_conn, prepared, snapshot_root,
+                                                      tmp_path):
+    """D1 as one runnable operation. Each source keeps its own stored locator kinds, so
+    the sweep cannot homogenize them onto whatever the last flag happened to be."""
+    other = tmp_path / "other.html"
+    other.write_text(GOOD_HTML.replace("Expressions", "Statements"))
+    prepared.put("other-ref", other, media_type="text/html",
+                 locator_kinds=["named-section"])
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["web-fragment"])
+    ingest_source("other-ref", conn=db_conn, config=CONFIG, snapshots=prepared)
+    expected = {source: [c.locator for c in SourceChunksStore(db_conn).by_source(source)]
+                for source in ("rust-ref", "other-ref")}
+
+    _drop_the_database(db_conn)
+    results = reingest_all(conn=db_conn, config=CONFIG, snapshots=prepared)
+
+    assert sorted(results) == ["other-ref", "rust-ref"]
+    assert all(result.promoted for result in results.values())
+    assert {source: [c.locator for c in SourceChunksStore(db_conn).by_source(source)]
+            for source in ("rust-ref", "other-ref")} == expected
+
+
+def test_reingest_all_reports_a_failure_without_abandoning_the_rest(db_conn, prepared,
+                                                                    tmp_path):
+    """A corpus-wide regeneration must not stop at the first bad source: the rest of a
+    known-good corpus would silently stay unregenerated."""
+    bad = tmp_path / "bad.html"
+    bad.write_text(TINY_HTML)
+    prepared.put("bad", bad, media_type="text/html", locator_kinds=["web-fragment"])
+    prepared.set_locator_kinds("rust-ref", ["web-fragment"])
+
+    results = reingest_all(conn=db_conn, config=CONFIG, snapshots=prepared)
+
+    assert isinstance(results["bad"], QaHardGate)
+    assert results["rust-ref"].promoted is True
+
+
+def test_an_unchanged_source_is_not_re_ingested_or_re_embedded(db_conn, prepared,
+                                                               fake_ctx):
+    """`replace_source` is a delete-then-reinsert and the embedding tables cascade off
+    `source_chunks`, so a re-ingest of an unchanged source used to throw away every
+    embedding it had — 1263 paid, rate-limited provider calls for the real corpus — to
+    arrive back at byte-identical rows."""
+    first = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"])
+    assert embed_source(fake_ctx, db_conn, config=CONFIG) == first.chunk_count
+    with db_conn.cursor() as cur:
+        cur.execute("SELECT max(ingested_at) FROM source_chunks")
+        written_at = cur.fetchone()[0]
+    fake_ctx.embed_calls.clear()
+
+    second = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert second.skipped is True
+    assert second.chunk_count == first.chunk_count and second.promoted
+    with db_conn.cursor() as cur:
+        cur.execute("SELECT max(ingested_at) FROM source_chunks")
+        assert cur.fetchone()[0] == written_at, "the chunk rows were rewritten"
+    # the embeddings survived, so a follow-up embed run has nothing to do
+    assert embed_source(fake_ctx, db_conn, config=CONFIG) == 0
+    assert fake_ctx.embed_calls == []
+
+
+def test_a_changed_original_still_re_runs_the_whole_pipeline(db_conn, prepared, fake_ctx,
+                                                             tmp_path):
+    """The short-circuit is keyed on the snapshot's content hash: a source whose file
+    genuinely changed must re-extract, re-chunk, re-QA and re-embed."""
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["web-fragment"])
+    embed_source(fake_ctx, db_conn, config=CONFIG)
+    fake_ctx.embed_calls.clear()
+
+    revised = tmp_path / "revised.html"
+    revised.write_text(GOOD_HTML.replace("scrutinee", "subject value"))
+    prepared.put("rust-ref", revised, media_type="text/html")
+
+    result = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert result.skipped is False
+    assert "subject value" in SourceChunksStore(db_conn).by_source("rust-ref")[0].text
+    assert embed_source(fake_ctx, db_conn, config=CONFIG) == result.chunk_count
+    assert fake_ctx.embed_calls, "changed chunks must reach the embedding provider"
+
+
+def test_a_source_whose_chunks_vanished_is_re_ingested_not_skipped(db_conn, prepared):
+    """The short-circuit trusts `source_ingestions`, so it must also check that the rows
+    it points at still exist: a source dropped out of `source_chunks` (a targeted delete,
+    a partially restored database) would otherwise be skipped forever on a stale
+    `promoted = true` and stay silently missing from the corpus."""
+    first = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"])
+    SourceChunksStore(db_conn).delete_source("rust-ref")
+
+    second = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert second.skipped is False
+    assert len(SourceChunksStore(db_conn).by_source("rust-ref")) == first.chunk_count

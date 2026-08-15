@@ -148,3 +148,76 @@ def test_the_sdk_get_source_section_handler_logs_under_its_own_tool_name(corpus,
     server = sdk_source_tools(fake_ctx, corpus, config=CONFIG)
     asyncio.run(_call_tool(server, "get_source_section", {"chunk_id": "ctm#c00000"}))
     assert {tool for tool, _ in fake_ctx.tool_results} == {"get_source_section"}
+
+
+# ---- Section 5's two injection-budget guards ----------------------------------------
+
+@pytest.fixture
+def big_section(db_conn, fake_ctx):
+    """A section far larger than the cap — the real corpus has one running to roughly
+    19,000 tokens."""
+    migrate(db_conn)
+    SourceChunksStore(db_conn).replace_source("big", [
+        Chunk(chunk_id=f"big#c{i:05d}", source_id="big", ordinal=i,
+              parent_section_id="big#s0001", section_path=["11 Distribution"],
+              breadcrumb="11 Distribution", locator=f"p. {i + 1}",
+              locator_kind="book-page", text=f"passage {i} " + "lazy evaluation " * 40,
+              token_count=160, content_hash=f"h{i}", page_start=i + 1, page_end=i + 1)
+        for i in range(20)])
+    return db_conn
+
+
+def test_an_oversized_section_is_truncated_with_a_visible_marker(big_section, fake_ctx):
+    """`children_of` has no ceiling and its result goes straight into a Claude-channel
+    session through `ctx.tool_result` — the one path in this package that injects text
+    with no budget signal at all (provider calls are accounted; raw tool results are
+    not), and D31's transcript truncates at 2KB so the log would not even show what was
+    injected. The remainder must be announced, not silently dropped: a partial section
+    an agent reads as complete is a wrong answer, not just a short one."""
+    config = IngestConfig.load(overrides={"max_section_tokens": 500})
+    result = get_source_section(fake_ctx, "big#c00000", conn=big_section, config=config)
+
+    assert result["truncated"] is True
+    assert 0 < len(result["chunks"]) < 20
+    assert result["omitted_chunks"] == 20 - len(result["chunks"])
+    assert "more chunks omitted" in result["notice"]
+    total = sum(len(chunk["text"]) // 4 for chunk in result["chunks"])
+    assert total <= config.max_section_tokens
+    # a chunk dropped for budget must not have gone through the D31 door either
+    assert len(fake_ctx.tool_results) == len(result["chunks"])
+
+
+def test_a_section_inside_the_budget_is_returned_whole_and_unmarked(corpus, fake_ctx):
+    result = get_source_section(fake_ctx, "ctm#c00000", conn=corpus, config=CONFIG)
+    assert result["truncated"] is False and result["notice"] == ""
+    assert len(result["chunks"]) == 3
+
+
+def test_the_sdk_handler_shows_the_truncation_marker_to_the_agent(big_section, fake_ctx):
+    """The marker has to reach the model, not just the programmatic caller — and it is
+    ours rather than document-derived, so it sits outside the delimited blocks."""
+    config = IngestConfig.load(overrides={"max_section_tokens": 500})
+    server = sdk_source_tools(fake_ctx, big_section, config=config)
+    result = asyncio.run(_call_tool(server, "get_source_section",
+                                    {"chunk_id": "big#c00000"}))
+    text = result.root.content[0].text
+    assert "more chunks omitted" in text
+    assert text.rindex("more chunks omitted") > text.rindex("</untrusted>")
+
+
+def test_the_sdk_server_rejects_an_absurd_k(corpus, fake_ctx):
+    """An unbounded `k` in the schema let a hallucinated `k: 100000` through to
+    `SourceSearch`. The bound belongs in the advertised schema, where the SDK's own
+    jsonschema validation rejects the call before any of this package runs."""
+    server = sdk_source_tools(fake_ctx, corpus, config=CONFIG)
+    tools = {t.name: t for t in asyncio.run(_list_tools(server))}
+    assert tools["search_sources"].inputSchema["properties"]["k"]["maximum"] == 20
+
+    fake_ctx.embed_calls.clear()        # the fixture's own corpus embedding run
+    result = asyncio.run(_call_tool(server, "search_sources",
+                                    {"query": "lazy", "k": 100000}))
+    assert result.root.isError is True
+    assert fake_ctx.embed_calls == [], "the call must not have reached retrieval at all"
+
+    ok = asyncio.run(_call_tool(server, "search_sources", {"query": "lazy", "k": 2}))
+    assert not ok.root.isError

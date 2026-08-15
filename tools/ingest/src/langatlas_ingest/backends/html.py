@@ -1,10 +1,9 @@
-import re
-import unicodedata
 import xml.etree.ElementTree as ET
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 from langatlas_ingest.extract import Block, ExtractedDocument
+from langatlas_ingest.locators import canonical_text, normalize_heading
 
 _HEADINGS = {f"h{level}": level for level in range(1, 7)}
 
@@ -42,12 +41,14 @@ def _promotable_level(tag: str, attrs: dict[str, str | None]) -> int | None:
     return None
 
 
-def _key(text: str) -> str:
-    return re.sub(r"\s+", " ", unicodedata.normalize("NFC", text)).strip().lower()
+# Both are `locators`' canonical rules, imported rather than re-spelled: this backend
+# already canonicalized its headings correctly, and it is the shape every other backend
+# is now held to (see `locators.canonical_text`).
+_key = normalize_heading
 
 
 def _element_text(element: ET.Element) -> str:
-    return re.sub(r"\s+", " ", unicodedata.normalize("NFC", "".join(element.itertext()))).strip()
+    return canonical_text("".join(element.itertext()))
 
 
 class _AnchorParser(HTMLParser):

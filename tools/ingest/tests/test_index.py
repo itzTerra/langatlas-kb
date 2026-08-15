@@ -29,6 +29,12 @@ def index(db_conn):
               section_path=["13 Types", "13.2 Subtyping"], page_start=None, page_end=None),
         chunk(3, anchor="match-guards", locator="#match-guards", locator_kind="web-fragment",
               section_path=["Match expressions"], page_start=None, page_end=None),
+        # Copied verbatim from the real vanroy-haridi-2003 corpus (chunk c01060): a
+        # `section_path` entry carrying the uncollapsed whitespace run PDF extraction
+        # produces. It carries no page/section/anchor column, so the oracle tests below
+        # skip it and only the named-section join sees it.
+        chunk(4, locator="§ 11.8 Partial failure", locator_kind="named-section",
+              section_path=["11.8 Partial   failure"], page_start=None, page_end=None),
     ])
     return PostgresSourceChunksIndex(db_conn)
 
@@ -48,6 +54,20 @@ def test_section_citations_resolve_by_containment(index):
 def test_named_sections_resolve_against_the_section_path(index):
     assert index.resolve("s", "§ Match expressions") == ["s#c00003"]
     assert index.resolve("s", "§ 13.2 Subtyping") == ["s#c00002"]
+
+
+def test_named_sections_resolve_across_uncollapsed_whitespace(index):
+    """Regression, found by querying the real corpus: 975 of its 1263 chunks carry a
+    `section_path` entry with an internal whitespace run, because PyMuPDF joins spans
+    with " " and its spans already carry their own padding. Python's heading key
+    collapses those runs; the SQL comparison used to be `lower(btrim(part))` alone, so
+    BOTH the raw spelling and the canonical one resolved to nothing — a false negative
+    in the join the D24 verifier trusts, which makes a true, well-sourced fact look
+    unverifiable. Chunk 4 is seeded with the raw, uncollapsed spelling on purpose: every
+    other fixture here is single-spaced, which is why this survived seven review rounds.
+    """
+    assert index.resolve("s", "§ 11.8 Partial   failure") == ["s#c00004"]
+    assert index.resolve("s", "§ 11.8 Partial failure") == ["s#c00004"]
 
 
 def test_web_fragments_resolve_by_anchor(index):

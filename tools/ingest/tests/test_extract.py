@@ -582,3 +582,29 @@ def test_nul_bytes_are_stripped_at_the_extraction_boundary(tmp_path):
                            config=IngestConfig.load(), backend=NulBackend())
     assert doc.blocks[0].text == "lazy evaluation"
     assert doc.outline == ["Chapter 4"]
+
+
+def test_pdf_heading_whitespace_is_canonicalized_at_extraction(tmp_path):
+    """Regression, found on the real corpus: PyMuPDF joins spans with " " and its spans
+    carry their own padding, so a heading routinely came out as
+    "11.8 Partial   failure". That run reached `section_path` — the §4.3 named-section
+    join compares it — and the emitted locator string itself, which is a public citation.
+    Extraction is where the collapse belongs (`locators.canonical_text`), so every
+    backend produces the one canonical spelling."""
+    import fitz
+
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((72, 90), "11.8  Partial   failure", fontsize=20)
+    page.insert_text((72, 130), "A distributed system fails partially rather than "
+                                "as a whole, and the program must observe it.", fontsize=11)
+    doc.set_toc([[1, "11.8  Partial   failure", 1]])
+    path = tmp_path / "spaced.pdf"
+    doc.save(path)
+
+    extracted = extract_document(path, source_id="spaced", media_type="application/pdf",
+                                 config=IngestConfig.load())
+
+    headings = [block.text for block in extracted.blocks if block.heading_level]
+    assert headings == ["11.8 Partial failure"]
+    assert extracted.outline == ["11.8 Partial failure"]

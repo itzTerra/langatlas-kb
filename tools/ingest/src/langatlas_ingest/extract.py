@@ -55,6 +55,27 @@ def _pdf_backend(name: str) -> PdfBackend:
     raise ExtractionFailed("-", f"unknown pdf_backend {name!r}")
 
 
+def backend_identity(media_type: str, config: IngestConfig) -> tuple[str, str] | None:
+    """Which backend, at which version, *would* extract this media type — without
+    extracting anything.
+
+    `ingest_source` needs this before the extract step to decide whether an unchanged
+    source can be skipped: the alternative is extracting the whole document just to
+    discover the backend hasn't moved and throw the result away. Returns None for a media
+    type with no backend, which callers must read as "cannot prove nothing changed" and
+    fall through to the full pipeline rather than skipping."""
+    if media_type == "application/pdf":
+        backend = _pdf_backend(config.pdf_backend)
+        return backend.name, str(backend.version)
+    if media_type in ("text/html", "application/xhtml+xml"):
+        import trafilatura
+
+        return "trafilatura", trafilatura.__version__
+    if media_type == "text/plain":
+        return "plaintext", "1"
+    return None
+
+
 def extract_document(path: Path, *, source_id: str, media_type: str,
                      config: IngestConfig, backend: PdfBackend | None = None,
                      source_url: str | None = None) -> ExtractedDocument:

@@ -194,11 +194,38 @@ def test_search_raises_ef_search_on_its_own_connection(wide_corpus, fake_ctx):
 
 
 def test_the_pre_rerank_pool_is_the_configured_candidate_count(wide_corpus, fake_ctx):
-    """Observed end to end: the reranker is handed the whole candidate pool, so the
-    number of documents it receives *is* the pool size §8.1 configures."""
-    config = IngestConfig.load(overrides={"retrieval_k": 5, "retrieval_candidates": 90})
+    """Observed end to end: the reranker is handed the pool the config asks it to rerank,
+    so the number of documents it receives *is* that configured size. (`rerank_candidates`
+    is set to the full candidate pool here — the two are separately configurable knobs
+    since the final review; `test_the_rerank_pool_is_capped_below_the_fused_pool` covers
+    the case where the rerank pool is the narrower of the two.)"""
+    config = IngestConfig.load(overrides={"retrieval_k": 5, "retrieval_candidates": 90,
+                                          "rerank_candidates": 90})
     SourceSearch(wide_corpus, fake_ctx, config=config).search("lazy evaluation")
     assert len(fake_ctx.rerank_calls[0][1]) == 90
+
+
+def test_the_rerank_pool_is_capped_below_the_fused_pool(wide_corpus, fake_ctx):
+    """RRF fusion over a wide pool is one SQL statement, but 1B's rerank client is
+    completion-driven and batches 8 documents per call — reranking all 50 configured
+    candidates made every single search 1 embed + 7 completions, sequentially, against a
+    slow university-hosted API (and §8.6's 40-60-query golden set 320-480 calls against a
+    500-call budget). The fused pool stays wide; only the rerank pool is capped."""
+    config = IngestConfig.load(overrides={"retrieval_k": 5, "retrieval_candidates": 90,
+                                          "rerank_candidates": 12})
+    hits = SourceSearch(wide_corpus, fake_ctx, config=config).search("lazy evaluation")
+    assert len(fake_ctx.rerank_calls[0][1]) == 12
+    assert len(hits) == 5, "capping the rerank pool must not cost the caller hits"
+
+
+def test_the_rerank_pool_never_starves_a_caller_asking_for_more(wide_corpus, fake_ctx):
+    """A `k` above `rerank_candidates` must still return k *reranked* hits, not k hits of
+    which only the first few were ever scored."""
+    config = IngestConfig.load(overrides={"retrieval_k": 5, "retrieval_candidates": 90,
+                                          "rerank_candidates": 3})
+    hits = SourceSearch(wide_corpus, fake_ctx, config=config).search("lazy", k=10)
+    assert len(fake_ctx.rerank_calls[0][1]) == 10
+    assert all(hit.rerank_score is not None for hit in hits)
 
 
 def test_a_hit_found_by_only_one_branch_still_scores(searchable, fake_ctx):

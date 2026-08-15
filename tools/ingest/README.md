@@ -20,7 +20,15 @@ uv run langatlas-sources embed vanroy-haridi-2003
 uv run langatlas-sources search "call-by-need memoization"
 uv run langatlas-sources eval             # score tests/golden/retrieval/*.yaml (D22/§8.6)
 uv run langatlas-sources queue            # list open sourcing-queue entries
+uv run langatlas-sources reingest         # re-ingest every stored snapshot (D1)
 ```
+
+`--locator-kinds` is stored on the snapshot and reused by every later run for that
+source, so a re-ingest reproduces the locators already published rather than silently
+falling back to a different preference order. Pass it again to change it. A re-ingest
+whose content hash, backend version and locator kinds all match the recorded run is
+skipped: rewriting the chunks would cascade away every embedding for that source and
+cost a full re-embed on the paid provider to reach byte-identical rows.
 
 ## Where things live
 
@@ -30,7 +38,8 @@ cache and cost log so one tarball backs up the whole private side:
 
 ```
 snapshots/<source_id>/original/…        the acquired PDF/HTML, byte-for-byte
-snapshots/<source_id>/snapshot.yaml     content hash, retrieval date, archive_url
+snapshots/<source_id>/snapshot.yaml     content hash, retrieval date, archive_url,
+                                        locator_kinds
 snapshots/<source_id>/extracted/…       extracted blocks (JSON)
 snapshots/<source_id>/qa/report.{md,json}
 ```
