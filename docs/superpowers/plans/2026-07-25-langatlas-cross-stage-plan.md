@@ -112,6 +112,24 @@ only 1E can satisfy. Sub-plan boundaries:
   - **Produces for 1E:** the `search_sources` tool the R0 exit test drives.
   - **Carried over from 1A:** same `mode: hard|soft` note as 1B, if 1C is the one that adds the
     first `questionnaire-shape` fixture instead.
+  - **Carried over from 1C — for 1D:** `PostgresSourceChunksIndex` exists and satisfies
+    1A's `SourceChunksIndex` protocol, but nothing calls it yet. 1D's `langatlas-validate
+    ci` is where phase-2 locator resolution gets wired in — construct the index from
+    `langatlas_ingest.db.connect()` and pass it to `validate_locator`; `precommit` stays
+    phase-1-only even when Postgres is reachable (D48, no auto-upgrade).
+  - **Carried over from 1C — for 1E:** the R0 exit test drives `search_sources` through
+    `langatlas_ingest.tools.sdk_source_tools(ctx, conn)` on the Claude channel
+    (`ClaudeRunOptions(mcp_servers={"langatlas_sources": server}, allowed_tools=TOOL_NAMES)`)
+    or through `search_sources()` + `render_for_prompt()` on the completion channel. The
+    orchestrator's standing jobs (link-checker, edition-check) file into the existing
+    `sourcing_queue` table via `SourcingQueue.file(kind=...)` — the table and its two
+    non-ingestion kinds already exist, the jobs do not.
+  - **Not built in 1C (named, not deferred silently):** no transcript/video extractor, so
+    `t=HH:MM:SS` locators validate but never resolve; no repo-file ingestion backend, so
+    `<sha>:<path>#L…` locators likewise resolve to nothing. Both park a citing claim in the
+    sourcing queue, which is the correct visible outcome for a source the corpus does not
+    contain. The D22 fact-index benchmark and the retrieval golden set itself belong to
+    Stages 2 and 5.
 - **1D — Commit & CI.** Agent-runner commit protocol (§7.9/D36: GitHub App identity, trailers,
   land loop, is-main-green gate, failure bot) and the CI validated-artifact pipeline skeleton
   (§8.7/D13: validators, fact derivation, collision check, last-green publication, `data-vN`

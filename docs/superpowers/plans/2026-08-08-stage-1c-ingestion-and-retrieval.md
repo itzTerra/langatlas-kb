@@ -3895,7 +3895,7 @@ git commit -m "feat(#stage-1c): add hybrid source retrieval and locator resoluti
 - Consumes: `SourceSearch` (Task 10), `ctx.tool_result` (1B), `ClaudeRunOptions` (1B).
 - Produces: `search_sources()`, `get_source_section()`, `render_for_prompt()`, `sdk_source_tools()`, `TOOL_NAMES`.
 
-- [ ] **Step 1: Add `mcp_servers` to 1B's `ClaudeRunOptions`.**
+- [x] **Step 1: Add `mcp_servers` to 1B's `ClaudeRunOptions`.**
 
 In `tools/pipeline/src/langatlas_pipeline/providers/claude_runs.py`, add the field to the
 dataclass (after `tools`):
@@ -3911,7 +3911,7 @@ dataclass (after `tools`):
         kwargs["mcp_servers"] = options.mcp_servers
 ```
 
-- [ ] **Step 2: Cover the passthrough in 1B's own test file.**
+- [x] **Step 2: Cover the passthrough in 1B's own test file.**
 
 Append to `tools/pipeline/tests/test_claude_runs.py`:
 
@@ -3930,7 +3930,7 @@ def test_build_agent_options_passes_mcp_servers_through():
 Run: `cd tools/pipeline && uv run pytest tests/test_claude_runs.py -v`
 Expected: PASS (the new test plus every pre-existing one)
 
-- [ ] **Step 3: Write the failing tools test.**
+- [x] **Step 3: Write the failing tools test.**
 
 ```python
 # tools/ingest/tests/test_tools.py
@@ -4018,12 +4018,12 @@ def test_tool_names_are_never_in_the_public_set():
     assert not {name.split("__")[-1] for name in TOOL_NAMES} & public
 ```
 
-- [ ] **Step 4: Run it and watch it fail.**
+- [x] **Step 4: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_tools.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.tools'`
 
-- [ ] **Step 5: Write `tools.py`.**
+- [x] **Step 5: Write `tools.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/tools.py
@@ -4166,12 +4166,12 @@ Note: `render_for_prompt` is called with `result["chunks"]` in `_section`, whose
 carry no `score` key — the function only reads `text`, `source_id`, `locator`, and
 `breadcrumb`, all of which both record shapes provide.
 
-- [ ] **Step 6: Run the tools tests.**
+- [x] **Step 6: Run the tools tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_tools.py -m db -v`
 Expected: PASS (7 tests)
 
-- [ ] **Step 7: Commit.**
+- [x] **Step 7: Commit.**
 
 ```bash
 git add tools/ingest tools/pipeline
@@ -4194,7 +4194,7 @@ Stage 2 co-authors the retrieval golden set (40–60 queries) during its QA skim
 - Consumes: `SourceSearch` (Task 10), `IngestConfig` (Task 1).
 - Produces: `EvalResult`, `run_eval()`, CLI subcommand `eval`, the golden-set file format Stage 2 fills in.
 
-- [ ] **Step 1: Write the golden-set format and its README.**
+- [x] **Step 1: Write the golden-set format and its README.**
 
 ```yaml
 # tests/golden/retrieval/queries.example.yaml
@@ -4226,7 +4226,7 @@ Add one file per batch (`queries-<theme>.yaml`). Every entry needs `id`, `band`,
 `query`, and at least one of `expected_chunks` / `expected_sources`.
 ```
 
-- [ ] **Step 2: Write the failing eval test.**
+- [x] **Step 2: Write the failing eval test.**
 
 ```python
 # tools/ingest/tests/test_eval.py
@@ -4312,12 +4312,12 @@ def test_source_level_expectations_are_supported(corpus, fake_ctx, tmp_path):
     assert result.recall_at_5 == 1.0
 ```
 
-- [ ] **Step 3: Run it and watch it fail.**
+- [x] **Step 3: Run it and watch it fail.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_eval.py -m db -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.eval'`
 
-- [ ] **Step 4: Write `eval.py`.**
+- [x] **Step 4: Write `eval.py`.**
 
 ```python
 # tools/ingest/src/langatlas_ingest/eval.py
@@ -4402,12 +4402,12 @@ def run_eval(conn, ctx, *, golden_dir: Path | None = None,
                       per_query=per_query)
 ```
 
-- [ ] **Step 5: Run the eval tests.**
+- [x] **Step 5: Run the eval tests.**
 
 Run: `cd tools/ingest && uv run pytest tests/test_eval.py -m db -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 6: Add the `eval` CLI subcommand.**
+- [x] **Step 6: Add the `eval` CLI subcommand.**
 
 ```python
 def _cmd_eval(args) -> int:
@@ -4429,7 +4429,7 @@ Register it:
     evaluate.set_defaults(func=_cmd_eval)
 ```
 
-- [ ] **Step 7: Write `tools/ingest/README.md`.**
+- [x] **Step 7: Write `tools/ingest/README.md`.**
 
 ```markdown
 # langatlas-ingest
@@ -4490,7 +4490,7 @@ is raw pre-verification source text. Stage 6's public MCP server exposes a diffe
 tools and must never list these.
 ```
 
-- [ ] **Step 8: Run the whole suite, both offline and against the database.**
+- [x] **Step 8: Run the whole suite, both offline and against the database.**
 
 Run:
 ```bash
@@ -4503,7 +4503,7 @@ cd ../pipeline && uv run pytest -q
 Expected: all green. The 1A and 1B suites must still pass — Task 11 modified
 `claude_runs.py`, so a regression there is this plan's fault.
 
-- [ ] **Step 9: Tick the spec's Stage 1 checklist line.**
+- [x] **Step 9: Tick the spec's Stage 1 checklist line.**
 
 In `context/spec.md` §14 Stage 1, change:
 
@@ -4515,7 +4515,7 @@ In `context/spec.md` §14 Stage 1, change:
 to `- [x]` — matching the already-ticked 1A lines. Do not add a dated note (project
 convention: status documents record status, not history).
 
-- [ ] **Step 10: Record what 1C leaves for 1D and 1E.**
+- [x] **Step 10: Record what 1C leaves for 1D and 1E.**
 
 Append to the 1C bullet in
 `docs/superpowers/plans/2026-07-25-langatlas-cross-stage-plan.md`, mirroring how 1A's
@@ -4542,7 +4542,7 @@ carry-overs were recorded there:
     Stages 2 and 5.
 ```
 
-- [ ] **Step 11: Commit.**
+- [x] **Step 11: Commit.**
 
 ```bash
 git add tools/ingest tests/golden context/spec.md \

@@ -1802,7 +1802,7 @@ wait on.
       repo (CC0 license file), gitleaks CI, `REDACTIONS.md` convention.
 - [ ] Prompt registry `prompts/` + `config/provider_capabilities.yaml` + first probe run
       (D41).
-- [ ] D15 ingestion CLI + `source_chunks` schema + extraction-QA harness (D37) +
+- [x] D15 ingestion CLI + `source_chunks` schema + extraction-QA harness (D37) +
       snapshot store layout.
 - [x] Claim-template registry `ontology/claim-templates/` (D47).
 - [ ] Agent-runner commit protocol (D36): GitHub App, trailers, land loop, is-main-green

@@ -98,6 +98,18 @@ def _cmd_search(args) -> int:
     return 0
 
 
+def _cmd_eval(args) -> int:
+    from langatlas_pipeline.providers.core import RunContext
+    from langatlas_ingest.eval import run_eval
+
+    config = IngestConfig.load()
+    with RunContext.start(kind="eval", slug="retrieval") as ctx:
+        with connect(config.dsn) as conn:
+            result = run_eval(conn, ctx, config=config)
+    print(result.to_markdown())
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="langatlas-sources")
     parser.add_argument("--version", action="version", version=__version__)
@@ -134,6 +146,9 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("--source", nargs="*", default=[])
     search.add_argument("--no-rerank", action="store_true")
     search.set_defaults(func=_cmd_search)
+
+    evaluate = sub.add_parser("eval", help="score the retrieval golden set")
+    evaluate.set_defaults(func=_cmd_eval)
     return parser
 
 

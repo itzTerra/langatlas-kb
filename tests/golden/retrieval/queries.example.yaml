@@ -1,0 +1,19 @@
+# tests/golden/retrieval/queries.example.yaml
+# Format only — Stage 2 authors the real 40-60 queries (D22/Section 8.6) during the QA
+# skims, in three difficulty bands, and grows the set from logged retrieval misses.
+# Files are read by `langatlas-sources eval`; the example file is skipped by name.
+#
+# Each entry sets exactly one of `expected_chunks` / `expected_sources` — never both.
+# `expected_chunks` scores true recall@5 (found / declared total), so use it whenever you
+# know the specific chunk(s) that must come back. `expected_sources` scores a looser
+# any-hit-from-this-source signal (no declared total to measure recall against), for when
+# any chunk of a source would answer the query.
+queries:
+  - id: exact-term-001
+    band: exact-term            # exact-term | paraphrase-concept | cross-source-survey
+    query: call-by-need memoization
+    expected_chunks: ["ctm#c00042"]      # a specific known-good chunk
+  - id: exact-term-002
+    band: exact-term
+    query: garbage collection strategies
+    expected_sources: ["vanroy-haridi-2003"]   # any chunk from this source will do
