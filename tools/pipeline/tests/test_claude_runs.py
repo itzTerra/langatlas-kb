@@ -222,3 +222,14 @@ def test_a_clean_tool_result_carries_no_injection_flag_and_errors_still_flag(ctx
               for line in (ctx.run_dir / "transcript.jsonl").read_text().splitlines()]
     tool_event = [e for e in events if e["role"] == "tool"][0]
     assert tool_event["flags"] == ["tool-error"]
+
+
+def test_build_agent_options_passes_mcp_servers_through():
+    """1C serves search_sources as an in-process SDK MCP server; without this passthrough
+    the Claude channel has no way to expose a pipeline-only tool."""
+    from langatlas_pipeline.providers.claude_runs import ClaudeRunOptions, build_agent_options
+
+    server = object()
+    built = build_agent_options(ClaudeRunOptions(mcp_servers={"langatlas_sources": server}))
+    assert built.mcp_servers == {"langatlas_sources": server}
+    assert build_agent_options(ClaudeRunOptions()).mcp_servers in (None, {})

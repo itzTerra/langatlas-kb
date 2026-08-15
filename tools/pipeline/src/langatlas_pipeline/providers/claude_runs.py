@@ -23,6 +23,7 @@ class ClaudeRunOptions:
 
     system_prompt: str | None = None
     tools: list[str] | None = None
+    mcp_servers: dict | None = None     # in-process SDK servers (1C's source tools)
     allowed_tools: Sequence[str] = ()
     cwd: Path | str | None = None
     max_turns: int | None = None
@@ -55,6 +56,8 @@ def build_agent_options(options: ClaudeRunOptions) -> ClaudeAgentOptions:
     }
     if options.tools is not None:
         kwargs["tools"] = options.tools
+    if options.mcp_servers is not None:
+        kwargs["mcp_servers"] = options.mcp_servers
     for name in ("cwd", "max_turns", "model", "output_format", "setting_sources"):
         value = getattr(options, name)
         if value is not None:
