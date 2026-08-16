@@ -37,6 +37,15 @@ class Snapshot:
     # first one did. `None` means "never set": ingestion then falls back to
     # `pipeline.DEFAULT_LOCATOR_KINDS`.
     locator_kinds: list[str] | None = None
+    # The source's own extraction-collapse floor for the D37 QA gate, stored for exactly
+    # the reason `locator_kinds` is: it decides whether this source is promoted at all,
+    # and a setting the developer has to remember to re-type is one that silently changes
+    # between runs. A legitimately tiny standalone source (a one-page errata note, a short
+    # RFC) fails `qa._MIN_CHARS` on its honest length alone and had no way in short of
+    # editing that module constant. `None` means "never set": `run_qa` then applies its
+    # own default floor — never zero, so opting into a lower floor always takes a real
+    # number rather than falling out of an unset field.
+    min_chars: int | None = None
 
 
 def savepagenow(url: str, *, client=None) -> str | None:
@@ -77,7 +86,8 @@ class SnapshotStore:
 
     def put(self, source_id: str, path: Path, *, media_type: str,
             source_url: str | None = None, archive_url: str | None = None,
-            locator_kinds: Sequence[str] | None = None) -> Snapshot:
+            locator_kinds: Sequence[str] | None = None,
+            min_chars: int | None = None) -> Snapshot:
         target_dir = self.dir_for(source_id) / "original"
         target_dir.mkdir(parents=True, exist_ok=True)
         target = target_dir / (Path(path).name or f"source{_EXTENSIONS.get(media_type, '')}")
@@ -86,12 +96,14 @@ class SnapshotStore:
             source_id=source_id, original_path=target, media_type=media_type,
             content_hash=hashlib.sha256(target.read_bytes()).hexdigest(),
             retrieved_at=utc_now(), source_url=source_url, archive_url=archive_url,
-            locator_kinds=self._kinds_for(source_id, locator_kinds))
+            locator_kinds=self._kinds_for(source_id, locator_kinds),
+            min_chars=self._min_chars_for(source_id, min_chars))
         self._write_manifest(snapshot)
         return snapshot
 
     def fetch_url(self, source_id: str, url: str, *, fetcher=None, archiver=None,
-                  locator_kinds: Sequence[str] | None = None) -> Snapshot:
+                  locator_kinds: Sequence[str] | None = None,
+                  min_chars: int | None = None) -> Snapshot:
         fetcher = fetcher or _default_fetcher
         archiver = archiver or savepagenow
         body, media_type = fetcher(url)
@@ -107,7 +119,8 @@ class SnapshotStore:
             source_id=source_id, original_path=target, media_type=media_type,
             content_hash=hashlib.sha256(body).hexdigest(), retrieved_at=utc_now(),
             source_url=url, archive_url=archive_url,
-            locator_kinds=self._kinds_for(source_id, locator_kinds))
+            locator_kinds=self._kinds_for(source_id, locator_kinds),
+            min_chars=self._min_chars_for(source_id, min_chars))
         self._write_manifest(snapshot)
         return snapshot
 
@@ -123,11 +136,30 @@ class SnapshotStore:
         except SnapshotMissing:
             return None
 
+    def _min_chars_for(self, source_id: str, min_chars: int | None):
+        """The same rule as `_kinds_for`, for the same reason: re-acquiring an original
+        must not silently forget the floor this source was admitted under, or a re-fetch
+        would hard-gate a source that was deliberately let through once."""
+        if min_chars is not None:
+            return int(min_chars)
+        try:
+            return self.get(source_id).min_chars
+        except SnapshotMissing:
+            return None
+
     def set_locator_kinds(self, source_id: str, locator_kinds: Sequence[str]) -> Snapshot:
         """Record an explicit `--locator-kinds` override against an already-stored
         snapshot, so the next re-ingest reproduces this run rather than the one before it."""
         snapshot = self.get(source_id)
         snapshot.locator_kinds = list(locator_kinds)
+        self._write_manifest(snapshot)
+        return snapshot
+
+    def set_min_chars(self, source_id: str, min_chars: int) -> Snapshot:
+        """Record an explicit `--min-chars` override against an already-stored snapshot,
+        so the next re-ingest applies the same QA floor this run did."""
+        snapshot = self.get(source_id)
+        snapshot.min_chars = int(min_chars)
         self._write_manifest(snapshot)
         return snapshot
 

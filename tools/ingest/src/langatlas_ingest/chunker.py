@@ -266,19 +266,36 @@ class _Accumulator:
         return " ".join(words[-take:])
 
 
-def chunking_fingerprint(config: IngestConfig) -> dict:
-    """Everything about *how* this run chunks, in one comparable value.
+def chunking_fingerprint(config: IngestConfig, *, min_chars: int | None = None) -> dict:
+    """Everything about *how* this run chunks and judges a source, in one comparable value.
 
     Recorded beside each ingestion so `ingest_source` can tell a genuinely unchanged
     source (skippable — its chunks and their paid embeddings are already correct) from
-    one whose chunk boundaries would now come out differently. Only the three knobs the
-    chunker actually reads are included: widening `retrieval_k` must not invalidate a
-    corpus, and a fingerprint that moves for unrelated reasons would be a re-embed bill,
-    not a safeguard."""
-    return {"version": CHUNKER_QA_VERSION,
-            "target_tokens": config.chunk_target_tokens,
-            "max_tokens": config.chunk_max_tokens,
-            "overlap_tokens": config.chunk_overlap_tokens}
+    one whose chunk boundaries, or promotion verdict, would now come out differently.
+    Only the knobs that actually reach the chunker or the QA gate are included: widening
+    `retrieval_k` must not invalidate a corpus, and a fingerprint that moves for unrelated
+    reasons would be a re-embed bill, not a safeguard.
+
+    `min_chars` is the source's own extraction-collapse floor (`snapshot.min_chars`). It
+    changes the QA verdict for byte-identical content, which is exactly what the currency
+    key exists to catch — a source re-ingested under a different floor must not be skipped
+    on the strength of the run that used the old one.
+
+    It is omitted entirely when unset rather than recorded as `None`, so a source that
+    never had an override fingerprints exactly as it did before this field existed. That
+    is not cosmetic: an always-present key would make every already-recorded row unequal
+    to its own re-run, re-ingest the whole corpus, cascade away every embedding
+    (`source_chunks(chunk_id) ON DELETE CASCADE`) and cost a full re-embed — 1263 paid
+    provider calls for the real Van Roy & Haridi corpus — to arrive back at byte-identical
+    rows. "No override" and "no such setting" genuinely do mean the same thing here (both
+    are `qa._MIN_CHARS`), so the equal fingerprint is honest rather than a convenience."""
+    fingerprint = {"version": CHUNKER_QA_VERSION,
+                   "target_tokens": config.chunk_target_tokens,
+                   "max_tokens": config.chunk_max_tokens,
+                   "overlap_tokens": config.chunk_overlap_tokens}
+    if min_chars is not None:
+        fingerprint["min_chars"] = int(min_chars)
+    return fingerprint
 
 
 def chunk_document(doc: ExtractedDocument, *, config: IngestConfig,

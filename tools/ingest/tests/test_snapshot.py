@@ -156,6 +156,40 @@ def test_locator_kinds_round_trip_through_the_manifest(snapshot_root, tmp_path):
     assert store.get("s").locator_kinds == ["numbered-section", "book-page"]
 
 
+def test_min_chars_round_trips_through_the_manifest(snapshot_root, tmp_path):
+    """Same contract as `locator_kinds` above, for the same reason: the QA floor a source
+    was admitted under decides whether it is promoted at all, so a re-acquisition that
+    forgot it would hard-gate a source that was deliberately let through once."""
+    pdf = tmp_path / "errata.pdf"
+    pdf.write_bytes(b"x")
+    store = SnapshotStore(snapshot_root)
+
+    store.put("s", pdf, media_type="application/pdf", min_chars=120)
+    assert store.get("s").min_chars == 120
+
+    # re-acquiring the original must not forget the declared floor
+    store.put("s", pdf, media_type="application/pdf")
+    assert store.get("s").min_chars == 120
+
+    store.set_min_chars("s", 300)
+    assert store.get("s").min_chars == 300
+
+
+def test_a_snapshot_without_a_stored_min_chars_reads_as_unset(snapshot_root, tmp_path):
+    """Manifests written before the field existed must still load, and `None` means
+    'never declared' — which is what makes `run_qa`'s default floor the fallback, never a
+    floor of zero."""
+    pdf = tmp_path / "book.pdf"
+    pdf.write_bytes(b"x")
+    store = SnapshotStore(snapshot_root)
+    store.put("s", pdf, media_type="application/pdf")
+    assert store.get("s").min_chars is None
+    manifest = snapshot_root / "s" / "snapshot.yaml"
+    manifest.write_text("\n".join(line for line in manifest.read_text().splitlines()
+                                  if not line.startswith("min_chars")) + "\n")
+    assert store.get("s").min_chars is None
+
+
 def test_a_snapshot_without_stored_locator_kinds_reads_as_unset(snapshot_root, tmp_path):
     """Manifests written before the field existed must still load — `None` means 'never
     declared', which is what makes the DEFAULT_LOCATOR_KINDS fallback correct."""

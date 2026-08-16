@@ -87,6 +87,26 @@ def test_record_ingestion_round_trips_the_chunking_fingerprint(store):
     assert store.ingestion("s")["chunking"] == fingerprint
 
 
+def test_a_min_chars_override_rides_in_the_fingerprint_and_is_omitted_when_unset(store):
+    """The per-source QA floor changes the promotion verdict for byte-identical content,
+    so it has to be part of the currency key — but a source without one must fingerprint
+    exactly as it did before the field existed, or the field's mere existence re-ingests
+    the whole corpus and cascades away every embedding it has."""
+    config = IngestConfig.load(overrides={"chunk_target_tokens": 40, "chunk_max_tokens": 60,
+                                          "chunk_overlap_tokens": 8})
+    assert "min_chars" not in chunking_fingerprint(config)
+    assert chunking_fingerprint(config, min_chars=None) == chunking_fingerprint(config)
+    assert chunking_fingerprint(config, min_chars=200)["min_chars"] == 200
+
+    fingerprint = chunking_fingerprint(config, min_chars=200)
+    store.record_ingestion("s", content_hash="a", backend="b", backend_version="1",
+                           chunk_count=1, qa=QaReport(source_id="s"), promoted=True,
+                           chunking=fingerprint)
+    # Back out of jsonb as an int, not a string: a stringified value would never compare
+    # equal to a fresh fingerprint and would force a needless re-embed on every run.
+    assert store.ingestion("s")["chunking"] == fingerprint
+
+
 def test_an_ingestion_recorded_without_a_fingerprint_reads_as_unknown(store):
     """Never as "matches by default": a caller that cannot state what it chunked with
     must leave a value that no real fingerprint equals, so the source re-ingests once."""

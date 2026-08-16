@@ -25,10 +25,14 @@ uv run langatlas-sources reingest         # re-ingest every stored snapshot (D1)
 
 `--locator-kinds` is stored on the snapshot and reused by every later run for that
 source, so a re-ingest reproduces the locators already published rather than silently
-falling back to a different preference order. Pass it again to change it. A re-ingest whose content hash, backend version, locator kinds, and chunking
-config/version all match the recorded run is skipped: rewriting the chunks would
-cascade away every embedding for that source and cost a full re-embed on the paid
-provider to reach byte-identical rows.
+falling back to a different preference order. Pass it again to change it. `--min-chars`
+works the same way: it is the extraction-collapse floor the QA hard gate applies to this
+one source, for a legitimately tiny standalone source (a one-page errata note, a short
+RFC) that fails the default floor on its honest length. Omitting it reuses the stored
+value, or QA's own default — never zero. A re-ingest whose content hash, backend version,
+locator kinds, and chunking config/version/floor all match the recorded run is skipped:
+rewriting the chunks would cascade away every embedding for that source and cost a full
+re-embed on the paid provider to reach byte-identical rows.
 
 ## Where things live
 
@@ -39,7 +43,7 @@ cache and cost log so one tarball backs up the whole private side:
 ```
 snapshots/<source_id>/original/…        the acquired PDF/HTML, byte-for-byte
 snapshots/<source_id>/snapshot.yaml     content hash, retrieval date, archive_url,
-                                        locator_kinds
+                                        locator_kinds, min_chars
 snapshots/<source_id>/extracted/…       extracted blocks (JSON)
 snapshots/<source_id>/qa/report.{md,json}
 ```

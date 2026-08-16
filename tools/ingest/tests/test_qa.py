@@ -80,6 +80,49 @@ def test_extraction_collapse_counts_non_whitespace_characters():
     assert "extraction-collapse" in [c.check_id for c in report.hard_failures]
 
 
+# A legitimately tiny standalone source: a one-page errata note whose honest length is
+# under the default 500-non-whitespace-char floor, but well over the per-page floor.
+TINY_BUT_LEGITIMATE = make_doc([
+    Block(text="1 Errata", page=1, heading_level=1),
+    Block(text=("The published errata for this specification corrects a single "
+                "typographical error in the grammar for pattern arms. ") * 3, page=1),
+], page_count=1)
+
+
+def test_a_short_source_collapses_under_the_default_floor():
+    """The baseline the override exists for — and the pin that `min_chars=None` still
+    means 500, so nothing below can pass by accident."""
+    report = run_qa(TINY_BUT_LEGITIMATE,
+                    chunk_document(TINY_BUT_LEGITIMATE, config=CONFIG,
+                                   locator_kinds=["book-page"]))
+    assert report.char_count < 500                # short on its honest length alone
+    assert "extraction-collapse" in [c.check_id for c in report.hard_failures]
+
+
+def test_an_explicit_min_chars_admits_a_legitimately_tiny_source():
+    """A one-page errata note or a short RFC cannot be ingested at all under the default
+    floor, and editing `_MIN_CHARS` would lower it for the whole corpus. The per-source
+    override is the only thing that lets exactly this source through."""
+    report = run_qa(TINY_BUT_LEGITIMATE,
+                    chunk_document(TINY_BUT_LEGITIMATE, config=CONFIG,
+                                   locator_kinds=["book-page"]),
+                    min_chars=200)
+    assert report.hard_failures == []
+    assert "floor 200" in next(c for c in report.checks
+                               if c.check_id == "extraction-collapse").detail
+
+
+def test_an_override_does_not_disable_the_per_page_floor():
+    """Only the whole-document floor is per-source. A page that extracted to nothing is
+    a failed extraction whatever the document's total length, so `min_chars` must not
+    become a way to wave through an image-only scan."""
+    doc = make_doc([Block(text="A", page=1, heading_level=1),
+                    Block(text="Patterns bind names. " * 12, page=1)], page_count=3)
+    report = run_qa(doc, chunk_document(doc, config=CONFIG, locator_kinds=["book-page"]),
+                    min_chars=1)
+    assert "extraction-collapse" in [c.check_id for c in report.hard_failures]
+
+
 def test_ocr_noise_is_soft():
     doc = clean_doc()
     doc.blocks.append(Block(text=("rn0dern pr0grarnrn1ng l4ngu4ges 0ffer p4ttern m4tch1ng "

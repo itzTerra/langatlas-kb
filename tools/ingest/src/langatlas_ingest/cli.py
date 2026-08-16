@@ -24,14 +24,16 @@ def _cmd_ingest(args) -> int:
     # preference; without a flag, an existing snapshot's stored value is carried forward.
     kinds = args.locator_kinds or None
     if args.url:
-        snapshots.fetch_url(args.source_id, args.url, locator_kinds=kinds)
+        snapshots.fetch_url(args.source_id, args.url, locator_kinds=kinds,
+                            min_chars=args.min_chars)
     elif args.file:
         snapshots.put(args.source_id, Path(args.file), media_type=args.media_type,
-                      locator_kinds=kinds)
+                      locator_kinds=kinds, min_chars=args.min_chars)
     with connect(config.dsn) as conn:
         try:
             result = ingest_source(args.source_id, conn=conn, config=config,
-                                   snapshots=snapshots, locator_kinds=kinds)
+                                   snapshots=snapshots, locator_kinds=kinds,
+                                   min_chars=args.min_chars)
         except QaHardGate as gate:
             report = snapshots.dir_for(args.source_id) / "qa" / "report.md"
             print(f"QA hard gate: {gate}\nreport: {report}")
@@ -157,6 +159,11 @@ def build_parser() -> argparse.ArgumentParser:
                         help="preference order; stored on the snapshot and reused by"
                              " later runs. Omit to reuse the stored order (or"
                              " DEFAULT_LOCATOR_KINDS for a source that never had one)")
+    ingest.add_argument("--min-chars", type=int, default=None,
+                        help="extraction-collapse floor for the QA hard gate, for a"
+                             " legitimately tiny source (a one-page errata note, a short"
+                             " RFC). Stored on the snapshot and reused by later runs;"
+                             " omit to reuse the stored value (or QA's own default)")
     ingest.set_defaults(func=_cmd_ingest)
 
     reingest = sub.add_parser("reingest",

@@ -40,7 +40,8 @@ def _is_current(existing: dict | None, *, content_hash: str,
     paid, rate-limited provider (1263 calls for the real Van Roy & Haridi corpus) to
     arrive back at byte-identical rows. Every input that can change the stored chunks is
     compared here: the snapshot's own content hash, the backend and its version, the
-    locator-kind preference order, and the chunking fingerprint.
+    locator-kind preference order, and the chunking fingerprint (which carries the
+    source's `min_chars` QA floor too — see `chunking_fingerprint`).
 
     That last one is what stops the skip from being a trap. The chunk boundaries are a
     product of the config knobs (`chunking.target_tokens`/`max_tokens`/`overlap_tokens`)
@@ -48,7 +49,9 @@ def _is_current(existing: dict | None, *, content_hash: str,
     without them, tuning chunk size in `config/ingest.yaml` and re-running a source
     silently kept the old chunks — no error, no warning, and no recovery short of
     deleting the `source_ingestions` row by hand. Detection has to be automatic, because
-    the failure mode is silence.
+    the failure mode is silence. The source's `min_chars` floor rides in the same
+    fingerprint for the same reason: it moves the promotion verdict for content that did
+    not change, so re-ingesting under a new floor must not be skipped as unchanged.
 
     Anything unknown or unequal — including a prior run that was not promoted, and a row
     written before the fingerprint existed, whose empty `chunking` can never equal a real
@@ -63,7 +66,8 @@ def _is_current(existing: dict | None, *, content_hash: str,
 
 def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
                   snapshots: SnapshotStore | None = None,
-                  locator_kinds: Sequence[str] | None = None) -> IngestResult:
+                  locator_kinds: Sequence[str] | None = None,
+                  min_chars: int | None = None) -> IngestResult:
     """Snapshot -> extract -> chunk -> QA -> (promote | hard-gate). The QA verdict is
     always recorded, even when it blocks promotion: a refused source must stay visible,
     never silently missing (D37)."""
@@ -99,9 +103,19 @@ def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
     else:
         kinds = list(snapshot.locator_kinds or DEFAULT_LOCATOR_KINDS)
 
+    # Same rule again for the QA floor: an explicit argument overrides and persists, so
+    # the run that admitted a legitimately tiny source is the run a re-ingest reproduces;
+    # otherwise the snapshot's stored value wins; a source that never had one keeps
+    # `None` and gets `run_qa`'s own default floor.
+    if min_chars is not None:
+        if min_chars != snapshot.min_chars:
+            snapshot = snapshots.set_min_chars(source_id, min_chars)
+    else:
+        min_chars = snapshot.min_chars
+
     backend = backend_identity(snapshot.media_type, config)
     existing = store.ingestion(source_id)
-    chunking = chunking_fingerprint(config)
+    chunking = chunking_fingerprint(config, min_chars=min_chars)
     # The chunk count is checked against the table, not just the bookkeeping row: the
     # skip is only sound while the chunks it points at are actually there. A source whose
     # rows were dropped (a targeted `delete_source`, a partially restored database) would
@@ -131,7 +145,7 @@ def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
         queue.file(kind="pending-source", source_id=source_id, reason="partially-ingested",
                    detail=str(failure))
         raise
-    report = run_qa(doc, chunks)
+    report = run_qa(doc, chunks, min_chars=min_chars)
     report_path = snapshots.write_qa(source_id, report)
 
     promoted = not report.hard_failures

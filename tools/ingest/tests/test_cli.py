@@ -28,6 +28,18 @@ def test_search_defaults_leave_reranking_to_the_config():
     assert args.no_rerank is False and args.k is None and args.source == []
 
 
+def test_ingest_subcommand_parses_its_stored_source_settings():
+    """Both flags are per-source settings the snapshot remembers; absent, they must parse
+    as "unset" so the stored value wins rather than an accidental default overriding it."""
+    args = build_parser().parse_args(
+        ["ingest", "rfc-2119", "--file", "/tmp/x.pdf", "--locator-kinds", "book-page",
+         "--min-chars", "120"])
+    assert args.locator_kinds == ["book-page"] and args.min_chars == 120
+
+    bare = build_parser().parse_args(["ingest", "rfc-2119"])
+    assert bare.locator_kinds == [] and bare.min_chars is None
+
+
 def test_unknown_command_is_rejected():
     with pytest.raises(SystemExit):
         main(["frobnicate"])

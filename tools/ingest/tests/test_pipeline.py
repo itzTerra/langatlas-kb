@@ -201,6 +201,80 @@ def test_an_explicit_flag_overrides_and_updates_the_stored_kinds(db_conn, prepar
         "a changed preference order must re-run the pipeline, not be skipped as unchanged"
 
 
+def test_min_chars_is_stored_and_reused_when_no_flag_is_given(db_conn, prepared,
+                                                              snapshot_root, tmp_path):
+    """The QA floor decides whether a source is promoted at all, so — exactly like
+    `locator_kinds` — it cannot live only in a flag the developer has to remember. A
+    legitimately tiny source admitted once must not be hard-gated by the re-ingest that
+    forgot the flag, which would silently drop it back out of the corpus."""
+    migrate(db_conn)
+    path = tmp_path / "errata.html"
+    path.write_text(TINY_HTML)
+    prepared.put("errata", path, media_type="text/html")
+
+    first = ingest_source("errata", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"], min_chars=200)
+    assert first.promoted and first.chunk_count > 0
+    assert prepared.get("errata").min_chars == 200
+
+    _drop_the_database(db_conn)
+    second = ingest_source("errata", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert second.promoted is True, "a re-ingest with no flag must reuse the stored floor"
+    assert second.chunk_count == first.chunk_count
+    assert SourceChunksStore(db_conn).by_source("errata") != []
+
+
+def test_without_a_stored_min_chars_the_default_floor_still_gates(db_conn, prepared,
+                                                                  tmp_path):
+    """The override is opt-in per source: a source that never declared one keeps QA's own
+    floor, so `None` can never read as 'no floor at all'."""
+    path = tmp_path / "bad.html"
+    path.write_text(TINY_HTML)
+    prepared.put("still-bad", path, media_type="text/html")
+    with pytest.raises(QaHardGate):
+        ingest_source("still-bad", conn=db_conn, config=CONFIG, snapshots=prepared,
+                      locator_kinds=["web-fragment"])
+
+
+def test_a_changed_min_chars_re_runs_qa_instead_of_skipping(db_conn, prepared, fake_ctx,
+                                                            tmp_path):
+    """`min_chars` moves the promotion verdict for byte-identical content, so it belongs
+    in the currency key beside the chunking knobs: raising the floor on an already-ingested
+    source must actually re-run the gate, not be skipped as unchanged and leave a source
+    promoted under a floor it no longer meets."""
+    path = tmp_path / "errata.html"
+    path.write_text(TINY_HTML)
+    prepared.put("errata", path, media_type="text/html")
+    first = ingest_source("errata", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"], min_chars=200)
+    assert first.promoted and SourceChunksStore(db_conn).by_source("errata") != []
+
+    # Everything else about the run is identical; only the floor moved, and it now
+    # exceeds the source's honest length.
+    with pytest.raises(QaHardGate):
+        ingest_source("errata", conn=db_conn, config=CONFIG, snapshots=prepared,
+                      locator_kinds=["web-fragment"], min_chars=100000)
+
+    assert SourceChunksStore(db_conn).by_source("errata") == [], \
+        "the re-ingest was skipped as unchanged instead of re-running the gate"
+
+
+def test_adding_a_min_chars_override_does_not_disturb_a_source_without_one(db_conn,
+                                                                           prepared):
+    """The floor is omitted from the fingerprint when unset, so every source recorded
+    before the field existed still fingerprints identically to its own re-run. Otherwise
+    the field's mere existence would re-ingest the whole corpus and cascade away every
+    embedding it has — 1263 paid provider calls for the real one."""
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["web-fragment"])
+    second = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+    assert second.skipped is True
+    assert prepared.get("rust-ref").min_chars is None
+
+
 def test_reingest_all_regenerates_every_stored_source(db_conn, prepared, snapshot_root,
                                                       tmp_path):
     """D1 as one runnable operation. Each source keeps its own stored locator kinds, so

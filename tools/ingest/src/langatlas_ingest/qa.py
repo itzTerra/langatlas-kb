@@ -89,15 +89,23 @@ def _key(text: str) -> str:
     return _NUMBER_PREFIX.sub(r"\1 ", normalize_heading(text))
 
 
-def run_qa(doc, chunks) -> QaReport:
+def run_qa(doc, chunks, *, min_chars: int | None = None) -> QaReport:
     """D37's harness. Encoding and extraction-collapse are hard gates; everything else is
     pre-triage for the developer's manual skim — the workflow already exists, this just
     makes it arrive sorted.
 
+    `min_chars` is the source's own extraction-collapse floor (`snapshot.min_chars`), for
+    the legitimately tiny standalone source — a one-page errata note, a short RFC — whose
+    honest length is below `_MIN_CHARS` and which otherwise could not be ingested at all
+    without editing that constant. `None` means "use `_MIN_CHARS`", never "no floor": a
+    source opting into a lower floor has to name a real number, so the collapse gate can
+    never be switched off by an unset field.
+
     Changing a gate or a threshold here changes the verdict for input that did not
     change, so it must also bump `chunker.CHUNKER_QA_VERSION` — otherwise `ingest_source`
     keeps skipping every already-recorded source and the new gate never runs against the
-    corpus it was written for."""
+    corpus it was written for. A per-source `min_chars` is the same hazard scoped to one
+    source, and rides in `chunking_fingerprint` instead for exactly that reason."""
     text = "\n".join(block.text for block in doc.blocks)
     report = QaReport(source_id=doc.source_id, chunk_count=len(chunks), char_count=len(text))
 
@@ -112,12 +120,16 @@ def run_qa(doc, chunks) -> QaReport:
     # non-whitespace characters count as evidence the extractor actually found text.
     content_chars = len(re.sub(r"\s+", "", text))
     per_page = content_chars / doc.page_count if doc.page_count else float(content_chars)
-    collapsed = (content_chars < _MIN_CHARS
+    # Only the whole-document floor is per-source. `_MIN_CHARS_PER_PAGE` is a statement
+    # about a *page* that extracted to nothing — an image scan, a failed font — which a
+    # short source does not make any more acceptable, so it stays fixed.
+    floor = _MIN_CHARS if min_chars is None else min_chars
+    collapsed = (content_chars < floor
                  or bool(doc.page_count and per_page < _MIN_CHARS_PER_PAGE))
     report.checks.append(QaCheck(
         "extraction-collapse", "hard", not collapsed,
         f"{content_chars} non-whitespace chars ({len(text)} total) over "
-        f"{doc.page_count or 'n/a'} pages", per_page))
+        f"{doc.page_count or 'n/a'} pages, floor {floor}", per_page))
 
     words = re.findall(r"\b\w+\b", text)
     ocr_rate = len(_OCR_TOKEN.findall(text)) / max(1, len(words))
