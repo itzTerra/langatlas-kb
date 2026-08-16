@@ -25,10 +25,10 @@ uv run langatlas-sources reingest         # re-ingest every stored snapshot (D1)
 
 `--locator-kinds` is stored on the snapshot and reused by every later run for that
 source, so a re-ingest reproduces the locators already published rather than silently
-falling back to a different preference order. Pass it again to change it. A re-ingest
-whose content hash, backend version and locator kinds all match the recorded run is
-skipped: rewriting the chunks would cascade away every embedding for that source and
-cost a full re-embed on the paid provider to reach byte-identical rows.
+falling back to a different preference order. Pass it again to change it. A re-ingest whose content hash, backend version, locator kinds, and chunking
+config/version all match the recorded run is skipped: rewriting the chunks would
+cascade away every embedding for that source and cost a full re-embed on the paid
+provider to reach byte-identical rows.
 
 ## Where things live
 
