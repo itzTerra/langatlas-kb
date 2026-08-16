@@ -1,7 +1,7 @@
 # tools/ingest/src/langatlas_ingest/pipeline.py
 from dataclasses import dataclass
 from typing import Sequence
-from langatlas_ingest.chunker import chunk_document
+from langatlas_ingest.chunker import chunk_document, chunking_fingerprint
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.errors import (
     ExtractionFailed, IngestError, QaHardGate, SnapshotMissing,
@@ -30,7 +30,8 @@ class IngestResult:
 
 
 def _is_current(existing: dict | None, *, content_hash: str,
-                backend: tuple[str, str] | None, kinds: list[str]) -> bool:
+                backend: tuple[str, str] | None, kinds: list[str],
+                chunking: dict) -> bool:
     """Whether the stored ingestion already reflects exactly this run's inputs.
 
     `replace_source` is a delete-then-reinsert, and the embedding tables reference
@@ -38,14 +39,26 @@ def _is_current(existing: dict | None, *, content_hash: str,
     actually change throws away every embedding it has and costs a full re-embed on the
     paid, rate-limited provider (1263 calls for the real Van Roy & Haridi corpus) to
     arrive back at byte-identical rows. Every input that can change the stored chunks is
-    compared here: the snapshot's own content hash, the backend and its version, and the
-    locator-kind preference order. Anything unknown or unequal — including a prior run
-    that was not promoted — falls through to the full pipeline."""
+    compared here: the snapshot's own content hash, the backend and its version, the
+    locator-kind preference order, and the chunking fingerprint.
+
+    That last one is what stops the skip from being a trap. The chunk boundaries are a
+    product of the config knobs (`chunking.target_tokens`/`max_tokens`/`overlap_tokens`)
+    and of the chunker/QA code itself, neither of which the other four inputs can see:
+    without them, tuning chunk size in `config/ingest.yaml` and re-running a source
+    silently kept the old chunks — no error, no warning, and no recovery short of
+    deleting the `source_ingestions` row by hand. Detection has to be automatic, because
+    the failure mode is silence.
+
+    Anything unknown or unequal — including a prior run that was not promoted, and a row
+    written before the fingerprint existed, whose empty `chunking` can never equal a real
+    one — falls through to the full pipeline."""
     return bool(existing and backend and existing["promoted"]
                 and existing["content_hash"] == content_hash
                 and existing["backend"] == backend[0]
                 and existing["backend_version"] == backend[1]
-                and list(existing["locator_kinds"] or []) == kinds)
+                and list(existing["locator_kinds"] or []) == kinds
+                and (existing["chunking"] or {}) == chunking)
 
 
 def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
@@ -88,13 +101,14 @@ def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
 
     backend = backend_identity(snapshot.media_type, config)
     existing = store.ingestion(source_id)
+    chunking = chunking_fingerprint(config)
     # The chunk count is checked against the table, not just the bookkeeping row: the
     # skip is only sound while the chunks it points at are actually there. A source whose
     # rows were dropped (a targeted `delete_source`, a partially restored database) would
     # otherwise be skipped forever on the strength of a stale `promoted = true`, and stay
     # silently missing from the corpus — the exact failure D37 refuses to allow.
     if (_is_current(existing, content_hash=snapshot.content_hash, backend=backend,
-                    kinds=kinds)
+                    kinds=kinds, chunking=chunking)
             and store.count_by_source(source_id) == existing["chunk_count"]):
         # Nothing that determines the stored chunks has changed, so re-extracting would
         # reproduce them byte for byte — and re-writing them would cascade away every
@@ -132,7 +146,8 @@ def ingest_source(source_id: str, *, conn, config: IngestConfig | None = None,
         store.record_ingestion(source_id, content_hash=snapshot.content_hash,
                                backend=doc.backend, backend_version=doc.backend_version,
                                chunk_count=len(chunks) if promoted else 0, qa=report,
-                               promoted=promoted, locator_kinds=kinds)
+                               promoted=promoted, locator_kinds=kinds,
+                               chunking=chunking)
         if not promoted:
             queue.file(kind="pending-source", source_id=source_id,
                        reason="partially-ingested",

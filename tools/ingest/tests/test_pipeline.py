@@ -288,6 +288,58 @@ def test_a_changed_original_still_re_runs_the_whole_pipeline(db_conn, prepared, 
     assert fake_ctx.embed_calls, "changed chunks must reach the embedding provider"
 
 
+def test_a_changed_chunking_config_re_chunks_instead_of_skipping(db_conn, prepared,
+                                                                 fake_ctx):
+    """The knobs in `config/ingest.yaml` decide every chunk boundary, but nothing in the
+    recorded run used to mention them: tuning chunk size and re-running a source silently
+    kept the old chunks, with no error and no warning, and the only recovery was deleting
+    the `source_ingestions` row by hand."""
+    ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                  locator_kinds=["web-fragment"])
+    embed_source(fake_ctx, db_conn, config=CONFIG)
+    fake_ctx.embed_calls.clear()
+    before = SourceChunksStore(db_conn).by_source("rust-ref")
+
+    wider = IngestConfig.load(overrides={"chunk_target_tokens": 120,
+                                         "chunk_max_tokens": 160,
+                                         "chunk_overlap_tokens": 8})
+    second = ingest_source("rust-ref", conn=db_conn, config=wider, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert second.skipped is False
+    after = SourceChunksStore(db_conn).by_source("rust-ref")
+    # The new sizing is actually in the rows, not just a re-run that reproduced them.
+    assert len(after) < len(before)
+    assert max(c.token_count for c in after) > max(c.token_count for c in before)
+    assert embed_source(fake_ctx, db_conn, config=wider) == second.chunk_count
+    assert fake_ctx.embed_calls, "re-chunked chunks must reach the embedding provider"
+
+
+def test_an_ingestion_recorded_before_the_fingerprint_existed_is_not_skipped(db_conn,
+                                                                             prepared):
+    """A `source_ingestions` row written before 0004 has no chunking fingerprint, and the
+    absence has to read as "unknown, therefore not current" — never as "matches by
+    default". Otherwise the real corpus's next re-ingest is skipped forever on a row that
+    cannot prove what produced it."""
+    first = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"])
+    # Exactly what the 0004 default leaves on a pre-migration row: everything else about
+    # the run still matches this config, so only the missing fingerprint can force a re-run.
+    with db_conn.cursor() as cur:
+        cur.execute("UPDATE source_ingestions SET chunking = '{}'::jsonb"
+                    " WHERE source_id = 'rust-ref'")
+
+    second = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                           locator_kinds=["web-fragment"])
+
+    assert second.skipped is False
+    assert second.chunk_count == first.chunk_count
+    # ...and the re-run records the fingerprint, so the run after it skips normally again.
+    third = ingest_source("rust-ref", conn=db_conn, config=CONFIG, snapshots=prepared,
+                          locator_kinds=["web-fragment"])
+    assert third.skipped is True
+
+
 def test_a_source_whose_chunks_vanished_is_re_ingested_not_skipped(db_conn, prepared):
     """The short-circuit trusts `source_ingestions`, so it must also check that the rows
     it points at still exist: a source dropped out of `source_chunks` (a targeted delete,

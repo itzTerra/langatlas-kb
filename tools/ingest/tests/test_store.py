@@ -1,6 +1,7 @@
 # tools/ingest/tests/test_store.py
 import pytest
-from langatlas_ingest.chunker import Chunk
+from langatlas_ingest.chunker import Chunk, chunking_fingerprint
+from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import ensure_embedding_table, migrate
 from langatlas_ingest.errors import UnknownQueueEntry
 from langatlas_ingest.qa import QaCheck, QaReport
@@ -71,6 +72,27 @@ def test_record_ingestion_overwrites_the_previous_run(store, db_conn):
     with db_conn.cursor() as cur:
         cur.execute("SELECT count(*), max(chunk_count) FROM source_ingestions")
         assert cur.fetchone() == (1, 9)
+
+
+def test_record_ingestion_round_trips_the_chunking_fingerprint(store):
+    """`ingest_source` compares this value to decide whether to skip a re-ingest, so it
+    has to come back out of jsonb equal to what went in — a stringified int or a dropped
+    key would read as a config change and force a needless re-embed."""
+    fingerprint = chunking_fingerprint(IngestConfig.load(
+        overrides={"chunk_target_tokens": 40, "chunk_max_tokens": 60,
+                   "chunk_overlap_tokens": 8}))
+    store.record_ingestion("s", content_hash="a", backend="b", backend_version="1",
+                           chunk_count=1, qa=QaReport(source_id="s"), promoted=True,
+                           chunking=fingerprint)
+    assert store.ingestion("s")["chunking"] == fingerprint
+
+
+def test_an_ingestion_recorded_without_a_fingerprint_reads_as_unknown(store):
+    """Never as "matches by default": a caller that cannot state what it chunked with
+    must leave a value that no real fingerprint equals, so the source re-ingests once."""
+    store.record_ingestion("s", content_hash="a", backend="b", backend_version="1",
+                           chunk_count=1, qa=QaReport(source_id="s"), promoted=True)
+    assert store.ingestion("s")["chunking"] == {}
 
 
 def test_unembedded_returns_only_chunks_with_no_row_in_the_embedding_table(store, db_conn):

@@ -9,6 +9,16 @@ from langatlas_ingest.locators import format_pages, format_section
 from langatlas_validate.locators import validate_locator_shape
 
 _CHARS_PER_TOKEN = 4
+# Bump this whenever chunking or extraction-QA logic changes in a way that could produce
+# different chunks — or a different promotion verdict — for byte-identical input. It is
+# the half of `chunking_fingerprint` that configuration cannot express: `ingest_source`
+# skips a re-ingest whose inputs all match the recorded run, and without a version to
+# compare, a rewritten splitter or a tightened QA gate would leave the whole corpus
+# pinned to chunks the current code would never produce, with no error and no warning.
+# Deliberately not `langatlas_ingest.__version__`: a package bump for an unrelated change
+# would invalidate every source and cost a full re-embed (1263 paid provider calls for
+# the real corpus) to arrive back at byte-identical rows.
+CHUNKER_QA_VERSION = "1"
 _NUMBERED_HEADING = re.compile(r"^(\d+(?:\.\d+)*)[.)]?\s+\S")
 # Share of chunk_max_tokens the breadcrumb prefix may consume in the embedded text.
 # Heading text is capped per level (`_HEADING_MAX_CHARS`, 120) but section *depth* is
@@ -254,6 +264,21 @@ class _Accumulator:
             # rather than a byte-identical duplicate chunk next.
             return ""
         return " ".join(words[-take:])
+
+
+def chunking_fingerprint(config: IngestConfig) -> dict:
+    """Everything about *how* this run chunks, in one comparable value.
+
+    Recorded beside each ingestion so `ingest_source` can tell a genuinely unchanged
+    source (skippable — its chunks and their paid embeddings are already correct) from
+    one whose chunk boundaries would now come out differently. Only the three knobs the
+    chunker actually reads are included: widening `retrieval_k` must not invalidate a
+    corpus, and a fingerprint that moves for unrelated reasons would be a re-embed bill,
+    not a safeguard."""
+    return {"version": CHUNKER_QA_VERSION,
+            "target_tokens": config.chunk_target_tokens,
+            "max_tokens": config.chunk_max_tokens,
+            "overlap_tokens": config.chunk_overlap_tokens}
 
 
 def chunk_document(doc: ExtractedDocument, *, config: IngestConfig,

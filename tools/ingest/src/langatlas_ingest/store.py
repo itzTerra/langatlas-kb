@@ -100,20 +100,28 @@ class SourceChunksStore:
 
     def record_ingestion(self, source_id: str, *, content_hash: str, backend: str,
                          backend_version: str, chunk_count: int, qa, promoted: bool,
-                         locator_kinds: Sequence[str] = ()) -> None:
+                         locator_kinds: Sequence[str] = (),
+                         chunking: dict | None = None) -> None:
+        """`chunking` is `chunker.chunking_fingerprint` — the chunking knobs plus the
+        chunker/QA code version. It defaults to `{}` rather than to the current
+        fingerprint: a caller that does not state what it chunked with records "unknown",
+        which `_is_current` reads as not-current, and the source re-ingests once. The
+        opposite default would let a run claim currency it cannot prove."""
         with self.conn.cursor() as cur:
             cur.execute(
                 "INSERT INTO source_ingestions (source_id, content_hash, backend,"
                 " backend_version, chunk_count, qa_status, qa_report, promoted,"
-                " locator_kinds)"
-                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                " locator_kinds, chunking)"
+                " VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
                 " ON CONFLICT (source_id) DO UPDATE SET content_hash = EXCLUDED.content_hash,"
                 " backend = EXCLUDED.backend, backend_version = EXCLUDED.backend_version,"
                 " chunk_count = EXCLUDED.chunk_count, qa_status = EXCLUDED.qa_status,"
                 " qa_report = EXCLUDED.qa_report, promoted = EXCLUDED.promoted,"
-                " locator_kinds = EXCLUDED.locator_kinds, ingested_at = now()",
+                " locator_kinds = EXCLUDED.locator_kinds, chunking = EXCLUDED.chunking,"
+                " ingested_at = now()",
                 (source_id, content_hash, backend, backend_version, chunk_count,
-                 qa.status, json.dumps(qa.to_dict()), promoted, list(locator_kinds)))
+                 qa.status, json.dumps(qa.to_dict()), promoted, list(locator_kinds),
+                 json.dumps(chunking or {})))
 
     def ingestion(self, source_id: str) -> dict | None:
         """The last recorded run for a source, or None. `ingest_source` compares this
@@ -121,7 +129,7 @@ class SourceChunksStore:
         the source would change anything — a blind `replace_source` cascades every
         embedding of that source away and costs a full re-embed on the paid provider."""
         names = ("source_id", "content_hash", "backend", "backend_version", "chunk_count",
-                 "qa_status", "promoted", "locator_kinds")
+                 "qa_status", "promoted", "locator_kinds", "chunking")
         with self.conn.cursor() as cur:
             cur.execute(f"SELECT {', '.join(names)} FROM source_ingestions"
                         " WHERE source_id = %s", (source_id,))

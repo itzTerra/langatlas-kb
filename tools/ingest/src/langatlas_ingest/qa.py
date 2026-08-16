@@ -92,7 +92,12 @@ def _key(text: str) -> str:
 def run_qa(doc, chunks) -> QaReport:
     """D37's harness. Encoding and extraction-collapse are hard gates; everything else is
     pre-triage for the developer's manual skim — the workflow already exists, this just
-    makes it arrive sorted."""
+    makes it arrive sorted.
+
+    Changing a gate or a threshold here changes the verdict for input that did not
+    change, so it must also bump `chunker.CHUNKER_QA_VERSION` — otherwise `ingest_source`
+    keeps skipping every already-recorded source and the new gate never runs against the
+    corpus it was written for."""
     text = "\n".join(block.text for block in doc.blocks)
     report = QaReport(source_id=doc.source_id, chunk_count=len(chunks), char_count=len(text))
 
