@@ -7,7 +7,7 @@ from langatlas_ingest.errors import UnknownQueueEntry
 _COLUMNS = ("chunk_id", "source_id", "ordinal", "parent_section_id", "section_path",
             "breadcrumb", "locator", "locator_kind", "page_start", "page_end",
             "section_number", "anchor", "line_start", "line_end", "text", "token_count",
-            "content_hash")
+            "content_hash", "doc_kind", "doc_number", "path")
 _SELECT = ", ".join(_COLUMNS)
 
 
@@ -30,6 +30,13 @@ class SourceChunk:
     text: str
     token_count: int
     content_hash: str = ""
+    # The `design-doc`/`multipage-docs` identity columns (db/0005). NULL on every chunk
+    # any current backend produces; they exist so `index.PostgresSourceChunksIndex` can
+    # compare the cited document's identity instead of resolving those kinds on heading
+    # or anchor alone. See `chunker.Chunk` for the full note.
+    doc_kind: str | None = None
+    doc_number: int | None = None
+    path: str | None = None
 
 
 def _row(values) -> SourceChunk:

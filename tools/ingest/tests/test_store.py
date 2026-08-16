@@ -33,11 +33,25 @@ def test_replace_source_is_idempotent(store):
 
 
 def test_round_trip_preserves_every_locator_field(store):
-    store.replace_source("s", [make_chunk(0, section_number="1.2", anchor="intro")])
+    store.replace_source("s", [make_chunk(0, section_number="1.2", anchor="intro",
+                                          doc_kind="pep", doc_number=8,
+                                          path="guide/intro")])
     chunk = store.get("s#c00000")
     assert chunk.locator == "p. 1" and chunk.locator_kind == "book-page"
     assert chunk.section_path == ["Ch 1"] and chunk.section_number == "1.2"
     assert chunk.anchor == "intro" and chunk.parent_section_id == "s#s0001"
+    # db/0005's identity columns. `doc_number` comes back an int, the type
+    # `parse_locator` produces and `index.py` compares against — a text column would
+    # have made "RFC 007" and "RFC 7" different documents.
+    assert (chunk.doc_kind, chunk.doc_number, chunk.path) == ("pep", 8, "guide/intro")
+
+
+def test_the_identity_columns_default_to_null_for_a_chunk_that_carries_none(store):
+    """Every chunk any current backend produces: `_locator_for` emits no design-doc or
+    multipage-docs locator, so NULL here is the normal case, not a defect."""
+    store.replace_source("s", [make_chunk(0)])
+    chunk = store.get("s#c00000")
+    assert (chunk.doc_kind, chunk.doc_number, chunk.path) == (None, None, None)
 
 
 def test_get_returns_none_for_an_unknown_chunk(store):

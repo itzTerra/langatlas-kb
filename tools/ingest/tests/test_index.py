@@ -119,19 +119,25 @@ def test_a_video_locator_resolves_to_nothing_rather_than_raising(index):
 
 @pytest.fixture
 def doc_index(db_conn):
-    """The three kinds whose SQL clause is *weaker* than `ranges_overlap`. Kept in their
-    own source so the page/section fixtures above stay unperturbed."""
+    """The three kinds whose SQL clause used to be *weaker* than `ranges_overlap`. Kept in
+    their own source so the page/section fixtures above stay unperturbed.
+
+    The design-doc and multipage-docs chunks carry their identity columns (db/0005),
+    which no current backend produces — `chunker._locator_for` emits neither kind. They
+    are hand-built here precisely so the comparison can be pinned as *correct* rather than
+    merely always-empty; `unidentified_index` below covers the every-real-chunk case where
+    those columns are NULL."""
     migrate(db_conn)
     SourceChunksStore(db_conn).replace_source("doc", [
         chunk(0, chunk_id="doc#c00000", source_id="doc", locator="PEP 8 §Indentation",
               locator_kind="design-doc", section_path=["Indentation"],
-              page_start=None, page_end=None),
+              doc_kind="pep", doc_number=8, page_start=None, page_end=None),
         chunk(1, chunk_id="doc#c00001", source_id="doc",
               locator="a1b2c3d:src/x.py#L10-L20", locator_kind="repo-file",
               anchor="src/x.py", line_start=10, line_end=20,
               section_path=[], page_start=None, page_end=None),
         chunk(2, chunk_id="doc#c00002", source_id="doc", locator="guide/intro#setup",
-              locator_kind="multipage-docs", anchor="setup",
+              locator_kind="multipage-docs", anchor="setup", path="guide/intro",
               section_path=[], page_start=None, page_end=None),
     ])
     return PostgresSourceChunksIndex(db_conn)
@@ -145,16 +151,19 @@ def _chunk_range(row):
     if row.section_number is not None:
         return LocatorRange("numbered-section", section_number=row.section_number)
     if row.locator_kind == "design-doc":
-        kind, number = row.locator.split(" ")[0], row.locator.split(" ")[1]
+        # From the columns, not from re-parsing `locator`: since db/0005 the document's
+        # identity is stored, and the oracle has to read the same values the SQL does or
+        # it stops being an independent check of it.
         heading = row.section_path[0].lower() if row.section_path else None
-        return LocatorRange("design-doc", doc_kind=kind.lower(), doc_number=int(number),
-                            heading=heading)
+        return LocatorRange("design-doc", doc_kind=row.doc_kind,
+                            doc_number=row.doc_number, heading=heading)
     if row.locator_kind == "repo-file":
+        # `commit` still comes from the locator text: there is no column for it, which is
+        # the one remaining gap (docstring #3).
         return LocatorRange("repo-file", commit=row.locator.split(":")[0],
                             path=row.anchor, lines=(row.line_start, row.line_end))
     if row.locator_kind == "multipage-docs":
-        return LocatorRange("multipage-docs", path=row.locator.split("#")[0],
-                            anchor=row.anchor)
+        return LocatorRange("multipage-docs", path=row.path, anchor=row.anchor)
     if row.anchor is not None:
         return LocatorRange("web-fragment", anchor=row.anchor)
     return None
@@ -172,33 +181,40 @@ def test_repo_file_and_multipage_citations_resolve_on_their_own_terms(doc_index)
     assert doc_index.resolve("doc", "guide/intro#teardown") == []
 
 
-def test_design_doc_identity_diverges_from_ranges_overlap(doc_index):
-    """KNOWN GAP (docstring #3): a whole-document citation is `TRUE`, so the document's
-    own identity is never checked. `PEP 484` cited against a source that is PEP 8
-    resolves to every chunk of it. Pinned so the gap is visible, not discovered later
-    by a wrong fact in the public record."""
-    everything = ["doc#c00000", "doc#c00001", "doc#c00002"]
-    assert doc_index.resolve("doc", "RFC 1") == everything
-    assert doc_index.resolve("doc", "PEP 484") == everything
+def test_a_whole_document_design_doc_citation_checks_the_documents_identity(doc_index):
+    """WAS the divergence pinned as docstring gap #3, now closed by db/0005: a
+    whole-document citation used to compile to `TRUE`, so `PEP 484` cited against a source
+    that is PEP 8 resolved to every chunk of it. It now compares `doc_kind`/`doc_number`
+    and agrees with `ranges_overlap` — the same oracle the old test used to show they
+    disagreed."""
+    assert doc_index.resolve("doc", "RFC 1") == []
+    assert doc_index.resolve("doc", "PEP 484") == []
+    # ...and the identity it does match still resolves, so this is a narrowed join and not
+    # a switched-off one. Only the chunk that IS PEP 8 backs it.
+    assert doc_index.resolve("doc", "PEP 8") == ["doc#c00000"]
 
     fact = parse_locator("PEP 484")
     chunk_range = _chunk_range(SourceChunksStore(doc_index.conn).get("doc#c00000"))
-    assert ranges_overlap(fact, chunk_range) is False, "the divergence being pinned"
+    assert ranges_overlap(fact, chunk_range) is False
+    assert ranges_overlap(parse_locator("PEP 8"), chunk_range) is True
 
 
-def test_heading_qualified_design_doc_citations_are_identity_blind_too(doc_index):
-    """KNOWN GAP (docstring #3), the half that looks safe and is not: a *section*-qualified
-    design-doc citation still never checks the document. `RFC 2119 §Indentation` compiles
-    to the same `section_path` clause as `PEP 8 §Indentation` and resolves against the
-    PEP 8 chunk — precision in the citation's shape, none in the join."""
-    assert doc_index.resolve("doc", "RFC 2119 §Indentation") == ["doc#c00000"]
+def test_heading_qualified_design_doc_citations_check_the_document_too(doc_index):
+    """WAS the other half of gap #3 — the half that looked safe and was not. A
+    *section*-qualified design-doc citation used to compile to the same `section_path`
+    clause as any other, so `RFC 2119 §Indentation` resolved against the PEP 8 chunk:
+    precision in the citation's shape, none in the join. The identity is now compared
+    alongside the heading."""
+    assert doc_index.resolve("doc", "RFC 2119 §Indentation") == []
     assert doc_index.resolve("doc", "PEP 8 §Indentation") == ["doc#c00000"]
+    # The heading half still has to hold on its own: the right document, the wrong section.
+    assert doc_index.resolve("doc", "PEP 8 §Whitespace") == []
 
     fact = parse_locator("RFC 2119 §Indentation")
     assert (fact.doc_kind, fact.doc_number) == ("rfc", 2119)
     chunk_range = _chunk_range(SourceChunksStore(doc_index.conn).get("doc#c00000"))
     assert (chunk_range.doc_kind, chunk_range.doc_number) == ("pep", 8)
-    assert ranges_overlap(fact, chunk_range) is False, "the divergence being pinned"
+    assert ranges_overlap(fact, chunk_range) is False
 
 
 def test_repo_file_commit_is_ignored_and_diverges_from_ranges_overlap(doc_index):
@@ -213,23 +229,75 @@ def test_repo_file_commit_is_ignored_and_diverges_from_ranges_overlap(doc_index)
     assert ranges_overlap(fact, chunk_range) is False, "the divergence being pinned"
 
 
-def test_multipage_path_is_ignored_and_diverges_from_ranges_overlap(doc_index):
-    """KNOWN GAP (docstring #4): the clause is `anchor = %s` alone, so two different
-    pages sharing a fragment id resolve to each other."""
-    assert doc_index.resolve("doc", "other/page#setup") == ["doc#c00002"]
+def test_multipage_citations_compare_the_path_not_only_the_anchor(doc_index):
+    """WAS the `multipage-docs` half of gap #4, now closed by db/0005: the clause was
+    `anchor = %s` alone, so two different pages sharing a fragment id resolved to each
+    other. `path` is compared now, and the SQL agrees with `ranges_overlap` again."""
+    assert doc_index.resolve("doc", "other/page#setup") == []
+    assert doc_index.resolve("doc", "guide/intro#setup") == ["doc#c00002"]
 
     fact = parse_locator("other/page#setup")
     chunk_range = _chunk_range(SourceChunksStore(doc_index.conn).get("doc#c00002"))
     assert chunk_range.path == "guide/intro"
-    assert ranges_overlap(fact, chunk_range) is False, "the divergence being pinned"
+    assert ranges_overlap(fact, chunk_range) is False
+    assert ranges_overlap(parse_locator("guide/intro#setup"), chunk_range) is True
 
 
-@pytest.mark.parametrize("locator", ["PEP 8 §Indentation", "PEP 8 §Whitespace",
+@pytest.fixture
+def unidentified_index(db_conn):
+    """What every chunk in the real corpus actually looks like: no `doc_kind`,
+    `doc_number` or `path`, because no backend produces a design-doc or multipage-docs
+    locator (`chunker._locator_for` emits four other kinds). This is the fixture that
+    proves the closed gaps stay closed against the corpus that exists."""
+    migrate(db_conn)
+    SourceChunksStore(db_conn).replace_source("plain", [
+        # A named-section chunk of an ordinary PDF — exactly the shape that used to be
+        # matched by an unrelated `RFC 2119 §Indentation` citation.
+        chunk(0, chunk_id="plain#c00000", source_id="plain", locator="§ Indentation",
+              locator_kind="named-section", section_path=["Indentation"],
+              page_start=None, page_end=None),
+        # ...and a web-fragment chunk of an ordinary HTML page, which used to be matched
+        # by any `path#setup` citation whatever the path.
+        chunk(1, chunk_id="plain#c00001", source_id="plain", locator="#setup",
+              locator_kind="web-fragment", anchor="setup", section_path=["Setup"],
+              page_start=None, page_end=None),
+    ])
+    return PostgresSourceChunksIndex(db_conn)
+
+
+def test_a_design_doc_citation_finds_nothing_when_the_chunk_has_no_identity(
+        unidentified_index):
+    """The whole point of the fix, against the only corpus that exists. `doc_kind = %s` is
+    false when the column is NULL, so these resolve to nothing — the claim then parks in
+    the sourcing queue, visibly, instead of attaching a fact to an unrelated passage. Not
+    an error and not a match."""
+    assert unidentified_index.resolve("plain", "RFC 2119 §Indentation") == []
+    assert unidentified_index.resolve("plain", "PEP 8 §Indentation") == []
+    assert unidentified_index.resolve("plain", "RFC 1") == []
+    # The named-section citation for the same heading still resolves: only the identity-
+    # carrying kind was narrowed, not the heading join it used to borrow.
+    assert unidentified_index.resolve("plain", "§ Indentation") == ["plain#c00000"]
+
+
+def test_a_multipage_citation_finds_nothing_when_the_chunk_has_no_path(unidentified_index):
+    """Same rule for `path`. And the plain `web-fragment` citation still resolves, so the
+    branch they used to share is intact."""
+    assert unidentified_index.resolve("plain", "guide/intro#setup") == []
+    assert unidentified_index.resolve("plain", "other/page#setup") == []
+    assert unidentified_index.resolve("plain", "#setup") == ["plain#c00001"]
+
+
+@pytest.mark.parametrize("locator", ["PEP 8 §Indentation", "PEP 8 §Whitespace", "PEP 8",
+                                     "RFC 1", "RFC 2119 §Indentation",
                                      "a1b2c3d:src/x.py#L11", "a1b2c3d:src/x.py#L30",
-                                     "guide/intro#setup", "guide/intro#teardown"])
+                                     "guide/intro#setup", "guide/intro#teardown",
+                                     "other/page#setup"])
 def test_sql_agrees_with_ranges_overlap_where_no_gap_applies(doc_index, locator):
-    """The same oracle as below, restricted to citations that do NOT exercise one of the
-    two known gaps — for these, SQL and `ranges_overlap` must still agree exactly."""
+    """The same oracle as below, restricted to citations that do NOT exercise the one
+    remaining known gap (`repo-file`'s uncompared commit) — for these, SQL and
+    `ranges_overlap` must agree exactly. The design-doc and multipage-docs citations were
+    excluded from this set while their identity columns did not exist; closing those gaps
+    is precisely what lets them join it."""
     fact = parse_locator(locator)
     expected = [row.chunk_id for row in SourceChunksStore(doc_index.conn).by_source("doc")
                 if (chunk_range := _chunk_range(row)) and ranges_overlap(fact, chunk_range)]

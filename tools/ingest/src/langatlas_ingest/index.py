@@ -5,6 +5,22 @@ _SELECT = "SELECT chunk_id FROM source_chunks WHERE source_id = %s AND "
 _ORDER = " ORDER BY ordinal"
 
 
+def _heading_clause(heading: str) -> tuple[str, tuple]:
+    """The `section_path` containment clause, shared by `named-section` and the
+    heading-qualified half of `design-doc`.
+
+    `regexp_replace(..., '\\s+', ' ', 'g')` mirrors `locators.canonical_text`'s whitespace
+    collapse, which `heading` has already had applied to it. Belt and braces: extraction
+    now canonicalizes heading text before it ever becomes a `section_path` entry, but 975
+    of the real corpus's 1263 chunks were ingested before that fix and still carry runs
+    like "11.8 Partial   failure". Without the collapse here, *neither* spelling of the
+    citation resolved against them — a false negative in the join the D24 verifier trusts,
+    which makes a true fact look unverifiable."""
+    return ("EXISTS (SELECT 1 FROM unnest(section_path) part"
+            r" WHERE lower(btrim(regexp_replace(part, '\s+', ' ', 'g'))) = %s)",
+            (heading,))
+
+
 class PostgresSourceChunksIndex:
     """The concrete `SourceChunksIndex` 1A's `validate_locator` takes by injection, and
     the same table the D24 verifier reads (D15: one index, two consumers).
@@ -16,12 +32,12 @@ class PostgresSourceChunksIndex:
     resolution never scans chunk text. `test_sql_resolution_agrees_with_ranges_overlap`
     pins the two expressions of the rule together so they cannot drift apart.
 
-    FOUR differences from `ranges_overlap`. The first two are deliberate and widen what
-    resolves; the last two are gaps that let *too much* resolve, and the D24 verifier
-    trusts this join completely — a false positive here attaches a fact to a passage that
-    does not support it. `test_sql_resolution_agrees_with_ranges_overlap` pins the kinds
-    that agree, and the `*_diverges_from_ranges_overlap` tests pin each gap below, so none
-    of this is invisible.
+    THREE differences from `ranges_overlap`. The first two are deliberate and widen what
+    resolves; the third is a gap that lets *too much* resolve, and the D24 verifier trusts
+    this join completely — a false positive here attaches a fact to a passage that does not
+    support it. `test_sql_resolution_agrees_with_ranges_overlap` pins the kinds that agree,
+    and `test_repo_file_commit_is_ignored_and_diverges_from_ranges_overlap` pins the
+    remaining gap, so none of this is invisible.
 
     Deliberate (this side has the chunk's *columns*, not only its display locator):
 
@@ -34,31 +50,40 @@ class PostgresSourceChunksIndex:
        fact look unverifiable. `named-section` also resolves through `section_path`
        containment, a relation `ranges_overlap` cannot express at all.
 
-    Known gaps (these resolve MORE than `ranges_overlap` would, in the false-positive
-    direction — fix before Stage 2 leans on these kinds):
+    Remaining known gap (resolves MORE than `ranges_overlap` would, in the false-positive
+    direction):
 
-    3. `design-doc` never compares `doc_kind`/`doc_number`, so the cited document's own
-       identity is never checked. This is NOT limited to whole-document citations:
-       - `RFC 1` and `PEP 484` each become `TRUE` and resolve to *every* chunk of the
-         cited source, even when that source is PEP 8;
-       - a heading-qualified citation is equally blind — `RFC 2119 §Indentation` and
-         `PEP 8 §Indentation` compile to the *same* `section_path` clause, so the former
-         resolves against a PEP 8 chunk. A section-qualified citation looks precise and
-         is not.
-       Scoping by `source_id` is the only thing containing this today.
-    4. `repo-file` ignores the `commit`, and `multipage-docs` ignores the `path` — both
-       match on `anchor` alone. Two files sharing a fragment id, or the same path at a
-       different commit, resolve to each other. Line numbers move between commits, so
-       the `repo-file` case can genuinely cite the wrong lines.
+    3. `repo-file` ignores the `commit`: it matches on `anchor` (the path) and line
+       overlap alone, so the same path at a different commit resolves, and line numbers
+       move between commits. `source_chunks` has no `commit` column, and adding one now
+       would be a column nothing could ever fill: no extraction backend in this package
+       produces `line_start`/`line_end` on a `Chunk`, and this branch requires
+       `line_start IS NOT NULL`, so it cannot match a real row at all today. That makes
+       the gap currently *unreachable* rather than currently dangerous — but it is still
+       a live design debt to close before any git-repo ingestion backend ships, because
+       the backend that populates the lines is exactly the one that makes this matchable.
 
-    None of gaps 3 and 4 is one SQL clause away. `source_chunks` stores no `doc_kind`,
-    `doc_number`, `commit`, or `path` column — only the raw `locator` string, `anchor`,
-    and `section_path` (see `db/0001_source_chunks.sql`). Closing any of the three
-    therefore costs the same thing: either a schema change adding the missing columns
-    (and a chunker change to populate them), or re-parsing the stored `locator` text at
-    query time — and the latter is exactly the "stop comparing indexed columns" tension
-    that justified expressing these rules in SQL in the first place. All three are
-    carried forward as one Stage 2 developer decision, not as cheap follow-ups."""
+    Closed (db/0005_locator_identity_columns.sql added `doc_kind`, `doc_number`, `path`):
+
+    - `design-doc` compares the cited document's identity. It used to share its clause
+      with `named-section` and check heading text alone, so `RFC 1` and `PEP 484` each
+      compiled to `TRUE` and resolved to *every* chunk of the cited source even when that
+      source was PEP 8, and `RFC 2119 §Indentation` compiled to the same `section_path`
+      clause as `PEP 8 §Indentation` and resolved against a PEP 8 chunk — a citation that
+      looked precise and was not.
+    - `multipage-docs` compares `path` as well as `anchor`. It used to share its clause
+      with `web-fragment`, so two different pages sharing a fragment id resolved to each
+      other.
+
+    The storage exists; no current backend fills it. `chunker._locator_for` only ever
+    emits `numbered-section`, `web-fragment`, `book-page` and `named-section`, so
+    `doc_kind`/`doc_number`/`path` are NULL on every chunk in the corpus, and `column = %s`
+    is false against NULL. Both kinds therefore resolve to NOTHING against today's corpus.
+    That is the correct outcome, not a regression: a citation naming a document the index
+    cannot prove a chunk belongs to must fail to resolve (the claim then parks in the
+    sourcing queue, visibly) rather than attach a fact to an unrelated passage. The
+    comparison itself is pinned by tests that hand-build a chunk with the columns
+    populated, so it is genuinely correct and not merely always-empty."""
 
     def __init__(self, conn):
         self.conn = conn
@@ -91,22 +116,30 @@ class PostgresSourceChunksIndex:
             return ("(section_number = %s OR section_number LIKE %s"
                     " OR %s LIKE section_number || '.%%')",
                     (number, number + ".%", number))
-        if parsed.kind in ("named-section", "design-doc"):
+        if parsed.kind == "named-section":
+            return _heading_clause(parsed.heading)
+        if parsed.kind == "design-doc":
+            # The document's own identity, which this branch used to ignore entirely
+            # because it shared its clause with `named-section` and no column carried it.
+            # `doc_kind = %s` is false when the column is NULL — which is every chunk any
+            # current backend produces — so a design-doc citation now resolves to nothing
+            # rather than to whatever chunk happened to share a heading. Deliberately not
+            # `doc_kind IS NULL OR doc_kind = %s`: that is the gap, written out.
+            identity = "doc_kind = %s AND doc_number = %s"
+            params = (parsed.doc_kind, parsed.doc_number)
             if parsed.heading is None:
-                return ("TRUE", ())      # a whole-document citation
-            # `regexp_replace(..., '\s+', ' ', 'g')` mirrors `locators.canonical_text`'s
-            # whitespace collapse, which `parsed.heading` has already had applied to it.
-            # Belt and braces: extraction now canonicalizes heading text before it ever
-            # becomes a `section_path` entry, but 975 of the real corpus's 1263 chunks
-            # were ingested before that fix and still carry runs like
-            # "11.8 Partial   failure". Without the collapse here, *neither* spelling of
-            # the citation resolved against them — a false negative in the join the D24
-            # verifier trusts, which makes a true fact look unverifiable.
-            return ("EXISTS (SELECT 1 FROM unnest(section_path) part"
-                    r" WHERE lower(btrim(regexp_replace(part, '\s+', ' ', 'g'))) = %s)",
-                    (parsed.heading,))
-        if parsed.kind in ("web-fragment", "multipage-docs"):
+                # A whole-document citation is backed by any section *of that document* —
+                # `TRUE` before, which resolved `PEP 484` to every chunk of a PEP 8 source.
+                return (identity, params)
+            clause, heading_params = _heading_clause(parsed.heading)
+            return (f"{identity} AND {clause}", params + heading_params)
+        if parsed.kind == "web-fragment":
             return ("anchor = %s", (parsed.anchor,))
+        if parsed.kind == "multipage-docs":
+            # Same fix, same reason: `anchor = %s` alone matched any chunk sharing the
+            # fragment id whatever page it sat on. `path` is NULL on every current chunk,
+            # so these citations resolve to nothing until a backend populates it.
+            return ("path = %s AND anchor = %s", (parsed.path, parsed.anchor))
         if parsed.kind == "repo-file":
             start, end = parsed.lines
             return ("anchor = %s AND line_start IS NOT NULL AND line_start <= %s"

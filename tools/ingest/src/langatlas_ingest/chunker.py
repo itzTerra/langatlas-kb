@@ -56,6 +56,18 @@ class Chunk:
     anchor: str | None = None
     line_start: int | None = None
     line_end: int | None = None
+    # The cited document's own identity, for the two locator kinds that carry one:
+    # `design-doc` ("RFC 2119", "PEP 8") and `multipage-docs` (`path#anchor`). No backend
+    # produces those kinds yet — `_locator_for` only ever emits numbered-section,
+    # web-fragment, book-page and named-section — so these stay None on every chunk this
+    # chunker builds. They exist because `index.PostgresSourceChunksIndex` must be able to
+    # *compare* them: without the columns, those two kinds shared a SQL branch with
+    # named-section/web-fragment and resolved on heading or anchor alone, so a citation to
+    # one document matched a chunk of a different one. `doc_kind` is the canonical
+    # lowercase form `locators.parse_locator` produces, so both sides of the join agree.
+    doc_kind: str | None = None
+    doc_number: int | None = None
+    path: str | None = None
 
 
 @dataclass
