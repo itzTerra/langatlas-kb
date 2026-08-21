@@ -3,15 +3,28 @@ import subprocess
 import pytest
 
 
-def pytest_collection_modifyitems(items):
-    """Apply git_identity_bypass fixture only to test_find_record_key_in_history.
+_TESTS_NEEDING_GIT_IDENTITY_BYPASS = {
+    "test_find_record_key_in_history",
+    "test_land_record_happy_path",
+    "test_land_record_idempotent_resume",
+    "test_land_record_retries_through_concurrent_push",
+    "test_land_record_reports_contention_exhausted_when_validator_never_passes",
+}
 
-    This scopes the subprocess.run monkeypatch to a single test, so production code
-    in future tasks (Task 3's land loop, Task 5's auto-revert) is not affected.
+
+def pytest_collection_modifyitems(items):
+    """Apply git_identity_bypass fixture only to the named tests below.
+
+    This scopes the subprocess.run monkeypatch to specific tests that need to create
+    git commits in throwaway repos under this machine's personal pre-commit hook, so
+    production code (the land loop in land.py, Task 5's auto-revert) is not affected.
     """
     for item in items:
-        if item.name == "test_find_record_key_in_history":
-            item.fixturenames.append("git_identity_bypass")
+        if item.name in _TESTS_NEEDING_GIT_IDENTITY_BYPASS:
+            # Insert at the front so this fixture (which monkeypatches subprocess.run)
+            # is set up before any other fixture (e.g. bare_and_clone) that shells out
+            # to git during its own setup.
+            item.fixturenames.insert(0, "git_identity_bypass")
 
 
 @pytest.fixture
