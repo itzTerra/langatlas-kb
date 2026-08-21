@@ -6,7 +6,7 @@ repos:
     hooks:
       - id: langatlas-validate
         name: langatlas-validate precommit-auto
-        entry: uv --directory tools/validate run langatlas-validate precommit-auto
+        entry: uv run --project tools/validate langatlas-validate precommit-auto
         language: system
         files: ^(concepts|features|languages|edges|rules|sources)/.*\.yaml$
         exclude: ^(languages/_registry\.yaml|sources/_tombstones\.yaml)$
