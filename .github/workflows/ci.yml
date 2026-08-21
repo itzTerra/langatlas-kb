@@ -53,12 +53,14 @@ jobs:
         run: |
           if git rev-parse "${{ steps.tag.outputs.tag }}" >/dev/null 2>&1; then
             echo "tag already exists, skipping (no changes today or already published)"
+            echo "cut=false" >> "$GITHUB_OUTPUT"
           else
             git tag "${{ steps.tag.outputs.tag }}"
             git push origin "${{ steps.tag.outputs.tag }}"
+            echo "cut=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Publish data-vN release asset
-        if: steps.cut_tag.outcome == 'success'
+        if: steps.cut_tag.outputs.cut == 'true'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
