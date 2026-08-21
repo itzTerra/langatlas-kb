@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Install packages
+        run: |
+          uv --directory tools/validate sync
+          uv --directory tools/pipeline sync
+          uv --directory tools/ingest sync
+      - name: Run the store-validating gate
+        run: uv --directory tools/validate run langatlas-validate ci
+
+  publish:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+      - name: Install packages
+        run: uv --directory tools/validate sync
+      - name: Compile the dataset bundle
+        run: uv --directory tools/validate run langatlas-publish --out dataset.json
+      - name: Compute today's data-vN tag
+        id: tag
+        run: |
+          TAG=$(uv --directory tools/validate run python -c \
+            "from langatlas_validate.publish_cli import data_vn_tag_for_today; print(data_vn_tag_for_today())")
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+      - name: Move the latest-green rolling tag
+        run: |
+          git tag -f latest-green
+          git push -f origin latest-green
+      - name: Publish latest-green release asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: latest-green
+          files: dataset.json
+          make_latest: false
+      - name: Cut today's data-vN tag if it doesn't already exist (daily, changes-only)
+        run: |
+          if git rev-parse "${{ steps.tag.outputs.tag }}" >/dev/null 2>&1; then
+            echo "tag already exists, skipping (no changes today or already published)"
+          else
+            git tag "${{ steps.tag.outputs.tag }}"
+            git push origin "${{ steps.tag.outputs.tag }}"
+          fi
+      - name: Publish data-vN release asset
+        if: steps.tag.outcome == 'success'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          files: dataset.json
+          make_latest: false
+      - name: Dispatch to langatlas-site (best-effort; site has nothing to consume yet)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.LANGATLAS_SITE_DISPATCH_TOKEN }}
+        run: |
+          gh api repos/langatlas/langatlas-site/dispatches \
+            -f event_type=kb-updated \
+            -f client_payload[tag]="${{ steps.tag.outputs.tag }}" \
+            -f client_payload[sha]="${{ github.sha }}"

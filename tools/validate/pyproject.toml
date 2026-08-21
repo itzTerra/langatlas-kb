@@ -8,6 +8,7 @@ dependencies = ["ruamel.yaml>=0.18", "jsonschema>=4.21"]
 
 [project.scripts]
 langatlas-validate = "langatlas_validate.cli:main"
+langatlas-publish = "langatlas_validate.publish_cli:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
