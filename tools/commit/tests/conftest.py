@@ -16,8 +16,14 @@ def pytest_collection_modifyitems(items):
     """Apply git_identity_bypass fixture only to the named tests below.
 
     This scopes the subprocess.run monkeypatch to specific tests that need to create
-    git commits in throwaway repos under this machine's personal pre-commit hook, so
-    production code (the land loop in land.py, Task 5's auto-revert) is not affected.
+    git commits in throwaway repos under this machine's personal pre-commit hook. Note
+    that the monkeypatch is active for the *entire duration* of each named test, not
+    just fixture setup: any git subprocess call made by any code running during those
+    tests gets the identity/--no-verify injection, including production code under
+    test (e.g. land_record()'s own internal `git commit` call in the test_land.py
+    tests). No current test assertion depends on real hook-rejection behavior, so this
+    is a known, accepted local-dev-environment limitation rather than a live bug — but
+    it is not scoped away from production code, only scoped to these specific tests.
     """
     for item in items:
         if item.name in _TESTS_NEEDING_GIT_IDENTITY_BYPASS:
@@ -29,16 +35,21 @@ def pytest_collection_modifyitems(items):
 
 @pytest.fixture
 def git_identity_bypass(monkeypatch):
-    """Bypass git pre-commit hook identity verification for test setup only.
+    """Bypass git pre-commit hook identity verification, for the duration of one test.
 
     This machine has a personal global pre-commit hook (/home/terra/.git-hooks-global/pre-commit)
     that rejects commits from subprocess calls when the committer identity doesn't match the
-    configured user identity and there's no TTY available to confirm. This fixture is scoped
-    to only test_find_record_key_in_history (via pytest_collection_modifyitems) and temporarily
-    wraps subprocess.run to inject git config options for test identity and --no-verify on commits.
+    configured user identity and there's no TTY available to confirm. This fixture is applied
+    only to the specific tests named in _TESTS_NEEDING_GIT_IDENTITY_BYPASS above (via
+    pytest_collection_modifyitems), not autouse and not directory-wide. It temporarily wraps
+    subprocess.run to inject git config options for test identity and --no-verify on commits.
 
-    This workaround is specific to this development environment's git hook configuration and
-    should not affect production code or other tests.
+    Because the monkeypatch stays active for the whole test, not just its own setup, it also
+    covers any git subprocess call made by other fixtures or by production code exercised
+    during that test (e.g. land_record()'s own internal `git commit` call in test_land.py).
+    This workaround is specific to this development environment's git hook configuration;
+    other tests and other environments are unaffected, but within an affected test it is not
+    scoped away from the production code under test.
     """
     original_run = subprocess.run
 
