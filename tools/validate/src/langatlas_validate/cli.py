@@ -62,7 +62,15 @@ def cmd_ci() -> int:
     store_errors = validate_store(_REPO_ROOT)
     for e in store_errors:
         print(f"STORE {e}")
-    return rc or (1 if store_errors else 0)
+
+    from langatlas_validate.store import iter_store_records
+    from langatlas_validate.compile import derive_facts, check_fact_collisions
+    facts = derive_facts(list(iter_store_records(_REPO_ROOT)))
+    collision_errors = check_fact_collisions(facts)
+    for e in collision_errors:
+        print(f"COLLISION {e}")
+
+    return rc or (1 if store_errors or collision_errors else 0)
 
 
 def cmd_regression_run() -> int:
