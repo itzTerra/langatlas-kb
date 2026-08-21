@@ -83,3 +83,19 @@ def test_land_record_reports_contention_exhausted_when_validator_never_passes(ba
                          chat_run_id="run-1#msg-1", validator=_always_fail,
                          retries=1, timeout_seconds=5)
     assert isinstance(result, ContentionExhausted)
+
+
+def test_land_record_blocks_on_red_status(bare_and_clone):
+    bare, clone = bare_and_clone
+
+    def _red_status(repo_root, sha):
+        return "red"
+
+    result = land_record(clone, "features/pattern-matching.yaml", "feature: pattern-matching\n",
+                         chat_run_id="run-1#msg-1", validator=_always_pass_validator,
+                         status_checker=_red_status)
+    from langatlas_commit.land import BlockedRedMain
+    assert isinstance(result, BlockedRedMain)
+    log = _git(["log", "-1", "--format=%H", "origin/main"], clone)
+    # nothing was pushed — origin/main is still just the seed commit
+    assert "seed" in _git(["log", "-1", "--format=%s", "origin/main"], clone).stdout
