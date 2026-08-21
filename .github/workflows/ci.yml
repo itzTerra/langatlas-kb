@@ -49,6 +49,7 @@ jobs:
           files: dataset.json
           make_latest: false
       - name: Cut today's data-vN tag if it doesn't already exist (daily, changes-only)
+        id: cut_tag
         run: |
           if git rev-parse "${{ steps.tag.outputs.tag }}" >/dev/null 2>&1; then
             echo "tag already exists, skipping (no changes today or already published)"
@@ -57,7 +58,7 @@ jobs:
             git push origin "${{ steps.tag.outputs.tag }}"
           fi
       - name: Publish data-vN release asset
-        if: steps.tag.outcome == 'success'
+        if: steps.cut_tag.outcome == 'success'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.tag.outputs.tag }}
