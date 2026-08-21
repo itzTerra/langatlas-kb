@@ -51,7 +51,7 @@ jobs:
       - name: Cut today's data-vN tag if it doesn't already exist (daily, changes-only)
         id: cut_tag
         run: |
-          if git rev-parse "${{ steps.tag.outputs.tag }}" >/dev/null 2>&1; then
+          if git ls-remote --exit-code --tags origin "${{ steps.tag.outputs.tag }}" >/dev/null 2>&1; then
             echo "tag already exists, skipping (no changes today or already published)"
             echo "cut=false" >> "$GITHUB_OUTPUT"
           else

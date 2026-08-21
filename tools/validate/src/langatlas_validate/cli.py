@@ -103,13 +103,16 @@ def cmd_ci_with_index(repo_root, index: SourceChunksIndex | None) -> tuple[int, 
     unresolved-but-well-shaped locator is a sourcing-queue matter (D37), not a
     CI failure — the corpus not containing a source yet is an expected state."""
     errors = validate_store(repo_root)
-    if index is not None:
-        from langatlas_validate.store import iter_store_records
-        for path, _kind, _text, data in iter_store_records(repo_root):
-            for entry in _iter_source_entries(data):
-                result = validate_locator(entry["locator"], entry["source"], index)
-                if not result.shape_ok:
-                    errors.append(f"{path}: locator: unrecognized shape: {entry['locator']!r}")
+    from langatlas_validate.store import iter_store_records
+    for path, _kind, _text, data in iter_store_records(repo_root):
+        for entry in _iter_source_entries(data):
+            if validate_locator_shape(entry["locator"]) is None:
+                errors.append(f"{path}: locator: unrecognized shape: {entry['locator']!r}")
+            elif index is not None:
+                # Shape already confirmed above; only the deeper resolution-through-index
+                # step depends on `index` being available (D37 — unresolved-but-well-shaped
+                # is a sourcing-queue matter, never a CI failure).
+                validate_locator(entry["locator"], entry["source"], index)
     return (1 if errors else 0), errors
 
 
