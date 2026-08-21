@@ -88,3 +88,9 @@ class ProviderConfig:
 
     def completion_settings(self) -> dict[str, Any]:
         return dict(self.providers.get("completion") or {})
+
+    def github_app(self) -> dict[str, str]:
+        entry = self.providers.get("github_app")
+        if entry is None:
+            raise UnknownAlias("no github_app section in config/providers.yaml")
+        return dict(entry)

@@ -399,6 +399,7 @@ dependencies = [
     { name = "httpx" },
     { name = "openai" },
     { name = "pydantic" },
+    { name = "pyjwt", extra = ["crypto"] },
     { name = "ruamel-yaml" },
 ]
 
@@ -413,6 +414,7 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.27" },
     { name = "openai", specifier = ">=2.0" },
     { name = "pydantic", specifier = ">=2.7" },
+    { name = "pyjwt", extras = ["crypto"], specifier = ">=2.8" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "ruamel-yaml", specifier = ">=0.18" },
 ]

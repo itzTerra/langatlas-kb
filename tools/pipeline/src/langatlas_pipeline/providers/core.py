@@ -63,6 +63,7 @@ class RunContext:
         self._claude = None
         self._embedding = None
         self._rerank = None
+        self._github_app = None
 
     @classmethod
     def start(cls, *, kind: str, slug: str, budget: Budget | None = None,
@@ -163,6 +164,23 @@ class RunContext:
         if self._claude is None:
             self._claude = ClaudeRunner(self)
         return self._claude.run(prompt, options=options)
+
+    def github_token(self) -> str:
+        """D36 §2.2: token refresh is owned by RunContext, never logged. The token
+        itself never enters the transcript writer or the cost log."""
+        from langatlas_pipeline.providers.github_app import GithubAppClient
+        import os
+
+        if self._github_app is None:
+            settings = self.config.github_app()
+            key_path = os.environ[settings["private_key_env"]]
+            with open(key_path, "rb") as fh:
+                private_key_pem = fh.read()
+            self._github_app = GithubAppClient(
+                app_id=settings["app_id"], installation_id=settings["installation_id"],
+                private_key_pem=private_key_pem,
+            )
+        return self._github_app.installation_token()
 
     # ---- lifecycle --------------------------------------------------------------
 

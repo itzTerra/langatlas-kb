@@ -17,6 +17,11 @@ rerank:
 transcripts:
   publish: false                      # dev default; set true (or LANGATLAS_PUBLISH_TRANSCRIPTS=1) for pipeline runs
   push: true                          # publish commits locally either way; false keeps the run off the network
+github_app:
+  app_id_env: LANGATLAS_GITHUB_APP_ID
+  app_id: ""                          # set once the App is registered (Stage 0 follow-up)
+  installation_id: ""
+  private_key_env: LANGATLAS_GITHUB_APP_PRIVATE_KEY_PATH   # path to the .pem, never the key itself
 budget_defaults:
   max_calls: 500
   max_total_tokens: 2000000
