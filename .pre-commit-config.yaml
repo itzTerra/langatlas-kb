@@ -1,0 +1,12 @@
+# Runs the same fast offline validator the agent runner uses before every commit
+# (brainstorm 10 §"Direct agent commits × CI failure") — installed as a plain
+# pre-commit hook so the developer's manual edits get the same gate.
+repos:
+  - repo: local
+    hooks:
+      - id: langatlas-validate
+        name: langatlas-validate precommit-auto
+        entry: uv --directory tools/validate run langatlas-validate precommit-auto
+        language: system
+        files: ^(concepts|features|languages|edges|rules|sources)/.*\.yaml$
+        exclude: ^(languages/_registry\.yaml|sources/_tombstones\.yaml)$

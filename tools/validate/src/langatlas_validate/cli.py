@@ -44,6 +44,46 @@ def cmd_precommit(files: list[str], kind: str) -> int:
     return rc
 
 
+def infer_kind_from_path(path: Path) -> str | None:
+    parts = path.parts
+    if not parts:
+        return None
+    if parts[0] == "concepts":
+        return "concept"
+    if parts[0] == "features":
+        return "feature"
+    if parts[0] == "languages":
+        if path.name == "_registry.yaml":
+            return "language-registry"
+        if path.name == "language.yaml":
+            return "language"
+        if "instances" in parts:
+            return "feature-instance"
+        return None
+    if parts[0] == "edges":
+        return "edge"   # refined by content-sniff below when the file is read
+    if parts[0] == "rules":
+        return "rule"
+    if parts[0] == "sources" and path.name not in ("_tombstones.yaml",):
+        return "source"
+    return None
+
+
+def cmd_precommit_auto(files: list[str]) -> int:
+    rc = 0
+    for f in files:
+        path = Path(f)
+        kind = infer_kind_from_path(path)
+        if kind is None:
+            continue   # not a validated-record path (docs, config, etc.) — nothing to check
+        if kind == "edge":
+            data = _yaml.load(path.read_text())
+            if data.get("type") == "affects-quality":
+                kind = "affects-quality-edge"
+        rc = cmd_precommit([f], kind) or rc
+    return rc
+
+
 def _print_report(report, *, verbose: bool) -> int:
     for failure in report.failures:
         print(f"FAIL {failure}")
@@ -122,6 +162,9 @@ def main(argv: list[str] | None = None) -> int:
     p_pre.add_argument("--kind", required=True, choices=RECORD_KINDS)
     p_pre.add_argument("files", nargs="+")
 
+    p_pre_auto = sub.add_parser("precommit-auto")
+    p_pre_auto.add_argument("files", nargs="+")
+
     sub.add_parser("ci")
 
     p_reg = sub.add_parser("regression")
@@ -130,6 +173,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "precommit":
         return cmd_precommit(args.files, args.kind)
+    if args.command == "precommit-auto":
+        return cmd_precommit_auto(args.files)
     if args.command == "ci":
         return cmd_ci()
     if args.command == "regression":
