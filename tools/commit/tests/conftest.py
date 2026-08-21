@@ -10,6 +10,7 @@ _TESTS_NEEDING_GIT_IDENTITY_BYPASS = {
     "test_land_record_retries_through_concurrent_push",
     "test_land_record_reports_contention_exhausted_when_validator_never_passes",
     "test_land_record_blocks_on_red_status",
+    "test_auto_revert_pushes_a_clean_revert",
 }
 
 
