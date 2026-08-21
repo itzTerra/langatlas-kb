@@ -6,7 +6,7 @@ from langatlas_validate import __version__
 from langatlas_validate.schema import validate_record, RECORD_KINDS
 from langatlas_validate.normalize import normalize_record
 from langatlas_validate.regression import run_regression
-from langatlas_validate.locators import validate_locator_shape
+from langatlas_validate.locators import validate_locator_shape, validate_locator, SourceChunksIndex
 from langatlas_validate.paths import REPO_ROOT as _REPO_ROOT, FIXTURES_DIR as _FIXTURES
 from langatlas_validate.store import validate_store
 
@@ -57,20 +57,56 @@ def _print_report(report, *, verbose: bool) -> int:
     return 1 if report.failures else 0
 
 
+def cmd_ci_with_index(repo_root, index: SourceChunksIndex | None) -> tuple[int, list[str]]:
+    """The store-validation pass, optionally resolving locators through `index`
+    (1C's SourceChunksIndex). Only a malformed locator *shape* fails CI; an
+    unresolved-but-well-shaped locator is a sourcing-queue matter (D37), not a
+    CI failure — the corpus not containing a source yet is an expected state."""
+    errors = validate_store(repo_root)
+    if index is not None:
+        from langatlas_validate.store import iter_store_records
+        for path, _kind, _text, data in iter_store_records(repo_root):
+            for entry in _iter_source_entries(data):
+                result = validate_locator(entry["locator"], entry["source"], index)
+                if not result.shape_ok:
+                    errors.append(f"{path}: locator: unrecognized shape: {entry['locator']!r}")
+    return (1 if errors else 0), errors
+
+
+def _postgres_index():
+    """Soft-imports 1C's ingest package and connects; returns None (never raises) if
+    either the package or a live Postgres isn't available — CI degrades to
+    phase-1-only locator-shape checking in that case, matching precommit's own
+    no-auto-upgrade posture (D48)."""
+    try:
+        from langatlas_ingest.db import connect
+        from langatlas_ingest.index import PostgresSourceChunksIndex
+    except ImportError:
+        return None
+    try:
+        conn = connect()
+        return PostgresSourceChunksIndex(conn)
+    except Exception:
+        return None
+
+
 def cmd_ci() -> int:
     rc = _print_report(run_regression(_FIXTURES), verbose=True)
-    store_errors = validate_store(_REPO_ROOT)
+
+    from langatlas_validate.compile import derive_facts, check_fact_collisions
+    from langatlas_validate.store import iter_store_records
+
+    index = _postgres_index()
+    store_rc, store_errors = cmd_ci_with_index(_REPO_ROOT, index)
     for e in store_errors:
         print(f"STORE {e}")
 
-    from langatlas_validate.store import iter_store_records
-    from langatlas_validate.compile import derive_facts, check_fact_collisions
     facts = derive_facts(list(iter_store_records(_REPO_ROOT)))
     collision_errors = check_fact_collisions(facts)
     for e in collision_errors:
         print(f"COLLISION {e}")
 
-    return rc or (1 if store_errors or collision_errors else 0)
+    return rc or store_rc or (1 if collision_errors else 0)
 
 
 def cmd_regression_run() -> int:
