@@ -8,6 +8,7 @@ from langatlas_validate.normalize import normalize_record
 from langatlas_validate.regression import run_regression
 from langatlas_validate.locators import validate_locator_shape
 from langatlas_validate.paths import REPO_ROOT as _REPO_ROOT, FIXTURES_DIR as _FIXTURES
+from langatlas_validate.store import validate_store
 
 _yaml = YAML(typ="safe")
 
@@ -57,7 +58,11 @@ def _print_report(report, *, verbose: bool) -> int:
 
 
 def cmd_ci() -> int:
-    return _print_report(run_regression(_FIXTURES), verbose=True)
+    rc = _print_report(run_regression(_FIXTURES), verbose=True)
+    store_errors = validate_store(_REPO_ROOT)
+    for e in store_errors:
+        print(f"STORE {e}")
+    return rc or (1 if store_errors else 0)
 
 
 def cmd_regression_run() -> int:
