@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from langatlas_pipeline.config import ProviderConfig
 from langatlas_pipeline.observability.report import (
-    main, report_capabilities, report_cost,
+    main, report_capabilities, report_cost, report_orchestrator_status,
 )
 
 
@@ -106,3 +106,23 @@ def test_cli_accepts_out_after_the_subcommand(capsys, tmp_path: Path):
     assert code == 0
     assert capsys.readouterr().out == ""
     assert "| alias |" in out_path.read_text().lower()
+
+
+def test_report_orchestrator_status_no_file_yet(tmp_path):
+    markdown = report_orchestrator_status(tmp_path / "status.json")
+    assert "no jobs have run yet" in markdown.lower()
+
+
+def test_report_orchestrator_status_renders_paused_and_done_rows(tmp_path):
+    path = tmp_path / "status.json"
+    path.write_text(json.dumps({
+        "monthly-capability-probe": {"state": "done", "reason": None,
+                                     "paused_until": None, "items_remaining": 0},
+        "r0-exit-test": {"state": "paused", "reason": "claude_limit",
+                         "paused_until": 9999999999.0, "items_remaining": 1},
+    }))
+    markdown = report_orchestrator_status(path)
+    assert "monthly-capability-probe" in markdown
+    assert "done" in markdown
+    assert "r0-exit-test" in markdown
+    assert "claude_limit" in markdown

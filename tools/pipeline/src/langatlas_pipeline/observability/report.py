@@ -9,10 +9,16 @@ from pathlib import Path
 from ruamel.yaml import YAML
 from langatlas_pipeline.config import ProviderConfig
 from langatlas_pipeline.costlog import read_cost_rows
-from langatlas_pipeline.paths import COST_LOG_PATH, TRANSCRIPTS_ROOT
+from langatlas_pipeline.paths import COST_LOG_PATH, PRIVATE_DIR, TRANSCRIPTS_ROOT
 
 _yaml = YAML(typ="safe")
 _STALE_AFTER_DAYS = 35          # the probe cadence is monthly (D41)
+
+# Mirrors langatlas_orchestrator.status.STATUS_PATH's own PRIVATE_DIR-derived path exactly —
+# report.py deliberately does not import langatlas_orchestrator (tools/orchestrator depends on
+# tools/pipeline, never the reverse), so this is a second, independent computation of the same
+# path from the one constant both packages already share.
+_ORCHESTRATOR_STATUS_PATH = PRIVATE_DIR / "orchestrator" / "status.json"
 
 
 def _accepted_facts_by_run(transcripts_root: Path) -> dict[str, int]:
@@ -86,6 +92,24 @@ def report_capabilities(config: ProviderConfig | None = None) -> str:
     return "\n".join(lines) + "\n"
 
 
+def report_orchestrator_status(path: Path | None = None) -> str:
+    import json
+
+    path = path or _ORCHESTRATOR_STATUS_PATH
+    if not path.exists():
+        return "# Orchestrator status\n\nNo jobs have run yet.\n"
+    status = json.loads(path.read_text())
+    lines = ["# Orchestrator status", "",
+             "| job kind | state | reason | paused until | items remaining |",
+             "|---|---|---|---|---:|"]
+    for kind, entry in sorted(status.items()):
+        paused_until = entry.get("paused_until")
+        lines.append(f"| {kind} | {entry.get('state')} | {entry.get('reason') or '—'} | "
+                     f"{paused_until if paused_until is not None else '—'} | "
+                     f"{entry.get('items_remaining') if entry.get('items_remaining') is not None else '—'} |")
+    return "\n".join(lines) + "\n"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="langatlas-report")
     out_help = "write to a (gitignored) file instead of stdout"
@@ -99,9 +123,14 @@ def main(argv: list[str] | None = None) -> int:
     p_caps = sub.add_parser("capabilities")
     p_caps.add_argument("--out", type=Path, default=None, help=out_help)
 
+    p_orch = sub.add_parser("orchestrator-status")
+    p_orch.add_argument("--out", type=Path, default=None, help=out_help)
+
     args = parser.parse_args(argv)
     if args.command == "cost":
         markdown = report_cost(args.cost_log, args.transcripts)
+    elif args.command == "orchestrator-status":
+        markdown = report_orchestrator_status()
     else:
         markdown = report_capabilities()
     if args.out:
