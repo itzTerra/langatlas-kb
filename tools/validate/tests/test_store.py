@@ -66,3 +66,33 @@ def test_validate_store_flags_schema_violation(store):
                         "provenance:\n  claim_origin: source-derived\n")   # missing absence_scope
     errors = validate_store(store)
     assert any("invalid.yaml" in e for e in errors)
+
+
+def _source_yaml(*, canonical: bool | None, note: str | None) -> str:
+    custom_lines = ["  tier: B", "  grounding: third-party-reference"]
+    if canonical is not None:
+        custom_lines.append(f"  canonical_source: {str(canonical).lower()}")
+    if note is not None:
+        custom_lines.append(f"  acquisition_note: {note}")
+    raw = ("id: test-source-2026\ntype: book\ntitle: Test Source\ncustom:\n"
+          + "\n".join(custom_lines) + "\n")
+    return normalize_record(raw, "source")
+
+
+def test_validate_store_flags_missing_acquisition_note_on_noncanonical_source(store):
+    path = store / "sources" / "mirror-2026.yaml"
+    path.write_text(_source_yaml(canonical=False, note=None))
+    errors = validate_store(store)
+    assert any("acquisition_note" in e for e in errors)
+
+
+def test_validate_store_allows_canonical_source_without_a_note(store):
+    path = store / "sources" / "official-2026.yaml"
+    path.write_text(_source_yaml(canonical=True, note=None))
+    assert validate_store(store) == []
+
+
+def test_validate_store_allows_noncanonical_source_with_a_note(store):
+    path = store / "sources" / "mirror-2026.yaml"
+    path.write_text(_source_yaml(canonical=False, note="mirrored from libgen; original OOP"))
+    assert validate_store(store) == []

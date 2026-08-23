@@ -101,5 +101,9 @@ def validate_store(repo_root: Path) -> list[str]:
             if isinstance(when_all, list) and all(isinstance(x, str) for x in when_all):
                 if when_all != canonical_when_all(when_all):
                     errors.append(f"{rel}: when_all not canonically (lexicographically) ordered")
+        if kind == "source":
+            custom = data.get("custom") if isinstance(data.get("custom"), dict) else {}
+            if not custom.get("canonical_source") and not custom.get("acquisition_note"):
+                errors.append(f"{rel}: custom.acquisition_note required for a non-canonical source")
 
     return errors
