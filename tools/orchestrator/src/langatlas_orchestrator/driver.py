@@ -39,11 +39,16 @@ def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None) ->
                  f"{remaining}s remaining; no-op")
             return EXIT_PAUSED
 
-    store = CheckpointStore(spec.checkpoint_path)
-    items = enumerator(spec.extra, repo_root)
-    ctx = RunContext.start(kind=spec.kind, slug=spec.kind, budget=spec.budget)
-
+    # store/ctx are constructed inside the try so a failure partway through setup
+    # (e.g. enumerator() or RunContext.start() raising) still closes whatever was
+    # already successfully opened, rather than leaking the SQLite connection.
+    store = None
+    ctx = None
     try:
+        store = CheckpointStore(spec.checkpoint_path)
+        items = enumerator(spec.extra, repo_root)
+        ctx = RunContext.start(kind=spec.kind, slug=spec.kind, budget=spec.budget)
+
         for index, item_key in enumerate(items):
             row = store.get(spec_kind=spec.kind, item_key=item_key)
             if row is not None and row.status == "done":
@@ -90,8 +95,10 @@ def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None) ->
                     path=status_path)
         return EXIT_OK
     finally:
-        ctx.close()
-        store.close()
+        if ctx is not None:
+            ctx.close()
+        if store is not None:
+            store.close()
 
 
 def main(argv: list[str] | None = None) -> int:
