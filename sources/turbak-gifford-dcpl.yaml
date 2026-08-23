@@ -1,0 +1,15 @@
+id: turbak-gifford-dcpl
+type: book
+title: Design Concepts in Programming Languages
+author:
+  - family: Turbak
+    given: Franklyn
+  - family: Gifford
+    given: David
+  - family: Sheldon
+    given: Mark A.
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: acquired via university library access

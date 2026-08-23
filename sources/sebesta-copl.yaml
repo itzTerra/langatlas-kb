@@ -1,0 +1,12 @@
+id: sebesta-copl
+type: book
+title: Concepts of Programming Languages
+author:
+  - family: Sebesta
+    given: Robert W.
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: acquired via university library access
+  edition: 12th

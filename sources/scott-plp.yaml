@@ -1,0 +1,12 @@
+id: scott-plp
+type: book
+title: Programming Language Pragmatics
+author:
+  - family: Scott
+    given: Michael L.
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: acquired via university library access
+  edition: 3rd
