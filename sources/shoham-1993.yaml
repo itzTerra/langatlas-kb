@@ -1,0 +1,15 @@
+id: shoham-1993
+type: article-journal
+title: Agent-oriented programming
+author:
+  - family: Shoham
+    given: Yoav
+issued:
+  date-parts:
+    -   - 1993
+DOI: 10.1016/0004-3702(93)90034-9
+custom:
+  tier: A
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; Elsevier ScienceDirect is canonical

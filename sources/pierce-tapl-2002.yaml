@@ -1,0 +1,14 @@
+id: pierce-tapl-2002
+type: book
+title: Types and Programming Languages
+author:
+  - family: Pierce
+    given: Benjamin C.
+issued:
+  date-parts:
+    -   - 2002
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; MIT Press is the canonical publisher

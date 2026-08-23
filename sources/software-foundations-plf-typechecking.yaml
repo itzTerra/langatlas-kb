@@ -1,0 +1,10 @@
+id: software-foundations-plf-typechecking
+type: webpage
+title: 'Software Foundations, Vol. 2: Programming Language Foundations — A Typechecker for STLC'
+URL: https://softwarefoundations.cis.upenn.edu/plf-current/Typechecking.html
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: true
+  edition: current
+  edition_check_url: https://softwarefoundations.cis.upenn.edu/plf-current/Typechecking.html

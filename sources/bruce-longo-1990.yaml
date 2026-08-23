@@ -1,0 +1,17 @@
+id: bruce-longo-1990
+type: article-journal
+title: A Modest Model of Records, Inheritance, and Bounded Quantification
+author:
+  - family: Bruce
+    given: Kim B.
+  - family: Longo
+    given: Giuseppe
+issued:
+  date-parts:
+    -   - 1990
+DOI: 10.1016/0890-5401(90)90062-4
+custom:
+  tier: A
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; Elsevier ScienceDirect is canonical

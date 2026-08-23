@@ -1,0 +1,10 @@
+id: software-foundations-plf-stlc
+type: webpage
+title: 'Software Foundations, Vol. 2: Programming Language Foundations — The Simply Typed Lambda-Calculus'
+URL: https://softwarefoundations.cis.upenn.edu/plf-current/Stlc.html
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: true
+  edition: current
+  edition_check_url: https://softwarefoundations.cis.upenn.edu/plf-current/Stlc.html

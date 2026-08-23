@@ -1,0 +1,14 @@
+id: pierce-attapl-2004
+type: book
+title: Advanced Topics in Types and Programming Languages
+author:
+  - family: Pierce
+    given: Benjamin C.
+issued:
+  date-parts:
+    -   - 2004
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; MIT Press is the canonical publisher

@@ -1,0 +1,16 @@
+id: cardelli-wegner-1985
+type: article-journal
+title: On Understanding Types, Data Abstraction, and Polymorphism
+author:
+  - family: Cardelli
+    given: Luca
+  - family: Wegner
+    given: Peter
+issued:
+  date-parts:
+    -   - 1985
+custom:
+  tier: A
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; ACM Computing Surveys is canonical

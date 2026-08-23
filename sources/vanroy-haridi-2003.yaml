@@ -1,0 +1,16 @@
+id: vanroy-haridi-2003
+type: book
+title: Concepts, Techniques, and Models of Computer Programming
+author:
+  - family: Van Roy
+    given: Peter
+  - family: Haridi
+    given: Seif
+issued:
+  date-parts:
+    -   - 2003
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; MIT Press is the canonical publisher
