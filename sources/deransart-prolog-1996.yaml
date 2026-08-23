@@ -1,0 +1,17 @@
+id: deransart-prolog-1996
+type: book
+title: 'Prolog: The Standard Reference Manual'
+author:
+  - family: Deransart
+    given: Pierre
+  - family: Ed-Dbali
+    given: AbdelAli
+issued:
+  date-parts:
+    -   - 1996
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: false
+  acquisition_note: developer's personal library PDF; ISO/IEC 13211-1 purchase not needed per D28's 
+    phase-1 selection rationale
