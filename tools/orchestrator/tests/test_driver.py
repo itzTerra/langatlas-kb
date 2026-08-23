@@ -30,7 +30,9 @@ def test_run_happy_path_marks_every_item_done(tmp_path):
     register_job_kind("test-happy-path", _enumerate, _run_item)
     spec_path = _write_spec(tmp_path, "test-happy-path")
 
-    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_OK
     assert calls == ["item-1", "item-2"]
@@ -55,7 +57,9 @@ def test_run_skips_items_already_marked_done(tmp_path):
     CheckpointStore(tmp_path / "ck.sqlite").upsert(
         run_id="earlier-run", spec_kind="test-skip-done", item_key="item-1", status="done")
 
-    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_OK
     assert calls == ["item-2"]        # item-1 was never re-run
@@ -71,7 +75,9 @@ def test_run_pauses_on_budget_exceeded_and_checkpoints_blocked(tmp_path):
     register_job_kind("test-budget-pause", _enumerate, _run_item)
     spec_path = _write_spec(tmp_path, "test-budget-pause", "budget:\n  max_calls: 0\n")
 
-    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_PAUSED
     row = CheckpointStore(tmp_path / "ck.sqlite").get(spec_kind="test-budget-pause",
@@ -94,7 +100,9 @@ def test_run_pauses_on_claude_limit_and_sets_a_four_hour_cooldown(tmp_path):
     spec_path = _write_spec(tmp_path, "test-claude-limit-pause")
 
     before = time.time()
-    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_PAUSED
     status = read_status(tmp_path / "status.json")["test-claude-limit-pause"]
@@ -119,7 +127,9 @@ def test_run_no_ops_before_claude_limit_cooldown_elapses(tmp_path):
     write_status("test-claude-limit-cooldown", state="paused", reason="claude_limit",
                 paused_at=time.time(), paused_until=time.time() + 3600, path=status_path)
 
-    rc = run(spec_path, repo_root=tmp_path, status_path=status_path)
+    rc = run(spec_path, repo_root=tmp_path, status_path=status_path,
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_PAUSED
     assert call_count["n"] == 0        # the item runner was never invoked
@@ -138,12 +148,109 @@ def test_run_halts_and_stops_processing_further_items(tmp_path):
     register_job_kind("test-halt", _enumerate, _run_item)
     spec_path = _write_spec(tmp_path, "test-halt")
 
-    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_HALTED
     assert calls == ["item-1"]         # item-2 never attempted
     status = read_status(tmp_path / "status.json")["test-halt"]
     assert status["state"] == "halted"
+
+
+def test_run_pauses_when_an_item_reports_blocked(tmp_path):
+    """A `blocked` outcome (e.g. the exit-test job's red-main mapping, Finding 4) must
+    pause the run, not let it fall through to a clean `done` — an unfinished, explicitly
+    blocked item is not success."""
+    calls = []
+
+    def _enumerate(extra, repo_root):
+        return ["item-1", "item-2"]
+
+    def _run_item(ctx, item_key, extra, repo_root):
+        calls.append(item_key)
+        return ItemOutcome(status="blocked", detail="main is red")
+
+    register_job_kind("test-item-blocked", _enumerate, _run_item)
+    spec_path = _write_spec(tmp_path, "test-item-blocked")
+
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+            transcripts_root=tmp_path / "transcripts", private_dir=tmp_path / "private")
+
+    assert rc == EXIT_PAUSED
+    assert calls == ["item-1"]         # item-2 never attempted
+    row = CheckpointStore(tmp_path / "ck.sqlite").get(spec_kind="test-item-blocked",
+                                                      item_key="item-1")
+    assert row.status == "blocked"
+    status = read_status(tmp_path / "status.json")["test-item-blocked"]
+    assert status["state"] == "paused"
+    assert status["reason"] == "blocked"
+
+
+def test_run_pauses_when_an_item_reports_contention(tmp_path):
+    def _enumerate(extra, repo_root):
+        return ["item-1"]
+
+    def _run_item(ctx, item_key, extra, repo_root):
+        return ItemOutcome(status="contention", detail="retries exhausted")
+
+    register_job_kind("test-item-contention", _enumerate, _run_item)
+    spec_path = _write_spec(tmp_path, "test-item-contention")
+
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+            transcripts_root=tmp_path / "transcripts", private_dir=tmp_path / "private")
+
+    assert rc == EXIT_PAUSED
+    status = read_status(tmp_path / "status.json")["test-item-contention"]
+    assert status["state"] == "paused"
+    assert status["reason"] == "contention"
+
+
+def test_run_never_reattempts_a_halted_row(tmp_path):
+    """`halted` is terminal — a human must clear it via the filed issue; the driver must
+    not silently re-run it on the next invocation (Finding 4b)."""
+    calls = []
+
+    def _enumerate(extra, repo_root):
+        return ["item-1"]
+
+    def _run_item(ctx, item_key, extra, repo_root):
+        calls.append(item_key)
+        return ItemOutcome(status="done")
+
+    register_job_kind("test-skip-halted", _enumerate, _run_item)
+    spec_path = _write_spec(tmp_path, "test-skip-halted")
+    CheckpointStore(tmp_path / "ck.sqlite").upsert(
+        run_id="earlier-run", spec_kind="test-skip-halted", item_key="item-1",
+        status="halted", detail="needs a human")
+
+    rc = run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+            transcripts_root=tmp_path / "transcripts", private_dir=tmp_path / "private")
+
+    assert rc == EXIT_OK
+    assert calls == []                 # never re-attempted
+
+
+def test_run_writes_crashed_status_and_reraises_on_an_unexpected_exception(tmp_path):
+    """Finding 1: an item runner raising anything other than the two pause signals must
+    leave `status.json` showing `crashed`, not a stale prior-run `done` — and the
+    exception must still propagate so cron/shell sees a non-zero exit."""
+    def _enumerate(extra, repo_root):
+        return ["item-1"]
+
+    def _run_item(ctx, item_key, extra, repo_root):
+        raise RuntimeError("boom")
+
+    register_job_kind("test-crash", _enumerate, _run_item)
+    spec_path = _write_spec(tmp_path, "test-crash")
+
+    with pytest.raises(RuntimeError, match="boom"):
+        run(spec_path, repo_root=tmp_path, status_path=tmp_path / "status.json",
+           transcripts_root=tmp_path / "transcripts", private_dir=tmp_path / "private")
+
+    status = read_status(tmp_path / "status.json")["test-crash"]
+    assert status["state"] == "crashed"
+    assert "boom" in status["reason"]
 
 
 def _git(args, cwd):
@@ -184,7 +291,9 @@ def test_run_resolves_an_ambiguous_row_via_the_git_trailer(tmp_path):
     register_job_kind("test-resume-ambiguous", _enumerate, _run_item)
     spec_path = _write_spec(tmp_path, "test-resume-ambiguous")
 
-    rc = run(spec_path, repo_root=repo, status_path=tmp_path / "status.json")
+    rc = run(spec_path, repo_root=repo, status_path=tmp_path / "status.json",
+                transcripts_root=tmp_path / "transcripts",
+                private_dir=tmp_path / "private")
 
     assert rc == EXIT_OK
     assert calls == []                     # never re-attempted

@@ -1,5 +1,6 @@
 import pytest
 from langatlas_orchestrator.spec import load_batch_spec
+from langatlas_pipeline.paths import PRIVATE_DIR
 
 
 def _write(path, text):
@@ -11,8 +12,7 @@ def test_load_batch_spec_minimal(tmp_path):
     path = _write(tmp_path / "job.yaml", "kind: r0-exit-test\ncheckpoint_path: ck.sqlite\n")
     spec = load_batch_spec(path)
     assert spec.kind == "r0-exit-test"
-    assert spec.checkpoint_path == path.parent / "ck.sqlite" if False else True
-    assert str(spec.checkpoint_path) == "ck.sqlite"
+    assert spec.checkpoint_path == PRIVATE_DIR / "ck.sqlite"
     assert spec.budget.max_calls is None
     assert spec.extra == {}
 

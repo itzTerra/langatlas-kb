@@ -1795,19 +1795,19 @@ wait on.
       `syntax_check`, `grounding` fields — all pre-emptive, before the first node).
 - [x] `tools/validate/` (D48): normalizer, precommit/ci contracts,
       `validate_locator_shape`, regression-fixture runner.
-- [ ] Provider abstraction + `RunContext` (D26/D53): openai-SDK channel, Claude channel,
+- [x] Provider abstraction + `RunContext` (D26/D53): openai-SDK channel, Claude channel,
       cost log, cache, budget signals, data-not-instructions delimiting + lexical scan
       (D31).
-- [ ] Transcript logging (D18): wrapper persistence, normalizer, `langatlas-transcripts`
+- [x] Transcript logging (D18): wrapper persistence, normalizer, `langatlas-transcripts`
       repo (CC0 license file), gitleaks CI, `REDACTIONS.md` convention.
-- [ ] Prompt registry `prompts/` + `config/provider_capabilities.yaml` + first probe run
+- [x] Prompt registry `prompts/` + `config/provider_capabilities.yaml` + first probe run
       (D41).
 - [x] D15 ingestion CLI + `source_chunks` schema + extraction-QA harness (D37) +
       snapshot store layout.
 - [x] Claim-template registry `ontology/claim-templates/` (D47).
-- [ ] Agent-runner commit protocol (D36): GitHub App, trailers, land loop, is-main-green
+- [x] Agent-runner commit protocol (D36): GitHub App, trailers, land loop, is-main-green
       gate, failure bot.
-- [ ] CI: validated-artifact pipeline skeleton (D13) — validators, fact derivation,
+- [x] CI: validated-artifact pipeline skeleton (D13) — validators, fact derivation,
       collision check, last-green publication, `data-vN` tagging.
 - [x] Orchestrator `tools/orchestrator/driver.py` + `config/jobs/` +
       `crontab.example` (D43).

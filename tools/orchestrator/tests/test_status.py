@@ -1,6 +1,19 @@
 from langatlas_orchestrator.status import read_status, write_status
 
 
+def test_read_status_corrupted_file_returns_empty_dict(tmp_path):
+    path = tmp_path / "status.json"
+    path.write_text("{not valid json")
+    assert read_status(path) == {}
+
+
+def test_write_status_leaves_no_stray_tmp_file_behind(tmp_path):
+    path = tmp_path / "status.json"
+    write_status("kind-a", state="running", path=path)
+    assert path.exists()
+    assert not path.with_suffix(path.suffix + ".tmp").exists()
+
+
 def test_read_status_missing_file_returns_empty_dict(tmp_path):
     assert read_status(tmp_path / "nope" / "status.json") == {}
 

@@ -8,7 +8,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-from langatlas_commit.land import Landed, land_record
+from langatlas_commit.land import BlockedRedMain, ContentionExhausted, Landed, land_record
 from langatlas_commit.trailers import record_key
 from langatlas_ingest.tools import search_sources
 from langatlas_validate.normalize import normalize_record
@@ -83,6 +83,14 @@ def _run_item(ctx, item_key: str, extra: dict, repo_root: Path) -> ItemOutcome:
     if isinstance(result, Landed):
         return ItemOutcome(status="done", record_key=key,
                            detail=f"landed as {result.commit_sha}")
+    # `BlockedRedMain`/`ContentionExhausted` are transient, re-attemptable outcomes in
+    # `LandResult`'s own model (analogous to the driver's `blocked`/`contention`
+    # statuses) — only the remaining variants (`Reverted`, `UnsafeHalt`, and anything
+    # else unhandled) genuinely need a human, so those alone map to `halted`.
+    if isinstance(result, BlockedRedMain):
+        return ItemOutcome(status="blocked", detail=f"main is red: {result!r}")
+    if isinstance(result, ContentionExhausted):
+        return ItemOutcome(status="contention", detail=f"contention exhausted: {result!r}")
     return ItemOutcome(status="halted", detail=f"land_record did not land: {result!r}")
 
 

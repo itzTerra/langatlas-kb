@@ -1,3 +1,7 @@
+# Stage 1's exit gate, not a recurring production job: running this spec mints a
+# synthetic concepts/orchestrator-exit-test-probe.yaml record and commits/pushes it to
+# origin/main, where CI's validators and fact derivation would treat it as real corpus
+# data. Not meant for the production repo — deliberately absent from crontab.example.
 kind: r0-exit-test
 checkpoint_path: .private/orchestrator/r0-exit-test.sqlite
 budget:

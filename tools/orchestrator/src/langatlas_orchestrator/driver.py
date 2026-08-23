@@ -21,7 +21,8 @@ EXIT_HALTED = 1
 _CLAUDE_LIMIT_COOLDOWN_SECONDS = 4 * 60 * 60
 
 
-def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None) -> int:
+def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None,
+       transcripts_root: Path | None = None, private_dir: Path | None = None) -> int:
     """The one generic loop every job kind shares (D43 §2.1): enumerate → for each item,
     skip if already `done`, resolve ambiguous rows via the git trailer, otherwise call
     the job's item runner inside a `RunContext`-scoped run → checkpoint → decide
@@ -47,49 +48,62 @@ def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None) ->
     try:
         store = CheckpointStore(spec.checkpoint_path)
         items = enumerator(spec.extra, repo_root)
-        ctx = RunContext.start(kind=spec.kind, slug=spec.kind, budget=spec.budget)
+        write_status(spec.kind, state="running", reason=None, items_remaining=len(items),
+                    path=status_path)
+        ctx = RunContext.start(kind=spec.kind, slug=spec.kind, budget=spec.budget,
+                               transcripts_root=transcripts_root, private_dir=private_dir)
 
-        for index, item_key in enumerate(items):
-            row = store.get(spec_kind=spec.kind, item_key=item_key)
-            if row is not None and row.status == "done":
-                continue
-            if row is not None and row.status in ("in_progress", "blocked", "contention") \
-                    and row.record_key is not None:
-                landed_sha = find_record_key_in_history(repo_root, row.record_key)
-                if landed_sha is not None:
-                    store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
-                                status="done", record_key=row.record_key,
-                                detail=f"resolved via git trailer at {landed_sha}")
+        try:
+            for index, item_key in enumerate(items):
+                row = store.get(spec_kind=spec.kind, item_key=item_key)
+                if row is not None and row.status in ("done", "halted"):
                     continue
+                if row is not None and row.status in ("in_progress", "blocked", "contention") \
+                        and row.record_key is not None:
+                    landed_sha = find_record_key_in_history(repo_root, row.record_key)
+                    if landed_sha is not None:
+                        store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
+                                    status="done", record_key=row.record_key,
+                                    detail=f"resolved via git trailer at {landed_sha}")
+                        continue
 
-            store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
-                        status="in_progress")
-            try:
-                outcome = item_runner(ctx, item_key, spec.extra, repo_root)
-            except BudgetExceeded as exc:
                 store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
-                            status="blocked", last_pause_reason=f"budget:{exc}")
-                write_status(spec.kind, state="paused", reason="budget",
-                            paused_at=time.time(), items_remaining=len(items) - index,
-                            path=status_path)
-                return EXIT_PAUSED
-            except ClaudeLimitSignal as exc:
-                store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
-                            status="blocked", last_pause_reason=f"claude_limit:{exc}")
-                now = time.time()
-                write_status(spec.kind, state="paused", reason="claude_limit",
-                            paused_at=now, paused_until=now + _CLAUDE_LIMIT_COOLDOWN_SECONDS,
-                            items_remaining=len(items) - index, path=status_path)
-                return EXIT_PAUSED
+                            status="in_progress")
+                try:
+                    outcome = item_runner(ctx, item_key, spec.extra, repo_root)
+                except BudgetExceeded as exc:
+                    store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
+                                status="blocked", last_pause_reason=f"budget:{exc}")
+                    write_status(spec.kind, state="paused", reason="budget",
+                                paused_at=time.time(), items_remaining=len(items) - index,
+                                path=status_path)
+                    return EXIT_PAUSED
+                except ClaudeLimitSignal as exc:
+                    store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
+                                status="blocked", last_pause_reason=f"claude_limit:{exc}")
+                    now = time.time()
+                    write_status(spec.kind, state="paused", reason="claude_limit",
+                                paused_at=now, paused_until=now + _CLAUDE_LIMIT_COOLDOWN_SECONDS,
+                                items_remaining=len(items) - index, path=status_path)
+                    return EXIT_PAUSED
 
-            store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
-                        status=outcome.status, record_key=outcome.record_key,
-                        detail=outcome.detail)
-            if outcome.status == "halted":
-                write_status(spec.kind, state="halted", reason=outcome.detail,
-                            paused_at=time.time(), items_remaining=len(items) - index,
-                            path=status_path)
-                return EXIT_HALTED
+                store.upsert(run_id=ctx.run_id, spec_kind=spec.kind, item_key=item_key,
+                            status=outcome.status, record_key=outcome.record_key,
+                            detail=outcome.detail)
+                if outcome.status == "halted":
+                    write_status(spec.kind, state="halted", reason=outcome.detail,
+                                paused_at=time.time(), items_remaining=len(items) - index,
+                                path=status_path)
+                    return EXIT_HALTED
+                if outcome.status in ("blocked", "contention"):
+                    write_status(spec.kind, state="paused", reason=outcome.status,
+                                paused_at=time.time(), items_remaining=len(items) - index,
+                                path=status_path)
+                    return EXIT_PAUSED
+        except Exception as exc:
+            write_status(spec.kind, state="crashed", reason=repr(exc),
+                        paused_at=time.time(), path=status_path)
+            raise
 
         write_status(spec.kind, state="done", reason=None, items_remaining=0,
                     path=status_path)

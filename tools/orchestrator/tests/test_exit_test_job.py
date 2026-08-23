@@ -33,6 +33,60 @@ from langatlas_orchestrator.checkpoint import CheckpointStore
 pytestmark_db = pytest.mark.db
 
 
+def test_run_item_maps_blocked_red_main_to_blocked_outcome(monkeypatch, tmp_path):
+    """`land_record` returning `BlockedRedMain` is a transient, re-attemptable outcome
+    (Finding 4c) — `_run_item` must map it to `ItemOutcome(status="blocked")`, not the
+    old blanket `halted` (which the driver treats as needing a human)."""
+    from langatlas_commit.land import BlockedRedMain
+    from langatlas_orchestrator.jobs import exit_test as exit_test_module
+
+    monkeypatch.setattr(
+        exit_test_module, "search_sources",
+        lambda ctx, query, k, conn: [{"source_id": "van-roy-haridi-2003", "locator": "p. 42"}])
+    monkeypatch.setattr(exit_test_module, "land_record",
+                        lambda *a, **kw: BlockedRedMain(since=0.0, last_checked=0.0))
+
+    class _FakeConn:
+        def close(self):
+            pass
+
+    monkeypatch.setattr("langatlas_ingest.db.connect", lambda dsn=None: _FakeConn())
+
+    class _FakeCtx:
+        run_id = "fake-run-id"
+
+    outcome = exit_test_module._run_item(ctx=_FakeCtx(), item_key="mint-search-and-commit",
+                                         extra={}, repo_root=tmp_path)
+
+    assert outcome.status == "blocked"
+
+
+def test_run_item_maps_contention_exhausted_to_contention_outcome(monkeypatch, tmp_path):
+    from langatlas_commit.land import ContentionExhausted
+    from langatlas_orchestrator.jobs import exit_test as exit_test_module
+
+    monkeypatch.setattr(
+        exit_test_module, "search_sources",
+        lambda ctx, query, k, conn: [{"source_id": "van-roy-haridi-2003", "locator": "p. 42"}])
+    monkeypatch.setattr(
+        exit_test_module, "land_record",
+        lambda *a, **kw: ContentionExhausted(retries=5, last_conflict_summary="conflict"))
+
+    class _FakeConn:
+        def close(self):
+            pass
+
+    monkeypatch.setattr("langatlas_ingest.db.connect", lambda dsn=None: _FakeConn())
+
+    class _FakeCtx:
+        run_id = "fake-run-id"
+
+    outcome = exit_test_module._run_item(ctx=_FakeCtx(), item_key="mint-search-and-commit",
+                                         extra={}, repo_root=tmp_path)
+
+    assert outcome.status == "contention"
+
+
 def _git(args, cwd, check=True):
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, check=check)
 
@@ -113,7 +167,8 @@ def test_r0_exit_test_end_to_end(db_conn, bare_and_clone, tmp_path, monkeypatch)
     spec_path.write_text(f"kind: r0-exit-test\ncheckpoint_path: {tmp_path / 'ck.sqlite'}\n"
                          f"query: pattern matching\n")
 
-    rc = driver_run(spec_path, repo_root=bare_and_clone, status_path=tmp_path / "status.json")
+    rc = driver_run(spec_path, repo_root=bare_and_clone, status_path=tmp_path / "status.json",
+                    transcripts_root=tmp_path / "transcripts", private_dir=tmp_path / "private")
 
     assert rc == EXIT_OK
     log = _git(["log", "-1", "--format=%B", "origin/main"], bare_and_clone)
