@@ -1,0 +1,5 @@
+# Deferred to Stage 6 (needs the self-hosted Umami instance, D33/D52).
+kind: monthly-demand-export
+checkpoint_path: .private/orchestrator/monthly-demand-export.sqlite
+budget:
+  max_wall_seconds: 900

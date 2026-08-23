@@ -1,0 +1,9 @@
+# Deferred to Stage 5 (needs real facts old enough to need re-verification). This
+# spec's own enumerator logic decides monthly whether 18 months have actually elapsed
+# and no-ops otherwise (D43 §2.5) — it does not try to express an 18-month period in
+# cron syntax directly.
+kind: backstop-sweep-18mo
+checkpoint_path: .private/orchestrator/backstop-sweep-18mo.sqlite
+budget:
+  max_calls: 200
+  max_wall_seconds: 21600

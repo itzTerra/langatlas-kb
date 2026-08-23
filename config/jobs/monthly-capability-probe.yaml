@@ -1,0 +1,5 @@
+kind: monthly-capability-probe
+checkpoint_path: .private/orchestrator/monthly-capability-probe.sqlite
+budget:
+  max_calls: 50
+  max_wall_seconds: 900

@@ -1,0 +1,29 @@
+# LangAtlas orchestrator scheduling (D43 §2.5). Documentation only — not itself
+# executable; the developer's real crontab is local machine state, same tier as the
+# D26 provider cache. Every line invokes the one shared driver against a different
+# batch spec; per-job cadence lives here, not in the driver.
+#
+# The per-language sweep pipeline (D5) is deliberately absent from this file — it is
+# always developer-initiated by hand, never run unattended via cron (D43 ratified
+# follow-up).
+
+# nightly ~200-fact controversy assessment + re-verification backstop candidates (D25)
+0 2 * * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/nightly-verification.yaml
+
+# monthly link-checker (D37)
+0 3 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-link-checker.yaml
+
+# monthly capability probe (D41)
+0 3 2 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-capability-probe.yaml
+
+# monthly finding-aid mirror refresh (D53)
+0 3 3 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-finding-aid-mirror-refresh.yaml
+
+# monthly Umami `demand` export (D52) — no-ops until Stage 6's Umami instance exists
+0 3 4 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-demand-export.yaml
+
+# quarterly edition-check (D37)
+0 4 1 1,4,7,10 *  cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/quarterly-edition-check.yaml
+
+# 18-month backstop sweep, checked monthly — the job's own logic no-ops until due (D43 §2.5)
+0 5 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/backstop-sweep-18mo.yaml

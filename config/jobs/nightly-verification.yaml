@@ -1,0 +1,9 @@
+# Deferred to Stage 2/5 (needs the calibrated D24 verifier and real facts) — kept as a
+# committed spec now so D43's crontab inventory is complete and legible, per the
+# ratified "config/jobs/crontab.example is worth maintaining" decision. Running this
+# spec before Stage 2/5 lands raises NotImplementedError with this same pointer.
+kind: nightly-verification
+checkpoint_path: .private/orchestrator/nightly-verification.sqlite
+budget:
+  max_calls: 200          # D25's ~200-facts/night nightly budget
+  max_wall_seconds: 21600

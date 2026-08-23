@@ -1,0 +1,5 @@
+# Deferred to Stage 2 (needs ingested spec sources with edition metadata).
+kind: quarterly-edition-check
+checkpoint_path: .private/orchestrator/quarterly-edition-check.sqlite
+budget:
+  max_wall_seconds: 3600

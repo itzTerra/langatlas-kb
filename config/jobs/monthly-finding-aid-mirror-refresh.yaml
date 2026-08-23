@@ -1,0 +1,5 @@
+# Deferred to Stage 2 (needs ingested finding-aid sources to mirror).
+kind: monthly-finding-aid-mirror-refresh
+checkpoint_path: .private/orchestrator/monthly-finding-aid-mirror-refresh.sqlite
+budget:
+  max_wall_seconds: 3600

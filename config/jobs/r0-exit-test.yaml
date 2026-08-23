@@ -1,0 +1,6 @@
+kind: r0-exit-test
+checkpoint_path: .private/orchestrator/r0-exit-test.sqlite
+budget:
+  max_calls: 10
+  max_wall_seconds: 300
+query: pattern matching

@@ -1,0 +1,5 @@
+# Deferred to Stage 2 (needs an ingested corpus with url-locator sources).
+kind: monthly-link-checker
+checkpoint_path: .private/orchestrator/monthly-link-checker.sqlite
+budget:
+  max_wall_seconds: 3600
