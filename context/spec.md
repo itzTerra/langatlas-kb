@@ -1809,9 +1809,9 @@ wait on.
       gate, failure bot.
 - [ ] CI: validated-artifact pipeline skeleton (D13) — validators, fact derivation,
       collision check, last-green publication, `data-vN` tagging.
-- [ ] Orchestrator `tools/orchestrator/driver.py` + `config/jobs/` +
+- [x] Orchestrator `tools/orchestrator/driver.py` + `config/jobs/` +
       `crontab.example` (D43).
-- [ ] R0 exit test: an agent can run `search_sources`, mint a node file that validates,
+- [x] R0 exit test: an agent can run `search_sources`, mint a node file that validates,
       and the run is logged.
 
 ### Stage 2 — R1/R2: corpus & benchmark
