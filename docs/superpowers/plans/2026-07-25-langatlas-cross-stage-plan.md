@@ -195,6 +195,12 @@ orchestrator — all used as-is, no infra changes expected.
 - A calibrated D24 verifier (FA ≤2% / FR ≤10% against the golden set, canaries wired) — Stage 3's
   R4 drafting and every later fact commit runs through this exact calibration.
 
+Like Stage 1, Stage 2 is decomposed into dependency-ordered sub-plans (2A–2E) — see
+[2026-08-23-stage-2-corpus-and-benchmark.md](2026-08-23-stage-2-corpus-and-benchmark.md) for the
+sub-plan boundaries and interface contracts. That map adds one deliverable beyond the list above:
+D53's finding-aid tooling (2E), which `jobs/deferred.py` already assigns to Stage 2 and which
+Stage 3's R3 batch surveys consume.
+
 **Spec pointer:** [context/spec.md §14 Stage 2](../../../context/spec.md), detail in §§4.4, 6.2,
 6.4, 8.6.
 
