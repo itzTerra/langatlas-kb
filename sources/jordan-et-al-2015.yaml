@@ -1,0 +1,22 @@
+id: jordan-et-al-2015
+type: article-journal
+title: A feature model of actor, agent, functional, object, and procedural programming languages
+author:
+  - family: Jordan
+    given: Howell
+  - family: Botterweck
+    given: Goetz
+  - family: Noll
+    given: John
+  - family: Butterfield
+    given: Andrew
+  - family: Collier
+    given: Rem
+issued:
+  date-parts:
+    -   - 2015
+custom:
+  tier: A
+  grounding: third-party-reference
+  canonical_source: false
+  acquisition_note: re-acquired from the original Notion brief attachment
