@@ -1775,6 +1775,15 @@ documented behavior, not a formal language specification") — no separate revie
 before it ships. **Rust's per-claim FLS-preference rule stays a sweep-agent instruction only** —
 no mechanical recheck trigger for now, despite the FLS's active post-2026 growth.
 
+*[developer]* Ratified (Stage 2A, Task 8's retroactive classification checkpoint): **C, Java, and
+Haskell's phase-1 `grounding` values**, filling the gap left by §4.2's table naming
+Python/R/Rust/TypeScript/SQL/Prolog but not these three. **C** (WG14 N3220, the C23 draft) and
+**Java** (*The Java Language Specification*, SE 25) both get `formal-spec` — numbered,
+standards-body-authored language specifications playing the same role as Prolog's ISO manual.
+**Haskell** splits like Rust: the 2010 Language Report gets `formal-spec` (per Prolog's
+precedent — a numbered language report is the formal-spec role), the GHC User's Guide gets
+`reference-implementation-docs`.
+
 ### D52. Coverage analytics (44)
 
 Splits the checklist's single topic into **three reports at three
