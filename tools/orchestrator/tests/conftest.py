@@ -5,6 +5,36 @@ import pytest
 from langatlas_orchestrator import registry as registry_module
 
 
+@pytest.fixture(scope="session")
+def dsn() -> str:
+    """Tests run against a throwaway database inside the compose Postgres. They are
+    marked `db` and are skipped — never silently passed — when it is not running.
+    Copied from tools/ingest/tests/conftest.py's identical fixture (same throwaway-
+    database pattern) rather than imported across packages."""
+    import psycopg
+    from langatlas_ingest.config import IngestConfig
+
+    base = os.environ.get("LANGATLAS_TEST_DSN") or IngestConfig.load().dsn
+    try:
+        with psycopg.connect(base, connect_timeout=3, autocommit=True) as conn:
+            with conn.cursor() as cur:
+                cur.execute("DROP DATABASE IF EXISTS langatlas_test")
+                cur.execute("CREATE DATABASE langatlas_test")
+    except psycopg.OperationalError as exc:
+        pytest.skip(f"compose Postgres unreachable ({exc}); run `docker compose up -d db`")
+    return base.rsplit("/", 1)[0] + "/langatlas_test"
+
+
+@pytest.fixture
+def db_conn(dsn):
+    import psycopg
+
+    with psycopg.connect(dsn, autocommit=True) as conn:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA public CASCADE; CREATE SCHEMA public")
+        yield conn
+
+
 @pytest.fixture(autouse=True)
 def _isolated_registry(monkeypatch):
     """Every test gets a private copy of the module-level registry dict so tests can
@@ -15,6 +45,7 @@ def _isolated_registry(monkeypatch):
 
 _TESTS_NEEDING_GIT_IDENTITY_BYPASS = {
     "test_run_resolves_an_ambiguous_row_via_the_git_trailer",
+    "test_r0_exit_test_end_to_end",
 }
 
 
