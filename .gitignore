@@ -6,3 +6,4 @@ reports/
 *.report.md
 
 .pgdata/
+.private/
