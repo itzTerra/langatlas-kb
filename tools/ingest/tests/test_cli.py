@@ -43,3 +43,58 @@ def test_ingest_subcommand_parses_its_stored_source_settings():
 def test_unknown_command_is_rejected():
     with pytest.raises(SystemExit):
         main(["frobnicate"])
+
+
+def test_new_source_writes_a_normalized_validating_record(tmp_path):
+    from langatlas_ingest.cli import main
+
+    out_dir = tmp_path / "sources"
+    rc = main(["new-source", "kaijanaho-2015", "thesis", "Empirical Evaluation in PL Design",
+              "--tier", "B", "--grounding", "third-party-reference",
+              "--canonical", "--out-dir", str(out_dir)])
+    assert rc == 0
+    written = (out_dir / "kaijanaho-2015.yaml").read_text()
+    from ruamel.yaml import YAML
+    from langatlas_validate.schema import validate_record
+    from langatlas_validate.normalize import normalize_record
+    data = YAML(typ="safe").load(written)
+    assert validate_record(data, "source") == []
+    assert normalize_record(written, "source") == written
+
+
+def test_new_source_refuses_to_overwrite(tmp_path, capsys):
+    from langatlas_ingest.cli import main
+
+    out_dir = tmp_path / "sources"
+    args = ["new-source", "dup-2026", "book", "Dup", "--tier", "B",
+           "--grounding", "third-party-reference", "--no-canonical",
+           "--acquisition-note", "test", "--out-dir", str(out_dir)]
+    assert main(args) == 0
+    assert main(args) == 1
+    assert "already exists" in capsys.readouterr().out
+
+
+def test_file_acquisitions_files_every_entry(tmp_path, monkeypatch):
+    from langatlas_ingest.cli import main
+
+    manifest = tmp_path / "acquisitions.yaml"
+    manifest.write_text(
+        "- source_id: harper-pfpl\n  reason: access-pending\n"
+        "  detail: 'free PDF; download and drop into snapshot store'\n")
+    filed: list[tuple[str, str, str, str]] = []
+
+    class FakeQueue:
+        def __init__(self, conn):
+            pass
+
+        def file(self, *, kind, source_id, reason, detail=""):
+            filed.append((kind, source_id, reason, detail))
+            return len(filed)
+
+    monkeypatch.setattr("langatlas_ingest.store.SourcingQueue", FakeQueue)
+    monkeypatch.setattr("langatlas_ingest.db.connect",
+                        lambda dsn=None: __import__("contextlib").nullcontext(object()))
+    rc = main(["file-acquisitions", "--file", str(manifest)])
+    assert rc == 0
+    assert filed == [("pending-source", "harper-pfpl", "access-pending",
+                      "free PDF; download and drop into snapshot store")]

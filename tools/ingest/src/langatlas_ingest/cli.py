@@ -143,6 +143,51 @@ def _cmd_eval(args) -> int:
     return 0
 
 
+def _cmd_new_source(args) -> int:
+    from langatlas_ingest.paths import REPO_ROOT
+    from langatlas_ingest.scaffold import render_source_yaml
+
+    author = None
+    if args.author:
+        author = [{"family": part.split(",")[0].strip(),
+                   "given": part.split(",", 1)[1].strip() if "," in part else ""}
+                  for part in args.author]
+    issued = {"date-parts": [[args.issued_year]]} if args.issued_year else None
+    canonical = True if args.canonical else (False if args.no_canonical else None)
+    text = render_source_yaml(
+        args.id, args.type, args.title, author=author, issued=issued, url=args.url,
+        doi=args.doi, tier=args.tier, grounding=args.grounding, canonical_source=canonical,
+        acquisition_note=args.acquisition_note, edition=args.edition,
+        edition_check_url=args.edition_check_url, locator_kinds=args.locator_kinds or None)
+    out_dir = Path(args.out_dir) if args.out_dir else REPO_ROOT / "sources"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    target = out_dir / f"{args.id}.yaml"
+    if target.exists():
+        print(f"{target} already exists; refusing to overwrite")
+        return 1
+    target.write_text(text)
+    print(f"wrote {target}")
+    return 0
+
+
+def _cmd_file_acquisitions(args) -> int:
+    from ruamel.yaml import YAML
+    from langatlas_ingest.db import connect
+    from langatlas_ingest.paths import REPO_ROOT
+    from langatlas_ingest.store import SourcingQueue
+
+    manifest = Path(args.file) if args.file else REPO_ROOT / "config" / "acquisitions.yaml"
+    entries = YAML(typ="safe").load(manifest.read_text()) or []
+    config = IngestConfig.load()
+    with connect(config.dsn) as conn:
+        queue = SourcingQueue(conn)
+        for entry in entries:
+            entry_id = queue.file(kind="pending-source", source_id=entry["source_id"],
+                                  reason=entry["reason"], detail=entry.get("detail", ""))
+            print(f"filed #{entry_id}: {entry['source_id']} ({entry['reason']})")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="langatlas-sources")
     parser.add_argument("--version", action="version", version=__version__)
@@ -196,6 +241,35 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--no-rerank", action="store_true",
                           help="score the no-rerank arm of §8.6's comparison")
     evaluate.set_defaults(func=_cmd_eval)
+
+    new_source = sub.add_parser("new-source",
+                                help="scaffold a schema-valid sources/<id>.yaml record")
+    new_source.add_argument("id")
+    new_source.add_argument("type", help="CSL-JSON type, e.g. book | article-journal | report")
+    new_source.add_argument("title")
+    new_source.add_argument("--author", nargs="*", default=[],
+                            help="'Family, Given' per author, e.g. 'Van Roy, Peter'")
+    new_source.add_argument("--issued-year", type=int, default=None)
+    new_source.add_argument("--url", default=None)
+    new_source.add_argument("--doi", default=None)
+    new_source.add_argument("--tier", required=True, choices=["A", "B", "C", "D"])
+    new_source.add_argument("--grounding", required=True,
+                            choices=["formal-spec", "reference-implementation-docs",
+                                    "design-doc", "third-party-reference"])
+    canon_group = new_source.add_mutually_exclusive_group()
+    canon_group.add_argument("--canonical", action="store_true")
+    canon_group.add_argument("--no-canonical", action="store_true")
+    new_source.add_argument("--acquisition-note", default=None)
+    new_source.add_argument("--edition", default=None)
+    new_source.add_argument("--edition-check-url", default=None)
+    new_source.add_argument("--locator-kinds", nargs="*", default=[])
+    new_source.add_argument("--out-dir", default=None)
+    new_source.set_defaults(func=_cmd_new_source)
+
+    file_acq = sub.add_parser("file-acquisitions",
+                              help="file config/acquisitions.yaml's entries into sourcing_queue")
+    file_acq.add_argument("--file", default=None)
+    file_acq.set_defaults(func=_cmd_file_acquisitions)
     return parser
 
 
