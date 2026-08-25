@@ -12,6 +12,10 @@ author:
     given: Gilad
   - family: Buckley
     given: Alex
+issued:
+  date-parts:
+    -   - 2025
+URL: https://docs.oracle.com/javase/specs/jls/se25/html/index.html
 custom:
   tier: A
   grounding: formal-spec

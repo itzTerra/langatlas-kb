@@ -4,6 +4,9 @@ title: Programming Language Pragmatics
 author:
   - family: Scott
     given: Michael L.
+issued:
+  date-parts:
+    -   - 2009
 custom:
   tier: B
   grounding: third-party-reference

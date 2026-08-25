@@ -1,6 +1,7 @@
 id: ghc-users-guide
 type: book
 title: GHC User's Guide
+URL: https://downloads.haskell.org/ghc/9.14.1/docs/users_guide.pdf
 custom:
   tier: B
   grounding: reference-implementation-docs

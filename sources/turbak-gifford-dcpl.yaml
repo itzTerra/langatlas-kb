@@ -8,6 +8,9 @@ author:
     given: David
   - family: Sheldon
     given: Mark A.
+issued:
+  date-parts:
+    -   - 2008
 custom:
   tier: B
   grounding: third-party-reference

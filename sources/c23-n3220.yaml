@@ -1,6 +1,10 @@
 id: c23-n3220
 type: report
 title: ISO/IEC 9899:2024 (C23) — N3220 Working Draft
+issued:
+  date-parts:
+    -   - 2024
+URL: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n3220.pdf
 custom:
   tier: A
   grounding: formal-spec

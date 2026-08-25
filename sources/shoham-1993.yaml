@@ -13,3 +13,6 @@ custom:
   grounding: third-party-reference
   canonical_source: false
   acquisition_note: developer's personal library PDF; Elsevier ScienceDirect is canonical
+container-title: Artificial Intelligence
+volume: '60'
+page: 51-92

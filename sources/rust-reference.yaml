@@ -6,3 +6,5 @@ custom:
   tier: B
   grounding: reference-implementation-docs
   canonical_source: true
+  edition: current
+  edition_check_url: https://doc.rust-lang.org/reference/

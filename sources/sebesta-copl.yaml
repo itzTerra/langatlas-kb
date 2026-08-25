@@ -4,6 +4,9 @@ title: Concepts of Programming Languages
 author:
   - family: Sebesta
     given: Robert W.
+issued:
+  date-parts:
+    -   - 2019
 custom:
   tier: B
   grounding: third-party-reference

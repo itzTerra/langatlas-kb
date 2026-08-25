@@ -6,5 +6,9 @@ custom:
   tier: B
   grounding: reference-implementation-docs
   canonical_source: true
+  acquisition_note: Assembled by the controller by concatenating the official CPython 3.14.7 docs 
+    HTML archive's reference/*.html chapters 
+    (docs.python.org/3/archives/python-3.14-docs-html.tar.bz2) in their own TOC order; the official 
+    docs no longer publish a single-file PDF/HTML export of just the Language Reference manual.
   edition: 3.14.7
   edition_check_url: https://docs.python.org/3/reference/index.html
