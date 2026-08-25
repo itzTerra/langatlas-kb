@@ -1,0 +1,12 @@
+id: krishnamurthi-plai
+type: book
+title: 'Programming Languages: Application and Interpretation'
+author:
+  - family: Krishnamurthi
+    given: Shriram
+URL: https://www.plai.org/
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: true
+  edition: 3.2.5 (2025-07-14)

@@ -1,0 +1,13 @@
+id: kaijanaho-2015
+type: thesis
+title: 'Evidence-Based Programming Language Design: A Philosophical and Methodological Exploration'
+author:
+  - family: Kaijanaho
+    given: Antti-Juhani
+issued:
+  date-parts:
+    -   - 2015
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: true

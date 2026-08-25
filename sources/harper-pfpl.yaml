@@ -1,0 +1,12 @@
+id: harper-pfpl
+type: book
+title: Practical Foundations for Programming Languages
+author:
+  - family: Harper
+    given: Robert
+URL: https://www.cs.cmu.edu/~rwh/pfpl/
+custom:
+  tier: B
+  grounding: third-party-reference
+  canonical_source: true
+  edition: 2nd, rev. 2.03 (2015-08-02)
