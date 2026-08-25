@@ -1,0 +1,10 @@
+id: python-langref-3
+type: book
+title: The Python Language Reference
+URL: https://docs.python.org/3/reference/index.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true
+  edition: 3.14.7
+  edition_check_url: https://docs.python.org/3/reference/index.html

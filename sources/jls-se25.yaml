@@ -1,0 +1,19 @@
+id: jls-se25
+type: book
+title: The Java Language Specification
+author:
+  - family: Gosling
+    given: James
+  - family: Joy
+    given: Bill
+  - family: Steele
+    given: Guy
+  - family: Bracha
+    given: Gilad
+  - family: Buckley
+    given: Alex
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: true
+  edition: Java SE 25 Edition

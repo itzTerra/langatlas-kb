@@ -1,0 +1,9 @@
+id: rust-fls
+type: book
+title: FLS (Rust Language Specification, formerly the Ferrocene Language Specification)
+URL: https://rust-lang.github.io/fls
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: true
+  edition: 1.98.0

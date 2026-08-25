@@ -1,0 +1,8 @@
+id: ghc-users-guide
+type: book
+title: GHC User's Guide
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true
+  edition: 9.14.1

@@ -1,0 +1,8 @@
+id: rust-reference
+type: book
+title: The Rust Reference
+URL: https://doc.rust-lang.org/reference/
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true

@@ -1,0 +1,13 @@
+id: haskell-2010-report
+type: book
+title: Haskell 2010 Language Report
+author:
+  - family: Marlow
+    given: Simon
+issued:
+  date-parts:
+    -   - 2010
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: true
