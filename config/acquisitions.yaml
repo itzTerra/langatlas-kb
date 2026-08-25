@@ -1,30 +1,6 @@
 # config/acquisitions.yaml — D37 acquisition tracking for Stage 2A's R1 corpus (spec §7.4).
-# Filed into `sourcing_queue` via `langatlas-sources file-acquisitions`. Each entry is a
-# developer checkpoint: agents cannot acquire books. `reason` is one of sourcing_queue's
-# CHECK-constrained values (paywalled | access-pending | acquisition-failed).
-- source_id: jordan-et-al-2015
-  reason: access-pending
-  detail: "Feature model of programming languages; PDF was attached to the original Notion
-    brief (feature-model.pdf) — re-locate or re-request from the Notion page."
-- source_id: harper-pfpl
-  reason: access-pending
-  detail: "Harper, PFPL — free PDF at https://www.cs.cmu.edu/~rwh/pfpl/; download and drop
-    into the snapshot store."
-- source_id: krishnamurthi-plai
-  reason: access-pending
-  detail: "Krishnamurthi, PLAI — free at https://www.plai.org/; download and drop into the
-    snapshot store."
-- source_id: kaijanaho-2015
-  reason: access-pending
-  detail: "Kaijanaho 2015 thesis, 'Evaluation of Programming Languages and Tools' — free at
-    JYU's institutional repository; download and drop into the snapshot store."
-- source_id: scott-plp
-  reason: paywalled
-  detail: "Scott, Programming Language Pragmatics — via university library access."
-- source_id: turbak-gifford-dcpl
-  reason: paywalled
-  detail: "Turbak & Gifford, Design Concepts in Programming Languages — via university
-    library access."
-- source_id: sebesta-copl
-  reason: paywalled
-  detail: "Sebesta, Concepts of Programming Languages — via university library access."
+# All entries originally filed here (jordan-et-al-2015, harper-pfpl, krishnamurthi-plai,
+# kaijanaho-2015, scott-plp, turbak-gifford-dcpl, sebesta-copl) have been acquired and ingested;
+# their sourcing_queue entries auto-resolved. Empty for now — re-populate when Stage 2B+ files
+# new acquisition-pending sources.
+[]

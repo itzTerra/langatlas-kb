@@ -182,6 +182,10 @@ def _cmd_file_acquisitions(args) -> int:
     with connect(config.dsn) as conn:
         queue = SourcingQueue(conn)
         for entry in entries:
+            target = REPO_ROOT / "sources" / f"{entry['source_id']}.yaml"
+            if target.exists():
+                print(f"skipped {entry['source_id']}: sources/{entry['source_id']}.yaml already exists")
+                continue
             entry_id = queue.file(kind="pending-source", source_id=entry["source_id"],
                                   reason=entry["reason"], detail=entry.get("detail", ""))
             print(f"filed #{entry_id}: {entry['source_id']} ({entry['reason']})")

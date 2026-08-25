@@ -77,6 +77,7 @@ def test_new_source_refuses_to_overwrite(tmp_path, capsys):
 def test_file_acquisitions_files_every_entry(tmp_path, monkeypatch):
     from langatlas_ingest.cli import main
 
+    monkeypatch.setattr("langatlas_ingest.paths.REPO_ROOT", tmp_path)
     manifest = tmp_path / "acquisitions.yaml"
     manifest.write_text(
         "- source_id: harper-pfpl\n  reason: access-pending\n"
@@ -98,3 +99,37 @@ def test_file_acquisitions_files_every_entry(tmp_path, monkeypatch):
     assert rc == 0
     assert filed == [("pending-source", "harper-pfpl", "access-pending",
                       "free PDF; download and drop into snapshot store")]
+
+
+def test_file_acquisitions_skips_already_scaffolded_source_ids(tmp_path, monkeypatch):
+    """A manifest entry whose sources/<id>.yaml already exists (e.g. a stale manifest
+    re-listing a book that's since been ingested) must be skipped, not re-filed into the
+    sourcing queue — otherwise it would silently reopen a pending-source entry for a
+    book that's already in the corpus."""
+    from langatlas_ingest.cli import main
+
+    monkeypatch.setattr("langatlas_ingest.paths.REPO_ROOT", tmp_path)
+    sources_dir = tmp_path / "sources"
+    sources_dir.mkdir()
+    (sources_dir / "harper-pfpl.yaml").write_text("id: harper-pfpl\n")
+
+    manifest = tmp_path / "acquisitions.yaml"
+    manifest.write_text(
+        "- source_id: harper-pfpl\n  reason: access-pending\n"
+        "  detail: 'free PDF; download and drop into snapshot store'\n")
+    filed: list[tuple[str, str, str, str]] = []
+
+    class FakeQueue:
+        def __init__(self, conn):
+            pass
+
+        def file(self, *, kind, source_id, reason, detail=""):
+            filed.append((kind, source_id, reason, detail))
+            return len(filed)
+
+    monkeypatch.setattr("langatlas_ingest.store.SourcingQueue", FakeQueue)
+    monkeypatch.setattr("langatlas_ingest.db.connect",
+                        lambda dsn=None: __import__("contextlib").nullcontext(object()))
+    rc = main(["file-acquisitions", "--file", str(manifest)])
+    assert rc == 0
+    assert filed == []
