@@ -91,7 +91,7 @@ phase-1 selection), §8.2 (`source_chunks`). Sequencing contract:
   source record — consumed today only by `langatlas-validate ci` (`cmd_ci_with_index` calls
   `validate_store` already; no caller change needed).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/validate/tests/test_store.py — add at the end of the file
@@ -126,14 +126,14 @@ def test_validate_store_allows_noncanonical_source_with_a_note(store):
     assert validate_store(store) == []
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `cd tools/validate && uv run pytest tests/test_store.py -k acquisition_note -v`
 Expected: the first test FAILs (`assert any(...)` is `False` — nothing flags the missing note
 today); the other two currently pass by coincidence (no check exists yet), which is fine — they
 lock in the non-error side of the behavior you're about to add.
 
-- [ ] **Step 3: Implement the check**
+- [x] **Step 3: Implement the check**
 
 In `tools/validate/src/langatlas_validate/store.py`, inside the `for path, kind, text, data in
 iter_store_records(repo_root):` loop of `validate_store`, after the existing
@@ -146,12 +146,12 @@ iter_store_records(repo_root):` loop of `validate_store`, after the existing
                 errors.append(f"{rel}: custom.acquisition_note required for a non-canonical source")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `cd tools/validate && uv run pytest tests/test_store.py -v`
 Expected: PASS, including the three new tests and every pre-existing `test_store.py` test.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/validate/src/langatlas_validate/store.py tools/validate/tests/test_store.py
@@ -177,7 +177,7 @@ git commit -m "feat(#stage-2a): CI-enforce D37's acquisition_note presence for n
   `validate_record(yaml.load(result), "source")` returns `[]` for. Task 3's CLI command calls
   this directly.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/ingest/tests/test_scaffold.py
@@ -221,12 +221,12 @@ def test_render_source_yaml_carries_edition_and_locator_kinds():
     assert validate_record(data, "source") == []
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `cd tools/ingest && uv run pytest tests/test_scaffold.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_ingest.scaffold'`.
 
-- [ ] **Step 3: Implement the renderer**
+- [x] **Step 3: Implement the renderer**
 
 ```python
 # tools/ingest/src/langatlas_ingest/scaffold.py
@@ -279,12 +279,12 @@ def render_source_yaml(id: str, type: str, title: str, *, author: list[dict] | N
     return normalize_record(buf.getvalue(), "source")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_scaffold.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/scaffold.py tools/ingest/tests/test_scaffold.py
@@ -315,7 +315,7 @@ git commit -m "feat(#stage-2a): add render_source_yaml, a schema-valid sources/*
   entry, printing what it filed. Both consumed manually by the developer in Tasks 5–8 — no other
   code depends on their exact signatures.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/ingest/tests/test_cli.py — add at the end of the file
@@ -375,12 +375,12 @@ def test_file_acquisitions_files_every_entry(tmp_path, monkeypatch):
                       "free PDF; download and drop into snapshot store")]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `cd tools/ingest && uv run pytest tests/test_cli.py -k "new_source or file_acquisitions" -v`
 Expected: FAIL — `argparse` rejects the unknown `new-source`/`file-acquisitions` subcommands.
 
-- [ ] **Step 3: Implement the subcommands**
+- [x] **Step 3: Implement the subcommands**
 
 In `tools/ingest/src/langatlas_ingest/cli.py`, add two command functions and wire them into
 `build_parser`:
@@ -472,12 +472,12 @@ before reading `args.file`:
 (add `from langatlas_ingest.paths import REPO_ROOT` to `_cmd_file_acquisitions`'s imports, and
 delete the now-redundant `manifest = Path(args.file)` line above it).
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_cli.py -v`
 Expected: PASS, including every pre-existing `test_cli.py` test.
 
-- [ ] **Step 5: Create `config/acquisitions.yaml`**
+- [x] **Step 5: Create `config/acquisitions.yaml`**
 
 ```yaml
 # config/acquisitions.yaml — D37 acquisition tracking for Stage 2A's R1 corpus (spec §7.4).
@@ -512,14 +512,14 @@ Expected: PASS, including every pre-existing `test_cli.py` test.
   detail: "Sebesta, Concepts of Programming Languages — via university library access."
 ```
 
-- [ ] **Step 6: Run `file-acquisitions` against the compose database**
+- [x] **Step 6: Run `file-acquisitions` against the compose database**
 
 Run: `docker compose up -d db && cd tools/ingest && uv run langatlas-sources db && \
   uv run langatlas-sources file-acquisitions`
 Expected: seven `filed #N: <source_id> (<reason>)` lines. Verify with
 `uv run langatlas-sources queue --kind pending-source` — seven open entries listed.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/cli.py tools/ingest/tests/test_cli.py \
@@ -539,7 +539,7 @@ git commit -m "feat(#stage-2a): add new-source scaffold and file-acquisitions CL
 - Produces: confidence that Tasks 5–8's real, hours-of-developer-effort ingestion runs are not
   going to trip over a scaffold/CI bug discovered only after a real book's QA skim.
 
-- [ ] **Step 1: Scaffold and ingest a one-page throwaway source**
+- [x] **Step 1: Scaffold and ingest a one-page throwaway source**
 
 ```bash
 cd /tmp && printf 'Test Source\n\nThis is a throwaway plain-text source for tooling\nverification only. It is never committed.\n' > throwaway.txt
@@ -555,7 +555,7 @@ Expected: `new-source` prints `wrote /tmp/throwaway-sources/throwaway-2026.yaml`
 prints `throwaway-2026: N chunks, QA pass` (or `warn` — a one-paragraph plain-text file has no
 outline, so `outline-coverage` silent-no-ops per D37).
 
-- [ ] **Step 2: Validate the scaffolded record against the real schema and CI check**
+- [x] **Step 2: Validate the scaffolded record against the real schema and CI check**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/validate
@@ -576,7 +576,7 @@ Expected: `[]` — zero errors. This is the same `validate_store` Task 1 modifie
 `--no-canonical` record that *does* carry `acquisition_note`, confirming the new check does not
 false-positive on a well-formed record.
 
-- [ ] **Step 3: Clean up the throwaway artifacts**
+- [x] **Step 3: Clean up the throwaway artifacts**
 
 ```bash
 rm -rf /tmp/throwaway.txt /tmp/throwaway-sources /tmp/throwaway-repo
@@ -588,7 +588,7 @@ psql "$(grep -oP '(?<=dsn: ).*' /home/terra/Projects/langatlas-kb/config/ingest.
 Expected: no output from the `rm`; `DELETE 1` (or `DELETE 0` if promotion didn't happen) from
 each SQL statement.
 
-- [ ] **Step 4: No commit for this task** — it produced no repo changes; it only proved Tasks
+- [x] **Step 4: No commit for this task** — it produced no repo changes; it only proved Tasks
   1–3 work end to end before Task 5 spends real developer QA time on the actual corpus.
 
 ---
@@ -628,7 +628,7 @@ All six are `grounding: third-party-reference` (default — none is a phase-1 la
 they're the developer's personal-library/preprint copies) — each therefore needs a real
 `acquisition_note`.
 
-- [ ] **Step 1: Scaffold the six PDF-backed source records**
+- [x] **Step 1: Scaffold the six PDF-backed source records**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/ingest
@@ -670,7 +670,7 @@ uv run langatlas-sources new-source bruce-longo-1990 article-journal \
 
 Expected: six `wrote /home/terra/Projects/langatlas-kb/sources/<id>.yaml` lines.
 
-- [ ] **Step 2: Ingest each PDF**
+- [x] **Step 2: Ingest each PDF**
 
 ```bash
 uv run langatlas-sources ingest vanroy-haridi-2003 \
@@ -695,7 +695,7 @@ in a local config override, after `pip install 'langatlas-ingest[docling]'`), or
 a per-source `--min-chars` override. Do not proceed to Step 3 for a source until its QA status is
 `pass` or a `warn` the developer has read.
 
-- [ ] **Step 2a: STOP — developer checkpoint**
+- [x] **Step 2a: STOP — developer checkpoint**
 
 Read every `qa/report.md` printed above (`uv run langatlas-sources qa <id>`). This is the "QA
 skims double as golden-set co-authoring time" step (§7.4) — while reading, jot down 2–3 sample
@@ -705,7 +705,7 @@ plan does not consume that note, but not capturing it now means re-reading the s
 later. Confirm every `warn` is an acceptable soft finding (OCR noise, length outliers, missing
 outline coverage — never a mojibake or extraction-collapse `fail`) before moving on.
 
-- [ ] **Step 3: Resolve the multi-chapter Software Foundations vol. 2 HTML source**
+- [x] **Step 3: Resolve the multi-chapter Software Foundations vol. 2 HTML source**
 
 Software Foundations vol. 2 ships as one HTML file per chapter (no combined single-page
 export exists in this snapshot: `pl-foundations/Preface.html`, `Norm.html`, `Smallstep.html`,
@@ -736,7 +736,7 @@ the table above is illustrative of the naming convention, not a literal file lis
 blindly. Use `ls /home/terra/Downloads/hermes-research/pl-foundations/*.html` to get the real,
 current file list first.
 
-- [ ] **Step 4: Scaffold and ingest each chosen Software Foundations chapter**
+- [x] **Step 4: Scaffold and ingest each chosen Software Foundations chapter**
 
 For each chapter file chosen in Step 3 (repeat this shape per chapter, substituting the
 chapter's real filename/title):
@@ -759,7 +759,7 @@ site — no `acquisition_note` is required by Task 1's check for these records.
 
 Expected per chapter: `<id>: N chunks, QA <pass|warn>`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add sources/vanroy-haridi-2003.yaml sources/pierce-tapl-2002.yaml \
@@ -781,7 +781,7 @@ git commit -m "feat(#stage-2a): ingest the seven already-acquired D15 seed sourc
   phase**, not just a chunk contributor — CLAUDE.md's Sources section and §7.4 both treat it as
   the seed feature-model document.
 
-- [ ] **Step 1: STOP — developer checkpoint: locate the PDF**
+- [x] **Step 1: STOP — developer checkpoint: locate the PDF**
 
 `config/acquisitions.yaml` (Task 3) already flags this as `access-pending`: the PDF was
 attached to the original Notion brief as `feature-model.pdf` and is not present anywhere in this
@@ -792,7 +792,7 @@ unrecoverable, leave the `pending-source` queue entry open indefinitely per D37'
 inaccessible sources stay visibly parked" clause and skip to Task 7 — **do not fabricate or
 substitute a different paper**.
 
-- [ ] **Step 2: Scaffold and ingest once acquired**
+- [x] **Step 2: Scaffold and ingest once acquired**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/ingest
@@ -807,7 +807,7 @@ uv run langatlas-sources ingest jordan-et-al-2015 --file <path-to-the-pdf>
 identified Shoham 1993/Bruce & Longo 1990 by inspection rather than guesswork — `pdftotext -l 1
 <path> -` prints the title page.)
 
-- [ ] **Step 3: Resolve the sourcing-queue entry**
+- [x] **Step 3: Resolve the sourcing-queue entry**
 
 ```bash
 uv run langatlas-sources queue --kind pending-source
@@ -818,7 +818,7 @@ Expected: the `jordan-et-al-2015` line is gone (a successful `ingest` calls
 reason (`partially-ingested`, i.e. a QA hard gate fired), that is a developer checkpoint, not
 this task's failure — read the QA report before re-attempting.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add sources/jordan-et-al-2015.yaml
@@ -841,7 +841,7 @@ explicitly wants a parked source to stay *visibly* unresolved rather than silent
 - Consumes: `config/acquisitions.yaml` entries filed in Task 3 Step 6; `new-source`; `ingest`.
 - Produces: the six D27-ratified acquisitions, split three free / three paywalled.
 
-- [ ] **Step 1: STOP — developer checkpoint: the three free titles**
+- [x] **Step 1: STOP — developer checkpoint: the three free titles**
 
 Download and drop into a working directory (not the snapshot store — `ingest --file` copies
 into the snapshot store itself):
@@ -850,7 +850,7 @@ into the snapshot store itself):
   plai.org.
 - Kaijanaho (2015) thesis — free from JYU's institutional repository.
 
-- [ ] **Step 2: Scaffold and ingest the three free titles**
+- [x] **Step 2: Scaffold and ingest the three free titles**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/ingest
@@ -875,7 +875,7 @@ uv run langatlas-sources ingest kaijanaho-2015 --file <path-to-downloaded-pdf>
 Expected per title: `<id>: N chunks, QA <pass|warn>`; verify each with `uv run langatlas-sources
 qa <id>` per Task 5's QA-skim checkpoint before moving on.
 
-- [ ] **Step 3: STOP — developer checkpoint: the three paywalled titles**
+- [x] **Step 3: STOP — developer checkpoint: the three paywalled titles**
 
 Via university library access, obtain: Scott, *Programming Language Pragmatics*; Turbak &
 Gifford, *Design Concepts in Programming Languages*; Sebesta, *Concepts of Programming
@@ -883,7 +883,7 @@ Languages*. This step has no fixed timeline — `config/acquisitions.yaml`'s `pa
 stay open in `sourcing_queue` until each arrives; check status any time with
 `uv run langatlas-sources queue --kind pending-source`.
 
-- [ ] **Step 4: Scaffold and ingest each paywalled title as it arrives**
+- [x] **Step 4: Scaffold and ingest each paywalled title as it arrives**
 
 ```bash
 uv run langatlas-sources new-source scott-plp book "Programming Language Pragmatics" \
@@ -903,7 +903,7 @@ uv run langatlas-sources new-source sebesta-copl book "Concepts of Programming L
 uv run langatlas-sources ingest sebesta-copl --file <path-to-library-copy>
 ```
 
-- [ ] **Step 5: Commit each title as it lands** (do not batch all six into one commit if the
+- [x] **Step 5: Commit each title as it lands** (do not batch all six into one commit if the
   paywalled three arrive on a different day than the free three — smaller, real-time commits
   keep the git history matching when acquisition actually happened):
 
@@ -948,7 +948,7 @@ AbdelAli Ed-Dbali etc.).pdf`), Rust split between the Reference and the FLS.
 | Haskell | `haskell-2010-report` | `formal-spec` (per Prolog's own precedent — a language *report* is the formal-spec role; confirm against §4.2's actual wording before committing, since Haskell isn't named there either) | Haskell 2010 Language Report | single PDF |
 | Haskell | `ghc-users-guide` | `reference-implementation-docs` | latest GHC User's Guide | check for a PDF download on readthedocs |
 
-- [ ] **Step 1: STOP — developer checkpoint: resolve the two open grounding classifications**
+- [x] **Step 1: STOP — developer checkpoint: resolve the two open grounding classifications**
 
 §4.2's per-language table names Python, R, Rust, TypeScript, SQL, and Prolog explicitly; it does
 not name C, Java, or Haskell. Before scaffolding those three languages' records, the developer
@@ -959,7 +959,7 @@ decision back into [context/decisions.md](../../../context/decisions.md) under D
 default and move on**, since this is exactly the kind of judgment call §4.2 reserves for a
 one-time retroactive pass, not an inferred default.
 
-- [ ] **Step 2: For each spec, find or confirm a single-file ingestible form**
+- [x] **Step 2: For each spec, find or confirm a single-file ingestible form**
 
 The existing ingestion CLI has no multi-page-docs backend (same constraint as Task 5 Step 3).
 Before acquiring anything, check each doc's official site for a single-file export:
@@ -980,7 +980,7 @@ single-file form), leaving it for a deliberate later decision about whether a mu
 backend is worth building. This mirrors the sequencing map's explicit instruction: a needed
 ingestion-CLI *behavior* change is a finding to surface, not a silent fix within 2A.
 
-- [ ] **Step 3: Scaffold and ingest Prolog (already acquired)**
+- [x] **Step 3: Scaffold and ingest Prolog (already acquired)**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/ingest
@@ -994,7 +994,7 @@ uv run langatlas-sources ingest deransart-prolog-1996 \
   --file "/home/terra/Downloads/hermes-research/Prolog The Standard Reference Manual (Pierre Deransart, AbdelAli Ed-Dbali etc.).pdf"
 ```
 
-- [ ] **Step 4: Scaffold and ingest each remaining phase-1 spec once acquired**
+- [x] **Step 4: Scaffold and ingest each remaining phase-1 spec once acquired**
 
 Repeat Task 5's scaffold-then-ingest shape per row of the table above, using each row's
 resolved `grounding` value from Step 1, `--tier A` for a numbered ISO/ANSI-style
@@ -1003,7 +1003,7 @@ definitions), and `--canonical` whenever the URL/PDF comes straight from the spe
 publishing body (true for all of these — Python, WG14, Oracle, the Rust project, and
 haskell.org/GHC all publish their own specs directly).
 
-- [ ] **Step 5: Commit as each spec lands**
+- [x] **Step 5: Commit as each spec lands**
 
 ```bash
 git add sources/deransart-prolog-1996.yaml
@@ -1024,7 +1024,7 @@ any slipped through without `canonical_source`/`acquisition_note` set.
   source record — the exit condition the sequencing map calls "the R1 initial corpus gets a
   one-time retroactive backfill."
 
-- [ ] **Step 1: Run the CI check across every source record produced so far**
+- [x] **Step 1: Run the CI check across every source record produced so far**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/validate
@@ -1038,7 +1038,7 @@ treat any hit here as a real gap to fix (edit the offending `sources/<id>.yaml`'
 directly, then re-run `uv run langatlas-validate precommit --kind source sources/<id>.yaml` to
 confirm it's clean and normalized).
 
-- [ ] **Step 2: Commit any fixes found**
+- [x] **Step 2: Commit any fixes found**
 
 ```bash
 git add sources/<fixed-id>.yaml
@@ -1062,7 +1062,7 @@ separate produced deliverable, not a duplicate of Task 8).
 - Produces: the one-time retroactive classification the exit condition (sequencing map, item 1)
   names explicitly as separate from ordinary ingestion.
 
-- [ ] **Step 1: Enumerate every phase-1-language source record and its `custom.grounding`**
+- [x] **Step 1: Enumerate every phase-1-language source record and its `custom.grounding`**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
@@ -1070,7 +1070,7 @@ grep -A1 "^custom:" sources/{python,c23,jls,rust,haskell,ghc,deransart}*.yaml 2>
   | grep -B1 "grounding"
 ```
 
-- [ ] **Step 2: Cross-check each value against §4.2 and this plan's Global Constraints table**
+- [x] **Step 2: Cross-check each value against §4.2 and this plan's Global Constraints table**
 
 Confirm: Python → `reference-implementation-docs` (any PEP records → `design-doc`); Rust's
 Reference → `reference-implementation-docs`, Rust's FLS → `formal-spec`; Prolog →
@@ -1079,7 +1079,7 @@ Reference → `reference-implementation-docs`, Rust's FLS → `formal-spec`; Pro
 this task's finding: go back and record it, since a grounding value with no traceable rationale
 is exactly the drift D51's retroactive pass exists to catch).
 
-- [ ] **Step 3: Fix and re-normalize any mismatch found**
+- [x] **Step 3: Fix and re-normalize any mismatch found**
 
 ```bash
 uv run langatlas-validate precommit --kind source sources/<id>.yaml
@@ -1088,7 +1088,7 @@ uv run langatlas-validate precommit --kind source sources/<id>.yaml
 Expected: no output (clean). Edit the record's `custom.grounding` value directly if Step 2 found
 a mismatch, then re-run this command to confirm the edit is schema-valid and normalized.
 
-- [ ] **Step 4: Commit any fixes found**
+- [x] **Step 4: Commit any fixes found**
 
 ```bash
 git add sources/<fixed-id>.yaml
@@ -1108,7 +1108,7 @@ git commit -m "fix(#stage-2a): correct D51 grounding classification on <fixed-id
   `config/ingest.yaml`'s `models.embedding`) — the queryable index 2B and 2C need. This is
   the R1 half of item 1 in the sequencing map's Stage 2 exit condition.
 
-- [ ] **Step 1: Batch-embed every unembedded chunk**
+- [x] **Step 1: Batch-embed every unembedded chunk**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/ingest
@@ -1120,7 +1120,7 @@ Expected: `embedded N chunks on qwen3-embedding-4b`, where N equals the sum of e
 for the full corpus — it is safe to interrupt and re-run (`embed_source` only ever touches
 `store.unembedded(table)`, per `embed.py:23-26`'s own docstring).
 
-- [ ] **Step 2: Sanity-check retrieval works end to end**
+- [x] **Step 2: Sanity-check retrieval works end to end**
 
 ```bash
 uv run langatlas-sources search "static type checking" -k 5
@@ -1131,7 +1131,7 @@ this is a smoke test, not 2B's real golden-set eval (`tests/golden/retrieval/` i
 deliberately empty; `langatlas-sources eval` will print `golden_dir_missing` and that is
 correct at this point in the sequencing — 2B fills it next, not this plan).
 
-- [ ] **Step 3: Run the full validation/CI gate one last time**
+- [x] **Step 3: Run the full validation/CI gate one last time**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb/tools/validate
@@ -1144,7 +1144,7 @@ Expected: exit code 0. This is the mechanical half of the sequencing map's exit-
 grounding-classified halves were Tasks 5–10's developer checkpoints, not something a command can
 certify on its own.
 
-- [ ] **Step 4: No commit for this task** — embedding writes only to the private snapshot
+- [x] **Step 4: No commit for this task** — embedding writes only to the private snapshot
   store and Postgres, both git-excluded by design (D15); there is nothing new to stage.
 
 ---
