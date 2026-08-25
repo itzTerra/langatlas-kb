@@ -120,8 +120,10 @@ same pass**, never left only inside the brainstorm file itself:
 
 ## Sources (from the original Notion page)
 
-- Jordan, H., et al. (2015). Feature model of programming languages — PDF attached on the
-  original Notion page (`feature-model.pdf`); quoted excerpts preserved in the input brief.
+- Jordan, H., Botterweck, G., Noll, J., Butterfield, A., & Collier, R. (2015). A feature model of
+  actor, agent, functional, object, and procedural programming languages. *Science of Computer
+  Programming, 98*, 120–139. PDF attached on the original Notion page (`feature-model.pdf`);
+  quoted excerpts preserved in the input brief.
 - Van Roy, P., & Haridi, S. (2003). *Concepts, Techniques, and Models of Computer Programming.*
   MIT Press. https://webperso.info.ucl.ac.be/~pvr/VanRoyHaridi2003-book.pdf
 - Sammet, J. (1981 lineage, via Jordan et al.): "the simple presence of features is not a good

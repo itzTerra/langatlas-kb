@@ -37,7 +37,25 @@ day and promoted to ratified decision D64.
 
 ## Open Questions
 
-None open at the moment.
+1. `text/plain` ingestion is non-functional for any headerless plain-text document (the
+   extractor never assigns `heading_level` to any block for this media type, so the
+   `named-section` locator — the only kind a plain-text document could ever satisfy — never
+   becomes admissible, and `chunk_document` always raises `ExtractionFailed`). Worth a fix
+   (e.g. synthesizing a heading from the first line or filename) before `text/plain` is usable
+   for any future ad hoc source, or should it just stay an unsupported media type?
+2. `langatlas-sources new-source` has no way to record a source's editor role separately from
+   authorship (CSL-JSON supports a distinct `editor` field, but the CLI only exposes
+   `--author`). Two records in the R1 corpus (`pierce-attapl-2004`, edited by Pierce;
+   `haskell-2010-report`, edited by Marlow) currently list their editor as an author instead.
+   Worth adding an `--editor` flag to `new-source`/`render_source_yaml` before the corpus grows
+   further, or is author-as-editor an acceptable simplification long-term?
+3. `render_source_yaml`/`new-source` expose no flags for several CSL-JSON bibliographic fields
+   that later ingestion has needed in practice: `container-title`, `volume`, `page` (for
+   journal articles — three R1 records needed these added by direct YAML edit after the fact),
+   `publisher`, and `accessed` (for webpages, though the schema already defines
+   `custom.accessed`). Should Stage 3 add these flags to the scaffold tooling before the corpus
+   multiplies further, given every future journal-article or webpage source will hit the same
+   gap?
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 
