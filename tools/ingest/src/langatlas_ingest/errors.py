@@ -64,3 +64,14 @@ class GoldenItemInvalid(IngestError):
         super().__init__(f"golden item {item_id!r} {reason}")
         self.item_id = item_id
         self.reason = reason
+
+
+class NoVerifierRegistered(IngestError):
+    """`golden-score` was asked to score a verifier that does not exist yet. Typed so the
+    CLI can say "2D has not shipped the verifier" instead of reporting a 0% error rate
+    over zero items, which would read as a passing calibration."""
+
+    def __init__(self, key: str):
+        super().__init__(f"no verifier registered: set `goldens.{key}` in"
+                         " config/ingest.yaml or pass an explicit dotted path")
+        self.key = key

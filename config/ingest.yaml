@@ -29,3 +29,16 @@ extraction:
   pdf_backend: pymupdf              # or `docling` (optional extra); see plan assumption
 database:
   dsn: postgresql://langatlas:langatlas@localhost:55432/langatlas
+goldens:
+  # D44 candidate generation runs on a model decorrelated from the D24 verifier's own
+  # roster (deepseek / deepseek-thinking primary+escalation, mini as the cross-family
+  # second opinion) — a golden set written by the model under test measures agreement,
+  # not correctness.
+  candidate_model: kimi
+  thresholds:
+    false_accept_max: 0.02          # §6.2; an FA poisons a public RAG-recycled corpus
+    false_reject_max: 0.10          # an FR costs one retry — deliberate asymmetry
+  # Dotted `module:attr` path to the D24 verifier factory. Null until 2D ships it;
+  # `golden-score` says so plainly rather than scoring nothing and reporting 0%.
+  verifier_entry_point: null
+  controversy_assessor_entry_point: null

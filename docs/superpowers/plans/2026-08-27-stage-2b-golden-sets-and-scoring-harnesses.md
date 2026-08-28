@@ -1499,7 +1499,7 @@ git commit -m "feat(#stage-2b): score golden runs with separate false-accept and
   - `IngestConfig.golden_candidate_model`, `.golden_thresholds` (a `Thresholds`),
     `.verifier_entry_point`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_runner.py`:
 
@@ -1582,12 +1582,12 @@ def test_the_config_exposes_the_goldens_block():
     assert config.verifier_entry_point is None      # 2D sets it
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_runner.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.runner'`.
 
-- [ ] **Step 3: Add the config block**
+- [x] **Step 3: Add the config block**
 
 Append to `config/ingest.yaml`:
 
@@ -1651,7 +1651,7 @@ class NoVerifierRegistered(IngestError):
         self.key = key
 ```
 
-- [ ] **Step 4: Write `runner.py`**
+- [x] **Step 4: Write `runner.py`**
 
 ```python
 import importlib
@@ -1738,14 +1738,14 @@ def run_controversy_goldens(cases, assess: Assessor, *, ctx=None) -> Controversy
     return score
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_runner.py tests/test_config.py -v`
 Expected: PASS. If `test_config.py` fails on the new fields, update its construction there —
 the `goldens:` block has defaults, so an explicit-kwargs construction is the only thing that
 can break.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/runner.py \
