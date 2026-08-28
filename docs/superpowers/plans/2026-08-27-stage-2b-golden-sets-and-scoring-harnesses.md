@@ -527,7 +527,7 @@ git commit -m "feat(#stage-2b): add golden-set item types and the D44 stratum vo
   - `validate_set(items, held_out) -> list[str]` — set-level invariants (Task 5's `--complete`)
   - `SET_INVARIANTS` (the numeric targets, so the README and the checker cannot drift apart)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_loader.py`:
 
@@ -672,12 +672,12 @@ cases:
     assert any("github_activity" in e for e in errors)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_loader.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.loader'`.
 
-- [ ] **Step 3: Write `loader.py`**
+- [x] **Step 3: Write `loader.py`**
 
 ```python
 from pathlib import Path
@@ -930,12 +930,12 @@ def validate_set(items, held_out) -> list[str]:
     return errors
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_loader.py -v`
 Expected: PASS (11 tests).
 
-- [ ] **Step 5: Write the four golden-directory READMEs**
+- [x] **Step 5: Write the four golden-directory READMEs**
 
 `tests/golden/verifier/README.md`:
 
@@ -1037,12 +1037,12 @@ Stage 3 (D5/D30), so there is nothing to score yet. Stage 2B creates the directo
 stops there, deliberately — see the Stage 2 sequencing map, "Not built here".
 ```
 
-- [ ] **Step 6: Run the full ingest suite for regressions**
+- [x] **Step 6: Run the full ingest suite for regressions**
 
 Run: `uv --directory tools/ingest run pytest -q`
 Expected: PASS (db-marked tests skip without Postgres; that is fine here).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/loader.py \
