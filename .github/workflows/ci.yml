@@ -18,6 +18,10 @@ jobs:
           uv --directory tools/ingest sync
       - name: Run the store-validating gate
         run: uv --directory tools/validate run langatlas-validate ci
+      - name: Shape-check the committed golden sets
+        # Shape only: no database, no provider. The *scored* harness is deliberately not
+        # a CI gate (§8.6) — a golden run is a measurement, not a merge condition.
+        run: uv --directory tools/ingest run langatlas-sources golden-validate
 
   publish:
     needs: validate

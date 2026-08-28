@@ -1773,7 +1773,7 @@ git commit -m "feat(#stage-2b): add the threshold-gated golden runner behind a v
 - Exit codes (both commands): `0` clean, `1` validation errors, `2` thresholds missed,
   `3` nothing registered to score.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_cli.py`:
 
@@ -1850,12 +1850,12 @@ def test_golden_score_writes_the_machine_readable_error_rates(tmp_path):
 > rootdir; if the executor's invocation does not, run pytest from `tools/ingest` (as every
 > command in this plan does) and the import works.
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_cli.py -v`
 Expected: FAIL — `error: argument command: invalid choice: 'golden-validate'`.
 
-- [ ] **Step 3: Add the two commands to `cli.py`**
+- [x] **Step 3: Add the two commands to `cli.py`**
 
 Add the handlers next to `_cmd_eval`:
 
@@ -1983,12 +1983,12 @@ Register them in the parser, next to the `eval` parser:
     golden_score.set_defaults(func=_cmd_golden_score)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_cli.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Wire the shape check into CI**
+- [x] **Step 5: Wire the shape check into CI**
 
 In `.github/workflows/ci.yml`, inside the `validate` job, after the store-validating gate:
 
@@ -1999,13 +1999,13 @@ In `.github/workflows/ci.yml`, inside the `validate` job, after the store-valida
         run: uv --directory tools/ingest run langatlas-sources golden-validate
 ```
 
-- [ ] **Step 6: Verify it passes locally the way CI will run it**
+- [x] **Step 6: Verify it passes locally the way CI will run it**
 
 Run: `uv --directory tools/ingest run langatlas-sources golden-validate`
 Expected: `verifier items: 0 (+0 held out), controversy cases: 0, 0 errors`, exit 0 — the
 sets are still empty at this point, and an empty set is not an error.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/cli.py .github/workflows/ci.yml \

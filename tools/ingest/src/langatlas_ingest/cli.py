@@ -143,6 +143,104 @@ def _cmd_eval(args) -> int:
     return 0
 
 
+def _cmd_golden_validate(args) -> int:
+    from langatlas_ingest.goldens.loader import (
+        load_controversy_cases, load_verifier_items, validate_controversy_cases,
+        validate_items, validate_set,
+    )
+    from langatlas_ingest.paths import (
+        GOLDEN_CONTROVERSY_DIR, GOLDEN_VERIFIER_DIR, GOLDEN_VERIFIER_HELD_OUT_DIR,
+    )
+    from langatlas_validate.paths import REPO_ROOT
+
+    verifier_dir = Path(args.verifier_dir or GOLDEN_VERIFIER_DIR)
+    # The source-existence check needs the real `sources/` tree; a test pointing
+    # `--verifier-dir` at a tmp dir is checking shape, not the committed corpus.
+    sources_dir = REPO_ROOT / "sources" if args.verifier_dir is None else None
+    items = load_verifier_items(verifier_dir)
+    held_out = load_verifier_items(verifier_dir, include_held_out=True)
+    held_out = [item for item in held_out if item.held_out]
+    errors = validate_items(items + held_out, sources_dir=sources_dir)
+
+    controversy_dir = Path(args.controversy_dir or GOLDEN_CONTROVERSY_DIR)
+    cases = load_controversy_cases(controversy_dir) if controversy_dir.is_dir() else []
+    errors += validate_controversy_cases(cases)
+
+    if args.resolve:
+        errors += _resolve_golden_locators(items + held_out)
+    if args.complete:
+        errors += validate_set(items, held_out)
+
+    print(f"verifier items: {len(items)} (+{len(held_out)} held out),"
+          f" controversy cases: {len(cases)}, {len(errors)} errors")
+    for error in errors:
+        print(f"  {error}")
+    return 1 if errors else 0
+
+
+def _resolve_golden_locators(items) -> list[str]:
+    """Check every item's locator and evidence chunk ids against the live corpus. Needs
+    Postgres, so it is opt-in (`--resolve`) and never runs in CI."""
+    from langatlas_ingest.index import PostgresSourceChunksIndex
+    from langatlas_ingest.store import SourceChunksStore
+
+    errors = []
+    with connect(IngestConfig.load().dsn) as conn:
+        index, store = PostgresSourceChunksIndex(conn), SourceChunksStore(conn)
+        for item in items:
+            for chunk_id in item.evidence_chunk_ids:
+                if store.get(chunk_id) is None:
+                    errors.append(f"{item.id}: evidence chunk {chunk_id!r} is not in"
+                                  " source_chunks")
+            resolved = index.resolve(item.citation.source, item.citation.locator)
+            expects_resolution = item.stratum != "fabricated-locator"
+            if expects_resolution and not resolved:
+                errors.append(f"{item.id}: locator {item.citation.locator!r} resolves to"
+                              " no chunk — golden locators are copied from real rows")
+            if not expects_resolution and resolved:
+                errors.append(f"{item.id}: stratum 'fabricated-locator' but the locator"
+                              " resolves; it is not fabricated")
+    return errors
+
+
+def _cmd_golden_score(args) -> int:
+    import json
+    from datetime import datetime, timezone
+    from langatlas_ingest.goldens.loader import load_controversy_cases, load_verifier_items
+    from langatlas_ingest.goldens.runner import (
+        load_entry_point, run_controversy_goldens, run_verifier_goldens,
+    )
+    from langatlas_ingest.paths import GOLDEN_CONTROVERSY_DIR, GOLDEN_VERIFIER_DIR
+
+    config = IngestConfig.load()
+    dotted = args.verifier or config.verifier_entry_point
+    assessor_dotted = args.controversy_assessor or config.controversy_assessor_entry_point
+    if not dotted and not assessor_dotted:
+        print("no verifier registered — set `goldens.verifier_entry_point` in"
+              " config/ingest.yaml (2D ships it) or pass --verifier")
+        return 3
+
+    code = 0
+    if dotted:
+        items = load_verifier_items(Path(args.verifier_dir or GOLDEN_VERIFIER_DIR),
+                                    include_held_out=args.include_held_out)
+        score = run_verifier_goldens(items, load_entry_point(dotted),
+                                     thresholds=config.golden_thresholds)
+        print(score.to_markdown())
+        if args.json:
+            payload = json.loads(score.to_json())
+            payload["generated"] = datetime.now(timezone.utc).isoformat()
+            payload["verifier_entry_point"] = dotted
+            Path(args.json).write_text(json.dumps(payload, indent=2, sort_keys=True))
+        code = 0 if score.thresholds_met else 2
+    if assessor_dotted:
+        cases = load_controversy_cases(Path(args.controversy_dir
+                                            or GOLDEN_CONTROVERSY_DIR))
+        print(run_controversy_goldens(cases,
+                                      load_entry_point(assessor_dotted)).to_markdown())
+    return code
+
+
 def _cmd_new_source(args) -> int:
     from langatlas_ingest.paths import REPO_ROOT
     from langatlas_ingest.scaffold import render_source_yaml
@@ -245,6 +343,27 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--no-rerank", action="store_true",
                           help="score the no-rerank arm of §8.6's comparison")
     evaluate.set_defaults(func=_cmd_eval)
+
+    golden_validate = sub.add_parser(
+        "golden-validate", help="shape-check the committed golden sets (no DB, no provider)")
+    golden_validate.add_argument("--verifier-dir")
+    golden_validate.add_argument("--controversy-dir")
+    golden_validate.add_argument("--resolve", action="store_true",
+                                 help="also resolve locators against Postgres")
+    golden_validate.add_argument("--complete", action="store_true",
+                                 help="also enforce the §6.4 set-level invariants")
+    golden_validate.set_defaults(func=_cmd_golden_validate)
+
+    golden_score = sub.add_parser(
+        "golden-score", help="score a verifier against the golden set (never a CI gate)")
+    golden_score.add_argument("--verifier", help="module:attr entry point")
+    golden_score.add_argument("--controversy-assessor", help="module:attr entry point")
+    golden_score.add_argument("--verifier-dir")
+    golden_score.add_argument("--controversy-dir")
+    golden_score.add_argument("--include-held-out", action="store_true",
+                              help="run the audit slice — once, at the end, never to tune")
+    golden_score.add_argument("--json", help="write the machine-readable error rates here")
+    golden_score.set_defaults(func=_cmd_golden_score)
 
     new_source = sub.add_parser("new-source",
                                 help="scaffold a schema-valid sources/<id>.yaml record")

@@ -34,6 +34,12 @@ langatlas-validate = { path = "../validate", editable = true }
 langatlas-pipeline = { path = "../pipeline", editable = true }
 
 [tool.pytest.ini_options]
+# `tests/` has no `__init__.py`, so pytest's default import mode inserts only `tests/`
+# itself on sys.path, not `tools/ingest`. golden-score's entry points are dotted
+# `module:attr` paths (D-whatever "any Python callable"), and the CLI tests resolve one
+# against the test module itself (`tests.test_goldens_cli:always_supported`) — that
+# import needs `tools/ingest` (this directory) on sys.path too.
+pythonpath = ["."]
 markers = [
   "db: needs the docker compose Postgres; run with -m db after `docker compose up -d db`",
   "live: hits a real provider; deselected by default",
