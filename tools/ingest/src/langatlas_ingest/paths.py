@@ -15,3 +15,11 @@ SNAPSHOT_ROOT = Path(os.environ.get("LANGATLAS_SNAPSHOT_ROOT", PRIVATE_DIR / "sn
 
 def snapshot_dir(source_id: str) -> Path:
     return SNAPSHOT_ROOT / source_id
+
+GOLDEN_VERIFIER_DIR = REPO_ROOT / "tests" / "golden" / "verifier"
+# The D44 audit slice: developer-authored, no LLM in the loop, and never a tuning signal.
+# A separate directory rather than a per-item flag, so "include it" is an explicit act at
+# every call site instead of a filter someone can forget.
+GOLDEN_VERIFIER_HELD_OUT_DIR = GOLDEN_VERIFIER_DIR / "held-out"
+GOLDEN_CONTROVERSY_DIR = REPO_ROOT / "tests" / "golden" / "controversy"
+GOLDEN_DEBATES_DIR = REPO_ROOT / "tests" / "golden" / "debates"

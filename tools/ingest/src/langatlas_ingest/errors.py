@@ -51,3 +51,16 @@ class GoldenEntryInvalid(IngestError):
         super().__init__(f"golden entry {entry_id!r} {reason}")
         self.entry_id = entry_id
         self.reason = reason
+
+
+class GoldenItemInvalid(IngestError):
+    """A committed golden item (Section 6.4) fails the authoring contract: an unknown
+    stratum, a verdict its stratum cannot produce, an over-cap quote, an uncurated LLM
+    candidate. Raised eagerly rather than scored around — a malformed calibration item
+    silently shifts the measured false-accept rate, which is the one number the project
+    publishes as an honesty feature."""
+
+    def __init__(self, item_id, reason):
+        super().__init__(f"golden item {item_id!r} {reason}")
+        self.item_id = item_id
+        self.reason = reason
