@@ -270,6 +270,20 @@ def _cmd_golden_derive_queries(args) -> int:
     return 0
 
 
+def _cmd_golden_staleness(args) -> int:
+    from langatlas_ingest.goldens.loader import load_verifier_items
+    from langatlas_ingest.goldens.staleness import check_staleness
+
+    items = load_verifier_items(include_held_out=True)
+    with connect(IngestConfig.load().dsn) as conn:
+        stale = check_staleness(conn, items)
+    print(f"{len(stale)} of {len(items)} golden items have stale grounding")
+    for entry in stale:
+        print(f"  {entry.item_id}: {entry.reason}")
+    # Always 0: Section 6.4 makes staleness enforcement on golden items soft/log-only.
+    return 0
+
+
 def _cmd_new_source(args) -> int:
     from langatlas_ingest.paths import REPO_ROOT
     from langatlas_ingest.scaffold import render_source_yaml
@@ -401,6 +415,10 @@ def build_parser() -> argparse.ArgumentParser:
     derive.add_argument("--limit", type=int)
     derive.add_argument("--out", required=True)
     derive.set_defaults(func=_cmd_golden_derive_queries)
+
+    staleness = sub.add_parser("golden-staleness",
+                               help="report golden items whose grounding moved (log-only)")
+    staleness.set_defaults(func=_cmd_golden_staleness)
 
     candidates = sub.add_parser(
         "golden-candidates", help="draft golden-item candidates (volume only; you curate)")

@@ -2578,7 +2578,7 @@ git commit -m "feat(#stage-2b): derive retrieval golden queries from correct-str
   and `langatlas-sources golden-staleness` — which **always exits 0** (§6.4: staleness
   enforcement on golden items is soft/log-only).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_staleness.py`:
 
@@ -2635,12 +2635,12 @@ def test_a_fabricated_locator_item_is_never_reported_stale(corpus):
     assert check_staleness(corpus, [fabricated]) == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `docker compose up -d db && uv --directory tools/ingest run pytest tests/test_goldens_staleness.py -m db -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.staleness'`.
 
-- [ ] **Step 3: Write `staleness.py`**
+- [x] **Step 3: Write `staleness.py`**
 
 ```python
 from dataclasses import dataclass
@@ -2681,7 +2681,7 @@ def check_staleness(conn, items) -> list[StaleItem]:
     return stale
 ```
 
-- [ ] **Step 4: Add the CLI command**
+- [x] **Step 4: Add the CLI command**
 
 ```python
 def _cmd_golden_staleness(args) -> int:
@@ -2704,17 +2704,17 @@ def _cmd_golden_staleness(args) -> int:
     staleness.set_defaults(func=_cmd_golden_staleness)
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_staleness.py -m db -v`
 Expected: PASS (4 tests).
 
-- [ ] **Step 6: Run the whole suite**
+- [x] **Step 6: Run the whole suite**
 
 Run: `uv --directory tools/ingest run pytest -q && uv --directory tools/ingest run pytest -q -m db`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/staleness.py \
