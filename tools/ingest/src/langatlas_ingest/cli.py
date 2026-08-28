@@ -241,6 +241,25 @@ def _cmd_golden_score(args) -> int:
     return code
 
 
+def _cmd_golden_candidates(args) -> int:
+    from langatlas_ingest.goldens.authoring import (
+        generate_candidates, write_candidate_file,
+    )
+    from langatlas_pipeline.providers.core import RunContext
+
+    config = IngestConfig.load()
+    with connect(config.dsn) as conn, \
+            RunContext.start(kind="golden-candidates", slug=args.source_id) as ctx:
+        candidates = generate_candidates(ctx, conn, source_id=args.source_id,
+                                         stratum=args.stratum, count=args.count,
+                                         topic=args.topic, config=config)
+    path = write_candidate_file(candidates, Path(args.out))
+    print(f"{len(candidates)} candidates -> {path}\n"
+          "review every one, then set `curated: true` and move it into"
+          " tests/golden/verifier/")
+    return 0
+
+
 def _cmd_new_source(args) -> int:
     from langatlas_ingest.paths import REPO_ROOT
     from langatlas_ingest.scaffold import render_source_yaml
@@ -364,6 +383,15 @@ def build_parser() -> argparse.ArgumentParser:
                               help="run the audit slice — once, at the end, never to tune")
     golden_score.add_argument("--json", help="write the machine-readable error rates here")
     golden_score.set_defaults(func=_cmd_golden_score)
+
+    candidates = sub.add_parser(
+        "golden-candidates", help="draft golden-item candidates (volume only; you curate)")
+    candidates.add_argument("--source-id", required=True)
+    candidates.add_argument("--stratum", required=True)
+    candidates.add_argument("--count", type=int, default=5)
+    candidates.add_argument("--topic", help="seed retrieval instead of random sampling")
+    candidates.add_argument("--out", required=True)
+    candidates.set_defaults(func=_cmd_golden_candidates)
 
     new_source = sub.add_parser("new-source",
                                 help="scaffold a schema-valid sources/<id>.yaml record")

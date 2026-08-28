@@ -2034,7 +2034,7 @@ git commit -m "feat(#stage-2b): add golden-validate/golden-score commands and th
   - `write_candidate_file(candidates, path) -> Path`
   - `langatlas-sources golden-candidates --source-id X --stratum S --count N --out FILE`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_authoring.py`:
 
@@ -2144,12 +2144,12 @@ def test_a_fabricated_locator_stratum_does_not_inherit_the_real_locator():
     assert candidate["evidence_chunk_ids"] == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_authoring.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.authoring'`.
 
-- [ ] **Step 3: Mint the candidate-generation prompt**
+- [x] **Step 3: Mint the candidate-generation prompt**
 
 Write the prompt body to a scratch file and mint it (the filename is the content hash, so it
 must not be hand-created):
@@ -2192,7 +2192,7 @@ uv --directory tools/pipeline run langatlas-prompts mint golden-candidate \
 
 Expected: prints `golden-candidate@v-xxxxxxxx` and creates `prompts/golden-candidate/`.
 
-- [ ] **Step 4: Write `authoring.py`**
+- [x] **Step 4: Write `authoring.py`**
 
 ```python
 import random
@@ -2338,7 +2338,7 @@ def write_candidate_file(candidates: list[dict], path: Path) -> Path:
     return path
 ```
 
-- [ ] **Step 5: Add the CLI command**
+- [x] **Step 5: Add the CLI command**
 
 In `cli.py`:
 
@@ -2373,12 +2373,12 @@ def _cmd_golden_candidates(args) -> int:
     candidates.set_defaults(func=_cmd_golden_candidates)
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_authoring.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 7: Smoke-test against the real corpus and a real model**
+- [x] **Step 7: Smoke-test against the real corpus and a real model**
 
 Run:
 ```bash
@@ -2390,7 +2390,7 @@ Expected: three candidates written, each quoting real CTM text; the run appears 
 `langatlas-transcripts`. Read them — if they are visibly bad, that is a prompt finding to
 surface before Task 9, not something to work around.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/authoring.py \
