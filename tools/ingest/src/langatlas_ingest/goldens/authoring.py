@@ -1,4 +1,5 @@
 import random
+import re
 from pathlib import Path
 from pydantic import BaseModel, Field
 from ruamel.yaml import YAML
@@ -54,6 +55,23 @@ class CandidateBatch(BaseModel):
     candidates: list[Candidate]
 
 
+def _resolve_locator(locator: str, by_locator: dict, source_id: str):
+    """Match a model-returned locator against the sampled chunks, tolerant of the model
+    re-contextualizing a bare locator by prefixing the source id (observed live: a chunk
+    stored as `"§8.4.3"` came back as `"vanroy-haridi-2003 §8.4.3"`). Without this, every
+    genuinely-grounded citation reads identically to a fabricated one — both come out as
+    an empty `evidence_chunk_ids` — which defeats the point of grounding to real chunks.
+
+    Only a leading `"<source_id><separator>"` is stripped, so a citation to a locator that
+    truly is not among the sampled chunks (or a deliberately fabricated one) still misses,
+    same as before."""
+    if locator in by_locator:
+        return by_locator[locator]
+    stripped = re.sub(rf"^{re.escape(source_id)}[\s:,-]+", "", locator.strip(),
+                      flags=re.IGNORECASE)
+    return by_locator.get(stripped)
+
+
 def _sample_chunks(conn, source_id: str, *, topic: str | None, ctx,
                    config: IngestConfig):
     if topic:
@@ -107,7 +125,7 @@ def generate_candidates(ctx, conn, *, source_id: str, stratum: str, count: int,
 
     drafted = []
     for index, candidate in enumerate(result.parsed.candidates, start=1):
-        matched = by_locator.get(candidate.locator)
+        matched = _resolve_locator(candidate.locator, by_locator, source_id)
         drafted.append({
             "id": f"v-{source_id}-{stratum}-{index:04d}",
             "stratum": candidate.stratum or stratum,

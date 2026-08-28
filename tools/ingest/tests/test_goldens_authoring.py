@@ -91,6 +91,22 @@ def test_the_generated_locator_and_chunk_id_come_from_the_real_chunk(tmp_path):
     assert candidate["citation"]["locator"] == "p. 1"
 
 
+def test_a_source_prefixed_locator_still_resolves_to_the_real_chunk():
+    """Observed live against a real model: the locator came back re-contextualized as
+    `"vanroy-haridi-2003 §8.4.3"` for a chunk stored bare as `"§8.4.3"`. A genuinely
+    grounded citation must not be indistinguishable from a fabricated one just because
+    the model dressed the locator up."""
+    ctx = FakeCompletionCtx({"candidates": [dict(PAYLOAD["candidates"][0],
+                                                 locator="ctm p. 1")]})
+    candidate = generate_candidates(ctx, conn=None, source_id="ctm",
+                                    stratum="overstated-claim", count=1, config=CONFIG,
+                                    chunks=chunks())[0]
+    assert candidate["evidence_chunk_ids"] == ["ctm#c00001"]
+    # The citation records what the model actually said, not the normalized form —
+    # normalization is a matching aid, not a rewrite of the drafted citation.
+    assert candidate["citation"]["locator"] == "ctm p. 1"
+
+
 def test_a_fabricated_locator_stratum_does_not_inherit_the_real_locator():
     ctx = FakeCompletionCtx({"candidates": [dict(PAYLOAD["candidates"][0],
                                                  stratum="fabricated-locator",
