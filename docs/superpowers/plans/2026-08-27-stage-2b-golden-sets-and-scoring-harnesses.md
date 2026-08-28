@@ -2767,7 +2767,7 @@ source that documents the feature, or cited to a source that says nothing either
 **≥20 items marked `contamination_gauge: true`** (obscure loci: ATTAPL chapters, the Prolog
 standard, GHC user's guide corners, CTM's later chapters — not Chapter 1 of anything).
 
-- [ ] **Step 1: Pick the batch's source and read its QA report**
+- [x] **Step 1: Pick the batch's source and read its QA report**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources qa <source_id>
@@ -2776,7 +2776,7 @@ uv --directory tools/ingest run langatlas-sources qa <source_id>
 The QA skim is the golden-set co-authoring time (§7.4). Note passages that state something
 crisply and narrowly — those make the best items across every stratum.
 
-- [ ] **Step 2: Generate candidates for the batch's strata**
+- [x] **Step 2: Generate candidates for the batch's strata**
 
 ```bash
 for stratum in correct overstated-claim wrong-since-off-by-one contradicted; do
@@ -2789,7 +2789,7 @@ done
 For strata that need a specific passage rather than a random sample, add
 `--topic "<what you want to find>"` — it seeds retrieval instead of sampling.
 
-- [ ] **Step 3: Curate — read every candidate, fix it, and confirm its grounding**
+- [x] **Step 3: Curate — read every candidate, fix it, and confirm its grounding**
 
 For each candidate, the developer (with Claude) checks:
 1. Does the cited chunk actually say what the item assumes? Read it:
@@ -2805,7 +2805,7 @@ For each candidate, the developer (with Claude) checks:
 Drop candidates freely. A thin, correct set beats a padded one; the size floor is met across
 batches, not within one.
 
-- [ ] **Step 4: Move the curated items into a committed batch file**
+- [x] **Step 4: Move the curated items into a committed batch file**
 
 Append them under `items:` in `tests/golden/verifier/items-<theme>.yaml`. A worked example of
 every one of the 13 strata, to copy the shape from. **Every locator and chunk id below is
@@ -3029,7 +3029,7 @@ items:
       inverted-framing entailment on the absence_scope'
 ```
 
-- [ ] **Step 5: Validate the batch**
+- [x] **Step 5: Validate the batch**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources golden-validate --resolve
@@ -3037,7 +3037,7 @@ uv --directory tools/ingest run langatlas-sources golden-validate --resolve
 Expected: `0 errors`. Fix everything it reports before committing — a `locator resolves to no
 chunk` error means the item was hand-typed rather than copied from a real row.
 
-- [ ] **Step 6: Commit the batch**
+- [x] **Step 6: Commit the batch**
 
 ```bash
 git add tests/golden/verifier/items-<theme>.yaml \

@@ -1,0 +1,201 @@
+version: 1
+items:
+  - id: v-haskell-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      rendered: 'Haskell has type classes (present).'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+      quote: 'A class declaration introduces a new class and the operations ( class methods ) on it.'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'plainest possible support; the FR baseline for this batch'
+
+  - id: v-haskell-core-0002
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-prelude-list-functions, int-usage-scope, "all-list-functions")'
+      rendered: 'All commonly-used Haskell Prelude list functions use the Int type rather than a more general numeric type.'
+    citation:
+      source: haskell-2010-report
+      locator: 'p. 125'
+      quote: 'a number of commonly- used functions over lists use the Int type rather than using a more general numeric type, such as Integral a or Num a . These functions are: take , drop , !! , length , splitAt , and replicate .'
+    evidence_chunk_ids: ['haskell-2010-report#c00179']
+    expected_annotations: []
+    notes: 'the evidence says "a number of" and names exactly six functions; the claim
+      universalises to all list functions. Base claim (some list functions use Int) is
+      supported, the "all" qualifier is not -- the K1 pattern.'
+
+  - id: v-haskell-core-0003
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-data-list-find, container-scope, "any-container-type")'
+      rendered: 'The find function in Data.List operates on any container type.'
+    citation:
+      source: haskell-2010-report
+      locator: '§20.6.2'
+      quote: 'The find function takes a predicate and a list and returns the ﬁrst element in the list matching the predicate, or Nothing if there is no such element.'
+    evidence_chunk_ids: ['haskell-2010-report#c00273']
+    notes: 'evidence types find over lists specifically ((a -> Bool) -> [a] -> Maybe a);
+      the claim generalises the input to any container type, beyond what the passage states.'
+
+  - id: v-haskell-core-0004
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-ratio-read, instance-constraint, "Integral-only")'
+      rendered: 'The Read instance for Ratio a is available whenever the base type a is Integral.'
+    citation:
+      source: haskell-2010-report
+      locator: '§22.1'
+      quote: 'instance (Read a, Integral a) => Read (Ratio a) where'
+    evidence_chunk_ids: ['haskell-2010-report#c00286']
+    notes: 'the instance head requires both (Read a, Integral a); the claim drops the Read a
+      constraint and overstates the instance to every Integral type.'
+
+  - id: v-haskell-core-0005
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§99.14'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section that does not exist in this ~30-chapter report'
+
+  - id: v-haskell-core-0006
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-eager-evaluation-default, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: 'p. 23'
+      quote: 'Haskell provides higher-order functions, non-strict semantics, static poly- morphic typing, user-deﬁned algebraic datatypes, pattern-matching, list comprehensions'
+    evidence_chunk_ids: ['haskell-2010-report#c00023']
+    notes: 'the cited text explicitly names non-strict (i.e. lazy-by-default) semantics,
+      the opposite of eager evaluation as the default'
+
+  - id: v-haskell-core-0007
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    contamination_gauge: true
+    notes: 'true claim (Rust does have an ownership system), but this citation is the
+      Haskell class-declarations section and cannot carry it -- the hardest false-accept
+      class, since a model answering from memory says supported'
+
+  - id: v-haskell-core-0008
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-haskell-type-classes-readability, a-improves-strongly)'
+      rendered: 'Type classes strongly improve readability.'
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'a language report defines syntax and semantics; it makes no quality claims'
+
+  - id: v-haskell-core-0009
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-dependent-types, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'Haskell 2010 has no dependent types; the pairing itself is invented, and this
+      section (ordinary type classes) says nothing about it'
+
+  - id: v-haskell-core-0010
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+      quote: 'type classes provide ad-hoc polymorphism through runtime vtable dispatch'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'fabricated quote in the shape of a plausible one; the real section never
+      mentions vtables or runtime dispatch mechanics'
+
+  - id: v-haskell-core-0011
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.1'
+      quote: 'A class declaration introduces a new class and the operations ( class methods ) on it.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'real quote, cited to §4.1 (the overview section, which merely previews class
+      declarations) instead of its real home §4.3.1 -- one section early, auto-correctable'
+
+  - id: v-haskell-core-0012
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-oz-lazy-evaluation, status=present)'
+      status: present
+    citation:
+      source: vanroy-haridi-2003
+      locator: '§1.8'
+      quote: 'In lazv evaluation, a calculation is dane only when the resuIt is nee ded.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00071']
+    contamination_gauge: true
+    notes: 'real quote is "In lazy evaluation, a calculation is done only when the result
+      is needed." with letter-level noise injected (v/y, a/o, split "needed"); the LLM
+      must adjudicate OCR noise, not fabrication'
+
+  - id: v-haskell-core-0013
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-oz-lazy-evaluation, status=present)'
+      rendered: 'Oz supports lazy evaluation.'
+      status: present
+    citation:
+      source: vanroy-haridi-2003
+      locator: '§1.8'
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00071']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim string carries no natural-language overlap
+      with the source prose; retrieval/entailment must work from the locator and chunk
+      content alone'
