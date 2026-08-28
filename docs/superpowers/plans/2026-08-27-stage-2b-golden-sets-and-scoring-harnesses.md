@@ -1074,7 +1074,7 @@ git commit -m "feat(#stage-2b): load and validate golden items against the D44 a
   - `VerdictOutcome` is imported from `runner` in Task 4; to keep the dependency one-way,
     `score.py` defines it and `runner.py` re-exports it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_score.py`:
 
@@ -1196,12 +1196,12 @@ def test_controversy_scoring_reports_exact_and_adjacent_accuracy():
     assert score.level3_recall == 0.0
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_score.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.score'`.
 
-- [ ] **Step 3: Write `score.py`**
+- [x] **Step 3: Write `score.py`**
 
 ```python
 import json
@@ -1462,12 +1462,12 @@ def score_controversy(cases, levels: dict) -> ControversyScore:
                             level3_recall=_rate(level3_hits, level3_total))
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_score.py -v`
 Expected: PASS (11 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/score.py \
