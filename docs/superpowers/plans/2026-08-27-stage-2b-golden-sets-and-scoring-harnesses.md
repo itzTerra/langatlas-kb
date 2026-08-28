@@ -2417,7 +2417,7 @@ git commit -m "feat(#stage-2b): generate uncurated golden candidates from real c
 - Output entries match `run_eval`'s contract exactly: `id`, `band`, `query`, and **exactly
   one** of `expected_chunks` / `expected_sources`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_goldens_derive.py`:
 
@@ -2468,12 +2468,12 @@ def test_written_queries_load_through_run_evals_own_reader(tmp_path):
     _validate(entries[0])       # raises GoldenEntryInvalid if the shape is wrong
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_derive.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.goldens.derive'`.
 
-- [ ] **Step 3: Write `derive.py`**
+- [x] **Step 3: Write `derive.py`**
 
 ```python
 from pathlib import Path
@@ -2525,7 +2525,7 @@ def write_queries(queries: list[dict], path: Path, *, theme: str) -> Path:
     return path
 ```
 
-- [ ] **Step 4: Add the CLI command**
+- [x] **Step 4: Add the CLI command**
 
 ```python
 def _cmd_golden_derive_queries(args) -> int:
@@ -2548,12 +2548,12 @@ def _cmd_golden_derive_queries(args) -> int:
     derive.set_defaults(func=_cmd_golden_derive_queries)
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_derive.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/goldens/derive.py \

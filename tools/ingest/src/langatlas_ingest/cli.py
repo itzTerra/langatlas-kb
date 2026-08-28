@@ -260,6 +260,16 @@ def _cmd_golden_candidates(args) -> int:
     return 0
 
 
+def _cmd_golden_derive_queries(args) -> int:
+    from langatlas_ingest.goldens.derive import derive_queries, write_queries
+    from langatlas_ingest.goldens.loader import load_verifier_items
+
+    queries = derive_queries(load_verifier_items(), band=args.band, limit=args.limit)
+    path = write_queries(queries, Path(args.out), theme=args.theme)
+    print(f"{len(queries)} queries -> {path}")
+    return 0
+
+
 def _cmd_new_source(args) -> int:
     from langatlas_ingest.paths import REPO_ROOT
     from langatlas_ingest.scaffold import render_source_yaml
@@ -383,6 +393,14 @@ def build_parser() -> argparse.ArgumentParser:
                               help="run the audit slice — once, at the end, never to tune")
     golden_score.add_argument("--json", help="write the machine-readable error rates here")
     golden_score.set_defaults(func=_cmd_golden_score)
+
+    derive = sub.add_parser("golden-derive-queries",
+                            help="derive retrieval queries from correct-stratum items")
+    derive.add_argument("--theme", required=True)
+    derive.add_argument("--band", default="exact-term")
+    derive.add_argument("--limit", type=int)
+    derive.add_argument("--out", required=True)
+    derive.set_defaults(func=_cmd_golden_derive_queries)
 
     candidates = sub.add_parser(
         "golden-candidates", help="draft golden-item candidates (volume only; you curate)")
