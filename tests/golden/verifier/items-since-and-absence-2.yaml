@@ -1,0 +1,153 @@
+version: 1
+items:
+  - id: v-since-0003
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-typeable, derivation-mode, "automatic")'
+      since: '8.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§5.2.3'
+      quote: 'Since GHC 7.10, Typeable is automatically derived for all types.'
+    evidence_chunk_ids: ['ghc-users-guide#c00178']
+    notes: 'the CONFLICT branch: the page states the explicit marker "Since GHC 7.10", which
+      opposes the claimed 8.0'
+
+  - id: v-since-0004
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-lambdacase, multi-scrutinee-support, "present")'
+      since: '7.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'Since GHC 9.4.1, it also allows expressions with multiple scrutinees'
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    contamination_gauge: true
+    notes: 'the CONFLICT branch, a bigger gap this time: the page states the explicit marker
+      "Since GHC 9.4.1" for the multi-scrutinee form specifically (a distinct capability from
+      the base LambdaCase syntax, which is Since 7.6.1 -- see v-since-0002), opposing the
+      claimed 7.0'
+
+  - id: v-since-0005
+    stratum: wrong-since-off-by-one
+    expected_verdict: partial
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+      since: '1.0'
+      expected_since_status: as-of-supported
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'the SILENCE branch: a single-version language report never states a since
+      version for anything, so it cannot contradict 1.0 -- presence is supported, since tops
+      out at as-of-supported'
+
+  - id: v-since-0006
+    stratum: wrong-since-off-by-major
+    expected_verdict: partial
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-local-variable-type-inference, status=present)'
+      status: present
+      since: '8'
+      expected_since_status: as-of-supported
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+    evidence_chunk_ids: ['jls-se25#c00487']
+    notes: 'another SILENCE branch, different source: the JLS body never states a JDK version
+      number for var (real introduction was JDK 10), so an incorrect claimed version cannot
+      be contradicted by this text -- as-of-supported, not contradicted'
+
+  - id: v-absent-0004
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-exception-handling, status=absent)'
+      rendered: 'C does not have built-in exception handling (absent).'
+      status: absent
+      absence_scope: 'C, as characterized by this survey -- no built-in structured
+        exception-handling construct'
+      feature_aliases: ['exception handling', 'try/catch', 'structured exception handling']
+    citation:
+      source: sebesta-copl
+      locator: '§1.3.3'
+      quote: 'such facilities are practically nonexistent in some widely used languages, for example, C'
+    evidence_chunk_ids: ['sebesta-copl#c00051']
+    notes: 'explicit, language-named absence statement -- not an inferred silence'
+
+  - id: v-absent-0005
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-private-derivation, status=absent)'
+      rendered: 'Java does not have private derivation (absent).'
+      status: absent
+      absence_scope: 'Java, per this survey''s object-oriented-support chapter'
+      feature_aliases: ['private derivation', 'private inheritance']
+    citation:
+      source: sebesta-copl
+      locator: '§12.4.3'
+      quote: 'Java does not have private derivation'
+    evidence_chunk_ids: ['sebesta-copl#c00702']
+    notes: 'the same passage also grounds v-absent-0006''s absence claim on multiple
+      inheritance -- reusing one real chunk for two independent (claim, citation) pairs'
+
+  - id: v-absent-0006
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-multiple-class-inheritance, status=absent)'
+      rendered: 'Java does not have multiple inheritance of classes (absent).'
+      status: absent
+      absence_scope: 'Java -- direct class inheritance is single; interfaces provide a
+        partial substitute'
+      feature_aliases: ['multiple inheritance', 'multiple class inheritance']
+    citation:
+      source: sebesta-copl
+      locator: '§12.4.3'
+      quote: 'Java directly supports only single inheritance'
+    evidence_chunk_ids: ['sebesta-copl#c00702']
+    contamination_gauge: true
+    notes: 'a widely-known fact, but the perturbation discipline here does not apply --
+      contamination defense targets the wrongness strata (invented version numbers, swapped
+      attributions), not correct/absent items, which are allowed to be well known'
+
+  - id: v-c-core-0003
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-c-exception-handling-absence-safety, a-hurts-strongly)'
+      rendered: 'The absence of exception handling strongly hurts safety.'
+    citation:
+      source: sebesta-copl
+      locator: '§1.3.3'
+    evidence_chunk_ids: ['sebesta-copl#c00051']
+    notes: 'this survey passage states a design fact, not a quality judgment'
+
+  - id: v-c-core-0004
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§12.4.3'
+    evidence_chunk_ids: ['sebesta-copl#c00702']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to a Java inheritance passage,
+      which cannot carry it'
