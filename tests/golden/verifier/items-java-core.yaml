@@ -1,0 +1,150 @@
+version: 1
+items:
+  - id: v-java-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-local-variable-type-inference, status=present)'
+      rendered: 'Java has local-variable type inference via var (present).'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+      quote: 'Note that some variables declared with var cannot be declared with an explicit type, because the type of the variable is not denotable.'
+    evidence_chunk_ids: ['jls-se25#c00487']
+    notes: 'plain support; the same passage also grounds v-java-core-0002''s contradicted item'
+
+  - id: v-java-core-0002
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-local-variable-type-inference, explicit-type-equivalence, "always-denotable")'
+      rendered: 'Every local variable declared with var can equivalently be rewritten with an explicit type.'
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+      quote: 'Note that some variables declared with var cannot be declared with an explicit type, because the type of the variable is not denotable.'
+    evidence_chunk_ids: ['jls-se25#c00487']
+    notes: 'the cited text directly states the opposite: some var-declared variables have a
+      non-denotable type and cannot be given an explicit type'
+
+  - id: v-java-core-0003
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-sealed-classes, status=present)'
+      rendered: 'Java has sealed classes (present).'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§8.1'
+      quote: 'in a modular codebase, they must be co-located in the same module, as classes in different modules cannot refer to each other in a circular fashion'
+    evidence_chunk_ids: ['jls-se25#c00262']
+    notes: 'plain support; the same passage also grounds v-java-core-0004''s overstated-claim item'
+
+  - id: v-java-core-0004
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-sealed-classes, co-location-requirement, "always-same-module")'
+      rendered: 'A sealed class and its permitted subclasses must always be co-located in the same module.'
+    citation:
+      source: jls-se25
+      locator: '§8.1'
+      quote: 'in a modular codebase, they must be co-located in the same module, as classes in different modules cannot refer to each other in a circular fashion'
+    evidence_chunk_ids: ['jls-se25#c00262']
+    notes: 'the evidence conditions this on "a modular codebase" (named modules); the same
+      section separately gives a package-based rule for the unnamed-module case. The claim
+      drops the qualifier and generalises the module rule to always apply.'
+
+  - id: v-java-core-0005
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-sealed-classes, status=present)'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§99.9'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section that does not exist in this specification'
+
+  - id: v-java-core-0006
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-duck-typing, status=present)'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+    evidence_chunk_ids: ['jls-se25#c00487']
+    contamination_gauge: true
+    notes: 'true claim (Python does have duck typing), cited to the JLS''s local-variable
+      declarations section, which cannot carry it'
+
+  - id: v-java-core-0007
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-java-sealed-classes-readability, a-improves-strongly)'
+      rendered: 'Sealed classes strongly improve readability.'
+    citation:
+      source: jls-se25
+      locator: '§8.1'
+    evidence_chunk_ids: ['jls-se25#c00262']
+    notes: 'a language specification defines syntax and semantics; it makes no quality claims'
+
+  - id: v-java-core-0008
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-macros, status=present)'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+    evidence_chunk_ids: ['jls-se25#c00487']
+    contamination_gauge: true
+    notes: 'Java has no syntactic macro system; the pairing itself is invented, and this
+      section (local variable declarations) says nothing about it'
+
+  - id: v-java-core-0009
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-local-variable-type-inference, status=present)'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§14.4'
+      quote: 'the var keyword triggers a full-program type inference pass equivalent to Hindley-Milner unification'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['jls-se25#c00487']
+    notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
+      passage describes local, per-declaration type inference, not a whole-program algorithm'
+
+  - id: v-java-core-0010
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-local-variable-type-inference, status=present)'
+      status: present
+    citation:
+      source: jls-se25
+      locator: '§14.14'
+      quote: 'Note that some variables declared with var cannot be declared with an explicit type, because the type of the variable is not denotable.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['jls-se25#c00487']
+    notes: 'real quote, cited to the for-statement section instead of its real home §14.4 --
+      auto-correctable to the true locator'
