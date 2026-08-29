@@ -1,0 +1,203 @@
+version: 1
+items:
+  - id: v-since-0001
+    stratum: wrong-since-off-by-one
+    expected_verdict: partial
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-structural-pattern-matching, status=present)'
+      status: present
+      since: '3.9'
+      expected_since_status: as-of-supported
+    citation:
+      source: python-langref-3
+      locator: '§ 8.6.1. Overview'
+    evidence_chunk_ids: ['python-langref-3#c00250']
+    notes: 'the SILENCE branch of the ratified since fold: the Overview subsection documents
+      the match statement but states no version at all (confirmed: this source has zero
+      "New in version" markers anywhere), so it cannot contradict 3.9 -- presence is
+      supported, since tops out at as-of-supported. Real introduction was 3.10, so 3.9 is
+      one minor version early.'
+
+  - id: v-since-0002
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-lambdacase, status=present)'
+      status: present
+      since: '9.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    contamination_gauge: true
+    notes: 'the CONFLICT branch of the same fold: the extension reference page states the
+      explicit "Since 7.6.1" marker, which actively opposes the claimed 9.0. No
+      expected_since_status -- a contradicted since assertion lands on neither side of the
+      split.'
+
+  - id: v-absent-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-structural-pattern-matching, status=absent)'
+      rendered: 'C does not have structural pattern matching (absent).'
+      status: absent
+      absence_scope: 'C23 (N3220), the whole language including the standard library'
+      feature_aliases: ['pattern matching', 'structural pattern matching', 'destructuring',
+                        'match statement', 'case class matching']
+    citation:
+      source: c23-n3220
+      locator: '§6.8.5'
+    evidence_chunk_ids: ['c23-n3220#c00277']
+    notes: 'D49 ladder: tier-A source, locator resolves to the Selection Statements section
+      (switch/if only, constant-label dispatch, no destructuring), negative grep over the
+      aliases, inverted-framing entailment on the absence_scope'
+
+  - id: v-absent-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-garbage-collection, status=absent)'
+      rendered: 'C does not have garbage collection (absent).'
+      status: absent
+      absence_scope: 'C23 (N3220), the whole language including the standard library'
+      feature_aliases: ['garbage collection', 'automatic memory management', 'tracing GC',
+                        'reference counting runtime']
+    citation:
+      source: c23-n3220
+      locator: '§7.24.3'
+    evidence_chunk_ids: ['c23-n3220#c00567']
+    contamination_gauge: true
+    notes: 'the memory management functions section documents manual aligned_alloc / calloc
+      / malloc / realloc / free only -- an obscure-enough locus for the contamination gauge'
+
+  - id: v-absent-0003
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=absent)'
+      rendered: 'Haskell does not have type classes (absent).'
+      status: absent
+      absence_scope: 'the Haskell 2010 Report, the whole language'
+      feature_aliases: ['type classes', 'ad-hoc polymorphism via classes', 'class declaration']
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+      quote: 'A class declaration introduces a new class and the operations ( class methods ) on it.'
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'the absence claim is wrong the other way: the cited source directly documents
+      the feature, so the inverted-framing entailment must contradict the absence rather
+      than accept it'
+
+  - id: v-python-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-structural-pattern-matching, status=present)'
+      rendered: 'Python has structural pattern matching (present).'
+      status: present
+    citation:
+      source: python-langref-3
+      locator: '§ 8.6.1. Overview'
+      quote: 'The subject expression subject_expr is evaluated and a resulting subject value obtained.'
+    evidence_chunk_ids: ['python-langref-3#c00250']
+    notes: 'plain support, no since -- companion to v-since-0001 which tests the same
+      feature''s versioning'
+
+  - id: v-c-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-switch-statement, status=present)'
+      rendered: 'C has a switch statement (present).'
+      status: present
+    citation:
+      source: c23-n3220
+      locator: '§6.8.5'
+      quote: 'A selection statement selects among a set of secondary blocks depending on the value of a controlling expression.'
+    evidence_chunk_ids: ['c23-n3220#c00277']
+    notes: 'plain support; same locus as v-absent-0001''s absence claim, different feature'
+
+  - id: v-ghc-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-lambdacase, status=present)'
+      status: present
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'Allow the use of lambda-case syntax.'
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    contamination_gauge: true
+    notes: 'plain support for an obscure GHC extension corner; companion to v-since-0002'
+
+  - id: v-ghc-core-0002
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-lambdacase, edition-scope, "every-ghc-edition")'
+      rendered: 'LambdaCase syntax is included in every GHC language edition.'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    contamination_gauge: true
+    notes: 'the evidence states inclusion in GHC2024 specifically, not "every edition"; the
+      base claim (the extension exists and is available) is supported, the universal-edition
+      qualifier is not'
+
+  - id: v-c-core-0002
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: c23-n3220
+      locator: '§6.8.5'
+    evidence_chunk_ids: ['c23-n3220#c00277']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to C''s selection-statements
+      section, which cannot carry it'
+
+  - id: v-python-core-0002
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-structural-pattern-matching, status=present)'
+      status: present
+    citation:
+      source: python-langref-3
+      locator: '§ 8.6.1. Overview'
+      quote: 'match statements compile to an efficient decision-tree bytecode via structural hashing'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['python-langref-3#c00250']
+    notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
+      Overview section describes control flow, not bytecode compilation strategy'
+
+  - id: v-ghc-core-0003
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-lambdacase, status=present)'
+      status: present
+    citation:
+      source: ghc-users-guide
+      locator: '§99.99'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section that does not exist in this guide'
