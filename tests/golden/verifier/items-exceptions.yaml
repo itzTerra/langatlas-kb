@@ -1,0 +1,195 @@
+version: 1
+items:
+  - id: v-py-core-0024
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-exceptions, base-class, "BaseException")'
+      rendered: 'The base class of every Python exception class is BaseException.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.4.1'
+      quote: 'In Python, exceptions are objects. The base class of all exception classes is BaseException, from which the Exception class is derived.'
+    evidence_chunk_ids: ['sebesta-copl#c00837']
+    notes: 'plain support; the same locus grounds v-py-core-0025/0026/0027'
+
+  - id: v-java-core-0020
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-exceptions, throwable-constraint, "Throwable-descendants-only")'
+      rendered: 'Only objects that are instances of Throwable or a class that descends from it can be thrown in Java.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'In Java, only objects that are instances of Throwable or some class that descends from it can be thrown.'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'plain support; the same locus grounds v-java-core-0021/0022/0023/0024 and
+      v-cpp-core-0002/0003/0004'
+
+  - id: v-cpp-core-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-cpp-exceptions, throwable-constraint, "any-type")'
+      rendered: 'A C++ program can throw any type defined in the program or by the system.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'a C++ program can throw any type defined in the program or by the system'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'plain support, the direct contrast case to v-java-core-0020'
+
+  - id: v-java-core-0021
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-exceptions, throwable-constraint, "any-type")'
+      rendered: 'Java allows throwing any type, just like C++.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'In Java, only objects that are instances of Throwable or some class that descends from it can be thrown.'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'the cited text explicitly restricts Java to Throwable descendants, directly
+      opposing "any type, just like C++"'
+
+  - id: v-cpp-core-0003
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-cpp-exceptions, restrictions, "none-anywhere")'
+      rendered: 'C++ exception handling places no restrictions of any kind on what can be thrown, propagated, or caught.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'a C++ program can throw any type defined in the program or by the system'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'the evidence supports "any type may be thrown"; the claim generalises this to
+      "no restrictions anywhere" including propagation and catching, which this sentence
+      does not address'
+
+  - id: v-py-core-0025
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.4.1'
+    evidence_chunk_ids: ['sebesta-copl#c00837']
+    contamination_gauge: true
+    notes: 'true claim (Haskell does have type classes), cited to the Python exceptions
+      passage, which cannot carry it'
+
+  - id: v-java-core-0022
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-java-throwable-constraint-safety, a-improves-strongly)'
+      rendered: 'Restricting throwable types to Throwable descendants strongly improves safety.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'this survey passage states a design-restriction fact, not a quality judgment'
+
+  - id: v-java-core-0023
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-exceptions, throwable-constraint, "Throwable-descendants-only")'
+    citation:
+      source: sebesta-copl
+      locator: '§99.3'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book'
+
+  - id: v-py-core-0026
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-static-null-safety, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.4.1'
+    evidence_chunk_ids: ['sebesta-copl#c00837']
+    contamination_gauge: true
+    notes: 'Python has no compile-time null-safety enforcement; the pairing itself is
+      invented, and this exceptions passage says nothing about it'
+
+  - id: v-java-core-0024
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-exceptions, throwable-constraint, "Throwable-descendants-only")'
+      rendered: 'Only objects that are instances of Throwable or a class that descends from it can be thrown in Java.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'the restriction to Throwable subtypes was relaxed in Java 17 to permit any Serializable object to be thrown'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    notes: 'fabricated version-history quote in the shape of a plausible one; the real
+      passage states the restriction with no version qualifier or relaxation'
+
+  - id: v-py-core-0027
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-exceptions, base-class, "BaseException")'
+      rendered: 'The base class of every Python exception class is BaseException.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+      quote: 'In Python, exceptions are objects. The base class of all exception classes is BaseException, from which the Exception class is derived.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00837']
+    notes: 'real quote, cited to the Java/C++ evaluation section instead of its real home
+      §14.4.1 -- auto-correctable to the true locator'
+
+  - id: v-cpp-core-0004
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-cpp-exceptions, throwable-constraint, "any-type")'
+      rendered: 'A C++ throw statement places no limit on what kind of value gets sent to
+        the matching catch block.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.8'
+    evidence_chunk_ids: ['sebesta-copl#c00835']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-since-0015
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-integer-literals, underscore-grouping, "present")'
+      since: '3.3'
+    citation:
+      source: python-langref-3
+      locator: '§ 2.6.1. Integer literals'
+      quote: 'Changed in version 3.6: Underscores are now allowed for grouping purposes in literals.'
+    evidence_chunk_ids: ['python-langref-3#c00041']
+    notes: 'a third python-langref-3 CONFLICT-branch item, a fresh feature (underscore
+      digit grouping): the page states the explicit marker "Changed in version 3.6",
+      opposing the claimed 3.3'
