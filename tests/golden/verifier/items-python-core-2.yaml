@@ -1,0 +1,211 @@
+version: 1
+items:
+  - id: v-py-core-0013
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-generator-functions, status=present)"
+      rendered: "Python has generator functions (present)."
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.2.10. Yield expressions"
+      quote: "The yield expression is used when defining a generator function or an asynchronous generator function and thus can only be used in the body of a function definition."
+    evidence_chunk_ids: ["python-langref-3#c00175"]
+    notes: "plain support; the same locus grounds v-py-core-0016/0018/0019/0021"
+
+  - id: v-py-core-0014
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-assignment-expressions, status=present)"
+      rendered: 'Python has assignment expressions, the "walrus" operator (present).'
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+      quote: 'An assignment expression (sometimes also called a "named expression" or "walrus") assigns an expression to an identifier, while also returning the value of the expression.'
+    evidence_chunk_ids: ["python-langref-3#c00206"]
+    notes: "plain support; the same locus grounds v-py-core-0017/0020/0022"
+
+  - id: v-since-0012
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-type-soft-keyword, status, "present")'
+      since: "3.6"
+    citation:
+      source: python-langref-3
+      locator: "§ 2.3.2. Soft Keywords"
+      quote: "Changed in version 3.12: type is now a soft keyword."
+    evidence_chunk_ids: ["python-langref-3#c00020"]
+    notes: 'The page states the explicit marker "Changed in
+      version 3.12", opposing the claimed 3.6.'
+
+  - id: v-since-0013
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-fstring-debug-specifier, status, "present")'
+      since: "3.7"
+    citation:
+      source: python-langref-3
+      locator: "§ 2.5.7. f-strings"
+      quote: "Changed in version 3.8: Added the debug specifier (=)"
+    evidence_chunk_ids: ["python-langref-3#c00038"]
+    notes:
+      "a second python-langref-3 CONFLICT-branch item, a different feature and a
+      smaller (one-minor-version) gap this time"
+
+  - id: v-py-core-0015
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-fstrings, expression-restrictions, "none")'
+      rendered: "Python f-strings place no restrictions at all on their embedded expressions."
+    citation:
+      source: python-langref-3
+      locator: "§ 2.5.7. f-strings"
+      quote: "Changed in version 3.12: Many restrictions on expressions within f-strings have been removed. Notably, nested strings, comments, and backslashes are now permitted."
+    evidence_chunk_ids: ["python-langref-3#c00038"]
+    notes:
+      'the evidence says "many restrictions... removed", naming three examples; the
+      claim generalises to "no restrictions at all", a completeness this passage does not state'
+
+  - id: v-py-core-0016
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-generator-functions, status=present)"
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 99.9. Nonexistent Section"
+    evidence_chunk_ids: []
+    notes:
+      "shape-valid named-section locator under a chapter number that does not exist in
+      this reference"
+
+  - id: v-py-core-0017
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-rust-ownership, status=present)"
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+    evidence_chunk_ids: ["python-langref-3#c00206"]
+    contamination_gauge: true
+    notes:
+      "true claim (Rust has an ownership system), cited to the Python assignment-
+      expressions section, which cannot carry it"
+
+  - id: v-py-core-0018
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: "quality-assessment(e-python-generators-memory-efficiency, a-improves-strongly)"
+      rendered: "Generator functions strongly improve memory efficiency."
+    citation:
+      source: python-langref-3
+      locator: "§ 6.2.10. Yield expressions"
+    evidence_chunk_ids: ["python-langref-3#c00175"]
+    notes: "a language reference defines syntax and semantics; it makes no quality claims"
+
+  - id: v-py-core-0019
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-checked-exceptions, status=present)"
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.2.10. Yield expressions"
+    evidence_chunk_ids: ["python-langref-3#c00175"]
+    contamination_gauge: true
+    notes:
+      "Python has no Java-style checked-exception mechanism; the pairing itself is
+      invented, and this section (generators) says nothing about it"
+
+  - id: v-py-core-0020
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-assignment-expressions, status=present)"
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+      quote: "assignment expressions may not be used to rebind names already bound in an enclosing comprehension scope, and doing so raises SyntaxError at compile time"
+    expected_annotations: ["quote-mismatch"]
+    evidence_chunk_ids: ["python-langref-3#c00206"]
+    notes:
+      "fabricated restriction-shaped quote in the shape of a plausible one; the cited
+      chunk never states this particular rule"
+
+  - id: v-py-core-0021
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-generator-functions, status=present)"
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+      quote: "The yield expression is used when defining a generator function or an asynchronous generator function and thus can only be used in the body of a function definition."
+    expected_annotations: ["quote-found-elsewhere"]
+    evidence_chunk_ids: ["python-langref-3#c00175"]
+    notes:
+      "real quote, cited to the assignment-expressions section instead of its real home
+      §6.2.10 -- auto-correctable to the true locator"
+
+  - id: v-py-core-0022
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: "instance-exists(i-python-assignment-expressions, status=present)"
+      rendered:
+        "Python lets a programmer bind a name to a value in the middle of a larger
+        expression and use the resulting value right there, instead of needing a separate
+        statement first."
+      status: present
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+    evidence_chunk_ids: ["python-langref-3#c00206"]
+    contamination_gauge: true
+    notes:
+      "no quote supplied and the claim carries no natural-language overlap with the
+      source prose"
+
+  - id: v-py-core-0023
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-assignment-expressions, parenthesization-requirement, "never-required")'
+      rendered: "Walrus assignment expressions never require surrounding parentheses."
+    citation:
+      source: python-langref-3
+      locator: "§ 6.12. Assignment expressions"
+      quote: "In all other places where they can be used, parentheses are not required, including in if and while statements."
+    evidence_chunk_ids: ["python-langref-3#c00206"]
+    notes:
+      'the evidence supports "not required in if/while statements and other places";
+      the same passage explicitly lists several contexts (expression statements, slicing,
+      conditional/lambda/keyword-argument/comprehension-if expressions, assert/with/
+      assignment statements) where parentheses ARE required -- the claim drops that list
+      entirely and generalises to "never required"'
