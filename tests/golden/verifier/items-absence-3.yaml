@@ -1,0 +1,172 @@
+version: 1
+items:
+  - id: v-absent-0007
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-boolean-type, status=absent)'
+      rendered: 'The original version of C does not have a Boolean type (absent).'
+      status: absent
+      absence_scope: 'the original version of C, prior to C99''s _Bool/bool'
+      feature_aliases: ['Boolean type', 'bool type', 'native boolean']
+    citation:
+      source: sebesta-copl
+      locator: '§1.3.1'
+      quote: 'suppose a numeric type is used for an indicator flag because there is no Boolean type in the language. In such a language, for example, in the original version of C'
+    evidence_chunk_ids: ['sebesta-copl#c00046']
+    contamination_gauge: true
+    notes: 'explicit, language-named absence statement, illustrated with the timeout = 1
+      example; a parenthetical historical aside rather than a headline C fact, so marked for
+      the contamination gauge'
+
+  - id: v-since-0007
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-lambdacase, status=present)'
+      status: present
+      since: '7.6.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    notes: 'a second CONFLICT-branch item off the same page as v-since-0002, this time a
+      genuine off-by-one (patch-level) miss against the explicit "Since 7.6.1" marker rather
+      than the earlier off-by-major miss'
+
+  - id: v-py-core-0003
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-access-modifiers, naming-convention-signal, "none")'
+      rendered: 'Python provides no naming convention at all to signal that an attribute is intended as private.'
+    citation:
+      source: scott-plp
+      locator: 'pp. 673–675'
+      quote: 'Python class members are always public.'
+    evidence_chunk_ids: ['scott-plp#c00417']
+    notes: 'the base (no enforced access control) is supported by the passage; the extra
+      claim that no naming convention exists at all is not addressed by this text either way
+      -- an unstated overreach, not a contradiction'
+
+  - id: v-absent-0008
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-access-modifiers, status=absent)'
+      rendered: 'Python has no enforced access modifiers on class members (absent).'
+      status: absent
+      absence_scope: 'Python, per this survey -- class members carry no enforced
+        private/protected visibility'
+      feature_aliases: ['access modifiers', 'private members', 'protected members',
+                        'visibility control']
+    citation:
+      source: scott-plp
+      locator: 'pp. 673–675'
+      quote: 'Python class members are always public.'
+    evidence_chunk_ids: ['scott-plp#c00417']
+    notes: 'explicit, language-named absence statement'
+
+  - id: v-absent-0009
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-array-assignment, status=absent)'
+      rendered: 'C has no built-in whole-array assignment operator (absent).'
+      status: absent
+      absence_scope: 'C -- array contents must be copied element by element; there is no
+        assignment operator that copies a whole array in one step'
+      feature_aliases: ['array assignment', 'array copy operator', 'bulk array copy']
+    citation:
+      source: scott-plp
+      locator: 'pp. 500–502'
+      quote: 'To assign one array into another in C, the program must copy the elements individually.'
+    evidence_chunk_ids: ['scott-plp#c00304']
+    contamination_gauge: true
+    notes: 'obscure-enough locus (a parenthetical aside on string/array implementation, not a
+      headline C feature) for the contamination gauge'
+
+  - id: v-py-core-0001
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-boolean-type, status=present)'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 673–675'
+    evidence_chunk_ids: ['scott-plp#c00417']
+    contamination_gauge: true
+    notes: 'wrong claim (C99 does have _Bool, but this claim as posed is unqualified "C has a
+      Boolean type" which the cited passage never discusses at all), cited to a Python
+      visibility passage that cannot carry it either way'
+
+  - id: v-py-core-0002
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-python-access-modifier-absence-writability, a-hurts-strongly)'
+      rendered: 'The absence of access modifiers strongly hurts writability.'
+    citation:
+      source: scott-plp
+      locator: 'pp. 673–675'
+    evidence_chunk_ids: ['scott-plp#c00417']
+    notes: 'a language pragmatics survey states a design fact here, not a quality judgment'
+
+  - id: v-c-core-0005
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-boolean-type, status=absent)'
+      status: absent
+      absence_scope: 'the original version of C'
+      feature_aliases: ['Boolean type', 'bool type']
+    citation:
+      source: sebesta-copl
+      locator: '§1.3.1'
+      quote: 'the C committee added a native _Bool keyword to the language as early as 1989 to resolve this exact readability complaint'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00046']
+    notes: 'fabricated historical quote in the shape of a plausible one (bool was not added
+      until C99, 1999); the real passage never mentions a committee decision or a date'
+
+  - id: v-c-core-0006
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-reflection, status=present)'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 500–502'
+    evidence_chunk_ids: ['scott-plp#c00304']
+    contamination_gauge: true
+    notes: 'C has no runtime reflection facility; the pairing itself is invented, and this
+      section (array/string implementation) says nothing about it'
+
+  - id: v-c-core-0007
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-if-statement, status=present)'
+      rendered: 'C has an if statement (present).'
+      status: present
+    citation:
+      source: c23-n3220
+      locator: '§6.8.5'
+      quote: 'A selection statement selects among a set of secondary blocks depending on the value of a controlling expression.'
+    evidence_chunk_ids: ['c23-n3220#c00277']
+    notes: 'plain support; pushes the correct-verdict share back over the 35% floor. Same
+      locus as v-absent-0001''s absence claim and v-c-core-0001''s switch-statement claim,
+      different feature'
