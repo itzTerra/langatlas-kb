@@ -1,0 +1,182 @@
+version: 1
+items:
+  - id: v-java-core-0012
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-threads, address-space-model, "shared")'
+      rendered: 'Java threads are lightweight tasks that run in the same address space.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+      quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space.'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'plain support; the same locus grounds v-ada-core-0001/0002/0003 and
+      v-java-core-0013/0014/0015/0016/0017/0018/0019'
+
+  - id: v-ada-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ada-tasks, address-space-model, "separate")'
+      rendered: 'Ada tasks are heavyweight threads that run in their own address spaces.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+      quote: 'This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'plain support, the direct contrast case to v-java-core-0012'
+
+  - id: v-java-core-0013
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-threads, address-space-model, "separate")'
+      rendered: 'Java threads run in separate address spaces, like Ada tasks.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+      quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space. This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'the cited text explicitly contrasts Java''s shared-address-space model with
+      Ada''s separate-address-space model'
+
+  - id: v-ada-core-0002
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-heavyweight-threading-model, adoption-scope, "every-non-java-language")'
+      rendered: 'Every non-Java language implements a heavyweight, separate-address-space threading model.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+      quote: 'This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'the evidence names exactly one comparison language, Ada; the claim generalises
+      to every non-Java language, a scope this passage does not state'
+
+  - id: v-java-core-0014
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to a Java-threads passage,
+      which cannot carry it'
+
+  - id: v-java-core-0015
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-java-lightweight-threads-portability, a-improves-strongly)'
+      rendered: 'Lightweight threads strongly improve portability.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'this survey passage states an implementation-model fact, not a quality judgment'
+
+  - id: v-java-core-0016
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-threads, address-space-model, "shared")'
+    citation:
+      source: sebesta-copl
+      locator: '§99.7'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book -- not a fake child of a real section (see the v-py-core-0016/v-scheme-core-0003
+      lesson from earlier batches about the resolver''s ancestor-matching behavior)'
+
+  - id: v-java-core-0017
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-guaranteed-tail-call-optimization, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    contamination_gauge: true
+    notes: 'the JVM specification does not guarantee tail-call optimization; the pairing
+      itself is invented, and this threading passage says nothing about it'
+
+  - id: v-java-core-0018
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-threads, address-space-model, "shared")'
+      rendered: 'Java threads are lightweight tasks that run in the same address space.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+      quote: 'the JVM specification mandates a maximum of 256 concurrently live threads per process on conforming implementations'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'fabricated specification-limit quote in the shape of a plausible one; the real
+      passage states no such numeric limit'
+
+  - id: v-java-core-0019
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-threads, address-space-model, "shared")'
+      rendered: 'Java threads are lightweight tasks that run in the same address space.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.3.1'
+      quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    notes: 'real quote, cited to the semaphore-introduction section instead of its real home
+      §13.7 -- auto-correctable to the true locator'
+
+  - id: v-ada-core-0003
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ada-tasks, address-space-model, "separate")'
+      rendered: 'Each Ada task gets its own private slice of memory rather than sharing one
+        common region with the other tasks in the program.'
+    citation:
+      source: sebesta-copl
+      locator: '§13.7'
+    evidence_chunk_ids: ['sebesta-copl#c00772']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-since-0014
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-explicit-namespaces, status=present)'
+      status: present
+      since: '7.6.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.3.4'
+      quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies Since 7.6.1'
+    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    notes: 'a patch-level off-by-one variant off the same ExplicitNamespaces page as
+      v-since-0010''s off-by-major item and v-rustfls-0013''s overstated item: the page
+      states the explicit marker "Since 7.6.1", opposing the claimed 7.6.0'
