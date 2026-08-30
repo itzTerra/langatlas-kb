@@ -1,0 +1,250 @@
+version: 1
+items:
+  - id: v-perl-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-associative-arrays, status=present)'
+      rendered: 'Perl has associative arrays, called hashes (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'Perl includes associative arrays, which are called hashes.'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'plain support; the same locus grounds v-perl-core-0007/0008/0009/0011/0012/0013'
+
+  - id: v-perl-core-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-perl-arrays, length-mutability, "dynamic")'
+      rendered: 'Perl arrays have dynamic length: they can grow and shrink as needed during execution.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'they have dynamic length, meaning that they can grow and shrink as needed during execution'
+    evidence_chunk_ids: ['sebesta-copl#c00177']
+    notes: 'plain support; the same locus grounds v-perl-core-0006''s contradicted item'
+
+  - id: v-perl-core-0003
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-perl-execution-model, compilation-step, "intermediate-language")'
+      rendered: 'Perl is always compiled, at least into an intermediate language, before it is executed.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'it is always compiled, at least into an intermediate language, before it is executed'
+    evidence_chunk_ids: ['sebesta-copl#c00177']
+    notes: 'plain support; the same locus grounds v-perl-core-0005''s overstated-claim item'
+
+  - id: v-perl-core-0004
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-array-bounds-checking, status=absent)'
+      rendered: 'Perl does not check array subscripts against bounds (absent).'
+      status: absent
+      absence_scope: 'Perl -- there is no set subscript range for any array, so out-of-range
+        access is never detected as an error'
+      feature_aliases: ['array bounds checking', 'subscript range checking', 'index validation']
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'Array indexing cannot be checked, because there is no set subscript range for any array.'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'explicit absence statement, reinforced in the same paragraph by "References to
+      nonexistent elements return undef... there is also no error detection in array
+      element access"'
+
+  - id: v-perl-core-0005
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-perl-execution-model, compilation-target, "native-machine-code-ahead-of-time")'
+      rendered: 'Perl compiles directly to native machine code ahead of time, just like C.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'it is always compiled, at least into an intermediate language, before it is executed'
+    evidence_chunk_ids: ['sebesta-copl#c00177']
+    notes: 'the evidence says compilation is "at least into an intermediate language"; the
+      claim strengthens this to native machine code and ahead-of-time compilation, a
+      specificity this passage does not state'
+
+  - id: v-perl-core-0006
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-perl-arrays, length-mutability, "fixed-at-creation")'
+      rendered: 'Perl arrays have a fixed length once created.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'they have dynamic length, meaning that they can grow and shrink as needed during execution'
+    evidence_chunk_ids: ['sebesta-copl#c00177']
+    notes: 'the cited text explicitly states the opposite: dynamic, growable/shrinkable length'
+
+  - id: v-perl-core-0007
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to the Perl origins/
+      characteristics passage, which cannot carry it'
+
+  - id: v-perl-core-0008
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-perl-hashes-conciseness, a-improves-strongly)'
+      rendered: 'Hashes strongly improve conciseness.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'this survey passage states an implementation fact, not a quality judgment'
+
+  - id: v-perl-core-0009
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-associative-arrays, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§99.18.1'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book'
+
+  - id: v-perl-core-0010
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-compile-time-value-type-checking, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+    evidence_chunk_ids: ['sebesta-copl#c00177']
+    contamination_gauge: true
+    notes: 'Perl performs no compile-time static type checking of scalar VALUES (its
+      scalars coerce freely between strings and numbers, per §2.18.1''s own later
+      discussion); the pairing itself is invented, and this passage discusses variable
+      namespaces, not value type checking'
+
+  - id: v-perl-core-0011
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-associative-arrays, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'hashes are implemented as self-balancing red-black trees to guarantee O(log n) worst-case lookup'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
+      passage says hashes are "implicitly controlled hash tables" with no mention of
+      balanced trees or complexity guarantees'
+
+  - id: v-perl-core-0012
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-associative-arrays, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§6.5.3'
+      quote: 'Perl includes associative arrays, which are called hashes.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'real quote, cited to the general array-subscript-bindings section instead of
+      its real home §2.18.1 -- auto-correctable to the true locator'
+
+  - id: v-perl-core-0013
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-perl-associative-arrays, status=present)'
+      rendered: 'Perl lets a programmer look up values by an arbitrary string key instead
+        of only by a numeric position.'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-perl-core-0014
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-perl-scalars, coercion-scope, "any-type-pair")'
+      rendered: 'Perl coerces automatically between any two types, including converting arrays to hashes and vice versa.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.18.1'
+      quote: 'Depending on the context, numbers may be coerced to strings and vice versa.'
+    evidence_chunk_ids: ['sebesta-copl#c00178']
+    notes: 'the evidence supports coercion specifically between numbers and strings within
+      the scalar type; the claim generalises this to any type pair, including compound
+      types (arrays, hashes) this passage never discusses'
+
+  - id: v-since-0017
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-octal-escape-overflow-warning, status, "present")'
+      since: '3.8'
+    citation:
+      source: python-langref-3
+      locator: '§ 2.5.4.3. Octal character'
+      quote: 'Changed in version 3.11: Octal escapes with value larger than 0o377 (255) produce a DeprecationWarning.'
+    evidence_chunk_ids: ['python-langref-3#c00031']
+    notes: 'a fourth python-langref-3 CONFLICT-branch item, a fresh feature (octal escape
+      overflow warnings): the page states the explicit marker "Changed in version 3.11",
+      opposing the claimed 3.8'
+
+  - id: v-since-0018
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-named-unicode-escape-aliases, status, "present")'
+      since: '3.1'
+    citation:
+      source: python-langref-3
+      locator: '§ 2.5.4.5. Named Unicode character'
+      quote: 'Changed in version 3.3: Support for name aliases has been added.'
+    evidence_chunk_ids: ['python-langref-3#c00033']
+    notes: 'a fifth python-langref-3 CONFLICT-branch item: the page states the explicit
+      marker "Changed in version 3.3", opposing the claimed 3.1'
