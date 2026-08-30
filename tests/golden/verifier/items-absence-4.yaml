@@ -1,0 +1,240 @@
+version: 1
+items:
+  - id: v-absent-0010
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-cpp-universal-object-base-class, status=absent)'
+      rendered: 'C++ has no common Object base class that every type ultimately derives from (absent).'
+      status: absent
+      absence_scope: 'C++, per this survey -- no universal root class analogous to
+        java.lang.Object'
+      feature_aliases: ['universal base class', 'root object type', 'Object base class']
+    citation:
+      source: scott-plp
+      locator: 'pp. 384–387'
+      quote: 'because C++ lacks a common Object base class, its containers must always be declared as generics and instantiated for some particular element type'
+    evidence_chunk_ids: ['scott-plp#c00232']
+    notes: 'explicit, language-named absence statement, given as the reason C++ containers
+      need generics rather than a common element type'
+
+  - id: v-absent-0011
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-struct-type, status=absent)'
+      rendered: 'Java has no distinguished struct type (absent).'
+      status: absent
+      absence_scope: 'Java -- programmers use classes in all cases where C/C++/C# would use a struct'
+      feature_aliases: ['struct type', 'value type', 'plain data record type']
+    citation:
+      source: scott-plp
+      locator: 'pp. 461–465'
+      quote: 'Java has no distinguished notion of struct; its programmers use classes in all cases.'
+    evidence_chunk_ids: ['scott-plp#c00282']
+    notes: 'explicit, language-named absence statement, contrasted directly with C# structs
+      in the same passage'
+
+  - id: v-absent-0012
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-set-type-constructor, status=absent)'
+      rendered: 'Ada has no built-in set type constructor (absent).'
+      status: absent
+      absence_scope: 'Ada -- no native set type; its generic facility can build one, but
+        that is not a built-in constructor'
+      feature_aliases: ['set type', 'set type constructor', 'built-in set']
+    citation:
+      source: scott-plp
+      locator: 'pp. 500–502'
+      quote: 'Ada does not provide a type constructor for sets, but its generic facility can be used to define a set package (module) with functionality comparable to the sets of Pascal'
+    evidence_chunk_ids: ['scott-plp#c00304']
+    notes: 'same locus as v-absent-0009''s C array-assignment claim and v-c-core-0006''s
+      fabricated-combination item -- a third independent (claim, citation) pair off one
+      real chunk'
+
+  - id: v-absent-0013
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-closures, status=absent)'
+      rendered: 'C has no closures (absent).'
+      status: absent
+      absence_scope: 'C -- a function may return a pointer to a subroutine, but that
+        pointer carries no captured referencing environment'
+      feature_aliases: ['closures', 'lexical closures', 'first-class functions with captured environment']
+    citation:
+      source: scott-plp
+      locator: 'pp. 591–593'
+      quote: 'C has no closures, but allows a function to return a pointer to a subroutine.'
+    evidence_chunk_ids: ['scott-plp#c00365']
+    contamination_gauge: true
+    notes: 'explicit, language-named absence statement, immediately contrasted with
+      Modula-3/Ada 95 (which do support returning closures) in the same sentence'
+
+  - id: v-absent-0014
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ml-inheritance, status=absent)'
+      rendered: 'ML has no inheritance mechanism (absent).'
+      status: absent
+      absence_scope: 'ML -- module types exist, but the language provides no inheritance,
+        which this survey gives as the reason ML is not considered object-oriented'
+      feature_aliases: ['inheritance', 'class inheritance', 'subclassing']
+    citation:
+      source: scott-plp
+      locator: 'pp. 705–707'
+      quote: 'while ML provides Euclid-like module types, it does not provide inheritance, and thus cannot be considered an object-oriented language'
+    evidence_chunk_ids: ['scott-plp#c00434']
+    notes: 'explicit, language-named absence statement; the same passage also grounds
+      v-ml-core-0001''s correct claim about Java generics'
+
+  - id: v-absent-0015
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-fortran77-recursion, status=absent)'
+      rendered: 'Fortran 77 has no recursion (absent).'
+      status: absent
+      absence_scope: 'Fortran 77 specifically (later Fortran standards differ)'
+      feature_aliases: ['recursion', 'recursive subroutines', 'self-referential calls']
+    citation:
+      source: scott-plp
+      locator: 'pp. 733–734'
+      quote: 'Fortran 77 has no recursion, nor does it allow structured types (i.e., arrays) to be returned from functions.'
+    evidence_chunk_ids: ['scott-plp#c00450']
+    contamination_gauge: true
+    notes: 'explicit, version-scoped absence statement -- the same sentence also grounds
+      v-fortran-core-0001''s contradicted item on array return types'
+
+  - id: v-ml-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-generics, status=present)'
+      rendered: 'Java has generics (present).'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 705–707'
+      quote: 'Eiffel, Java, and C# all provide generics as well.'
+    evidence_chunk_ids: ['scott-plp#c00434']
+    notes: 'plain support, off the same passage that grounds v-absent-0014''s ML-inheritance
+      absence claim'
+
+  - id: v-fortran-core-0001
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-pascal-function-return-types, allowed-kinds, "any-type-including-arrays")'
+      rendered: 'Pascal functions may return any type, including array types.'
+    citation:
+      source: scott-plp
+      locator: 'pp. 733–734'
+      quote: 'Pascal and early versions of Modula-2 allow only simple and pointer types to be returned from functions.'
+    evidence_chunk_ids: ['scott-plp#c00450']
+    notes: 'the cited text explicitly restricts Pascal function returns to simple and
+      pointer types, directly opposing "any type including arrays"'
+
+  - id: v-cpp-core-0001
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-cpp-universal-object-base-class, status=absent)'
+      status: absent
+      absence_scope: 'C++'
+      feature_aliases: ['universal base class', 'root object type']
+    citation:
+      source: scott-plp
+      locator: 'pp. 384–387'
+      quote: 'the ISO C++ committee rejected a proposed universal Object base class in the 2011 standard after prolonged debate'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['scott-plp#c00232']
+    notes: 'fabricated historical/committee-process quote in the shape of a plausible one;
+      the real passage never mentions a standards committee or a rejected proposal'
+
+  - id: v-java-core-0011
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-multiple-class-inheritance, status=present)'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 461–465'
+    evidence_chunk_ids: ['scott-plp#c00282']
+    contamination_gauge: true
+    notes: 'Java has only single class inheritance (see v-absent-0006); claiming it present
+      is a fabricated pairing, and this struct-focused passage says nothing about it either
+      way'
+
+  - id: v-ruby-core-0001
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 1025–1026'
+    evidence_chunk_ids: ['scott-plp#c00642']
+    contamination_gauge: true
+    notes: 'true claim (Haskell does have type classes), cited to a Python/Ruby inheritance
+      passage, which cannot carry it'
+
+  - id: v-ml-core-0002
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-ml-lacks-inheritance-modularity, a-improves-strongly)'
+      rendered: 'The absence of inheritance in ML strongly improves modularity.'
+    citation:
+      source: scott-plp
+      locator: 'pp. 705–707'
+    evidence_chunk_ids: ['scott-plp#c00434']
+    notes: 'this survey passage states a design fact and a classification judgment about
+      what counts as object-oriented, not a quality assessment in the project''s sense'
+
+  - id: v-ml-core-0003
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-oo-languages-generics, adoption-scope, "every-mainstream-oo-language")'
+      rendered: 'Every mainstream object-oriented language provides generics.'
+    citation:
+      source: scott-plp
+      locator: 'pp. 705–707'
+      quote: 'Eiffel, Java, and C# all provide generics as well.'
+    evidence_chunk_ids: ['scott-plp#c00434']
+    notes: 'the evidence names exactly three languages; the claim generalises to every
+      mainstream object-oriented language, a scope this sentence does not state'
+
+  - id: v-since-0008
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-wuseless-specialisations-warning, status, "present")'
+      since: '9.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§5.2.3'
+      quote: '-Wuseless-specialisations Since 9.14 Default on'
+    evidence_chunk_ids: ['ghc-users-guide#c00161']
+    notes: 'a third CONFLICT-branch item off ghc-users-guide, a different warning flag this
+      time: the page states the explicit marker "Since 9.14", opposing the claimed 9.0'
