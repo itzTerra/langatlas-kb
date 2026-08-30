@@ -1,0 +1,232 @@
+version: 1
+items:
+  - id: v-ada-core-0004
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-packages, status=present)'
+      rendered: 'Ada has packages (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'Packages in the Ada language provide the means for encapsulating data objects, specifications for data types, and procedures.'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'plain support; the same locus grounds v-ada-core-0009/0010/0011/0013/0014'
+
+  - id: v-ada-core-0005
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-generics, status=present)'
+      rendered: 'Ada has generic program units (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'Program units can be generic in Ada. For example, it is possible to write a sort procedure that uses an unspecified type for the data to be sorted.'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'plain support; the same locus grounds v-ada-core-0007/0008/0015'
+
+  - id: v-ada-core-0006
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-rendezvous, status=present)'
+      rendered: 'Ada has the rendezvous mechanism for intertask communication and synchronization (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'Rendezvous is the name of a method of intertask communication and synchronization.'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'plain support; the same locus grounds v-ada-core-0012''s fabricated-combination item'
+
+  - id: v-ada-core-0007
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ada-generics, code-duplication-effect, "eliminates-all")'
+      rendered: 'Ada generics eliminate all code duplication in every Ada program.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'The availability of such generic units increases the range of program units that might be reused, rather than duplicated, by programmers.'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'the evidence says generics "increase the range" of reusable units; the claim
+      strengthens this to eliminating all duplication everywhere, a completeness this
+      passage does not state'
+
+  - id: v-ada-core-0008
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ada-generics, instantiation-requirement, "not-required")'
+      rendered: 'Ada generic procedures can be used directly without instantiation.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'Such a generic procedure must be instantiated for a specified type before it can be used'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'the cited text explicitly requires instantiation before use, directly opposing
+      "used directly without instantiation"'
+
+  - id: v-ada-core-0009
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to the Ada language-overview
+      passage, which cannot carry it'
+
+  - id: v-ada-core-0010
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-ada-packages-maintainability, a-improves-strongly)'
+      rendered: 'Packages strongly improve maintainability.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'this survey passage states a design-purpose fact, not a quality judgment'
+
+  - id: v-ada-core-0011
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-packages, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§99.14.3'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book'
+
+  - id: v-ada-core-0012
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-tracing-garbage-collector, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    contamination_gauge: true
+    notes: 'Ada does not mandate a tracing garbage collector (memory management is
+      scope-based and implementation-defined); the pairing itself is invented, and this
+      passage says nothing about it'
+
+  - id: v-ada-core-0013
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-rendezvous, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'rendezvous calls time out automatically after 30 milliseconds if the receiving task has not accepted the call'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'fabricated numeric-timeout quote in the shape of a plausible one; the real
+      passage states only that rendezvous is a communication/synchronization method, with
+      no timeout value'
+
+  - id: v-ada-core-0014
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-packages, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§13.6'
+      quote: 'Packages in the Ada language provide the means for encapsulating data objects, specifications for data types, and procedures.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'real quote, cited to the Ada-concurrency section instead of its real home
+      §2.14.3 -- auto-correctable to the true locator'
+
+  - id: v-ada-core-0015
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-ada-generics, status=present)'
+      rendered: 'An Ada programmer can write one procedure that works for a type chosen
+        later, instead of writing a separate copy for every type it needs to handle.'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-ada-core-0016
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ada-packages, data-hiding-completeness, "makes-all-other-mechanisms-unnecessary")'
+      rendered: 'Ada packages make every other data-hiding mechanism in the language completely unnecessary.'
+    citation:
+      source: sebesta-copl
+      locator: '§2.14.3'
+      quote: 'This, in turn, provides the support for the use of data abstraction in program design.'
+    evidence_chunk_ids: ['sebesta-copl#c00156']
+    notes: 'the evidence says packages support data abstraction; the claim strengthens this
+      to making every other data-hiding mechanism unnecessary, a completeness this passage
+      does not state'
+
+  - id: v-since-0020
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-winvalid-haddock-warning, status, "present")'
+      since: '7.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§5.2.3'
+      quote: '-Winvalid-haddock Since 9.0'
+    evidence_chunk_ids: ['ghc-users-guide#c00177']
+    notes: 'an eighth CONFLICT-branch item off ghc-users-guide, yet another warning flag:
+      the page states the explicit marker "Since 9.0", opposing the claimed 7.0'
+
+  - id: v-since-0021
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-codeobject-lnotab-attribute, status, "present")'
+      since: '3.9'
+    citation:
+      source: python-langref-3
+      locator: '§ 3.2.13.1.1. Special read-only attributes'
+      quote: 'Deprecated since version 3.12: This attribute of code objects is deprecated, and may be removed in Python 3.15.'
+    evidence_chunk_ids: ['python-langref-3#c00080']
+    notes: 'a seventh python-langref-3 CONFLICT-branch item, using a "Deprecated since"
+      marker rather than "Changed in"/"Added in": the page states the explicit marker
+      "Deprecated since version 3.12", opposing the claimed 3.9'
