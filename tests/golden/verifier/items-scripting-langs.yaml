@@ -1,0 +1,224 @@
+version: 1
+items:
+  - id: v-js-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-javascript-type-binding, mode, "dynamic")'
+      rendered: 'JavaScript uses dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'plain support; the same locus grounds v-php-core-0001/v-ruby-core-0003/0004 and
+      v-js-core-0003/0004/0005/0006/0007/0008/0009'
+
+  - id: v-php-core-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-php-type-binding, mode, "dynamic")'
+      rendered: 'PHP uses dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'plain support, off the same sentence as v-js-core-0001'
+
+  - id: v-ruby-core-0003
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ruby-type-binding, mode, "dynamic")'
+      rendered: 'Ruby uses dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'plain support, off the same sentence as v-js-core-0001/v-php-core-0001'
+
+  - id: v-js-core-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-javascript-global-variables, status=present)'
+      rendered: 'JavaScript allows variable definitions outside of any function, creating global variables (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§5.5.4'
+      quote: 'Some languages, including C, C++, PHP, JavaScript, and Python, allow a program structure that is a sequence of function definitions, in which variable definitions can appear outside the functions.'
+    evidence_chunk_ids: ['sebesta-copl#c00324']
+    notes: 'plain support; the same locus grounds v-php-core-0002 and v-js-core-0010''s
+      overstated item'
+
+  - id: v-php-core-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-php-global-variables, status=present)'
+      rendered: 'PHP allows variable definitions outside of any function, creating global variables (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§5.5.4'
+      quote: 'Some languages, including C, C++, PHP, JavaScript, and Python, allow a program structure that is a sequence of function definitions, in which variable definitions can appear outside the functions.'
+    evidence_chunk_ids: ['sebesta-copl#c00324']
+    notes: 'plain support, off the same sentence as v-js-core-0002'
+
+  - id: v-js-core-0003
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-javascript-type-binding, mode, "static")'
+      rendered: 'JavaScript uses static type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'the cited text explicitly states the opposite: dynamic type binding'
+
+  - id: v-js-core-0010
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-scripting-languages-type-binding, adoption-scope, "all-scripting-languages")'
+      rendered: 'All scripting languages use dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'the evidence names exactly four languages; the claim generalises to every
+      scripting language, a scope this passage does not state'
+
+  - id: v-js-core-0004
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to the dynamic-type-binding
+      passage, which cannot carry it'
+
+  - id: v-js-core-0005
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-javascript-dynamic-typing-flexibility, a-improves-strongly)'
+      rendered: 'Dynamic type binding strongly improves flexibility.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'this survey passage states a design classification, not a quality judgment'
+
+  - id: v-js-core-0006
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-javascript-type-binding, mode, "dynamic")'
+    citation:
+      source: sebesta-copl
+      locator: '§99.4.2'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book'
+
+  - id: v-js-core-0007
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-javascript-static-type-checking, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    contamination_gauge: true
+    notes: 'plain JavaScript (without a superset like TypeScript) has no compile-time
+      static type checker; the pairing itself is invented, and this passage says the
+      opposite (dynamic type binding)'
+
+  - id: v-js-core-0008
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-javascript-type-binding, mode, "dynamic")'
+      rendered: 'JavaScript uses dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+      quote: 'the ECMAScript 2020 standard introduced an opt-in static type annotation syntax that the reference implementation enforces at parse time'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'fabricated standards-history quote in the shape of a plausible one; the real
+      passage makes no mention of ECMAScript 2020 or a static annotation syntax'
+
+  - id: v-js-core-0009
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-javascript-type-binding, mode, "dynamic")'
+      rendered: 'JavaScript uses dynamic type binding.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.5.4'
+      quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    notes: 'real quote, cited to the global-scope section instead of its real home §5.4.2
+      -- auto-correctable to the true locator'
+
+  - id: v-ruby-core-0004
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-ruby-type-binding, mode, "dynamic")'
+      rendered: 'A Ruby variable can hold a value of any type, and which type it currently
+        holds is only known once the program actually runs.'
+    citation:
+      source: sebesta-copl
+      locator: '§5.4.2'
+    evidence_chunk_ids: ['sebesta-copl#c00309']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-since-0019
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-unrecognized-escape-warning, status, "present")'
+      since: '3.9'
+    citation:
+      source: python-langref-3
+      locator: '§ 2.5.4.7. Unrecognized escape sequences'
+      quote: 'Changed in version 3.12: Unrecognized escape sequences produce a SyntaxWarning.'
+    evidence_chunk_ids: ['python-langref-3#c00035']
+    notes: 'a sixth python-langref-3 CONFLICT-branch item: the page states the explicit
+      marker "Changed in version 3.12", opposing the claimed 3.9'
