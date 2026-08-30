@@ -1,0 +1,170 @@
+version: 1
+items:
+  - id: v-java-core-0025
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-finally-clause, status=present)'
+      rendered: 'Java has a finally clause (present).'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+      quote: 'The finally clause was designed for these kinds of needs. A finally clause is placed at the end of the list'
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    notes: 'plain support; the same locus grounds v-java-core-0028/0029/0030/0031/0032/0033/0034'
+
+  - id: v-java-core-0026
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-try-syntax, cpp-equivalence, "identical-in-every-respect")'
+      rendered: 'Java''s try construct syntax is identical to C++''s in every respect, including the finally clause.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.2'
+      quote: 'The syntax of the try construct in Java is exactly as that of C++, except for the finally clause described in Section 14.3.6.'
+    evidence_chunk_ids: ['sebesta-copl#c00828']
+    notes: 'the cited text explicitly carves out the finally clause as an exception to the
+      otherwise-identical syntax, directly opposing "identical in every respect"'
+
+  - id: v-java-core-0027
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-exception-handlers, cpp-equivalence, "identical-form-and-performance")'
+      rendered: 'Java exception handlers have the same form as C++''s and also run with identical runtime performance.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.2'
+      quote: 'The exception handlers of Java have the same form as those of C++, except that every catch must have a parameter and the class of the parameter must be a descendant of the predefined class Throwable.'
+    evidence_chunk_ids: ['sebesta-copl#c00828']
+    notes: 'the evidence supports "same form" (with one stated exception); the claim adds an
+      unstated performance-equivalence claim this passage never makes'
+
+  - id: v-java-core-0028
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-ownership, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    contamination_gauge: true
+    notes: 'true claim (Rust has an ownership system), cited to the Java finally-clause
+      passage, which cannot carry it'
+
+  - id: v-java-core-0029
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-java-finally-clause-reliability, a-improves-strongly)'
+      rendered: 'The finally clause strongly improves reliability.'
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    notes: 'this survey passage states a design rationale (guaranteed cleanup), not a
+      quality judgment'
+
+  - id: v-java-core-0030
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-finally-clause, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§99.3.6'
+    evidence_chunk_ids: []
+    notes: 'shape-valid numbered section under a chapter number (99) that does not exist in
+      this book'
+
+  - id: v-java-core-0031
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-raii, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    contamination_gauge: true
+    notes: 'Java has no RAII/deterministic-destructor mechanism (finally is an explicit,
+      manually-written block, not automatic scope-exit cleanup); the pairing itself is
+      invented, and this passage says nothing about RAII'
+
+  - id: v-java-core-0032
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-finally-clause, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+      quote: 'a finally block may itself throw at most one checked exception, which is silently discarded if the try block already threw'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    notes: 'fabricated behavioral-rule quote in the shape of a plausible one; the real
+      passage states only the clause''s purpose (guaranteed cleanup), not this discard rule'
+
+  - id: v-java-core-0033
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-finally-clause, status=present)'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.2'
+      quote: 'The finally clause was designed for these kinds of needs. A finally clause is placed at the end of the list'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    notes: 'real quote, cited to the exception-handlers section instead of its real home
+      §14.3.6 -- auto-correctable to the true locator'
+
+  - id: v-java-core-0034
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-finally-clause, status=present)'
+      rendered: 'Java lets a programmer mark a block of cleanup code that always runs after
+        a try block, whether or not an exception was thrown or caught.'
+      status: present
+    citation:
+      source: sebesta-copl
+      locator: '§14.3.6'
+    evidence_chunk_ids: ['sebesta-copl#c00833']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      source prose'
+
+  - id: v-since-0016
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-pattern-import-keyword, minimum-ghc-version, "present")'
+      since: '7.6'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.3.4'
+      quote: 'pattern is provided by the PatternSynonyms extension and requires GHC ≥7.8'
+    evidence_chunk_ids: ['ghc-users-guide#c00469']
+    notes: 'a seventh CONFLICT-branch item off ghc-users-guide, yet another page and
+      feature (the pattern import keyword from PatternSynonyms): the page states the
+      explicit marker "GHC ≥7.8", opposing the claimed 7.6'
