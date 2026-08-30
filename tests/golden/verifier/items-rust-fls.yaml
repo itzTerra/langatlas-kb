@@ -1,0 +1,231 @@
+version: 1
+items:
+  - id: v-rustfls-0001
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-traits, status=present)'
+      rendered: 'Rust has traits (present).'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+      quote: 'A trait is an item that describes an interface a type can implement.'
+    evidence_chunk_ids: ['rust-fls#c01034']
+    notes: 'plain support from the formal Rust language specification''s glossary entry'
+
+  - id: v-rustfls-0002
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-lifetimes, status=present)'
+      rendered: 'Rust has lifetimes (present).'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.377. lifetime¶'
+      quote: 'A lifetime specifies the expected longevity of a reference.'
+    evidence_chunk_ids: ['rust-fls#c00751']
+    notes: 'plain support'
+
+  - id: v-rustfls-0003
+    stratum: correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-borrowing, status=present)'
+      rendered: 'Rust has borrowing (present).'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ 15.4. Borrowing¶'
+      quote: 'Borrowing is the process of temporarily associating a reference with a value without transferring ownership permanently.'
+    evidence_chunk_ids: ['rust-fls#c00314']
+    notes: 'plain support; the same rule also grounds v-rustfls-0004''s contradicted item'
+
+  - id: v-rustfls-0004
+    stratum: contradicted
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-rust-borrowing, syntactic-requirement, "always-explicit")'
+      rendered: 'Every Rust borrow appears explicitly in the program''s syntax.'
+    citation:
+      source: rust-fls
+      locator: '§ 15.4. Borrowing¶'
+      quote: 'An implicit borrow is a borrow that is not present syntactically in program text.'
+    evidence_chunk_ids: ['rust-fls#c00314']
+    notes: 'the cited legality rule directly states the opposite: implicit borrows exist and
+      are, by definition, not present syntactically'
+
+  - id: v-rustfls-0005
+    stratum: fabricated-locator
+    expected_verdict: locator-not-found
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-traits, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.999. nonexistent-entry¶'
+    evidence_chunk_ids: []
+    notes: 'shape-valid glossary-style locator that does not exist in this specification''s
+      glossary'
+
+  - id: v-rustfls-0006
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+    evidence_chunk_ids: ['rust-fls#c01034']
+    contamination_gauge: true
+    notes: 'true claim (Haskell does have type classes), cited to the Rust FLS''s trait
+      glossary entry, which cannot carry it'
+
+  - id: v-rustfls-0007
+    stratum: category-error
+    expected_verdict: unsupported
+    claim:
+      kind: quality-assessment
+      text: 'quality-assessment(e-rust-traits-reusability, a-improves-strongly)'
+      rendered: 'Traits strongly improve reusability.'
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+    evidence_chunk_ids: ['rust-fls#c01034']
+    notes: 'a formal language specification defines terms and rules; it makes no quality claims'
+
+  - id: v-rustfls-0008
+    stratum: fabricated-combination
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-checked-exceptions, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+    evidence_chunk_ids: ['rust-fls#c01034']
+    contamination_gauge: true
+    notes: 'Rust has no checked-exception mechanism (it uses Result/Option instead); the
+      pairing itself is invented, and this glossary entry says nothing about it'
+
+  - id: v-rustfls-0009
+    stratum: quote-mismatch
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-traits, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+      quote: 'a trait may declare at most one default method, and all others must be abstract'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['rust-fls#c01034']
+    notes: 'fabricated constraint-shaped quote; the real glossary entry states no such
+      limitation and is a single generic sentence'
+
+  - id: v-rustfls-0010
+    stratum: quote-found-elsewhere
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-traits, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.377. lifetime¶'
+      quote: 'A trait is an item that describes an interface a type can implement.'
+    expected_annotations: ['quote-found-elsewhere']
+    evidence_chunk_ids: ['rust-fls#c01034']
+    notes: 'real quote, cited to the neighbouring lifetime glossary entry instead of its
+      real home §B.673 -- auto-correctable to the true locator'
+
+  - id: v-rustfls-0011
+    stratum: paraphrase-heavy-correct
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-lifetimes, status=present)'
+      rendered: 'The Rust compiler tracks how long each borrowed reference is allowed to
+        remain valid.'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.377. lifetime¶'
+    evidence_chunk_ids: ['rust-fls#c00751']
+    contamination_gauge: true
+    notes: 'no quote supplied and the claim carries no natural-language overlap with the
+      terse glossary definition'
+
+  - id: v-rustfls-0012
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-rust-references, production-mechanism, "borrowing-only")'
+      rendered: 'Every reference in Rust is produced by borrowing.'
+    citation:
+      source: rust-fls
+      locator: '§ 15.4. Borrowing¶'
+      quote: 'A borrow is a reference produced by borrowing.'
+    evidence_chunk_ids: ['rust-fls#c00314']
+    notes: 'the rule states one direction (a borrow is a reference); the claim asserts the
+      converse (every reference comes from borrowing), a generalisation this rule does not
+      state'
+
+  - id: v-since-0009
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-wnoncanonical-monoid-instances-warning, status, "present")'
+      since: '6.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§5.2.3'
+      quote: '-Wnoncanonical-monoid-instances Since 8.0 Default on'
+    evidence_chunk_ids: ['ghc-users-guide#c00162']
+    notes: 'a fourth CONFLICT-branch item off ghc-users-guide, a different warning flag
+      again: the page states the explicit marker "Since 8.0", opposing the claimed 6.0 by a
+      wide (major-version) margin'
+
+  - id: v-since-0010
+    stratum: wrong-since-off-by-major
+    expected_verdict: contradicted
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-explicit-namespaces, status=present)'
+      status: present
+      since: '9.0'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.3.4'
+      quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies Since 7.6.1'
+    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    notes: 'a fifth CONFLICT-branch item, a different extension again: the page states the
+      explicit marker "Since 7.6.1", opposing the claimed 9.0'
+
+  - id: v-rustfls-0013
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-haskell-explicit-namespaces, implying-extensions, "any-type-namespace-extension")'
+      rendered: 'ExplicitNamespaces is implied by every GHC extension that touches the type namespace.'
+    citation:
+      source: ghc-users-guide
+      locator: '§6.3.4'
+      quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies'
+    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    notes: 'the page names exactly two implying extensions, TypeOperators and TypeFamilies;
+      the claim generalises to any type-namespace-touching extension, a scope this passage
+      does not state'
