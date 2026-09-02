@@ -3303,7 +3303,7 @@ git commit -m "feat(#stage-2b): author the 40-60 query retrieval golden set acro
 - Modify: `docs/superpowers/plans/2026-08-27-stage-2b-golden-sets-and-scoring-harnesses.md`
 - Modify: `context/decisions.md`, `context/open-questions.md` (only if findings arose)
 
-- [ ] **Step 1: Run every check together**
+- [x] **Step 1: Run every check together**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources golden-validate --resolve --complete
@@ -3316,7 +3316,7 @@ uv --directory tools/validate run langatlas-validate ci
 Expected: `golden-validate` exits 0 with `0 errors`; `golden-staleness` reports 0 stale items;
 `eval` reports 40–60 queries; both pytest runs pass; `langatlas-validate ci` passes.
 
-- [ ] **Step 2: Prove the scored runner works end to end against a stand-in verifier**
+- [x] **Step 2: Prove the scored runner works end to end against a stand-in verifier**
 
 The real verifier is 2D's. Confirm the harness is wired by scoring a deliberately trivial one:
 
@@ -3339,7 +3339,7 @@ Expected: a per-stratum table over the whole set, a false-accept rate near 60%, 
 `harness OK`. A harness that passed a rubber stamp would be worthless, so this is the one
 end-to-end assertion that matters before handing off to 2D.
 
-- [ ] **Step 3: Confirm no golden score reached CI**
+- [x] **Step 3: Confirm no golden score reached CI**
 
 ```bash
 grep -n "golden" .github/workflows/ci.yml
@@ -3347,7 +3347,7 @@ grep -n "golden" .github/workflows/ci.yml
 Expected: exactly one hit, the `golden-validate` shape step. If `golden-score` appears, remove
 it — §8.6 is explicit that the scored harness is never a CI blocker on its own.
 
-- [ ] **Step 4: Record findings**
+- [x] **Step 4: Record findings**
 
 The two folds this plan originally left open were **ratified 2026-08-28** and are already
 encoded in `STRATUM_VERDICTS` (see "Ratified inputs" above) — do not re-open them.
@@ -3358,7 +3358,7 @@ proves under-determined during authoring — file each one as a **numbered** ite
 Do not silently resolve them inside the golden set: an item authored on an unratified reading is
 a calibration target the project has not agreed to.
 
-- [ ] **Step 5: Check off this plan's remaining boxes and commit**
+- [x] **Step 5: Check off this plan's remaining boxes and commit**
 
 ```bash
 git add docs/superpowers/plans/2026-08-27-stage-2b-golden-sets-and-scoring-harnesses.md \
@@ -3366,7 +3366,7 @@ git add docs/superpowers/plans/2026-08-27-stage-2b-golden-sets-and-scoring-harne
 git commit -m "docs(#stage-2b): close out Stage 2B with the golden sets committed and scored"
 ```
 
-- [ ] **Step 6: Report the handoff state**
+- [x] **Step 6: Report the handoff state**
 
 State plainly, with the numbers from Step 1:
 - verifier items committed (and the held-out count), controversy cases, retrieval queries;
