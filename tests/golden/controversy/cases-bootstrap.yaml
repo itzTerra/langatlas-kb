@@ -1,0 +1,267 @@
+version: 1
+cases:
+  - id: c-bootstrap-0001
+    expected_level: 0
+    inputs:
+      verdicts:
+        - {fact: f-000000000101, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000101, citation: 2, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 2, tier_b: 0, independent_corroborations: 2}
+      assessment_spread: {}
+      debates: []
+      contradiction_records: []
+    expected_signals: []
+    notes: 'two independent tier-A supports, no dissent anywhere -- settled'
+
+  - id: c-bootstrap-0002
+    expected_level: 0
+    inputs:
+      verdicts:
+        - {fact: f-000000000102, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+      debates: []
+      contradiction_records: []
+    expected_signals: []
+    notes: 'a single, uncontested tier-A support with no debate at all -- settled even
+      without corroboration, since nothing disputes it'
+
+  - id: c-bootstrap-0003
+    expected_level: 0
+    inputs:
+      verdicts:
+        - {fact: f-000000000103, citation: 1, verdict: supported, field: base, tier: B}
+        - {fact: f-000000000103, citation: 2, verdict: supported, field: base, tier: B}
+        - {fact: f-000000000103, citation: 3, verdict: supported, field: base, tier: B}
+      source_strength: {tier_a: 0, tier_b: 3, independent_corroborations: 3}
+      assessment_spread: {}
+      debates: []
+      contradiction_records: []
+    expected_signals: []
+    notes: 'settled via convergent secondary (tier-B) sources rather than a single tier-A
+      one -- no tier-A citation is required for level 0'
+
+  - id: c-bootstrap-0004
+    expected_level: 1
+    inputs:
+      debates:
+        - {id: d-0101, outcome: converged-after-revision, standing_dissent: false, rounds: 2}
+      verdicts:
+        - {fact: f-000000000104, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['debate:d-0101:converged-after-revision']
+    notes: 'weak, resolved signal -- the debate converged once the claim was revised'
+
+  - id: c-bootstrap-0005
+    expected_level: 1
+    inputs:
+      debates:
+        - {id: d-0102, outcome: resolved, standing_dissent: false, rounds: 1}
+      verdicts:
+        - {fact: f-000000000105, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {quality_edge_strength: [weak, weak]}
+    expected_signals: ['debate:d-0102:resolved']
+    notes: 'a minor, agreeing quality-edge assessment spread (both weak, not conflicting)
+      alongside a debate that resolved cleanly with no standing dissent -- noted, not contested'
+
+  - id: c-bootstrap-0006
+    expected_level: 1
+    inputs:
+      verdicts:
+        - {fact: f-000000000106, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000106, citation: 2, verdict: partial, field: characteristic, tier: B}
+      source_strength: {tier_a: 1, tier_b: 1, independent_corroborations: 1}
+      assessment_spread: {}
+      debates: []
+      contradiction_records: []
+    expected_signals: ['verdict:partial:characteristic']
+    notes: 'the base claim is solidly supported by a tier-A source; a `partial` verdict on
+      a non-load-bearing secondary characteristic field is a noted weakness, not a live dispute'
+
+  - id: c-bootstrap-0007
+    expected_level: 1
+    inputs:
+      debates:
+        - {id: d-0103, outcome: resolved, standing_dissent: false, rounds: 1}
+      verdicts:
+        - {fact: f-000000000107, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['debate:d-0103:resolved']
+    notes: 'a single quick round with no standing dissent -- the disagreement barely rose
+      above noise before resolving'
+
+  - id: c-bootstrap-0008
+    expected_level: 1
+    inputs:
+      debates:
+        - {id: d-0104, outcome: converged-after-revision, standing_dissent: false, rounds: 3}
+      verdicts:
+        - {fact: f-000000000108, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['debate:d-0104:converged-after-revision']
+    notes: 'no independent corroboration at all, but the debate still converged cleanly
+      after revision -- weak backing, but no live dissent'
+
+  - id: c-bootstrap-0009
+    expected_level: 2
+    inputs:
+      debates:
+        - {id: d-0201, outcome: resolved, standing_dissent: true, rounds: 3}
+      verdicts:
+        - {fact: f-000000000109, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000109, citation: 2, verdict: partial, field: since, tier: B}
+      source_strength: {tier_a: 1, tier_b: 1, independent_corroborations: 1}
+      assessment_spread: {quality_edge_strength: [strong, weak]}
+      contradiction_records: []
+    expected_signals: ['debate:d-0201:standing-dissent', 'verdict:partial:since']
+    notes: 'live disagreement inside the pipeline: a partial on a load-bearing field plus
+      standing dissent after resolution'
+
+  - id: c-bootstrap-0010
+    expected_level: 2
+    inputs:
+      verdicts:
+        - {fact: f-000000000110, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {quality_edge_strength: [strong, weak, weak]}
+      debates: []
+      contradiction_records: []
+    expected_signals: ['assessment-spread:quality_edge_strength']
+    notes: 'a genuine three-way split in quality-edge strength assessments with no debate
+      yet convened to resolve it -- contested by spread alone'
+
+  - id: c-bootstrap-0011
+    expected_level: 2
+    inputs:
+      debates:
+        - {id: d-0202, outcome: resolved, standing_dissent: true, rounds: 2}
+      verdicts:
+        - {fact: f-000000000111, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000111, citation: 2, verdict: partial, field: since, tier: B}
+      source_strength: {tier_a: 1, tier_b: 1, independent_corroborations: 1}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['debate:d-0202:standing-dissent', 'verdict:partial:since']
+    notes: 'the same shape as c-bootstrap-0009 with a different fact and debate id, to give
+      the assessor more than one example of the standing-dissent-plus-partial-since pattern'
+
+  - id: c-bootstrap-0012
+    expected_level: 2
+    inputs:
+      debates:
+        - {id: d-0203, outcome: resolved, standing_dissent: true, rounds: 5}
+      verdicts:
+        - {fact: f-000000000112, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000112, citation: 2, verdict: partial, field: base, tier: A}
+      source_strength: {tier_a: 2, tier_b: 0, independent_corroborations: 1}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['debate:d-0203:standing-dissent', 'verdict:partial:base']
+    notes: 'a high round count (5) before resolution signals real difficulty reaching
+      consensus, and standing dissent persisted even then -- still level 2, not 3, because
+      there is no open contradiction record and no two tier-A sources directly disagree'
+
+  - id: c-bootstrap-0013
+    expected_level: 2
+    inputs:
+      debates:
+        - {id: d-0204, outcome: resolved, standing_dissent: true, rounds: 2}
+      contradiction_records:
+        - {id: ctr-1111aaaa2222, type: verification, status: resolved, participants: 2}
+      verdicts:
+        - {fact: f-000000000113, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+    expected_signals: ['contradiction:ctr-1111aaaa2222:resolved', 'debate:d-0204:standing-dissent']
+    notes: 'a contradiction record exists but its own status is resolved (closed), not
+      open -- paired with standing dissent this is contested, but the closed record keeps
+      it from escalating to level 3'
+
+  - id: c-bootstrap-0014
+    expected_level: 2
+    inputs:
+      verdicts:
+        - {fact: f-000000000114, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 1, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {quality_edge_strength: [strong, weak], readability_edge_strength: [weak, strong]}
+      debates: []
+      contradiction_records: []
+    expected_signals: ['assessment-spread:quality_edge_strength', 'assessment-spread:readability_edge_strength']
+    notes: 'disagreement spread across two independent quality edges simultaneously, with
+      no debate convened yet to work through either -- a broader contest than
+      c-bootstrap-0010''s single-edge spread'
+
+  - id: c-bootstrap-0015
+    expected_level: 3
+    inputs:
+      debates:
+        - {id: d-0301, outcome: escalated, standing_dissent: true, rounds: 4}
+      contradiction_records:
+        - {id: ctr-0123456789ab, type: verification, status: open, participants: 2}
+      verdicts:
+        - {fact: f-000000000115, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000115, citation: 2, verdict: contradicted, field: base, tier: A}
+      source_strength: {tier_a: 2, tier_b: 0, independent_corroborations: 1}
+      assessment_spread: {}
+    expected_signals: ['contradiction:ctr-0123456789ab:open', 'verdict:contradicted:base',
+                       'debate:d-0301:escalated']
+    notes: 'non-convergence: two independent tier-A sources disagree on the base claim and
+      the debate escalated -- the case that must route to Claude'
+
+  - id: c-bootstrap-0016
+    expected_level: 3
+    inputs:
+      debates:
+        - {id: d-0302, outcome: escalated, standing_dissent: true, rounds: 3}
+      contradiction_records:
+        - {id: ctr-2222bbbb3333, type: since, status: open, participants: 2}
+      verdicts:
+        - {fact: f-000000000116, citation: 1, verdict: supported, field: since, tier: A}
+        - {fact: f-000000000116, citation: 2, verdict: contradicted, field: since, tier: A}
+      source_strength: {tier_a: 2, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {}
+    expected_signals: ['contradiction:ctr-2222bbbb3333:open', 'verdict:contradicted:since',
+                       'debate:d-0302:escalated']
+    notes: 'the same escalation pattern as c-bootstrap-0015 but on the `since` field rather
+      than `base` -- an open contradiction record over version history, not existence'
+
+  - id: c-bootstrap-0017
+    expected_level: 3
+    inputs:
+      debates:
+        - {id: d-0303, outcome: escalated, standing_dissent: true, rounds: 6}
+      verdicts:
+        - {fact: f-000000000117, citation: 1, verdict: supported, field: base, tier: A}
+        - {fact: f-000000000117, citation: 2, verdict: contradicted, field: base, tier: A}
+        - {fact: f-000000000117, citation: 3, verdict: partial, field: base, tier: B}
+      source_strength: {tier_a: 2, tier_b: 1, independent_corroborations: 1}
+      assessment_spread: {}
+      contradiction_records: []
+    expected_signals: ['verdict:contradicted:base', 'debate:d-0303:escalated']
+    notes: 'no open contradiction record was ever filed, but the verdicts themselves span
+      supported/contradicted/partial across three citations on the same load-bearing field,
+      with a long, escalated debate -- non-convergence can be read directly off the verdict
+      mix even without a standing contradiction-register entry'
+
+  - id: c-bootstrap-0018
+    expected_level: 3
+    inputs:
+      debates:
+        - {id: d-0304, outcome: escalated, standing_dissent: true, rounds: 4}
+      contradiction_records:
+        - {id: ctr-3333cccc4444, type: quality-assessment, status: open, participants: 2}
+      verdicts:
+        - {fact: f-000000000118, citation: 1, verdict: supported, field: base, tier: A}
+      source_strength: {tier_a: 2, tier_b: 0, independent_corroborations: 0}
+      assessment_spread: {quality_edge_strength: [strong, weak]}
+    expected_signals: ['contradiction:ctr-3333cccc4444:open', 'debate:d-0304:escalated']
+    notes: 'the open contradiction is over a quality-assessment edge rather than the base
+      existence claim -- two tier-A sources disagree on the edge itself, not just on
+      whether the underlying feature exists'
