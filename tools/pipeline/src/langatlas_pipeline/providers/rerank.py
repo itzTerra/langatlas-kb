@@ -45,12 +45,36 @@ class RerankClient:
                     tool="rerank-candidate", text=doc, source_id=None,
                     kind="rerank-candidate")
                 for i, doc in enumerate(batch))
-            messages = self.prompt.render(query=query, documents=rendered)
-            result = self.completer.complete(self.alias, messages, prompt=self.prompt,
-                                             schema=RerankScores)
-            batch_scores = result.parsed.scores
-            if len(batch_scores) != len(batch):
-                raise ValueError(f"reranker returned {len(batch_scores)} scores for "
-                                 f"{len(batch)} documents")
+            messages = self.prompt.render(query=query, documents=rendered,
+                                          count=str(len(batch)))
+            # A schema-valid `{"scores": [...]}` array can still carry the wrong number
+            # of entries — pydantic has no way to encode "exactly len(batch)" in a
+            # static JSON schema, so a miscount is a content error the completion
+            # client's own JSON-validity repair loop never sees. Observed live: at
+            # sampling temperature 0, a blind identical-prompt retry reproduces the same
+            # wrong count byte-for-byte, so the retry has to hand the model its own wrong
+            # answer and the actual/expected counts — the same repair shape
+            # CompletionClient already uses for invalid JSON — rather than resending an
+            # unchanged prompt and hoping for a different sample.
+            conversation = list(messages)
+            batch_scores = None
+            for attempt in range(2):
+                result = self.completer.complete(self.alias, conversation, prompt=self.prompt,
+                                                  schema=RerankScores)
+                if len(result.parsed.scores) == len(batch):
+                    batch_scores = result.parsed.scores
+                    break
+                if attempt == 0:
+                    conversation = conversation + [
+                        {"role": "assistant", "content": result.text},
+                        {"role": "user",
+                         "content": f"That was {len(result.parsed.scores)} scores; there"
+                                    f" are exactly {len(batch)} documents. Reply again"
+                                    f" with exactly {len(batch)} scores, one per"
+                                    " document, no extra entries."},
+                    ]
+            if batch_scores is None:
+                raise ValueError(f"reranker returned {len(result.parsed.scores)} scores"
+                                 f" for {len(batch)} documents (after one repair turn)")
             scores.extend(batch_scores)
         return scores

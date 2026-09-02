@@ -109,11 +109,44 @@ def test_rerank_batches_and_concatenates(ctx):
     assert scores == [0.5, 0.4, 0.3]
 
 
-def test_rerank_rejects_a_score_count_mismatch(ctx):
-    completer = FakeCompleter([json.dumps({"scores": [0.5]})])
+def test_rerank_rejects_a_score_count_mismatch_that_survives_the_retry(ctx):
+    # A schema-valid `{"scores": [...]}` can still carry the wrong number of entries —
+    # pydantic has no way to encode "exactly N" in a static JSON schema. One retry
+    # absorbs a one-off miscount; two wrong-length replies in a row still raises.
+    completer = FakeCompleter([json.dumps({"scores": [0.5]}),
+                               json.dumps({"scores": [0.5, 0.5, 0.5]})])
     with pytest.raises(ValueError):
         RerankClient(ctx, completer=completer).rerank("q", ["a", "b"],
                                                       model="qwen3-reranker-4b")
+
+
+def test_rerank_retries_once_on_a_score_count_mismatch_then_succeeds(ctx):
+    completer = FakeCompleter([json.dumps({"scores": [0.5]}),
+                               json.dumps({"scores": [0.9, 0.1]})])
+    scores = RerankClient(ctx, completer=completer).rerank(
+        "q", ["a", "b"], model="qwen3-reranker-4b")
+    assert scores == [0.9, 0.1]
+    assert len(completer.calls) == 2, "the mismatch cost exactly one retry, not a loop"
+    # the retry must be a repair turn (the model's own wrong answer plus the actual vs
+    # expected counts), not a blind resend of the identical prompt — a temperature-0
+    # resend reproduces the same wrong count byte-for-byte, observed live against the
+    # real reranker
+    repair_call = completer.calls[1]
+    assert repair_call[:-2] == completer.calls[0], "the original prompt is preserved"
+    assert repair_call[-2] == {"role": "assistant", "content": json.dumps({"scores": [0.5]})}
+    assert "1 scores" in repair_call[-1]["content"] and "exactly 2" in repair_call[-1]["content"]
+
+
+def test_rerank_prompt_states_the_exact_document_count(ctx):
+    # Finding: the reranker (a completion, not a real /v1/rerank route) reliably
+    # returned one extra hallucinated score for an 8-document batch because nothing in
+    # the prompt told it how many documents to expect. Pin that the count is now
+    # explicit in what gets sent.
+    completer = FakeCompleter([json.dumps({"scores": [0.5, 0.5, 0.5]})])
+    RerankClient(ctx, completer=completer).rerank(
+        "q", ["a", "b", "c"], model="qwen3-reranker-4b")
+    sent = "\n".join(m["content"] for m in completer.calls[0])
+    assert "3" in sent and "exactly" in sent.lower()
 
 
 def test_rerank_documents_are_delimited_as_untrusted(ctx):

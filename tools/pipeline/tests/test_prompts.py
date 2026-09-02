@@ -80,7 +80,7 @@ def test_shipped_prompts_load_and_declare_their_variables():
     assert isinstance(probe, PromptRef)
     assert probe.render()[0]["role"] == "system"
     scorer = load_prompt("rerank-score")
-    messages = scorer.render(query="ownership", documents="1. some text")
+    messages = scorer.render(query="ownership", documents="1. some text", count="1")
     assert "ownership" in messages[-1]["content"]
 
 
