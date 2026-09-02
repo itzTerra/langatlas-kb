@@ -1,0 +1,52 @@
+# cross-source-survey band -- hand-authored, `expected_sources` rather than
+# `expected_chunks`: any chunk from a listed source answers the query, since there is no
+# single right passage for a survey-style question.
+queries:
+  - id: survey-001
+    band: cross-source-survey
+    query: arguments for and against static type systems
+    expected_sources: ['pierce-tapl-2002', 'vanroy-haridi-2003', 'scott-plp']
+  - id: survey-002
+    band: cross-source-survey
+    query: how different books define a programming paradigm
+    expected_sources: ['vanroy-haridi-2003', 'sebesta-copl', 'jordan-et-al-2015']
+  - id: survey-003
+    band: cross-source-survey
+    query: how various languages handle exception propagation
+    expected_sources: ['sebesta-copl', 'scott-plp']
+  - id: survey-004
+    band: cross-source-survey
+    query: comparing pattern matching across functional and imperative languages
+    expected_sources: ['sebesta-copl', 'scott-plp', 'python-langref-3']
+  - id: survey-005
+    band: cross-source-survey
+    query: what different languages do about multiple inheritance
+    expected_sources: ['sebesta-copl', 'scott-plp']
+  - id: survey-006
+    band: cross-source-survey
+    query: how garbage collection is described across specifications and textbooks
+    expected_sources: ['sebesta-copl', 'scott-plp', 'c23-n3220']
+  - id: survey-007
+    band: cross-source-survey
+    query: dynamic versus static type binding in scripting languages
+    expected_sources: ['sebesta-copl', 'scott-plp']
+  - id: survey-008
+    band: cross-source-survey
+    query: how concurrency and threading models differ across languages
+    expected_sources: ['sebesta-copl', 'vanroy-haridi-2003']
+  - id: survey-009
+    band: cross-source-survey
+    query: language reference material on closures and lexical scoping
+    expected_sources: ['sebesta-copl', 'scott-plp', 'rust-fls', 'rust-reference']
+  - id: survey-010
+    band: cross-source-survey
+    query: generics and parametric polymorphism across type systems
+    expected_sources: ['sebesta-copl', 'scott-plp', 'pierce-tapl-2002']
+  - id: survey-011
+    band: cross-source-survey
+    query: how Rust's official documentation describes ownership and borrowing
+    expected_sources: ['rust-reference', 'rust-fls']
+  - id: survey-012
+    band: cross-source-survey
+    query: version-history notes across language specifications
+    expected_sources: ['python-langref-3', 'ghc-users-guide', 'jls-se25']

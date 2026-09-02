@@ -3218,7 +3218,7 @@ git commit -m "feat(#stage-2b): seed the bootstrap controversy golden cases"
 overlap with the target chunk), ~10–15 `cross-source-survey` (hand-authored, `expected_sources`
 rather than `expected_chunks` — any chunk of the listed sources answers them).
 
-- [ ] **Step 1: Derive the exact-term band**
+- [x] **Step 1: Derive the exact-term band**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources golden-derive-queries \
@@ -3226,13 +3226,13 @@ uv --directory tools/ingest run langatlas-sources golden-derive-queries \
   --out tests/golden/retrieval/queries-derived.yaml
 ```
 
-- [ ] **Step 2: Read every derived query and fix the useless ones**
+- [x] **Step 2: Read every derived query and fix the useless ones**
 
 A derived query that is a verbatim 12-word quote tests the FTS branch and nothing else. Rewrite
 those into shorter, more natural phrasings that keep the same `expected_chunks`. Drop duplicates
 that landed on the same chunk.
 
-- [ ] **Step 3: Hand-author the paraphrase-concept band**
+- [x] **Step 3: Hand-author the paraphrase-concept band**
 
 ```yaml
 # tests/golden/retrieval/queries-concepts.yaml
@@ -3251,7 +3251,7 @@ The rule: **no content word may appear in the target chunk**. If one does, rewri
 This band is what actually separates the D22 candidates in 2C — an exact-term set would score
 every model near-identically and waste the benchmark.
 
-- [ ] **Step 4: Hand-author the cross-source-survey band**
+- [x] **Step 4: Hand-author the cross-source-survey band**
 
 ```yaml
 # tests/golden/retrieval/queries-survey.yaml
@@ -3269,7 +3269,7 @@ queries:
 Use `expected_sources` here, never `expected_chunks` — `run_eval` rejects an entry setting both,
 and a survey query has no single right chunk.
 
-- [ ] **Step 5: Score the set against the live corpus**
+- [x] **Step 5: Score the set against the live corpus**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources eval
@@ -3278,7 +3278,7 @@ Expected: a report over 40–60 queries with all four metrics populated. **This 
 not a gate** — a low Recall@5 here is 2C's input, not a failure of this task. Record the numbers
 in the commit message so 2C has the incumbent baseline in git history.
 
-- [ ] **Step 6: Sanity-check that the set discriminates**
+- [x] **Step 6: Sanity-check that the set discriminates**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources eval --no-rerank
@@ -3287,7 +3287,7 @@ Expected: a *different* score from Step 5. If reranking changes nothing at all, 
 too easy to tell candidate stacks apart, and 2C's benchmark will be uninformative — add harder
 paraphrase items before moving on.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tests/golden/retrieval/queries-*.yaml \
