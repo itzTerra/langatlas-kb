@@ -3045,7 +3045,7 @@ git add tests/golden/verifier/items-<theme>.yaml \
 git commit -m "feat(#stage-2b): add the <theme> verifier golden batch"
 ```
 
-- [ ] **Step 7: Repeat Steps 1–6 until the allocation table is satisfied**
+- [x] **Step 7: Repeat Steps 1–6 until the allocation table is satisfied**
 
 Track progress with:
 ```bash
@@ -3110,7 +3110,7 @@ escalation triggers, so it gets full coverage even though it is rare.
 
 **Suggested distribution:** level 0 ×4, level 1 ×5, level 2 ×6, level 3 ×5.
 
-- [ ] **Step 1: Author the cases**
+- [x] **Step 1: Author the cases**
 
 Shape to copy (one per level):
 
@@ -3181,20 +3181,20 @@ Keep every case's `inputs` to the five permitted keys. The validator rejects
 `github_activity`, `challenge_activity`, `human_challenges`, `closure_attempt`, and
 `issue_comments` — that rejection is the point, not an obstacle.
 
-- [ ] **Step 2: Validate**
+- [x] **Step 2: Validate**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources golden-validate
 ```
 Expected: `controversy cases: 15..20, 0 errors`.
 
-- [ ] **Step 3: Verify the exclusion rule bites**
+- [x] **Step 3: Verify the exclusion rule bites**
 
 Temporarily add `github_activity: {open_issues: 2}` to one case's `inputs`, re-run
 `golden-validate`, confirm it errors naming `github_activity`, then remove it. This is a
 one-command check that the structural defense is live, not a claim in a README.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add tests/golden/controversy/cases-bootstrap.yaml \
