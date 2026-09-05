@@ -2417,7 +2417,7 @@ re-derivable when the golden set grows.
                    available: Sequence[str] | None = None) -> PilotSelection
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_pilot.py`:
 
@@ -2491,12 +2491,12 @@ def test_the_committed_golden_set_selects_the_ratified_pilot():
                                   "cross-source-survey": 5}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_pilot.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.pilot`.
 
-- [ ] **Step 3: Implement `pilot.py`**
+- [x] **Step 3: Implement `pilot.py`**
 
 ```python
 import collections
@@ -2564,14 +2564,14 @@ def select_pilot(entries: list[dict], *, size: int = 4,
                           total=len(needs), per_band=dict(per_band))
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_pilot.py -v`
 Expected: PASS (9 tests). `test_the_committed_golden_set_selects_the_ratified_pilot` is the one
 that matters: it pins the matrix's `pilot_sources` to a computation, so a later golden-set edit
 that changes the best pilot fails a test instead of silently invalidating the benchmark.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/pilot.py \
