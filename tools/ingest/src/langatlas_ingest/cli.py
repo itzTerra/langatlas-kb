@@ -389,7 +389,26 @@ def _cmd_bench_run(args) -> int:
 
     config, matrix = IngestConfig.load(), load_matrix()
     if args.chunk_size_for:
-        arms = matrix.chunk_size_arms(args.chunk_size_for, truncate=args.truncate)
+        candidates = matrix.chunk_size_arms(args.chunk_size_for, truncate=args.truncate)
+        if args.chunk_target is None or args.chunk_max is None:
+            raise SystemExit(
+                "--chunk-size-for needs --chunk-target and --chunk-max naming the arm"
+                " whose chunk size matches the bench corpus you just built with"
+                " bench-build — matrix.chunk_size_arms() returns every secondary chunk"
+                " size at once, and running them all in one call would silently score"
+                " an arm against a corpus chunked at a different size than its own"
+                " label claims. Available: "
+                + ", ".join(f"{a.chunk_target_tokens}/{a.chunk_max_tokens}"
+                            for a in candidates))
+        arms = [arm for arm in candidates
+                if (arm.chunk_target_tokens, arm.chunk_max_tokens)
+                == (args.chunk_target, args.chunk_max)]
+        if not arms:
+            raise SystemExit(
+                f"no chunk-size arm for {args.chunk_size_for} matches"
+                f" {args.chunk_target}/{args.chunk_max}. Available: "
+                + ", ".join(f"{a.chunk_target_tokens}/{a.chunk_max_tokens}"
+                            for a in candidates))
         span = True
     else:
         arms = [arm for arm in matrix.primary
@@ -583,6 +602,17 @@ def build_parser() -> argparse.ArgumentParser:
     bench_run.add_argument("--chunk-size-for", default=None,
                            help="run §8.6's secondary chunk-size axis for this model"
                                 " instead of the primary matrix")
+    bench_run.add_argument("--chunk-target", type=int, default=None,
+                           help="with --chunk-size-for: run only the arm whose target"
+                                " token count matches this and the currently-built bench"
+                                " corpus's chunk size — required whenever"
+                                " --chunk-size-for is used, since matrix.chunk_size_arms()"
+                                " otherwise returns every secondary chunk size at once,"
+                                " which would score arms other than the one actually"
+                                " built against the current bench corpus")
+    bench_run.add_argument("--chunk-max", type=int, default=None,
+                           help="with --chunk-size-for: paired with --chunk-target,"
+                                " must match the max token count of the arm to run")
     bench_run.add_argument("--truncate", action="store_true",
                            help="with --chunk-size-for: the chosen model is a"
                                 " short-context candidate")

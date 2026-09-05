@@ -143,6 +143,29 @@ def test_bench_pilot_prints_the_selection(capsys):
     assert "sebesta-copl" in out and "37/52" in out
 
 
+def test_bench_run_chunk_size_for_requires_an_explicit_chunk_size():
+    from langatlas_ingest.cli import main
+
+    # Live D22 benchmark evidence (2026-09-05): `chunk_size_arms()` returns every
+    # secondary chunk size for a model at once, so a bare `--chunk-size-for` silently
+    # ran both the 400/550 and 800/1050 arms in one call against whichever single
+    # chunk size the bench corpus actually had built — producing a result file labeled
+    # `c800` that was really scored against 400-token chunks. This must fail loudly
+    # before ever touching the database, not proceed with an ambiguous arm set.
+    with pytest.raises(SystemExit) as exit_info:
+        main(["bench-run", "--chunk-size-for", "qwen3-embedding-4b"])
+    assert "chunk-target" in str(exit_info.value) and "chunk-max" in str(exit_info.value)
+
+
+def test_bench_run_chunk_size_for_rejects_an_unknown_pair():
+    from langatlas_ingest.cli import main
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(["bench-run", "--chunk-size-for", "qwen3-embedding-4b",
+              "--chunk-target", "1", "--chunk-max", "2"])
+    assert "no chunk-size arm" in str(exit_info.value)
+
+
 def test_bench_subcommands_are_registered():
     from langatlas_ingest.cli import build_parser
 
