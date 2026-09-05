@@ -56,7 +56,14 @@ def _is_transient(exc: Exception) -> bool:
     status = getattr(exc, "status", None) or getattr(exc, "status_code", None)
     if status is not None:
         return status == 429 or status >= 500
-    return isinstance(exc, (ProviderTransportError, TimeoutError, ConnectionError))
+    if isinstance(exc, (ProviderTransportError, TimeoutError, ConnectionError)):
+        return True
+    # Live D22 benchmark evidence (2026-09-05): a real request timeout against the slow
+    # university gateway raised `openai.APITimeoutError`, which is neither `TimeoutError`
+    # nor `ConnectionError` nor status-bearing — a plain "no response arrived in time" is
+    # the textbook transient case, so it is detected by class name rather than importing
+    # any specific provider SDK here (this module stays provider-agnostic by design).
+    return "timeout" in type(exc).__name__.lower()
 
 
 def _backoff_seconds(exc: Exception, attempt: int) -> float:
