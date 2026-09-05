@@ -4806,7 +4806,7 @@ exist in the golden set by construction.
 - Create: `benchmarks/d22-source-corpus/results/<model>__hybrid-rerank__c400.json`
 - Create: `benchmarks/d22-source-corpus/results/<model>__hybrid-rerank__c800.json`
 
-- [ ] **Step 1: Read the primary verdict to learn which model to test**
+- [x] **Step 1: Read the primary verdict to learn which model to test**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-verdict
@@ -4816,7 +4816,7 @@ Expected: a verdict naming a model. Note whether it is a short-context candidate
 the `--truncate` flag below. (`bench-verdict` runs fine with the chunk-size arms absent; rule 4
 simply reports that the chunking stays.)
 
-- [ ] **Step 2: Measure the 400-token chunking**
+- [x] **Step 2: Measure the 400-token chunking**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-build --drop \
@@ -4830,7 +4830,7 @@ neighbourhood as the primary arm — a *collapse* to near zero means the span re
 matching and must be debugged (Task 9 Step 5 is the check to re-run), not recorded as a chunk-size
 finding.
 
-- [ ] **Step 3: Measure the 800-token chunking**
+- [x] **Step 3: Measure the 800-token chunking**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-build --drop \
@@ -4841,7 +4841,7 @@ uv --directory tools/ingest run langatlas-sources bench-run \
 
 Expected: `..._c800.json`.
 
-- [ ] **Step 4: Restore the bench corpus to production chunking**
+- [x] **Step 4: Restore the bench corpus to production chunking**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-build --drop
@@ -4850,7 +4850,7 @@ uv --directory tools/ingest run langatlas-sources bench-build --drop
 Expected: `parity with production: OK`. Leaving the bench database at 800 tokens would make any
 later re-run of a primary arm silently score a different corpus.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add benchmarks/d22-source-corpus/results/ \
