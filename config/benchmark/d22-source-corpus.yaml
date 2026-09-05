@@ -15,7 +15,8 @@ incumbent: qwen3-embedding-4b
 candidates:
   - model: qwen3-embedding-4b                 # D15 incumbent, 2560-dim / 40960-token
   - model: nomic-embed-text-v1.5              # 768-dim / 8192-token
-  - model: nomic-embed-text-v2-moe            # probed in Task 1
+  - model: nomic-embed-text-v2-moe            # probed in Task 1, 768-dim / 512-token
+    truncate: true                            # §8.6: tested honestly at its real window
   - model: mxbai-embed-large:latest           # 1024-dim / 512-token
     truncate: true                            # §8.6: tested honestly at its real window
   - model: multilingual-e5-large-instruct     # 1024-dim / 512-token

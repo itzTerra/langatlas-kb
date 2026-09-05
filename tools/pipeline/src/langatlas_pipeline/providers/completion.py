@@ -14,6 +14,12 @@ from langatlas_pipeline.providers.throttle import Throttle
 _THINK = re.compile(r"<think>(.*?)</think>", re.S)
 _CHARS_PER_TOKEN = 4
 _ESTIMATE_MARGIN = 1.1
+# Live D22 benchmark evidence (2026-09-05): a real gateway tokenizer counted 513 tokens for
+# breadcrumb-prefixed source text that `estimate_tokens` (chars/4 * 1.1) put at exactly the
+# window. Tokens-per-char varies by content in ways a fixed char ratio cannot bound tightly
+# near the edge, so `truncate_to_tokens` targets comfortably under the window rather than
+# exactly at it.
+_TRUNCATION_SAFETY_TOKENS = 24
 
 
 @dataclass(frozen=True)
@@ -58,14 +64,20 @@ def truncate_to_tokens(text: str, max_tokens: int) -> str:
     returns can never be rejected by the check that follows it. Shaving 5% at a time
     converges in a handful of passes for any realistic input and never overshoots into
     a needlessly short prefix the way a single chars/4 division would.
+
+    Targets `max_tokens - _TRUNCATION_SAFETY_TOKENS`, not `max_tokens` itself: a fixed
+    chars-per-token ratio cannot bound every real tokenizer tightly at the edge, and a
+    text landing one real token over the window is rejected exactly like an untruncated
+    one — defeating the whole point of truncating.
     """
-    if estimate_tokens([{"content": text}]) <= max_tokens:
+    target = max(1, max_tokens - _TRUNCATION_SAFETY_TOKENS)
+    if estimate_tokens([{"content": text}]) <= target:
         return text
     # First cut analytically, then shave — the analytic cut lands close, the loop makes
     # it correct.
-    cut = max(1, int(len(text) * max_tokens / max(1, estimate_tokens([{"content": text}]))))
+    cut = max(1, int(len(text) * target / max(1, estimate_tokens([{"content": text}]))))
     shortened = text[:cut]
-    while shortened and estimate_tokens([{"content": shortened}]) > max_tokens:
+    while shortened and estimate_tokens([{"content": shortened}]) > target:
         if len(shortened) <= 1:
             break
         shortened = shortened[:max(1, int(len(shortened) * 0.95))]
