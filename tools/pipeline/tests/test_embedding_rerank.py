@@ -55,7 +55,7 @@ def test_embed_logs_counts_not_bodies(ctx, workspace):
 def test_oversized_embedding_input_is_refused(ctx):
     with pytest.raises(ContextTooLarge):
         EmbeddingClient(ctx, client=FakeEmbeddingClient()).embed(
-            ["x" * 5_000_000], model="mxbai-embed-large")
+            ["x" * 5_000_000], model="mxbai-embed-large:latest")
 
 
 def test_embed_logs_cache_hits(ctx, workspace):

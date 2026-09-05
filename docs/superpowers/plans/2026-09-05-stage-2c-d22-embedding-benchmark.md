@@ -524,7 +524,7 @@ git add tools/pipeline/src/langatlas_pipeline/observability/probe.py \
 git commit -m "feat(#stage-2c): probe embedding models for their real dimensions"
 ```
 
-- [ ] **Step 6: Run the live probe (developer checkpoint)**
+- [x] **Step 6: Run the live probe (developer checkpoint)**
 
 With the university API credentials in the environment:
 
@@ -546,7 +546,7 @@ model card and say in the commit message where it came from.
 **This is a developer checkpoint: the developer reads the diff and approves it before it is
 committed.**
 
-- [ ] **Step 7: Commit the reviewed capability diff**
+- [x] **Step 7: Commit the reviewed capability diff**
 
 ```bash
 git add config/provider_capabilities.yaml
