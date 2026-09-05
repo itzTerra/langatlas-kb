@@ -214,7 +214,7 @@ deliberately. An invented context window would make the "tested honestly" clause
   `apply_embedding_probe` returns the list of models it **refused** to write (unreachable, or no
   `max_input_tokens` from any source).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/pipeline/tests/test_probe_embeddings.py`:
 
@@ -349,12 +349,12 @@ def test_apply_skips_an_unreachable_model(tmp_path: Path):
     assert refused == ["gone"]
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_probe_embeddings.py -v`
 Expected: FAIL — `ImportError: cannot import name 'EmbeddingProbe'`.
 
-- [ ] **Step 3: Implement the probe**
+- [x] **Step 3: Implement the probe**
 
 Append to `tools/pipeline/src/langatlas_pipeline/observability/probe.py` (the module already
 imports `Path`, `Any`, `_yaml`, `RunContext`, `Budget`, `utc_now`; add
@@ -510,12 +510,12 @@ def main(argv: list[str] | None = None) -> int:
 > If you are executing tasks strictly in order and Step 4 fails on an unexpected keyword
 > argument, do Task 2 Steps 3–4 first, then return here.
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_probe_embeddings.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 5: Commit the probe**
+- [x] **Step 5: Commit the probe**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/observability/probe.py \

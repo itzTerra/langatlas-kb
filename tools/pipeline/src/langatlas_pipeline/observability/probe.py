@@ -1,6 +1,7 @@
 import argparse
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Sequence
 from pydantic import BaseModel
 from ruamel.yaml import YAML
 from langatlas_pipeline.paths import CONFIG_DIR
@@ -144,25 +145,139 @@ class _ProbeClient(CompletionClient):
         return response
 
 
+# A one-word input is enough to learn a vector's length, and keeps the probe's cost at
+# a rounding error. It is deliberately not domain text: nothing about this call should
+# depend on the corpus.
+_PROBE_INPUT = "probe"
+# The window the probe declares when the table has none. A model nobody has recorded yet
+# is exactly the case the probe exists for, so the embed call must not route through the
+# capability lookup and fail with UnknownAlias — which would be reported as "unreachable"
+# and hide a perfectly working model.
+_UNBOUNDED_WINDOW = 10 ** 9
+
+
+@dataclass(frozen=True)
+class EmbeddingProbe:
+    """What one embedding model answered. `dimensions` is *measured* from the returned
+    vector — the one fact a call can establish for free. `max_input_tokens` is never
+    guessed: the gateway's model-info route, else the existing recorded entry, else
+    None, which `apply_embedding_probe` refuses to write."""
+
+    model: str
+    dimensions: int | None
+    max_input_tokens: int | None
+    reachable: bool
+    error: str | None = None
+
+    def as_entry(self) -> dict:
+        return {"dimensions": self.dimensions,
+                "max_input_tokens": self.max_input_tokens}
+
+    def complete(self) -> bool:
+        return (self.reachable and self.dimensions is not None
+                and self.max_input_tokens is not None)
+
+
+def _recorded_window(ctx, model: str) -> int | None:
+    entry = ctx.config.capabilities.get("embeddings", {}).get(model) or {}
+    value = entry.get("max_input_tokens")
+    return int(value) if value else None
+
+
+def probe_embedding(ctx, model: str, *, client=None) -> EmbeddingProbe:
+    """One embeddings call per model. Routed through `EmbeddingClient` so the probe is
+    budgeted, throttled and logged exactly like production embedding traffic (D26/D18) —
+    a probe that bypassed the policy core would be measuring a path nothing else uses."""
+    from langatlas_pipeline.providers.embedding import EmbeddingClient
+
+    window = _recorded_window(ctx, model)
+    embedder = EmbeddingClient(ctx, client=client)
+    try:
+        vectors = embedder.embed([_PROBE_INPUT], model=model, truncate=True,
+                                 max_input_tokens=window or _UNBOUNDED_WINDOW)
+    except Exception as exc:                      # noqa: BLE001 - any failure is a verdict
+        return EmbeddingProbe(model, None, window, False, f"{type(exc).__name__}: {exc}")
+    return EmbeddingProbe(model, len(vectors[0]), window, True)
+
+
+def probe_embeddings(ctx, models: Sequence[str] | None = None, *,
+                     client=None) -> dict[str, EmbeddingProbe]:
+    names = list(models) if models else list(ctx.config.capabilities.get("embeddings", {}))
+    return {name: probe_embedding(ctx, name, client=client) for name in names}
+
+
+def diff_embeddings(current: dict, probed: dict[str, EmbeddingProbe]) -> list[str]:
+    """Drift lines for developer review, mirroring `diff_capabilities`. Never applied
+    automatically (D41)."""
+    lines: list[str] = []
+    for model, probe in probed.items():
+        entry = current.get("embeddings", {}).get(model)
+        if entry is None:
+            lines.append(f"{model}: new model, dimensions={probe.dimensions}"
+                         f" max_input_tokens={probe.max_input_tokens}")
+            continue
+        for key, value in probe.as_entry().items():
+            if value is not None and entry.get(key) != value:
+                lines.append(f"{model}.{key}: {entry.get(key)!r} -> {value!r}")
+    return lines
+
+
+def apply_embedding_probe(path: Path, probed: dict[str, EmbeddingProbe]) -> list[str]:
+    """Write only *complete* measurements. A model whose context window nobody has
+    established is refused rather than defaulted: §8.6's honest-truncation clause is
+    built on that number, so an invented one would corrupt the benchmark quietly."""
+    data = _yaml.load(path.read_text())
+    refused = [model for model, probe in probed.items() if not probe.complete()]
+    for model, probe in probed.items():
+        if probe.complete():
+            data.setdefault("embeddings", {})[model] = probe.as_entry()
+    with path.open("w", encoding="utf-8") as fh:
+        _yaml.dump(data, fh)
+    return sorted(refused)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="langatlas-probe")
     parser.add_argument("--write", action="store_true",
                        help="apply the probe result to config/provider_capabilities.yaml")
+    parser.add_argument("--embeddings", action="store_true",
+                        help="probe the embedding roster (dimensions) instead of the"
+                             " chat aliases")
+    parser.add_argument("--model", action="append", default=[],
+                        help="with --embeddings: probe this model (repeatable). Use it to"
+                             " measure a candidate the table does not list yet.")
     parser.add_argument("--config-dir", type=Path, default=CONFIG_DIR)
     args = parser.parse_args(argv)
+    path = args.config_dir / "provider_capabilities.yaml"
+
+    if args.embeddings:
+        with RunContext.start(kind="probe", slug="embeddings",
+                              budget=Budget(max_calls=50), no_cache=True) as ctx:
+            probed = probe_embeddings(ctx, args.model or None)
+            drift = diff_embeddings(ctx.config.capabilities, probed)
+        for line in drift or ["no embedding capability drift"]:
+            print(f"drift: {line}" if drift else line)
+        if args.write:
+            refused = apply_embedding_probe(path, probed)
+            print(f"wrote {path} — review the diff and commit it deliberately")
+            for model in refused:
+                probe = probed[model]
+                print(f"REFUSED {model}: reachable={probe.reachable}"
+                      f" max_input_tokens={probe.max_input_tokens};"
+                      " add max_input_tokens from the model card and commit it by hand")
+            return 0
+        return 1 if drift else 0
 
     with RunContext.start(kind="probe", slug="capabilities",
                           budget=Budget(max_calls=50), no_cache=True) as ctx:
-        probed = probe_all(ctx)
-        drift = diff_capabilities(ctx.config.capabilities, probed)
-
-    path = args.config_dir / "provider_capabilities.yaml"
+        probed_aliases = probe_all(ctx)
+        drift = diff_capabilities(ctx.config.capabilities, probed_aliases)
     if not drift:
         print("no capability drift")
     for line in drift:
         print(f"drift: {line}")
     if args.write:
-        apply_probe(path, probed)
+        apply_probe(path, probed_aliases)
         print(f"wrote {path} — review the diff and commit it deliberately")
         return 0
     return 1 if drift else 0
