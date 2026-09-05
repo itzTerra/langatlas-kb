@@ -18,6 +18,11 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 docling = ["docling>=2.0"]
+# §8.6's local-CPU floor arm (`local:BAAI/bge-small-en-v1.5`) runs through this package's
+# own CLI/venv, not `tools/pipeline`'s — so the extra must be re-declared here too, or
+# `bench-run`'s local-model arms hit `ModuleNotFoundError: fastembed` even after installing
+# it into the pipeline package's own environment.
+local-embed = ["langatlas-pipeline[local-embed]"]
 
 [project.scripts]
 langatlas-sources = "langatlas_ingest.cli:main"
