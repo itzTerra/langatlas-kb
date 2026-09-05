@@ -2918,7 +2918,7 @@ the truth.
   def make_span_relevance(spans: dict[str, tuple[Span, ...]]) -> Callable[[dict, SourceChunk], bool]
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 The db test below reuses `tests/test_search.py`'s existing `searchable` fixture, so **move it
 first**: lift `searchable` and its `make_chunks` / `TEXTS` / `CONFIG` helpers from
@@ -3017,12 +3017,12 @@ def test_an_unresolvable_chunk_id_is_simply_absent(searchable):
                                [{"id": "q", "expected_chunks": ["nope#c1"]}]) == {}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_relevance.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.relevance`.
 
-- [ ] **Step 3: Implement `relevance.py`**
+- [x] **Step 3: Implement `relevance.py`**
 
 ```python
 from dataclasses import dataclass
@@ -3110,12 +3110,12 @@ def make_span_relevance(spans: dict[str, tuple[Span, ...]]) \
     return relevant
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_relevance.py -v -m "db or not db"`
 Expected: PASS (9 tests; the last needs `-m db` and the compose Postgres).
 
-- [ ] **Step 5: Sanity-check the rule against production itself**
+- [x] **Step 5: Sanity-check the rule against production itself**
 
 The span rule must be a *superset* of chunk-id equality when applied to the unchanged corpus —
 if it is not, the secondary axis is scored on a looser rule than the primary one and the two
@@ -3146,7 +3146,7 @@ with connect() as conn:
 Expected: `OK: span rule accepts all 40 resolved targets` (40 = the golden entries that use
 `expected_chunks`). Any rejection is a bug in `overlaps`, not a corpus finding.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/relevance.py \

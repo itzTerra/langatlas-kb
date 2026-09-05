@@ -1,7 +1,35 @@
 import os
 import pytest
 from dataclasses import dataclass
+from langatlas_ingest.chunker import Chunk
 from langatlas_ingest.config import IngestConfig
+from langatlas_ingest.db import migrate
+from langatlas_ingest.embed import embed_source
+from langatlas_ingest.store import SourceChunksStore
+
+# Shared with tests/test_search.py and tests/test_benchmark_relevance.py: the `searchable`
+# fixture seeds sources "s" and "t" with the same book-page chunks both files exercise, so
+# the span-relevance rule is tested against the exact rows `SourceSearch` is tested against
+# rather than a second, possibly-diverging fixture.
+CONFIG = IngestConfig.load(overrides={"retrieval_k": 3, "retrieval_candidates": 10,
+                                      "retrieval_mode": "hybrid", "embedding_dimensions": 4,
+                                      "index_type": "hnsw-halfvec-cosine"})
+
+TEXTS = [
+    "Lazy evaluation defers a computation until its value is demanded.",
+    "Call-by-need is the implementation strategy that memoizes a delayed computation.",
+    "A type system assigns types to terms and rejects ill-typed programs.",
+    "Pattern matching destructures a value against a sequence of patterns.",
+]
+
+
+def make_chunks(source_id="s"):
+    return [Chunk(chunk_id=f"{source_id}#c{i:05d}", source_id=source_id, ordinal=i,
+                  parent_section_id=f"{source_id}#s000{i // 2}", section_path=["Ch"],
+                  breadcrumb="Ch", locator=f"p. {i + 1}", locator_kind="book-page",
+                  text=text, token_count=len(text) // 4, content_hash=f"h{i}",
+                  page_start=i + 1, page_end=i + 1)
+            for i, text in enumerate(TEXTS)]
 
 
 @pytest.fixture
@@ -91,3 +119,12 @@ class FakeCtx:
 @pytest.fixture
 def fake_ctx():
     return FakeCtx()
+
+
+@pytest.fixture
+def searchable(db_conn, fake_ctx):
+    migrate(db_conn)
+    SourceChunksStore(db_conn).replace_source("s", make_chunks())
+    SourceChunksStore(db_conn).replace_source("t", make_chunks("t"))
+    embed_source(fake_ctx, db_conn, config=CONFIG)
+    return db_conn
