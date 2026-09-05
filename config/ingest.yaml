@@ -7,9 +7,17 @@ chunking:
   overlap_tokens: 60
 models:
   embedding: qwen3-embedding-4b     # D15 incumbent for the source corpus until D22 says otherwise
+  # Pinned by the D22 verdict (§8.6 asks for model *and* dimension *and* index type on
+  # the record). These are documentation of the ratified choice; the authority at runtime
+  # is still `provider_capabilities.yaml` for the dimension and `ensure_embedding_table`
+  # for the index, and `bench-verdict --write` checks all three agree.
+  embedding_dimensions: 2560
+  index_type: hnsw-halfvec-cosine
   reranker: qwen3-reranker-4b
   rerank_default_on: true           # D15 ratified: reranker default-on
 retrieval:
+  # §8.6's variant axis, pinned by the D22 verdict: hybrid | vector | fts.
+  mode: hybrid
   k: 5                              # §8.1
   candidates: 50                    # per-branch pool fused by RRF
   # How many of the fused candidates actually reach the reranker. 1B's rerank client is

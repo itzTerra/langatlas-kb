@@ -16,6 +16,11 @@ class IngestConfig:
     embedding_model: str
     reranker_model: str
     rerank_default_on: bool
+    # Scaffolding for the D22 verdict pin — the runtime authority for the dimension is
+    # still `provider_capabilities.yaml` and for the index still `ensure_embedding_table`;
+    # these fields exist so `bench-verdict --write` has somewhere to record what it measured.
+    embedding_dimensions: int | None
+    index_type: str
     retrieval_k: int
     retrieval_candidates: int
     # Deliberately decoupled from `retrieval_candidates`: RRF fusion over a wide pool is
@@ -24,6 +29,7 @@ class IngestConfig:
     rerank_candidates: int
     rrf_k: int
     relevance_floor: float
+    retrieval_mode: str          # §8.6's variant axis: hybrid | vector | fts
     max_section_tokens: int
     pdf_backend: str
     dsn: str
@@ -48,11 +54,15 @@ class IngestConfig:
             embedding_model=models["embedding"],
             reranker_model=models["reranker"],
             rerank_default_on=bool(models["rerank_default_on"]),
+            embedding_dimensions=(int(models["embedding_dimensions"])
+                                  if models.get("embedding_dimensions") else None),
+            index_type=models.get("index_type", "hnsw-halfvec-cosine"),
             retrieval_k=int(retrieval["k"]),
             retrieval_candidates=int(retrieval["candidates"]),
             rerank_candidates=int(retrieval["rerank_candidates"]),
             rrf_k=int(retrieval["rrf_k"]),
             relevance_floor=float(retrieval["relevance_floor"]),
+            retrieval_mode=retrieval.get("mode", "hybrid"),
             max_section_tokens=int(retrieval["max_section_tokens"]),
             pdf_backend=extraction["pdf_backend"],
             # The DSN carries a password, so the env var has to win: CI and the

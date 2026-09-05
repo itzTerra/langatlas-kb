@@ -66,6 +66,19 @@ class GoldenItemInvalid(IngestError):
         self.reason = reason
 
 
+class UnknownSearchMode(IngestError):
+    """§8.6's retrieval variant axis is a closed set. Typed and raised at construction
+    rather than producing an empty result set, because a silently-wrong mode in a
+    benchmark arm would be recorded as a real measurement."""
+
+    def __init__(self, mode: str):
+        from langatlas_ingest.search import SEARCH_MODES
+
+        super().__init__(f"unknown search mode {mode!r}; expected one of"
+                         f" {', '.join(SEARCH_MODES)}")
+        self.mode = mode
+
+
 class NoVerifierRegistered(IngestError):
     """`golden-score` was asked to score a verifier that does not exist yet. Typed so the
     CLI can say "2D has not shipped the verifier" instead of reporting a 0% error rate

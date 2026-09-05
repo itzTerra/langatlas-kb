@@ -117,7 +117,8 @@ def _cmd_search(args) -> int:
     rerank = False if args.no_rerank else None
     with RunContext.start(kind="search", slug="cli") as ctx:
         with connect(config.dsn) as conn:
-            hits = SourceSearch(conn, ctx, config=config, rerank=rerank).search(
+            hits = SourceSearch(conn, ctx, config=config, rerank=rerank,
+                                mode=args.mode).search(
                 args.query, k=args.k, source_ids=args.source or None)
     for hit in hits:
         print(f"[{hit.score:.4f}] {hit.chunk.source_id} {hit.chunk.locator}"
@@ -334,6 +335,8 @@ def _cmd_file_acquisitions(args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    from langatlas_ingest.search import SEARCH_MODES
+
     parser = argparse.ArgumentParser(prog="langatlas-sources")
     parser.add_argument("--version", action="version", version=__version__)
     sub = parser.add_subparsers(dest="command", required=True)
@@ -380,6 +383,8 @@ def build_parser() -> argparse.ArgumentParser:
     search.add_argument("-k", type=int, default=None)
     search.add_argument("--source", nargs="*", default=[])
     search.add_argument("--no-rerank", action="store_true")
+    search.add_argument("--mode", choices=list(SEARCH_MODES), default=None,
+                        help="override `retrieval.mode`; the §8.6 variant axis")
     search.set_defaults(func=_cmd_search)
 
     evaluate = sub.add_parser("eval", help="score the retrieval golden set")

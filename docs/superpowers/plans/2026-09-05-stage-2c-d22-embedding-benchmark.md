@@ -1279,7 +1279,7 @@ side. It is a reported arm, never a candidate for the verdict.
   index_type: str
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tools/ingest/tests/test_search.py`:
 
@@ -1342,12 +1342,12 @@ def test_config_exposes_the_pinned_index_identity():
 > `embedding_dimensions=4`, `index_type="hnsw-halfvec-cosine"` to that constructor call in the
 > same step, or every test in the module fails on a missing argument.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_search.py -v -m db -k "mode or index_identity"`
 Expected: FAIL — `ImportError: cannot import name 'SEARCH_MODES'`.
 
-- [ ] **Step 3: Implement the mode axis**
+- [x] **Step 3: Implement the mode axis**
 
 In `tools/ingest/src/langatlas_ingest/errors.py`:
 
@@ -1549,19 +1549,19 @@ with `from langatlas_ingest.search import SEARCH_MODES` imported inside `build_p
 module keeps its heavy imports inside the command functions; `SEARCH_MODES` is a plain tuple, so
 importing it at parser-build time costs a module load that `_cmd_search` would do anyway).
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `docker compose up -d db && uv --directory tools/ingest run pytest tests/test_search.py -v -m db`
 Expected: PASS — the new tests plus every existing search test (the hybrid path must be
 byte-for-byte equivalent in behaviour; if an existing EXPLAIN assertion breaks, the emitted SQL
 drifted and the branch text must be restored verbatim).
 
-- [ ] **Step 5: Run the whole ingest suite**
+- [x] **Step 5: Run the whole ingest suite**
 
 Run: `uv --directory tools/ingest run pytest && uv --directory tools/ingest run pytest -m db`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/search.py \

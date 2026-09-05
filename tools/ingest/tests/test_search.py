@@ -5,12 +5,15 @@ from langatlas_ingest.chunker import Chunk
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import ensure_embedding_table, migrate
 from langatlas_ingest.embed import embed_source, vector_literal
-from langatlas_ingest.search import SourceSearch
+from langatlas_ingest.errors import UnknownSearchMode
+from langatlas_ingest.search import SEARCH_MODES, SourceSearch
 from langatlas_ingest.store import SourceChunksStore
 
 pytestmark = pytest.mark.db
 
-CONFIG = IngestConfig.load(overrides={"retrieval_k": 3, "retrieval_candidates": 10})
+CONFIG = IngestConfig.load(overrides={"retrieval_k": 3, "retrieval_candidates": 10,
+                                      "retrieval_mode": "hybrid", "embedding_dimensions": 4,
+                                      "index_type": "hnsw-halfvec-cosine"})
 
 TEXTS = [
     "Lazy evaluation defers a computation until its value is demanded.",
@@ -296,3 +299,51 @@ def test_get_section_of_a_top_level_chunk_returns_just_it(searchable, fake_ctx):
 def test_get_section_returns_full_chunk_text(searchable, fake_ctx):
     search = SourceSearch(searchable, fake_ctx, config=CONFIG)
     assert [c.text for c in search.get_section("s#c00000")] == TEXTS[:2]
+
+
+# --- §8.6's retrieval mode axis ------------------------------------------------------
+
+def test_unknown_mode_is_rejected_at_construction(searchable, fake_ctx):
+    with pytest.raises(UnknownSearchMode):
+        SourceSearch(searchable, fake_ctx, config=CONFIG, mode="semantic-ish")
+
+
+def test_vector_mode_drops_the_fts_branch(searchable, fake_ctx):
+    search = SourceSearch(searchable, fake_ctx, config=CONFIG, mode="vector",
+                          rerank=False)
+    sql, params = search.build_query("anything", vector="[0,0,0,0]", k=5,
+                                     source_ids=None)
+    assert "plainto_tsquery" not in sql
+    assert "vec.rank" in sql
+    assert "query" not in params        # no lexical parameter is bound
+
+
+def test_fts_mode_drops_the_vector_branch_and_never_embeds(searchable, fake_ctx):
+    search = SourceSearch(searchable, fake_ctx, config=CONFIG, mode="fts", rerank=False)
+    before = len(fake_ctx.embed_calls)  # the `searchable` fixture embeds the corpus
+    hits = search.search("lazy evaluation", k=5)
+    assert len(fake_ctx.embed_calls) == before   # no embedding round trip for the query
+    sql, _ = search.build_query("boolean", vector="", k=5, source_ids=None)
+    assert "halfvec" not in sql
+    assert isinstance(hits, list)
+
+
+def test_hybrid_stays_the_default(searchable, fake_ctx):
+    assert SourceSearch(searchable, fake_ctx, config=CONFIG).mode == "hybrid"
+    assert set(SEARCH_MODES) == {"hybrid", "vector", "fts"}
+
+
+def test_mode_comes_from_config_when_unset(searchable, fake_ctx):
+    from dataclasses import replace
+
+    assert SourceSearch(searchable, fake_ctx,
+                        config=replace(CONFIG, retrieval_mode="vector")).mode == "vector"
+
+
+def test_config_exposes_the_pinned_index_identity():
+    from langatlas_ingest.config import IngestConfig
+
+    config = IngestConfig.load()
+    assert config.retrieval_mode in SEARCH_MODES
+    assert config.index_type == "hnsw-halfvec-cosine"
+    assert config.embedding_dimensions == 2560

@@ -13,6 +13,10 @@ _CHUNK_COLUMNS = ", ".join(f"c.{name}" for name in _COLUMNS)
 _EF_SEARCH_DEFAULT = 40
 _EF_SEARCH_MAX = 1000
 
+# §8.6's first variant axis. `fts` is not a verdict candidate — it is the lexical-only
+# denominator that makes "what does the vector branch add" answerable from both sides.
+SEARCH_MODES = ("hybrid", "vector", "fts")
+
 
 class MissingEmbeddingTable(IngestError):
     """Searching before `langatlas-sources embed` has ever run. Typed, because the
@@ -51,10 +55,15 @@ class SourceSearch:
     with RRF, k=5, relevance floor — with D15's reranker default-on for this table."""
 
     def __init__(self, conn, ctx, *, config: IngestConfig | None = None,
-                 rerank: bool | None = None):
+                 rerank: bool | None = None, mode: str | None = None):
+        from langatlas_ingest.errors import UnknownSearchMode
+
         self.conn = conn
         self.ctx = ctx
         self.config = config or IngestConfig.load()
+        self.mode = self.config.retrieval_mode if mode is None else mode
+        if self.mode not in SEARCH_MODES:
+            raise UnknownSearchMode(self.mode)
         self.rerank = self.config.rerank_default_on if rerank is None else rerank
         self.store = SourceChunksStore(conn)
 
@@ -69,31 +78,21 @@ class SourceSearch:
         arbitrary `candidates` rows of an unordered set and would also have kept the
         vector branch off its index — `ORDER BY <distance> LIMIT n` is the only form
         HNSW can serve.
-        """
-        table = embedding_table_name(self.config.embedding_model)
-        dimensions = embedding_dimensions(self.conn, table)
-        if dimensions <= 0:
-            raise MissingEmbeddingTable(self.config.embedding_model, table)
-        # Both sides cast to halfvec at the stored dimension: `ensure_embedding_table`
-        # rules the HNSW index on `(embedding::halfvec(N)) halfvec_cosine_ops` because
-        # pgvector caps `vector` HNSW at 2000 dimensions and the incumbent model is
-        # 2560-dim. A plain `<=> %s::vector` does not match that expression index and
-        # silently degrades to a sequential scan over the whole corpus.
-        distance = (f"e.embedding::halfvec({dimensions})"
-                    f" <=> %(vector)s::halfvec({dimensions})")
-        filter_sql = " AND c.source_id = ANY(%(sources)s)" if source_ids else ""
-        # The vector branch must not join `source_chunks` just to reach the filter
-        # column: any join above the scan stops the planner from answering
-        # `ORDER BY <distance> LIMIT n` from the HNSW index and leaves it sorting the
-        # whole table. Unfiltered, the branch reads the embedding table alone; filtered,
-        # §8.1's filter-first shape is a semi-join restricting the rows considered.
-        vec_filter = ("\n                WHERE e.chunk_id IN (SELECT chunk_id FROM"
-                      " source_chunks WHERE source_id = ANY(%(sources)s))"
-                      if source_ids else "")
-        candidates = max(int(self.config.retrieval_candidates), int(k))
 
-        sql = f"""
-        WITH fts AS (
+        `mode` selects which branches are emitted. The RRF score expression keeps its
+        shape in every mode — a single-branch score is `1/(rrf_k + rank)`, which is the
+        same monotone function of rank the fused score uses, so `relevance_floor` and
+        every recorded score stay comparable across arms.
+        """
+        candidates = max(int(self.config.retrieval_candidates), int(k))
+        filter_sql = " AND c.source_id = ANY(%(sources)s)" if source_ids else ""
+        params: dict = {"rrf_k": self.config.rrf_k,
+                        "sources": list(source_ids) if source_ids else []}
+        ctes, joins, score_terms, presence = [], [], [], []
+
+        if self.mode in ("hybrid", "fts"):
+            params["query"] = query
+            ctes.append(f"""fts AS (
             SELECT chunk_id, row_number() OVER (ORDER BY lexical DESC, chunk_id) AS rank
             FROM (
                 SELECT c.chunk_id, ts_rank_cd(c.tsv, q.query) AS lexical
@@ -102,7 +101,33 @@ class SourceSearch:
                 ORDER BY lexical DESC, c.chunk_id
                 LIMIT {int(candidates)}
             ) ranked
-        ), vec AS (
+        )""")
+            joins.append("LEFT JOIN fts ON fts.chunk_id = c.chunk_id")
+            score_terms.append("COALESCE(1.0 / (%(rrf_k)s + fts.rank), 0)")
+            presence.append("fts.chunk_id IS NOT NULL")
+
+        if self.mode in ("hybrid", "vector"):
+            table = embedding_table_name(self.config.embedding_model)
+            dimensions = embedding_dimensions(self.conn, table)
+            if dimensions <= 0:
+                raise MissingEmbeddingTable(self.config.embedding_model, table)
+            # Both sides cast to halfvec at the stored dimension: `ensure_embedding_table`
+            # rules the HNSW index on `(embedding::halfvec(N)) halfvec_cosine_ops` because
+            # pgvector caps `vector` HNSW at 2000 dimensions and the incumbent model is
+            # 2560-dim. A plain `<=> %s::vector` does not match that expression index and
+            # silently degrades to a sequential scan over the whole corpus.
+            params["vector"] = vector
+            distance = (f"e.embedding::halfvec({dimensions})"
+                        f" <=> %(vector)s::halfvec({dimensions})")
+            # The vector branch must not join `source_chunks` just to reach the filter
+            # column: any join above the scan stops the planner from answering
+            # `ORDER BY <distance> LIMIT n` from the HNSW index and leaves it sorting the
+            # whole table. Unfiltered, the branch reads the embedding table alone; filtered,
+            # §8.1's filter-first shape is a semi-join restricting the rows considered.
+            vec_filter = ("\n                WHERE e.chunk_id IN (SELECT chunk_id FROM"
+                          " source_chunks WHERE source_id = ANY(%(sources)s))"
+                          if source_ids else "")
+            ctes.append(f"""vec AS (
             SELECT chunk_id, row_number() OVER (ORDER BY distance, chunk_id) AS rank
             FROM (
                 SELECT e.chunk_id, {distance} AS distance
@@ -110,19 +135,24 @@ class SourceSearch:
                 ORDER BY {distance}
                 LIMIT {int(candidates)}
             ) ranked
-        )
-        SELECT {_CHUNK_COLUMNS}, fts.rank, vec.rank,
-               COALESCE(1.0 / (%(rrf_k)s + fts.rank), 0)
-             + COALESCE(1.0 / (%(rrf_k)s + vec.rank), 0) AS score
+        )""")
+            joins.append("LEFT JOIN vec ON vec.chunk_id = c.chunk_id")
+            score_terms.append("COALESCE(1.0 / (%(rrf_k)s + vec.rank), 0)")
+            presence.append("vec.chunk_id IS NOT NULL")
+
+        rank_columns = ", ".join(
+            ("fts.rank" if "fts" in cte.split(" AS ")[0] else "vec.rank")
+            for cte in ctes)
+        sql = f"""
+        WITH {', '.join(ctes)}
+        SELECT {_CHUNK_COLUMNS}, {rank_columns},
+               {' + '.join(score_terms)} AS score
         FROM source_chunks c
-        LEFT JOIN fts ON fts.chunk_id = c.chunk_id
-        LEFT JOIN vec ON vec.chunk_id = c.chunk_id
-        WHERE fts.chunk_id IS NOT NULL OR vec.chunk_id IS NOT NULL
+        {' '.join(joins)}
+        WHERE {' OR '.join(presence)}
         ORDER BY score DESC, c.chunk_id
         LIMIT {int(candidates)}
         """
-        params = {"query": query, "vector": vector, "rrf_k": self.config.rrf_k,
-                  "sources": list(source_ids) if source_ids else []}
         return sql, params
 
     def tune_ef_search(self, cur, *, k: int) -> int:
@@ -150,18 +180,31 @@ class SourceSearch:
         k = self.config.retrieval_k if k is None else int(k)
         if k <= 0:
             return []
-        vector = vector_literal(self.ctx.embed([query], model=self.config.embedding_model)[0])
+        # An `fts` arm must cost zero embedding calls — otherwise the lexical-only
+        # denominator is quietly paying the price of the branch it is there to isolate.
+        vector = ""
+        if self.mode in ("hybrid", "vector"):
+            vector = vector_literal(
+                self.ctx.embed([query], model=self.config.embedding_model)[0])
         sql, params = self.build_query(query, vector=vector, k=k, source_ids=source_ids)
         with self.conn.cursor() as cur:
-            self.tune_ef_search(cur, k=k)
+            if self.mode in ("hybrid", "vector"):
+                self.tune_ef_search(cur, k=k)
             cur.execute(sql, params)
             rows = cur.fetchall()
 
         width = len(_COLUMNS)
-        hits = [SearchHit(chunk=SourceChunk(**dict(zip(_COLUMNS, row[:width]))),
-                          fts_rank=row[width], vector_rank=row[width + 1],
-                          score=float(row[width + 2]))
-                for row in rows]
+        hits = []
+        for row in rows:
+            chunk = SourceChunk(**dict(zip(_COLUMNS, row[:width])))
+            if self.mode == "hybrid":
+                fts_rank, vector_rank, score = row[width], row[width + 1], row[width + 2]
+            elif self.mode == "fts":
+                fts_rank, vector_rank, score = row[width], None, row[width + 1]
+            else:
+                fts_rank, vector_rank, score = None, row[width], row[width + 1]
+            hits.append(SearchHit(chunk=chunk, fts_rank=fts_rank,
+                                  vector_rank=vector_rank, score=float(score)))
         hits = [hit for hit in hits if hit.score >= self.config.relevance_floor]
         if self.rerank and hits:
             # Only the top of the fused pool is reranked. The full
