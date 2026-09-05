@@ -588,6 +588,25 @@ feed this table directly — they route to the contradiction register and the co
 (the separate `dispute` axis, defined above in this decision), so a fact can be `verified` (or
 `partially-verified`) on `verification` while simultaneously `contradicted` on `dispute`.
 
+*[developer 2026-08-28]* **Per-assertion fold rule pinned for two cases** (surfaced while writing
+the Stage 2B golden-set plan, which has to label items with an exact expected verdict). §6.2
+specifies that entailment folds atomic assertions into a per-pair verdict "by fixed rule" without
+stating the rule; these two cases are now binding:
+
+- **A wrong `since` splits on what the source says, not on how wrong it is.** Cited text states a
+  conflicting version → `contradicted`. Cited text is silent on versions → the presence assertion
+  carries the pair to `partial`, `since` is `as-of-supported`, and the fact enters the store and
+  queues for back-dating (D2/§3.7). Off-by-one and off-by-major are therefore the same fold; the
+  size of the error is not a factor. This keeps the D45 register recording genuine cross-source
+  `since` disagreement — which its since/version comparison then auto-dissolves — while a single
+  hallucinated `since` on the only citation mints nothing.
+- **A fabricated quote never admits**: `unsupported`, or `contradicted` when the source also
+  opposes the claim's substance. Never `partial`, even where the cited text does support the
+  claim's substance — a citation whose evidence was invented is untrustworthy independently of
+  whether the claim happens to be right. OCR noise is unaffected: separating the two is exactly
+  what D24's ≥0.90 / ≤0.80 adjudication band is for.
+
+
 ### D26. Provider-abstraction layer (13)
 
 One thin policy layer, two channel types, no frameworks. The completion channel (university API

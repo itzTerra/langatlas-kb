@@ -1,0 +1,252 @@
+# Closing batch responding to the final whole-branch review's three Important findings:
+# (1) ocr-noisy was under-allocated (1 item vs. the plan's ~10-item target) -- this file adds
+#     8 more, drawn mostly from PDF-derived sources per the review's own suggestion; (2)
+#     right-claim-wrong-source recycled just two claims across 16 items -- this file adds 5
+#     distinct new true-elsewhere claims; (3) grounding was concentrated in a small chunk pool
+#     dominated by sebesta-copl -- every citation below is a source/locus not otherwise
+#     overrepresented in the set.
+version: 1
+items:
+  - id: v-ocr-0001
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-oz-higher-order-programming, status=present)'
+      status: present
+    citation:
+      source: vanroy-haridi-2003
+      locator: '§3.6'
+      quote: 'Higher-order prograrnrning is the collection of prograrnrning techniques that becorne available when using procedure values in prograrns.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00255']
+    notes: 'real quote is "Higher-order programming is the collection of programming
+      techniques that become available when using procedure values in programs." with
+      letter-level noise injected (m/rn confusion, the single most common real PDF-OCR
+      artifact); the LLM must adjudicate OCR noise, not fabrication'
+
+  - id: v-ocr-0002
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-oz-streams, status=present)'
+      status: present
+    citation:
+      source: vanroy-haridi-2003
+      locator: '§4.3'
+      quote: 'A strearn is a potentially unbounded list of rnessages, i.e., it is a list whose tail is an unbound datafow variable.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00349']
+    notes: 'real quote is "A stream is a potentially unbounded list of messages, i.e., it
+      is a list whose tail is an unbound dataflow variable." with m/rn confusion plus a
+      dropped letter in "dataflow"'
+
+  - id: v-ocr-0003
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-oz-partial-values, status=present)'
+      status: present
+    citation:
+      source: vanroy-haridi-2003
+      locator: '§2.2.6'
+      quote: 'A partial value is a data structure that rnay contain unbound variabIes.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00110']
+    notes: 'real quote is "A partial value is a data structure that may contain unbound
+      variables." with m/rn confusion and an l/I swap in "variables"'
+
+  - id: v-ocr-0004
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-type-classes, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: '§4.3.1'
+      quote: 'A ciass declaration introduces a new ciass and the operations ( ciass rnethods ) on it.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    notes: 'real quote is "A class declaration introduces a new class and the operations
+      ( class methods ) on it." with l/i confusion in "class" and m/rn confusion in
+      "methods"'
+
+  - id: v-ocr-0005
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-if-statement, status=present)'
+      status: present
+    citation:
+      source: c23-n3220
+      locator: '§6.8.5'
+      quote: 'A seiection staternent selects arnong a set of secondary blocks depending on the vaIue of a controlling expression.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['c23-n3220#c00277']
+    notes: 'real quote is "A selection statement selects among a set of secondary blocks
+      depending on the value of a controlling expression." with l/i and m/rn confusion,
+      plus an l/I swap in "value"'
+
+  - id: v-ocr-0006
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-rust-traits, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.673. trait¶'
+      quote: 'A trait is an iten that describes an interface a type can irnplement.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['rust-fls#c01034']
+    notes: 'real quote is "A trait is an item that describes an interface a type can
+      implement." with an m/n confusion in "item" and m/rn confusion in "implement"'
+
+  - id: v-ocr-0007
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-java-sealed-classes, co-location-requirement, "always-same-module")'
+      rendered: 'A sealed class and its permitted subclasses must always be co-located in the same module.'
+    citation:
+      source: jls-se25
+      locator: '§8.1'
+      quote: 'in a rnodular codebase, they rnust be co-located in the sarne rnodule, as ciasses in different rnodules cannot refer to each other in a circuIar fashion'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['jls-se25#c00262']
+    notes: 'real quote is "in a modular codebase, they must be co-located in the same
+      module, as classes in different modules cannot refer to each other in a circular
+      fashion" with heavy m/rn confusion (four occurrences) plus l/i and l/I swaps -- a
+      denser noise example than the others in this batch, still adjudicable as OCR rather
+      than fabrication since every substitution is a plausible glyph confusion, not an
+      invented word'
+
+  - id: v-ocr-0008
+    stratum: ocr-noisy
+    expected_verdict: supported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-haskell-lambdacase, status=present)'
+      status: present
+    citation:
+      source: ghc-users-guide
+      locator: '§6.2.13'
+      quote: 'AIIow the use of larnbda-case syntax.'
+    expected_annotations: ['quote-mismatch']
+    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    notes: 'real quote is "Allow the use of lambda-case syntax." with an l/I swap and an
+      m/rn confusion -- the shortest example in this batch, showing the annotation fires
+      even on a brief quote'
+
+  - id: v-diversity-0001
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-scheme-call-cc, status=present)'
+      status: present
+    citation:
+      source: c23-n3220
+      locator: '§7.24.3'
+    evidence_chunk_ids: ['c23-n3220#c00567']
+    contamination_gauge: true
+    notes: 'true claim (Scheme has first-class continuations via call/cc), cited to C''s
+      memory-management-functions section, which cannot carry it -- diversifying this
+      stratum beyond the rust-ownership/haskell-type-classes claims recycled elsewhere in
+      the set (final-review finding 2)'
+
+  - id: v-diversity-0002
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-prolog-backtracking, status=present)'
+      status: present
+    citation:
+      source: rust-fls
+      locator: '§ B.377. lifetime¶'
+    evidence_chunk_ids: ['rust-fls#c00751']
+    contamination_gauge: true
+    notes: 'true claim (Prolog supports backtracking search), cited to the Rust FLS''s
+      lifetime glossary entry, which cannot carry it'
+
+  - id: v-diversity-0003
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-c-pointers, status=present)'
+      status: present
+    citation:
+      source: scott-plp
+      locator: 'pp. 673–675'
+    evidence_chunk_ids: ['scott-plp#c00417']
+    notes: 'true claim (C has pointers), cited to a Python member-visibility passage,
+      which cannot carry it'
+
+  - id: v-diversity-0004
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-java-garbage-collection, status=present)'
+      status: present
+    citation:
+      source: ghc-users-guide
+      locator: '§5.2.3'
+    evidence_chunk_ids: ['ghc-users-guide#c00161']
+    notes: 'true claim (Java has garbage collection), cited to a GHC warning-flags
+      reference page, which cannot carry it'
+
+  - id: v-diversity-0005
+    stratum: right-claim-wrong-source
+    expected_verdict: unsupported
+    claim:
+      kind: instance-exists
+      text: 'instance-exists(i-python-list-comprehensions, status=present)'
+      status: present
+    citation:
+      source: haskell-2010-report
+      locator: 'p. 23'
+    evidence_chunk_ids: ['haskell-2010-report#c00023']
+    contamination_gauge: true
+    notes: 'true claim (Python has list comprehensions), cited to the Haskell report''s
+      own introduction, which cannot carry it'
+
+  - id: v-rustfls-0014
+    stratum: overstated-claim
+    expected_verdict: partial
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-rust-lifetimes, enforcement-timing, "compile-time-and-runtime")'
+      rendered: 'Rust lifetimes are enforced at both compile time and run time.'
+    citation:
+      source: rust-fls
+      locator: '§ B.377. lifetime¶'
+      quote: 'A lifetime specifies the expected longevity of a reference.'
+    evidence_chunk_ids: ['rust-fls#c00751']
+    notes: 'the evidence supports lifetimes existing as a concept describing reference
+      longevity; the claim adds an unstated runtime-enforcement mechanism this terse
+      glossary entry never discusses'
+
+  - id: v-since-0022
+    stratum: wrong-since-off-by-one
+    expected_verdict: contradicted
+    claim:
+      kind: instance-field
+      text: 'instance-field(i-python-notimplemented-boolean-deprecation, status, "present")'
+      since: '3.6'
+    citation:
+      source: python-langref-3
+      locator: '§ 3.2.2. NotImplemented'
+      quote: 'Changed in version 3.9: Evaluating NotImplemented in a boolean context was deprecated.'
+    evidence_chunk_ids: ['python-langref-3#c00049']
+    notes: 'an eighth python-langref-3 CONFLICT-branch item: the page states the explicit
+      marker "Changed in version 3.9", opposing the claimed 3.6'
