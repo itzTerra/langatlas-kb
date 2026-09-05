@@ -1,7 +1,7 @@
 import time
 from langatlas_pipeline.cache import cache_key
 from langatlas_pipeline.errors import ContextTooLarge
-from langatlas_pipeline.providers.completion import build_client, estimate_tokens
+from langatlas_pipeline.providers.completion import build_client, estimate_tokens, truncate_to_tokens
 from langatlas_pipeline.providers.throttle import Throttle
 
 
@@ -14,6 +14,8 @@ class EmbeddingClient:
         self.ctx = ctx
         self._client = client
         self.batch_size = batch_size
+        self.truncated = 0
+        self.cache_hits = 0
         settings = ctx.config.completion_settings()
         self.throttle = throttle or Throttle(
             min_interval=(settings.get("min_interval_seconds") or {}).get("embedding", 0.1),
@@ -25,16 +27,31 @@ class EmbeddingClient:
             self._client = build_client(self.ctx.config)
         return self._client
 
-    def embed(self, texts: list[str], *, model: str) -> list[list[float]]:
-        cap = self.ctx.config.embedding(model)
+    def embed(self, texts: list[str], *, model: str, truncate: bool = False,
+              max_input_tokens: int | None = None) -> list[list[float]]:
+        """`truncate` is off by default: the wrapper never silently shortens production
+        text, because a claim verified against a half-read chunk is worse than a refused
+        call. §8.6's benchmark turns it on deliberately, so a 512-token candidate is
+        measured on exactly the input production would give it — and `self.truncated`
+        makes the cost of that visible in the arm's result rather than invisible.
+
+        `max_input_tokens` overrides the capability table for a model the table does not
+        list yet (Task 1's probe). Nothing in the benchmark passes it.
+        """
+        window = max_input_tokens
+        if window is None:
+            window = self.ctx.config.embedding(model).max_input_tokens
         vectors: dict[int, list[float]] = {}
         pending: list[tuple[int, str, str]] = []
         cache_hits = 0
 
         for index, text in enumerate(texts):
-            estimated = estimate_tokens([{"content": text}])
-            if estimated > cap.max_input_tokens:
-                raise ContextTooLarge(model, estimated, cap.max_input_tokens)
+            if estimate_tokens([{"content": text}]) > window:
+                if not truncate:
+                    raise ContextTooLarge(model, estimate_tokens([{"content": text}]),
+                                          window)
+                text = truncate_to_tokens(text, window)
+                self.truncated += 1
             key = cache_key(endpoint="embeddings", resolved_model=model,
                             messages=[{"role": "user", "content": text}], sampling={},
                             schema_name=None, prompt_ref=None)
@@ -44,6 +61,8 @@ class EmbeddingClient:
                 cache_hits += 1
             else:
                 pending.append((index, text, key))
+
+        self.cache_hits += cache_hits
 
         if cache_hits:
             # One aggregate record for the whole embed() call's cache hits, mirroring

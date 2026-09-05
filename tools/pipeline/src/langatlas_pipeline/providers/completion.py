@@ -50,6 +50,26 @@ def estimate_tokens(messages: list[dict]) -> int:
     return int(chars / _CHARS_PER_TOKEN * _ESTIMATE_MARGIN) + 1
 
 
+def truncate_to_tokens(text: str, max_tokens: int) -> str:
+    """Shorten `text` until `estimate_tokens` puts it inside `max_tokens`, as a prefix.
+
+    Deliberately built on `estimate_tokens` rather than a real tokenizer: it is the
+    same conservative bound the refuse-or-proceed check uses, so a text this function
+    returns can never be rejected by the check that follows it. Shaving 5% at a time
+    converges in a handful of passes for any realistic input and never overshoots into
+    a needlessly short prefix the way a single chars/4 division would.
+    """
+    if estimate_tokens([{"content": text}]) <= max_tokens:
+        return text
+    # First cut analytically, then shave — the analytic cut lands close, the loop makes
+    # it correct.
+    cut = max(1, int(len(text) * max_tokens / max(1, estimate_tokens([{"content": text}]))))
+    shortened = text[:cut]
+    while shortened and estimate_tokens([{"content": shortened}]) > max_tokens:
+        shortened = shortened[:max(1, int(len(shortened) * 0.95))]
+    return shortened
+
+
 def split_reasoning(text: str, reasoning_field: str | None) -> tuple[str, str | None]:
     """Reasoning models emit traces that must not reach the JSON parser — but D18 logs
     what the model actually said, so the trace is returned, not discarded."""

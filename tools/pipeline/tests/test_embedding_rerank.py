@@ -1,6 +1,7 @@
 import json
 import pytest
 from langatlas_pipeline.errors import ContextTooLarge, UnknownAlias
+from langatlas_pipeline.providers.completion import estimate_tokens, truncate_to_tokens
 from langatlas_pipeline.providers.embedding import EmbeddingClient
 from langatlas_pipeline.providers.rerank import RerankClient
 
@@ -184,3 +185,88 @@ def test_rerank_candidates_go_through_the_d31_door(ctx):
     assert flagged[0]["tool_call"]["args"]["kind"] == "rerank-candidate"
     # the prompt still receives the delimited text, unchanged in behaviour
     assert "untrusted-external" in completer.calls[0][-1]["content"]
+
+
+@pytest.fixture
+def fake_openai():
+    class Embeddings:
+        def __init__(self):
+            self.calls = []
+
+        def create(self, *, model, input):
+            self.calls.append((model, list(input)))
+
+            class Item:
+                embedding = [0.1, 0.2, 0.3, 0.4]
+
+            class Response:
+                data = [Item() for _ in input]
+                usage = type("U", (), {"prompt_tokens": 7})()
+
+            return Response()
+
+    return type("Client", (), {"embeddings": Embeddings()})()
+
+
+@pytest.fixture
+def embedding_ctx(tmp_path):
+    from langatlas_pipeline.providers.core import Budget, RunContext
+    from langatlas_pipeline.transcripts.events import RunManifest
+    from langatlas_pipeline.config import ProviderConfig
+
+    config = ProviderConfig(
+        providers={"completion": {"min_interval_seconds": {"embedding": 0.0},
+                                  "max_attempts": 1},
+                   "transcripts": {"publish": False, "push": False}},
+        capabilities={"embeddings": {"tiny-window": {"dimensions": 4,
+                                                     "max_input_tokens": 512}}},
+        config_dir=tmp_path)
+    manifest = RunManifest(run_id="r", kind="test", started="now", budget={})
+    ctx = RunContext(run_id="r", kind="test", budget=Budget(), config=config,
+                     run_dir=tmp_path / "run", private_dir=tmp_path / "private",
+                     manifest=manifest)
+    (tmp_path / "run").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "private").mkdir(parents=True, exist_ok=True)
+    yield ctx
+    ctx.close(publish=False)
+
+
+def test_truncate_to_tokens_lands_under_the_cap():
+    text = "word " * 5000
+    shortened = truncate_to_tokens(text, 512)
+    assert estimate_tokens([{"content": shortened}]) <= 512
+    assert shortened == text[:len(shortened)]     # a prefix, never a resample
+
+
+def test_truncate_to_tokens_leaves_a_short_text_untouched():
+    assert truncate_to_tokens("short", 512) == "short"
+
+
+def test_embed_still_raises_without_the_opt_in(embedding_ctx, fake_openai):
+    client = EmbeddingClient(embedding_ctx, client=fake_openai)
+    with pytest.raises(ContextTooLarge):
+        client.embed(["word " * 5000], model="tiny-window")
+
+
+def test_embed_truncates_and_counts_when_asked(embedding_ctx, fake_openai):
+    client = EmbeddingClient(embedding_ctx, client=fake_openai)
+    client.embed(["word " * 5000, "short"], model="tiny-window", truncate=True)
+    assert client.truncated == 1
+    sent = fake_openai.embeddings.calls[-1][1]
+    assert estimate_tokens([{"content": sent[0]}]) <= 512
+    assert sent[1] == "short"
+
+
+def test_embed_honours_an_explicit_window_override(embedding_ctx, fake_openai):
+    client = EmbeddingClient(embedding_ctx, client=fake_openai)
+    # `unlisted` is not in the capability table; without the override this raises
+    # UnknownAlias, which is exactly what Task 1's probe needs to bypass.
+    client.embed(["hello"], model="unlisted", truncate=True, max_input_tokens=512)
+    assert fake_openai.embeddings.calls[-1][0] == "unlisted"
+
+
+def test_cache_hits_are_counted(embedding_ctx, fake_openai):
+    client = EmbeddingClient(embedding_ctx, client=fake_openai)
+    client.embed(["hello"], model="tiny-window")
+    client.embed(["hello"], model="tiny-window")
+    assert client.cache_hits == 1

@@ -144,12 +144,28 @@ class RunContext:
         return self._completion.complete(alias, messages, prompt=prompt, schema=schema,
                                          sampling=sampling)
 
-    def embed(self, texts: list[str], *, model: str) -> list[list[float]]:
+    def embed(self, texts: list[str], *, model: str, truncate: bool = False,
+              max_input_tokens: int | None = None) -> list[list[float]]:
         from langatlas_pipeline.providers.embedding import EmbeddingClient
 
         if self._embedding is None:
             self._embedding = EmbeddingClient(self)
-        return self._embedding.embed(texts, model=model)
+        return self._embedding.embed(texts, model=model, truncate=truncate,
+                                     max_input_tokens=max_input_tokens)
+
+    @property
+    def embedding_truncations(self) -> int:
+        """How many texts this run shortened to fit a short-context model. §8.6's
+        benchmark reports it per arm; a production run reading a non-zero number here has
+        a configuration problem, not a metric."""
+        return self._embedding.truncated if self._embedding is not None else 0
+
+    @property
+    def embedding_cache_hits(self) -> int:
+        """Vectors served from the content-addressed cache. Indexing throughput measured
+        over a warm cache is not throughput, so the benchmark reports this alongside it
+        rather than quietly dividing by a wall time that includes no provider work."""
+        return self._embedding.cache_hits if self._embedding is not None else 0
 
     def rerank(self, query: str, docs: list[str], *, model: str) -> list[float]:
         from langatlas_pipeline.providers.rerank import RerankClient
