@@ -66,6 +66,8 @@ def truncate_to_tokens(text: str, max_tokens: int) -> str:
     cut = max(1, int(len(text) * max_tokens / max(1, estimate_tokens([{"content": text}]))))
     shortened = text[:cut]
     while shortened and estimate_tokens([{"content": shortened}]) > max_tokens:
+        if len(shortened) <= 1:
+            break
         shortened = shortened[:max(1, int(len(shortened) * 0.95))]
     return shortened
 

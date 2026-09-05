@@ -242,6 +242,22 @@ def test_truncate_to_tokens_leaves_a_short_text_untouched():
     assert truncate_to_tokens("short", 512) == "short"
 
 
+def test_truncate_to_tokens_terminates_with_non_positive_budget():
+    """Regression: ensure the shave loop terminates even when max_tokens <= 0.
+
+    At len(shortened) == 1, int(1 * 0.95) == 0, so max(1, 0) == 1, and the string
+    is sliced to itself. This test ensures the loop breaks once len(shortened) <= 1,
+    regardless of the token count."""
+    result = truncate_to_tokens("some longer text here for testing", 0)
+    assert isinstance(result, str)
+    assert len(result) >= 1, "result must be a non-empty prefix (at least 1 char)"
+
+    # Also test with negative max_tokens
+    result_neg = truncate_to_tokens("another test string", -5)
+    assert isinstance(result_neg, str)
+    assert len(result_neg) >= 1
+
+
 def test_embed_still_raises_without_the_opt_in(embedding_ctx, fake_openai):
     client = EmbeddingClient(embedding_ctx, client=fake_openai)
     with pytest.raises(ContextTooLarge):
