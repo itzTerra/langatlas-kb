@@ -4262,7 +4262,7 @@ and it verifies the three pinned values agree with the capability table before w
   `pin_config` returns the list of lines it changed, and raises `ValueError` when the
   verdict's dimension disagrees with `provider_config.embedding(model).dimensions`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_report.py`:
 
@@ -4401,12 +4401,12 @@ def test_bench_subcommands_are_registered():
     assert {"bench-pilot", "bench-build", "bench-run", "bench-verdict"} <= set(actions)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_report.py tests/test_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.report`.
 
-- [ ] **Step 3: Implement `report.py`**
+- [x] **Step 3: Implement `report.py`**
 
 ```python
 from pathlib import Path
@@ -4502,7 +4502,7 @@ def pin_config(verdict: Verdict, *, config_path: Path, provider_config=None) -> 
     return changed
 ```
 
-- [ ] **Step 4: Implement the four CLI subcommands**
+- [x] **Step 4: Implement the four CLI subcommands**
 
 Add to `tools/ingest/src/langatlas_ingest/cli.py` (each keeps the module's convention of heavy
 imports inside the function):
@@ -4640,7 +4640,7 @@ and register them in `build_parser`:
     bench_verdict.set_defaults(func=_cmd_bench_verdict)
 ```
 
-- [ ] **Step 5: Write the benchmark directory README**
+- [x] **Step 5: Write the benchmark directory README**
 
 Create `benchmarks/d22-source-corpus/README.md`:
 
@@ -4692,17 +4692,17 @@ two indexes may legitimately choose different models. Debate-history retrieval i
 to v2.
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_report.py tests/test_cli.py -v`
 Expected: PASS.
 
-- [ ] **Step 7: Run everything**
+- [x] **Step 7: Run everything**
 
 Run: `uv --directory tools/ingest run pytest && uv --directory tools/ingest run pytest -m db && uv --directory tools/pipeline run pytest`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/report.py \

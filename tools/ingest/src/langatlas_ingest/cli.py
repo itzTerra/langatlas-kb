@@ -335,6 +335,99 @@ def _cmd_file_acquisitions(args) -> int:
     return 0
 
 
+def _cmd_bench_pilot(args) -> int:
+    from langatlas_ingest.benchmark.arms import load_matrix
+    from langatlas_ingest.benchmark.pilot import select_pilot
+    from langatlas_ingest.eval import load_entries
+
+    matrix = load_matrix()
+    selection = select_pilot(load_entries(matrix.golden_dir), size=args.size)
+    print(selection.to_markdown())
+    if tuple(matrix.pilot_sources) != selection.sources:
+        print("NOTE: config/benchmark/d22-source-corpus.yaml pins a different pilot"
+              f" ({', '.join(matrix.pilot_sources)}). The golden set has changed since"
+              " the pilot was ratified — re-run the arms or re-ratify the pilot.")
+        return 1
+    return 0
+
+
+def _cmd_bench_build(args) -> int:
+    import psycopg
+    from dataclasses import replace
+    from langatlas_ingest.benchmark.arms import load_matrix
+    from langatlas_ingest.benchmark.corpus import (
+        build_bench_corpus, check_parity, create_bench_db,
+    )
+    from langatlas_ingest.errors import BenchCorpusMismatch
+
+    config, matrix = IngestConfig.load(), load_matrix()
+    target, maximum = args.chunk_target, args.chunk_max
+    arm_config = replace(config, chunk_target_tokens=target, chunk_max_tokens=maximum)
+    dsn = create_bench_db(config.dsn, drop=args.drop)
+    with psycopg.connect(dsn, autocommit=True) as bench:
+        counts = build_bench_corpus(bench, sources=matrix.pilot_sources,
+                                    config=arm_config)
+        for source_id, count in counts.items():
+            print(f"{source_id}: {count} chunks")
+        # Parity is only meaningful at production's chunking; the secondary axis is
+        # *supposed* to produce different ids, which is why Task 9 exists.
+        if (target, maximum) == matrix.primary_chunk_size:
+            with psycopg.connect(config.dsn, autocommit=True) as prod:
+                differences = check_parity(bench, prod, matrix.pilot_sources)
+            if differences:
+                raise BenchCorpusMismatch(differences)
+            print("parity with production: OK")
+    return 0
+
+
+def _cmd_bench_run(args) -> int:
+    import psycopg
+    from langatlas_ingest.benchmark.arms import load_matrix
+    from langatlas_ingest.benchmark.corpus import bench_dsn
+    from langatlas_ingest.benchmark.report import matrix_markdown
+    from langatlas_ingest.benchmark.runner import load_results, run_matrix
+
+    config, matrix = IngestConfig.load(), load_matrix()
+    if args.chunk_size_for:
+        arms = matrix.chunk_size_arms(args.chunk_size_for, truncate=args.truncate)
+        span = True
+    else:
+        arms = [arm for arm in matrix.primary
+                if not args.arm or arm.arm_id in args.arm]
+        span = False
+    with psycopg.connect(bench_dsn(config.dsn), autocommit=True) as bench, \
+            psycopg.connect(config.dsn, autocommit=True) as prod:
+        run_matrix(bench, arms, matrix=matrix, config=config, prod_conn=prod,
+                   resume=not args.force, span_relevance=span)
+    print(matrix_markdown(load_results(matrix.results_dir), matrix=matrix))
+    return 0
+
+
+def _cmd_bench_verdict(args) -> int:
+    from langatlas_ingest.benchmark.arms import load_matrix
+    from langatlas_ingest.benchmark.report import pin_config, write_verdict
+    from langatlas_ingest.benchmark.runner import load_results
+    from langatlas_ingest.benchmark.verdict import decide
+    from langatlas_ingest.paths import BENCHMARK_DIR, INGEST_CONFIG_PATH
+
+    matrix = load_matrix()
+    results = load_results(matrix.results_dir)
+    verdict = decide(results, matrix=matrix)
+    print(verdict.to_markdown())
+    json_path, md_path = write_verdict(verdict, results, matrix=matrix,
+                                       root=BENCHMARK_DIR)
+    print(f"wrote {json_path} and {md_path}")
+    if args.write:
+        changed = pin_config(verdict, config_path=INGEST_CONFIG_PATH)
+        for line in changed or ["config/ingest.yaml already matches the verdict"]:
+            print(line)
+        if changed and verdict.model != matrix.incumbent:
+            print("\nThe model moved: the production corpus must be fully re-embedded"
+                  " before this configuration is used.\n"
+                  "  uv --directory tools/ingest run langatlas-sources embed")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     from langatlas_ingest.search import SEARCH_MODES
 
@@ -468,6 +561,41 @@ def build_parser() -> argparse.ArgumentParser:
                               help="file config/acquisitions.yaml's entries into sourcing_queue")
     file_acq.add_argument("--file", default=None)
     file_acq.set_defaults(func=_cmd_file_acquisitions)
+
+    bench_pilot = sub.add_parser("bench-pilot",
+                                 help="select the D22 pilot corpus by golden coverage")
+    bench_pilot.add_argument("--size", type=int, default=4)
+    bench_pilot.set_defaults(func=_cmd_bench_pilot)
+
+    bench_build = sub.add_parser("bench-build",
+                                 help="build the isolated benchmark corpus at one"
+                                      " chunk size")
+    bench_build.add_argument("--chunk-target", type=int, default=600)
+    bench_build.add_argument("--chunk-max", type=int, default=800)
+    bench_build.add_argument("--drop", action="store_true",
+                             help="recreate the benchmark database first (required when"
+                                  " changing chunk size)")
+    bench_build.set_defaults(func=_cmd_bench_build)
+
+    bench_run = sub.add_parser("bench-run", help="run the D22 arms (resumable)")
+    bench_run.add_argument("--arm", nargs="*", default=[],
+                           help="run only these arm ids; omit for the whole matrix")
+    bench_run.add_argument("--chunk-size-for", default=None,
+                           help="run §8.6's secondary chunk-size axis for this model"
+                                " instead of the primary matrix")
+    bench_run.add_argument("--truncate", action="store_true",
+                           help="with --chunk-size-for: the chosen model is a"
+                                " short-context candidate")
+    bench_run.add_argument("--force", action="store_true",
+                           help="re-run arms that already have a committed result")
+    bench_run.set_defaults(func=_cmd_bench_run)
+
+    bench_verdict = sub.add_parser("bench-verdict",
+                                   help="apply §8.6's decision rules and record the"
+                                        " verdict")
+    bench_verdict.add_argument("--write", action="store_true",
+                               help="also pin the verdict into config/ingest.yaml")
+    bench_verdict.set_defaults(func=_cmd_bench_verdict)
     return parser
 
 

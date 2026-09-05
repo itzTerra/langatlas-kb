@@ -133,3 +133,18 @@ def test_file_acquisitions_skips_already_scaffolded_source_ids(tmp_path, monkeyp
     rc = main(["file-acquisitions", "--file", str(manifest)])
     assert rc == 0
     assert filed == []
+
+
+def test_bench_pilot_prints_the_selection(capsys):
+    from langatlas_ingest.cli import main
+
+    assert main(["bench-pilot", "--size", "4"]) == 0
+    out = capsys.readouterr().out
+    assert "sebesta-copl" in out and "37/52" in out
+
+
+def test_bench_subcommands_are_registered():
+    from langatlas_ingest.cli import build_parser
+
+    actions = build_parser()._subparsers._group_actions[0].choices
+    assert {"bench-pilot", "bench-build", "bench-run", "bench-verdict"} <= set(actions)
