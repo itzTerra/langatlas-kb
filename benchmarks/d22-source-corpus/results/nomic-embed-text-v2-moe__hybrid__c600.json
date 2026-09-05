@@ -1,0 +1,359 @@
+{
+  "arm": {
+    "arm_id": "nomic-embed-text-v2-moe__hybrid__c600",
+    "axis": "primary",
+    "chunk_max_tokens": 800,
+    "chunk_target_tokens": 600,
+    "depth": 50,
+    "embedding_model": "nomic-embed-text-v2-moe",
+    "mode": "hybrid",
+    "rerank": false,
+    "truncate": true
+  },
+  "finished": "2026-09-05T16:20:55Z",
+  "index": {
+    "bytes_per_chunk": 6333.49085206482,
+    "cached_vectors": 0,
+    "chunks": 3826,
+    "chunks_per_second": 570845.6618044556,
+    "dimensions": 768,
+    "embed_seconds": 0.007,
+    "model": "nomic-embed-text-v2-moe",
+    "table_bytes": 24231936,
+    "throughput_honest": true,
+    "tokens": 1401238,
+    "tokens_per_second": 209067076.17761415,
+    "truncated_chunks": 0,
+    "truncated_share": 0.0
+  },
+  "metrics": {
+    "latency_p50_ms": 5.860836001374992,
+    "mrr": 0.40362667734790497,
+    "ndcg_at_10": 0.4391597446508322,
+    "per_query": [
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-001",
+        "skipped": true
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-002",
+        "skipped": true
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-003",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-004",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-005",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": 7,
+        "id": "paraphrase-006",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-007",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-008",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-009",
+        "skipped": true
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": 8,
+        "id": "paraphrase-010",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-011",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-012",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-013",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": 23,
+        "id": "paraphrase-014",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": 22,
+        "id": "paraphrase-015",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-016",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-017",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-018",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": 26,
+        "id": "paraphrase-019",
+        "skipped": false
+      },
+      {
+        "band": "paraphrase-concept",
+        "hit_rank": null,
+        "id": "paraphrase-020",
+        "skipped": true
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 6,
+        "id": "retrieval-derived-001",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 2,
+        "id": "retrieval-derived-002",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-003",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": null,
+        "id": "retrieval-derived-004",
+        "skipped": true
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": null,
+        "id": "retrieval-derived-005",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-006",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 34,
+        "id": "retrieval-derived-007",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 5,
+        "id": "retrieval-derived-008",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 2,
+        "id": "retrieval-derived-009",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-010",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-011",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-012",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-013",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 2,
+        "id": "retrieval-derived-014",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": null,
+        "id": "retrieval-derived-015",
+        "skipped": true
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": null,
+        "id": "retrieval-derived-016",
+        "skipped": true
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 1,
+        "id": "retrieval-derived-017",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": null,
+        "id": "retrieval-derived-018",
+        "skipped": true
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 7,
+        "id": "retrieval-derived-019",
+        "skipped": false
+      },
+      {
+        "band": "exact-term",
+        "hit_rank": 2,
+        "id": "retrieval-derived-020",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-001",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-002",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": 1,
+        "id": "survey-003",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-004",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": 1,
+        "id": "survey-005",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-006",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": 1,
+        "id": "survey-007",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-008",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": 1,
+        "id": "survey-009",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-010",
+        "skipped": true
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": 1,
+        "id": "survey-011",
+        "skipped": false
+      },
+      {
+        "band": "cross-source-survey",
+        "hit_rank": null,
+        "id": "survey-012",
+        "skipped": true
+      }
+    ],
+    "queries": 37,
+    "recall_at_5": 0.4594594594594595,
+    "recall_at_50": 0.6756756756756757,
+    "skipped_queries": 15
+  },
+  "pilot_sources": [
+    "rust-fls",
+    "rust-reference",
+    "scott-plp",
+    "sebesta-copl"
+  ],
+  "run_id": "2026-09-05-benchmark-nomic-embed-text-v2-moe__hybrid__c600-01"
+}

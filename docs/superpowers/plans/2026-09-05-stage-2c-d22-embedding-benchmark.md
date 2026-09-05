@@ -4728,7 +4728,7 @@ resumable; run it in pieces if that suits the machine better.
 **Files:**
 - Create: `benchmarks/d22-source-corpus/results/*.json` (18 files)
 
-- [ ] **Step 1: Build the pilot corpus at production chunking**
+- [x] **Step 1: Build the pilot corpus at production chunking**
 
 ```bash
 docker compose up -d db
@@ -4739,7 +4739,7 @@ uv --directory tools/ingest run langatlas-sources bench-build --drop
 Expected: the ratified pilot, `{rust-fls: 1188, rust-reference: 788, scott-plp: 845,
 sebesta-copl: 1005}`, and `parity with production: OK`. A parity failure stops the task.
 
-- [ ] **Step 2: Run the incumbent's three arms first**
+- [x] **Step 2: Run the incumbent's three arms first**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-run \
@@ -4754,7 +4754,7 @@ queries skipped) means something upstream is wrong and eight more hours of arms 
 Sanity floor: `hybrid-rerank` should be the incumbent's best arm and should score above the
 full-corpus baseline recorded in Task 5 Step 5, because the pilot has fewer distractors.
 
-- [ ] **Step 3: Run the remaining fifteen arms**
+- [x] **Step 3: Run the remaining fifteen arms**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-run
@@ -4763,7 +4763,7 @@ uv --directory tools/ingest run langatlas-sources bench-run
 Expected: eighteen files in `benchmarks/d22-source-corpus/results/`, and the printed matrix
 table. Re-invoke after any interruption; completed arms are skipped.
 
-- [ ] **Step 4: Check the honesty flags**
+- [x] **Step 4: Check the honesty flags**
 
 ```bash
 uv --directory tools/ingest run python -c "
@@ -4786,7 +4786,7 @@ Expected, and each is a *finding to report*, not a thing to fix silently:
   cached vectors. Only the model's *first* arm measures real indexing throughput, which is the
   arm the verdict's throughput column should be read from.
 
-- [ ] **Step 5: Commit the results**
+- [x] **Step 5: Commit the results**
 
 ```bash
 git add benchmarks/d22-source-corpus/results/ \
