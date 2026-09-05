@@ -1622,7 +1622,7 @@ pre-rerank**, and the benchmark needs three more things `run_eval` cannot do:
   ```
   `per_query` entries gain `"skipped": bool` and keep `id`, `band`, `hit_rank`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tools/ingest/tests/test_eval_metrics.py`:
 
@@ -1729,12 +1729,12 @@ def test_as_dict_round_trips_every_reported_metric():
     assert payload["queries"] == 3
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_eval_metrics.py -v`
 Expected: FAIL — `ImportError: cannot import name 'expected_sources_of'`.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Rewrite the scoring and driver halves of `tools/ingest/src/langatlas_ingest/eval.py`. `_validate`
 and `_relevant` are unchanged; `_load` is renamed `load_entries` (keep a module-level
@@ -1936,14 +1936,14 @@ In `tools/ingest/src/langatlas_ingest/cli.py`, extend `_cmd_eval` and its parser
                           help="override `retrieval.mode`")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_eval_metrics.py tests/test_eval.py -v`
 Expected: PASS — the 8 new tests plus every existing eval test. The existing tests pin the
 Recall@5 / nDCG semantics; if one of them breaks, the recall rewrite changed behaviour for
 chunk-id matching and must be corrected, not the test.
 
-- [ ] **Step 5: Score the committed golden set against the live corpus as a smoke check**
+- [x] **Step 5: Score the committed golden set against the live corpus as a smoke check**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources eval --no-rerank --depth 50
@@ -1952,7 +1952,7 @@ uv --directory tools/ingest run langatlas-sources eval --no-rerank --depth 50
 Expected: a report over 52 queries with a non-`n/a` Recall@50. Record the numbers in the commit
 message body — this is the full-corpus baseline the pilot arms are read against.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/eval.py \

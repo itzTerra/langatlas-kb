@@ -139,7 +139,8 @@ def _cmd_eval(args) -> int:
     rerank = False if args.no_rerank else None
     with RunContext.start(kind="eval", slug="retrieval") as ctx:
         with connect(config.dsn) as conn:
-            result = run_eval(conn, ctx, config=config, rerank=rerank)
+            result = run_eval(conn, ctx, config=config, rerank=rerank,
+                              depth=args.depth, mode=args.mode)
     print(result.to_markdown())
     return 0
 
@@ -390,6 +391,11 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate = sub.add_parser("eval", help="score the retrieval golden set")
     evaluate.add_argument("--no-rerank", action="store_true",
                           help="score the no-rerank arm of §8.6's comparison")
+    evaluate.add_argument("--depth", type=int, default=10,
+                          help="hits requested per query; 50 measures §8.6's pre-rerank"
+                               " pool (run it with --no-rerank)")
+    evaluate.add_argument("--mode", choices=list(SEARCH_MODES), default=None,
+                          help="override `retrieval.mode`")
     evaluate.set_defaults(func=_cmd_eval)
 
     golden_validate = sub.add_parser(

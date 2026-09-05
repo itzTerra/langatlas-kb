@@ -136,6 +136,54 @@ def test_rerank_can_be_switched_off_for_the_no_rerank_arm(corpus, fake_ctx, tmp_
     assert len(fake_ctx.rerank_calls) == 1
 
 
+def test_depth_50_reports_recall_at_50_against_the_real_corpus(db_conn, fake_ctx, tmp_path):
+    """§8.6's pre-rerank pool measurement, exercised against real search SQL rather than
+    a stub. `_score` only reports recall@50 when the run actually retrieved 50 hits, so
+    this needs a corpus with at least that many chunks — the shared 3-chunk `corpus`
+    fixture cannot exercise it."""
+    migrate(db_conn)
+    texts = [f"Filler sentence number {i} about lazy evaluation and pattern matching."
+             for i in range(59)]
+    texts.append("Pattern matching destructures a value against a sequence of patterns.")
+    SourceChunksStore(db_conn).replace_source("ctm", [
+        Chunk(chunk_id=f"ctm#c{i:05d}", source_id="ctm", ordinal=i,
+              parent_section_id="ctm#s0001", section_path=["Ch"], breadcrumb="Ch",
+              locator=f"p. {i + 1}", locator_kind="book-page", text=text, token_count=12,
+              content_hash=f"h{i}", page_start=i + 1, page_end=i + 1)
+        for i, text in enumerate(texts)])
+    embed_source(fake_ctx, db_conn, config=CONFIG)
+    golden = write_golden(tmp_path, [
+        {"id": "q1", "query": "pattern matching destructures",
+         "expected_chunks": [f"ctm#c{len(texts) - 1:05d}"]}])
+
+    shallow = run_eval(db_conn, fake_ctx, golden_dir=golden, config=CONFIG, depth=10)
+    assert shallow.recall_at_50 is None
+
+    deep = run_eval(db_conn, fake_ctx, golden_dir=golden, config=CONFIG, depth=50)
+    assert deep.recall_at_50 == 1.0
+
+
+def test_corpus_sources_scopes_out_queries_against_the_real_corpus(corpus, fake_ctx,
+                                                                    tmp_path):
+    """The pilot corpus only ingests a subset of sources; a golden query expecting a
+    source outside `corpus_sources` must be skipped rather than scored as a miss —
+    verified here against real search execution, not a stub, since the skip decision
+    has to happen before a query the corpus cannot possibly answer is ever searched."""
+    golden = write_golden(tmp_path, [
+        {"id": "answerable", "query": "pattern matching destructures",
+         "expected_chunks": ["ctm#c00002"]},
+        {"id": "unanswerable", "query": "something else entirely",
+         "expected_chunks": ["other-source#c00000"]}])
+
+    result = run_eval(corpus, fake_ctx, golden_dir=golden, config=CONFIG,
+                      corpus_sources=["ctm"])
+
+    assert result.queries == 1
+    assert result.skipped_queries == 1
+    assert result.recall_at_5 == 1.0
+    assert [entry["skipped"] for entry in result.per_query] == [False, True]
+
+
 def test_rerank_defaults_to_the_configured_flag(corpus, fake_ctx, tmp_path):
     """Absent an explicit argument the decision stays with `models.rerank_default_on` —
     the same opt-out shape the CLI uses, never a silent override of the config."""

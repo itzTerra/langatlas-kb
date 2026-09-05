@@ -36,9 +36,9 @@ def test_an_item_with_no_evidence_chunks_is_skipped():
 
 
 def test_written_queries_load_through_run_evals_own_reader(tmp_path):
-    from langatlas_ingest.eval import _load, _validate
+    from langatlas_ingest.eval import load_entries, _validate
     path = write_queries(derive_queries([item("a", "correct")]),
                          tmp_path / "queries-typing.yaml", theme="typing")
-    entries = _load(path.parent)
+    entries = load_entries(path.parent)
     assert len(entries) == 1
     _validate(entries[0])       # raises GoldenEntryInvalid if the shape is wrong
