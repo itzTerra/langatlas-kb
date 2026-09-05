@@ -3529,7 +3529,7 @@ alias pinning per arm.
                  span_relevance: bool = False) -> list[ArmResult]
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_runner.py`:
 
@@ -3628,12 +3628,12 @@ def test_run_matrix_reruns_when_resume_is_off(tmp_path: Path, monkeypatch):
     assert len(calls) == 1
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_runner.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.runner`.
 
-- [ ] **Step 3: Implement `runner.py`**
+- [x] **Step 3: Implement `runner.py`**
 
 ```python
 import json
@@ -3772,12 +3772,12 @@ def run_matrix(conn, arms: Sequence[Arm], *, matrix: Matrix, config: IngestConfi
     return results
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_runner.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/runner.py \
