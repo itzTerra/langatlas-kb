@@ -2026,7 +2026,7 @@ at the top of this document.**
   def slug(text: str) -> str
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_arms.py`:
 
@@ -2145,12 +2145,12 @@ def test_the_committed_matrix_loads_and_is_shaped_as_ratified():
     assert matrix.chunk_sizes == ((400, 550), (800, 1050))
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_arms.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.benchmark'`.
 
-- [ ] **Step 3: Implement `arms.py`**
+- [x] **Step 3: Implement `arms.py`**
 
 Create `tools/ingest/src/langatlas_ingest/benchmark/__init__.py` (empty) and
 `tools/ingest/src/langatlas_ingest/benchmark/arms.py`:
@@ -2291,7 +2291,7 @@ BENCHMARK_CONFIG_PATH = REPO_ROOT / "config" / "benchmark" / "d22-source-corpus.
 BENCHMARK_DIR = REPO_ROOT / "benchmarks" / "d22-source-corpus"
 ```
 
-- [ ] **Step 4: Write the committed matrix**
+- [x] **Step 4: Write the committed matrix**
 
 Create `config/benchmark/d22-source-corpus.yaml`:
 
@@ -2343,12 +2343,12 @@ margins:
   chunk_size_min_recall5_pts: 2.0     # plan decision 2 (not in §8.6); ratified 2026-09-05
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_arms.py -v`
 Expected: PASS (12 tests), including `test_the_committed_matrix_loads_and_is_shaped_as_ratified`.
 
-- [ ] **Step 6: Verify every candidate resolves**
+- [x] **Step 6: Verify every candidate resolves**
 
 ```bash
 uv --directory tools/ingest run python -c "
@@ -2363,7 +2363,7 @@ for model in sorted({a.embedding_model for a in matrix.primary}):
 Expected: six lines, no `UnknownAlias`. A failure here means Task 1 or Task 3 left a candidate
 unregistered — fix that, do not edit the matrix.
 
-- [ ] **Step 7: Developer checkpoint — ratify the four plan-level decisions**
+- [x] **Step 7: Developer checkpoint — ratify the four plan-level decisions**
 
 Present to the developer, and do not proceed until each is accepted or amended:
 
@@ -2375,7 +2375,7 @@ Present to the developer, and do not proceed until each is accepted or amended:
 Plus the pilot itself: `rust-fls`, `rust-reference`, `scott-plp`, `sebesta-copl` — 37/52 queries.
 Task 7 recomputes this mechanically, so an amendment here is a matrix edit, not a code change.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/ \

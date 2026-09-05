@@ -23,3 +23,10 @@ GOLDEN_VERIFIER_DIR = REPO_ROOT / "tests" / "golden" / "verifier"
 GOLDEN_VERIFIER_HELD_OUT_DIR = GOLDEN_VERIFIER_DIR / "held-out"
 GOLDEN_CONTROVERSY_DIR = REPO_ROOT / "tests" / "golden" / "controversy"
 GOLDEN_DEBATES_DIR = REPO_ROOT / "tests" / "golden" / "debates"
+
+# §8.6's D22 benchmark. The matrix is committed configuration; the results and verdict
+# are a committed research record justifying a pinned production setting — neither is a
+# derived artifact in D1's sense, so both live in git while the vectors they measure do
+# not.
+BENCHMARK_CONFIG_PATH = REPO_ROOT / "config" / "benchmark" / "d22-source-corpus.yaml"
+BENCHMARK_DIR = REPO_ROOT / "benchmarks" / "d22-source-corpus"

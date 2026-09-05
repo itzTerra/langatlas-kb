@@ -1,0 +1,45 @@
+# §8.6's D22 source-corpus benchmark (R2). Model ids are configuration, never hardcoded:
+# every candidate below must exist in config/provider_capabilities.yaml (probed for the
+# gateway roster, model-card-sourced for the local one).
+#
+# Pilot: the coverage-maximising 4-source selection computed by `bench-pilot`, covering
+# 37 of the golden set's 52 queries across all three bands. Recall numbers from a
+# 4-source corpus are comparative, not absolute — the distractor pool is a quarter of
+# production's. That is exactly what a model-selection benchmark needs, and the verdict
+# record says so.
+pilot_sources: [rust-fls, rust-reference, scott-plp, sebesta-copl]
+golden_dir: tests/golden/retrieval
+results_dir: benchmarks/d22-source-corpus/results
+incumbent: qwen3-embedding-4b
+
+candidates:
+  - model: qwen3-embedding-4b                 # D15 incumbent, 2560-dim / 40960-token
+  - model: nomic-embed-text-v1.5              # 768-dim / 8192-token
+  - model: nomic-embed-text-v2-moe            # probed in Task 1
+  - model: mxbai-embed-large:latest           # 1024-dim / 512-token
+    truncate: true                            # §8.6: tested honestly at its real window
+  - model: multilingual-e5-large-instruct     # 1024-dim / 512-token
+    truncate: true
+  - model: local:BAAI/bge-small-en-v1.5       # §8.6's free-and-local floor, 384/512
+    truncate: true
+    local: true
+
+# `hybrid` expands to two arms (with and without the reranker); `vector` to one.
+modes: [vector, hybrid]
+
+chunk_sizes:
+  # Production's chunking; the primary matrix's only chunking.
+  primary: {target_tokens: 600, max_tokens: 800}
+  # §8.6's "400 vs 800 chunk size as a secondary axis", keeping production's 1.33x
+  # target-to-max ratio. Run for the chosen model only.
+  secondary:
+    - {target_tokens: 400, max_tokens: 550}
+    - {target_tokens: 800, max_tokens: 1050}
+
+# §8.6's decision rules, in percentage points.
+margins:
+  beat_incumbent_recall5_pts: 5.0     # a challenger must beat the incumbent by >= 5
+  local_match_recall5_pts: 2.0        # a local model wins by matching within 2
+  rerank_min_ndcg_pts: 2.0            # reranker stays default-on unless it adds < 2
+  hybrid_min_recall5_pts: 2.0         # hybrid stays unless it adds < 2 over vector-only
+  chunk_size_min_recall5_pts: 2.0     # plan decision 2 (not in §8.6); ratified 2026-09-05
