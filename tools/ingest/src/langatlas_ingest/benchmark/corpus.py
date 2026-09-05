@@ -10,13 +10,22 @@ from langatlas_ingest.snapshot import SnapshotStore
 # destructive thing this stage could do — so the benchmark gets its own database and the
 # production one is never opened for writing here.
 BENCH_DB_NAME = "langatlas_bench"
+# The one literal this guard exists to catch. `IngestConfig` never parses its `dsn` into a
+# bare database name (it stores the whole connection string, password included), so there
+# is no single-source-of-truth field to import here instead — this is the canonical place
+# that records it. Checked unconditionally against `name`, independent of whatever
+# database `base_dsn` itself happens to point at (a maintenance DSN, an already-rebased
+# bench DSN, ...): the mistake this module exists to prevent is calling
+# `bench_dsn(..., name="langatlas")` and getting a DSN back, no matter where `base_dsn`
+# came from.
+PRODUCTION_DB_NAME = "langatlas"
 
 
 def bench_dsn(base_dsn: str, *, name: str = BENCH_DB_NAME) -> str:
-    head, _, current = base_dsn.rpartition("/")
-    if name == current:
-        raise ValueError(f"refusing to use the production database {current!r} as the"
+    if name == PRODUCTION_DB_NAME:
+        raise ValueError(f"refusing to use the production database {name!r} as the"
                          " benchmark database")
+    head, _, _ = base_dsn.rpartition("/")
     return f"{head}/{name}"
 
 
@@ -62,8 +71,18 @@ def chunk_ids(conn, source_id: str) -> list[str]:
         return [row[0] for row in cur.fetchall()]
 
 
+def chunk_ids_and_hashes(conn, source_id: str) -> list[tuple[str, str]]:
+    """Like `chunk_ids`, but pairs each id with its `content_hash` so `check_parity` can
+    tell a same-ordinal content drift apart from a genuine id mismatch."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT chunk_id, content_hash FROM source_chunks WHERE source_id = %s"
+                    " ORDER BY ordinal", (source_id,))
+        return [(row[0], row[1]) for row in cur.fetchall()]
+
+
 def check_parity(bench_conn, prod_conn, sources: Sequence[str]) -> list[str]:
-    """Assert the 600-token rebuild reproduces production's chunk ids exactly.
+    """Assert the 600-token rebuild reproduces production's chunks exactly — both id and
+    content, not id alone.
 
     This is the load-bearing check of the whole benchmark: the golden set's
     `expected_chunks` are production chunk ids, so if the bench corpus's ids differ, every
@@ -71,19 +90,32 @@ def check_parity(bench_conn, prod_conn, sources: Sequence[str]) -> list[str]:
     that looks like a model failure. Chunking is deterministic given the same snapshot and
     the same config, so any difference is a real finding — a changed snapshot, a changed
     extractor, a changed config — and never something to work around.
+
+    Comparing bare ids is not enough: an id encodes only ordinal position, so two chunk
+    sets with the same count and the same ids in the same order but different actual text
+    (e.g. a redistributed snapshot re-ingested under stale content) would still report
+    `[]` — a silent false "OK" on the exact guarantee this function exists to make.
+    Comparing `(chunk_id, content_hash)` pairs catches that: same id, different hash is
+    reported as a content mismatch, distinct from a count or id mismatch.
     """
     differences: list[str] = []
     for source_id in sources:
-        bench, production = chunk_ids(bench_conn, source_id), chunk_ids(prod_conn,
-                                                                        source_id)
+        bench = chunk_ids_and_hashes(bench_conn, source_id)
+        production = chunk_ids_and_hashes(prod_conn, source_id)
         if bench == production:
             continue
         if len(bench) != len(production):
             differences.append(f"{source_id}: {len(bench)} chunks in bench,"
                                f" {len(production)} in production")
-        else:
-            first = next(index for index, (a, b)
-                         in enumerate(zip(bench, production)) if a != b)
+            continue
+        first = next(index for index, (a, b) in enumerate(zip(bench, production))
+                     if a != b)
+        (bench_id, bench_hash), (prod_id, prod_hash) = bench[first], production[first]
+        if bench_id != prod_id:
             differences.append(f"{source_id}: same count, first divergence at ordinal"
-                               f" {first}: {bench[first]!r} != {production[first]!r}")
+                               f" {first}: {bench_id!r} != {prod_id!r}")
+        else:
+            differences.append(f"{source_id}: same count and ids, content differs at"
+                               f" ordinal {first} ({bench_id!r}): hash {bench_hash!r}"
+                               f" != {prod_hash!r}")
     return differences
