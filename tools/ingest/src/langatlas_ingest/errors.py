@@ -79,6 +79,18 @@ class UnknownSearchMode(IngestError):
         self.mode = mode
 
 
+class BenchCorpusMismatch(IngestError):
+    """The benchmark corpus rebuilt at production's chunk size does not reproduce
+    production's chunk ids. Fatal rather than a warning: the golden set cites production
+    ids, so every arm scored against a divergent corpus reports a uniform zero that reads
+    as a model failure instead of a corpus failure."""
+
+    def __init__(self, differences: list[str]):
+        super().__init__("benchmark corpus does not match production:\n  "
+                         + "\n  ".join(differences))
+        self.differences = list(differences)
+
+
 class NoVerifierRegistered(IngestError):
     """`golden-score` was asked to score a verifier that does not exist yet. Typed so the
     CLI can say "2D has not shipped the verifier" instead of reporting a 0% error rate

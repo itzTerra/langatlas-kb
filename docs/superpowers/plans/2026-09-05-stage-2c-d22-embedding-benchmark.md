@@ -2617,7 +2617,7 @@ asserts the 600-token rebuild reproduces production's chunk ids exactly.
       def __init__(self, differences: list[str])
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_corpus.py`:
 
@@ -2724,12 +2724,12 @@ def test_mismatch_error_lists_the_sources():
 > It is torn down by the next run's `DROP DATABASE IF EXISTS`, matching how `dsn` itself handles
 > `langatlas_test`.
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_corpus.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.corpus`.
 
-- [ ] **Step 3: Implement `corpus.py`**
+- [x] **Step 3: Implement `corpus.py`**
 
 ```python
 from typing import Sequence
@@ -2839,12 +2839,12 @@ class BenchCorpusMismatch(IngestError):
         self.differences = list(differences)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `docker compose up -d db && uv --directory tools/ingest run pytest tests/test_benchmark_corpus.py -v -m db`
 Expected: PASS.
 
-- [ ] **Step 5: Build the real bench corpus and verify parity (developer checkpoint)**
+- [x] **Step 5: Build the real bench corpus and verify parity (developer checkpoint)**
 
 Task 13 wires the CLI; until then, run it directly:
 
@@ -2867,7 +2867,7 @@ and `parity: OK`. **Any parity difference stops the plan** — report it rather 
 golden set or the pilot; it means a snapshot, the extractor, or the chunking config moved since
 2A, which is a finding about the corpus, not about the benchmark.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/corpus.py \
