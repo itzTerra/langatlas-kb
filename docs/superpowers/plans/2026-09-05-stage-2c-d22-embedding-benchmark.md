@@ -875,7 +875,7 @@ could name it verbatim if the verdict picks it.
   `ProviderConfig.embedding(model)` now resolves ids in both the `embeddings:` and
   `local_embeddings:` blocks and returns the same `EmbeddingCapability`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/pipeline/tests/test_local_embedding.py`:
 
@@ -996,12 +996,12 @@ def local_ctx(tmp_path):
     ctx.close(publish=False)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_local_embedding.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_pipeline.providers.local_embedding'`.
 
-- [ ] **Step 3: Implement the local backend**
+- [x] **Step 3: Implement the local backend**
 
 Create `tools/pipeline/src/langatlas_pipeline/providers/local_embedding.py`:
 
@@ -1201,12 +1201,12 @@ local_embeddings:
   local:BAAI/bge-small-en-v1.5: {dimensions: 384, max_input_tokens: 512}
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_local_embedding.py -v`
 Expected: PASS (7 tests).
 
-- [ ] **Step 5: Verify the dimension claim against the real encoder (developer checkpoint)**
+- [x] **Step 5: Verify the dimension claim against the real encoder (developer checkpoint)**
 
 ```bash
 uv --directory tools/pipeline sync --extra local-embed
@@ -1220,12 +1220,12 @@ Expected: `dimensions 384`. If it prints anything else, correct
 `config/provider_capabilities.yaml` to the measured value before committing — the recorded number
 must be the one the encoder actually produces.
 
-- [ ] **Step 6: Run both suites for regressions**
+- [x] **Step 6: Run both suites for regressions**
 
 Run: `uv --directory tools/pipeline run pytest && uv --directory tools/ingest run pytest`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/pipeline/src/langatlas_pipeline/providers/local_embedding.py \

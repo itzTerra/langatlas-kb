@@ -21,6 +21,10 @@ langatlas-report = "langatlas_pipeline.observability.report:main"
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+# §8.6's local-CPU floor arm only. Pulls onnxruntime and downloads a model on first use,
+# so it stays out of the default install: nothing in the production pipeline embeds
+# locally unless the D22 verdict says so.
+local-embed = ["fastembed>=0.4,<0.8"]
 
 [build-system]
 requires = ["hatchling"]

@@ -69,7 +69,12 @@ class ProviderConfig:
         )
 
     def embedding(self, model: str) -> EmbeddingCapability:
-        entry = self.capabilities.get("embeddings", {}).get(model)
+        """One lookup across both rosters. A `local:`-prefixed id lives under
+        `local_embeddings:` because it is not something the gateway probe can measure —
+        but every consumer (the embed table, the search query, an arm id) treats the two
+        identically, so they return the same type."""
+        entry = (self.capabilities.get("embeddings", {}).get(model)
+                 or self.capabilities.get("local_embeddings", {}).get(model))
         if entry is None:
             raise UnknownAlias(f"unknown embedding model: {model!r}")
         return EmbeddingCapability(model, int(entry["dimensions"]),

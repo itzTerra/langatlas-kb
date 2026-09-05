@@ -62,6 +62,7 @@ class RunContext:
         self._completion = None
         self._claude = None
         self._embedding = None
+        self._local_embedding = None
         self._rerank = None
         self._github_app = None
 
@@ -146,6 +147,16 @@ class RunContext:
 
     def embed(self, texts: list[str], *, model: str, truncate: bool = False,
               max_input_tokens: int | None = None) -> list[list[float]]:
+        from langatlas_pipeline.providers.local_embedding import (
+            LocalEmbeddingClient, is_local,
+        )
+
+        if is_local(model):
+            if self._local_embedding is None:
+                self._local_embedding = LocalEmbeddingClient(self)
+            return self._local_embedding.embed(texts, model=model, truncate=truncate,
+                                               max_input_tokens=max_input_tokens)
+
         from langatlas_pipeline.providers.embedding import EmbeddingClient
 
         if self._embedding is None:
@@ -158,14 +169,16 @@ class RunContext:
         """How many texts this run shortened to fit a short-context model. §8.6's
         benchmark reports it per arm; a production run reading a non-zero number here has
         a configuration problem, not a metric."""
-        return self._embedding.truncated if self._embedding is not None else 0
+        return sum(client.truncated for client
+                   in (self._embedding, self._local_embedding) if client is not None)
 
     @property
     def embedding_cache_hits(self) -> int:
         """Vectors served from the content-addressed cache. Indexing throughput measured
         over a warm cache is not throughput, so the benchmark reports this alongside it
         rather than quietly dividing by a wall time that includes no provider work."""
-        return self._embedding.cache_hits if self._embedding is not None else 0
+        return sum(client.cache_hits for client
+                   in (self._embedding, self._local_embedding) if client is not None)
 
     def rerank(self, query: str, docs: list[str], *, model: str) -> list[float]:
         from langatlas_pipeline.providers.rerank import RerankClient

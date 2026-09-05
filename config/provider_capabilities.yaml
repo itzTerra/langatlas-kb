@@ -70,5 +70,11 @@ embeddings:
   nomic-embed-text-v2-moe:
     dimensions: 768
     max_input_tokens: 512
+# Local-CPU candidates (§8.6's free-and-local floor). Not probeable through the gateway:
+# these numbers come from the model card and are checked at first use — `embed_source`
+# passes the measured vector length to `ensure_embedding_table`, which refuses a table
+# whose dimension disagrees.
+local_embeddings:
+  local:BAAI/bge-small-en-v1.5: {dimensions: 384, max_input_tokens: 512}
 rerankers:
   qwen3-reranker-4b: {mode: completion}
