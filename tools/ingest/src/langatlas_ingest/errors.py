@@ -91,6 +91,17 @@ class BenchCorpusMismatch(IngestError):
         self.differences = list(differences)
 
 
+class IncompleteMatrix(IngestError):
+    """§8.6's decision rules were asked to conclude from a matrix with a hole in it.
+    Raised rather than deciding on what is present: a rule comparing an arm against an
+    absent one would silently become a different rule, and the verdict it produced would
+    be indistinguishable from a real one."""
+
+    def __init__(self, missing: list[str]):
+        super().__init__("cannot decide with arms missing:\n  " + "\n  ".join(missing))
+        self.missing = list(missing)
+
+
 class NoVerifierRegistered(IngestError):
     """`golden-score` was asked to score a verifier that does not exist yet. Typed so the
     CLI can say "2D has not shipped the verifier" instead of reporting a 0% error rate

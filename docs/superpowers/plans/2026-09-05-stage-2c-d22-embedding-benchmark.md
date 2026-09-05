@@ -3845,7 +3845,7 @@ arm ids are absent.
       def __init__(self, missing: list[str])
   ```
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_verdict.py`:
 
@@ -4009,12 +4009,12 @@ def test_the_verdict_carries_the_pinned_index_identity():
     assert "queries scored" in verdict.to_markdown()
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_verdict.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.verdict`.
 
-- [ ] **Step 3: Implement `verdict.py`**
+- [x] **Step 3: Implement `verdict.py`**
 
 ```python
 import json
@@ -4217,14 +4217,14 @@ class IncompleteMatrix(IngestError):
         self.missing = list(missing)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_verdict.py -v`
 Expected: PASS (12 tests). The boundary tests (`+4` vs `+5`, `-2` vs `-3`, exactly `2` nDCG
 points) are the ones that matter — every one of §8.6's rules is an inequality, and an off-by-one
 in the comparison direction changes the project's retrieval stack.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/verdict.py \
