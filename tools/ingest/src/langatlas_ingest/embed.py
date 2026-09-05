@@ -10,11 +10,18 @@ def vector_literal(values: Sequence[float]) -> str:
 
 
 def embed_source(ctx, conn, *, source_id: str | None = None,
-                 config: IngestConfig | None = None, batch_size: int = 32) -> int:
+                 config: IngestConfig | None = None, batch_size: int = 32,
+                 truncate: bool = False) -> int:
     """D15's overnight batch embed. Every call goes through `ctx` (D26), so it is logged,
     budgeted, and content-addressed-cached like any other provider call; re-running after
     an interruption re-embeds only what is missing, which is what makes a multi-hour job
-    survivable on a slow university API."""
+    survivable on a slow university API.
+
+    `truncate` is off by default and stays off in production: a chunk the model could
+    only half-read produces a vector that misrepresents it. §8.6's benchmark turns it on
+    for the short-context candidates, which is the only honest way to measure them at all
+    (see `EmbeddingClient.embed`).
+    """
     config = config or IngestConfig.load()
     model = config.embedding_model
     dimensions = ctx.config.embedding(model).dimensions
@@ -26,7 +33,8 @@ def embed_source(ctx, conn, *, source_id: str | None = None,
     written = 0
     for start in range(0, len(pending), batch_size):
         batch = pending[start:start + batch_size]
-        vectors = ctx.embed([chunk.text for chunk in batch], model=model)
+        vectors = ctx.embed([chunk.text for chunk in batch], model=model,
+                            truncate=truncate)
         with conn.cursor() as cur:
             cur.executemany(
                 f"INSERT INTO {table} (chunk_id, embedding) VALUES (%s, %s::vector)"

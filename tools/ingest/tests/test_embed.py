@@ -126,7 +126,7 @@ def test_a_short_provider_response_raises_instead_of_silently_dropping_a_chunk(d
     migrate(db_conn)
     SourceChunksStore(db_conn).replace_source("s", [make_chunk(i) for i in range(3)])
 
-    def short_embed(texts, *, model):
+    def short_embed(texts, *, model, truncate: bool = False):
         fake_ctx.embed_calls.append(list(texts))
         return [[0.0] * fake_ctx.dimensions for _ in texts[:-1]]  # one short
 

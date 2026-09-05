@@ -3201,7 +3201,7 @@ than a number the reader has to second-guess.
                         truncate: bool = False) -> IndexStats
   ```
 
-- [ ] **Step 1: Teach the shared `FakeCtx` the new embedding contract**
+- [x] **Step 1: Teach the shared `FakeCtx` the new embedding contract**
 
 `embed_and_measure` reads the truncation and cache-hit counters off the context, so
 `tools/ingest/tests/conftest.py`'s `FakeCtx` has to carry them (and accept Task 2's `truncate`
@@ -3235,7 +3235,7 @@ class FakeCtx:
 Run `uv --directory tools/ingest run pytest -m "db or not db"` before writing anything new: the
 whole existing suite must still pass.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tools/ingest/tests/test_benchmark_metrics.py`:
 
@@ -3320,12 +3320,12 @@ def test_embed_and_measure_reads_the_counters_off_the_context(searchable, fake_c
     assert stats.dimensions == 4
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_metrics.py -v`
 Expected: FAIL — `ModuleNotFoundError: ... benchmark.metrics`.
 
-- [ ] **Step 4: Implement `metrics.py`**
+- [x] **Step 4: Implement `metrics.py`**
 
 ```python
 import time
@@ -3462,18 +3462,18 @@ and extend its docstring with:
     (see `EmbeddingClient.embed`).
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_benchmark_metrics.py -v -m "db or not db"`
 Expected: PASS (7 tests).
 
-- [ ] **Step 6: Run the ingest suite for regressions**
+- [x] **Step 6: Run the ingest suite for regressions**
 
 Run: `uv --directory tools/ingest run pytest && uv --directory tools/ingest run pytest -m db`
 Expected: PASS — `embed_source`'s new parameter is keyword-only with a default, so `_cmd_embed`
 is unaffected.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/benchmark/metrics.py \

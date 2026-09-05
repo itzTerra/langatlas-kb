@@ -99,11 +99,25 @@ class FakeCtx:
         self.rerank_calls: list[tuple[str, list[str]]] = []
         self.tool_results: list[tuple[str, str]] = []
         self.rerank_scores: list[float] | None = None
+        self.truncations = 0
+        self.cache_hits = 0
 
-    def embed(self, texts, *, model):
+    def embed(self, texts, *, model, truncate: bool = False,
+              max_input_tokens: int | None = None):
+        # `truncate` is accepted and ignored: this fake has no window, and the point of
+        # the benchmark's counter plumbing is that the *stats* read the context, not that
+        # the fake reimplements truncation.
         self.embed_calls.append(list(texts))
         return [[float(len(text) % 10) / 10] + [0.0] * (self.dimensions - 1)
                 for text in texts]
+
+    @property
+    def embedding_truncations(self) -> int:
+        return self.truncations
+
+    @property
+    def embedding_cache_hits(self) -> int:
+        return self.cache_hits
 
     def rerank(self, query, docs, *, model):
         self.rerank_calls.append((query, list(docs)))
