@@ -50,3 +50,17 @@ goldens:
   # `golden-score` says so plainly rather than scoring nothing and reporting 0%.
   verifier_entry_point:
   controversy_assessor_entry_point:
+verification:
+  # D24's model ladder (§6.2/§7.1). Aliases, never model ids: the resolved model is
+  # `config/provider_capabilities.yaml`'s business, and RunContext pins it per run.
+  primary: deepseek                 # reasoning off
+  escalation: deepseek-thinking     # `partial` / `contradicted` / inconsistent output
+  second_opinion: mini              # gpt-oss-120b, cross-family drift gauge
+  # Fraction of `supported` verdicts that get the cross-family second opinion. Rising
+  # disagreement here is the earliest rubber-stamping signal there is.
+  second_opinion_rate: 0.10
+  # §6.2's hardening path: if the measured false-accept rate misses its target, flip this
+  # and every `supported` gets a mandatory second vote instead of a 10% sample.
+  mandatory_second_opinion: false
+  # §6.2's 2-bounce budget for `partial`-only facts, modelled on `sourcing_queue.bounce_count`.
+  bounce_budget: 2

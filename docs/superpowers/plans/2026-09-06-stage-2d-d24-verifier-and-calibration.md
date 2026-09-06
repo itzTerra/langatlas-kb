@@ -2151,7 +2151,7 @@ git commit -m "feat(#stage-2d): add the context-blind entailment stage and its f
     `IngestConfig.second_opinion_rate: float`,
     `IngestConfig.mandatory_second_opinion: bool`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_tiering.py`:
 
@@ -2225,12 +2225,12 @@ def test_the_config_exposes_the_verification_block():
     assert config.mandatory_second_opinion is False
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_tiering.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.tiering'`
 
-- [ ] **Step 3: Add the `verification` block to `config/ingest.yaml`**
+- [x] **Step 3: Add the `verification` block to `config/ingest.yaml`**
 
 Append:
 
@@ -2251,7 +2251,7 @@ verification:
   bounce_budget: 2
 ```
 
-- [ ] **Step 4: Extend `IngestConfig`**
+- [x] **Step 4: Extend `IngestConfig`**
 
 In `tools/ingest/src/langatlas_ingest/config.py`, add fields to the dataclass and parse them
 in `load` (using `.get` with the ratified defaults, so a config file predating this block
@@ -2276,7 +2276,7 @@ stays valid — the same posture the `goldens` block already takes):
             bounce_budget=int(verification.get("bounce_budget", 2)),
 ```
 
-- [ ] **Step 5: Write `tiering.py`**
+- [x] **Step 5: Write `tiering.py`**
 
 ```python
 import hashlib
@@ -2321,12 +2321,12 @@ def sampled_for_second_opinion(fact_id: str, source_id: str, locator: str, *,
     return int.from_bytes(digest[:4], "big") / _UINT32 < rate
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_tiering.py tests/test_config.py -v`
 Expected: PASS (10 new tests, plus the existing config tests still green)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/tiering.py \

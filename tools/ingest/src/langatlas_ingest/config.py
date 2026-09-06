@@ -37,6 +37,10 @@ class IngestConfig:
     golden_thresholds: Thresholds
     verifier_entry_point: str | None
     controversy_assessor_entry_point: str | None
+    verification_aliases: tuple[str, str, str]
+    second_opinion_rate: float
+    mandatory_second_opinion: bool
+    bounce_budget: int
 
     @classmethod
     def load(cls, path: Path | None = None, *, overrides: dict | None = None) -> "IngestConfig":
@@ -47,6 +51,7 @@ class IngestConfig:
         # valid file, not a crash — the defaults are the ratified §6.2 numbers anyway.
         goldens = raw.get("goldens") or {}
         golden_thresholds = goldens.get("thresholds") or {}
+        verification = raw.get("verification") or {}
         config = cls(
             chunk_target_tokens=int(chunking["target_tokens"]),
             chunk_max_tokens=int(chunking["max_tokens"]),
@@ -75,5 +80,12 @@ class IngestConfig:
             verifier_entry_point=goldens.get("verifier_entry_point"),
             controversy_assessor_entry_point=goldens.get(
                 "controversy_assessor_entry_point"),
+            verification_aliases=(verification.get("primary", "deepseek"),
+                                  verification.get("escalation", "deepseek-thinking"),
+                                  verification.get("second_opinion", "mini")),
+            second_opinion_rate=float(verification.get("second_opinion_rate", 0.10)),
+            mandatory_second_opinion=bool(
+                verification.get("mandatory_second_opinion", False)),
+            bounce_budget=int(verification.get("bounce_budget", 2)),
         )
         return replace(config, **overrides) if overrides else config
