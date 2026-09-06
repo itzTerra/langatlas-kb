@@ -53,10 +53,25 @@ def test_span_relevance_falls_back_to_source_matching_for_survey_entries():
 
 
 def test_span_relevance_uses_the_loaded_spans_for_chunk_entries():
-    relevant = make_span_relevance({"q": (Span("s", ("3", "3.1"), None, None),)})
+    relevant = make_span_relevance({"q": {"s#c1": Span("s", ("3", "3.1"), None, None)}})
     entry = {"id": "q", "expected_chunks": ["s#c1"]}
     assert relevant(entry, _chunk(section_path=("3", "3.1"))) is True
     assert relevant(entry, _chunk(section_path=("7",))) is False
+
+
+def test_span_relevance_scopes_to_the_ids_named_in_expected_chunks():
+    # Finding I5: `eval._score` asks about one expected id at a time by substituting a
+    # single-element `expected_chunks` — that must check only that id's span, not every
+    # span ever resolved for the entry's id, or distinct-coverage recall could not tell
+    # two different expected chunks apart.
+    relevant = make_span_relevance({"q": {"s#c1": Span("s", ("3",), None, None),
+                                          "s#c2": Span("s", ("9",), None, None)}})
+    full_entry = {"id": "q", "expected_chunks": ["s#c1", "s#c2"]}
+    only_c1 = {"id": "q", "expected_chunks": ["s#c1"]}
+    candidate = _chunk(section_path=("9",))    # overlaps s#c2's span only
+
+    assert relevant(full_entry, candidate) is True     # some declared id covers it
+    assert relevant(only_c1, candidate) is False       # but not the one named here
 
 
 def test_an_entry_with_no_resolvable_span_matches_nothing():
@@ -73,8 +88,8 @@ def test_load_expected_spans_resolves_against_the_production_corpus(searchable):
     # re-seeding, so the span rule is exercised against real stored rows.
     spans = load_expected_spans(searchable, [{"id": "q",
                                               "expected_chunks": ["s#c00000"]}])
-    assert spans["q"][0].source_id == "s"
-    assert spans["q"][0].page_start == 1
+    assert spans["q"]["s#c00000"].source_id == "s"
+    assert spans["q"]["s#c00000"].page_start == 1
 
 
 @pytest.mark.db

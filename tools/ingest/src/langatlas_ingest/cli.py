@@ -444,6 +444,16 @@ def _cmd_bench_verdict(args) -> int:
             print("\nThe model moved: the production corpus must be fully re-embedded"
                   " before this configuration is used.\n"
                   "  uv --directory tools/ingest run langatlas-sources embed")
+        if any(line.startswith("chunking.") for line in changed):
+            print("\nThe chunking moved: this is more destructive than a model move —"
+                  " every chunk id the golden set and the production index depend on"
+                  " changes. Before this configuration is used:\n"
+                  "  1. re-ingest the whole corpus (re-chunks every source):\n"
+                  "     uv --directory tools/ingest run langatlas-sources reingest\n"
+                  "  2. only then re-embed it:\n"
+                  "     uv --directory tools/ingest run langatlas-sources embed\n"
+                  "  3. re-derive every golden-set `expected_chunks` entry against the"
+                  " new chunking — the old chunk ids no longer exist.")
     return 0
 
 

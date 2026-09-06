@@ -3,11 +3,13 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Sequence
 from langatlas_ingest.benchmark.arms import Arm, Matrix
+from langatlas_ingest.benchmark.corpus import recorded_chunk_size
 from langatlas_ingest.benchmark.metrics import IndexStats, embed_and_measure
 from langatlas_ingest.benchmark.relevance import (
     load_expected_spans, make_span_relevance,
 )
 from langatlas_ingest.config import IngestConfig
+from langatlas_ingest.errors import BenchCorpusChunkSizeMismatch
 from langatlas_ingest.eval import load_entries, run_eval
 from langatlas_ingest.search import SourceSearch
 from langatlas_pipeline.providers.core import Budget, RunContext
@@ -81,7 +83,19 @@ def run_arm(conn, arm: Arm, *, matrix: Matrix, config: IngestConfig,
     One `RunContext` per arm: one transcript (D18), one budget, one alias pinning. The
     budget is generous but finite — an arm that somehow starts re-embedding the whole
     corpus should stop rather than spend the night doing it.
+
+    Checked before any of that: the bench database's *recorded* chunk size (whatever
+    `build_bench_corpus` actually chunked it at) must match this arm's declared one.
+    This is `run_arm`'s own defense-in-depth — it must hold on the primary-matrix path
+    too, not just behind the CLI's `--chunk-target`/`--chunk-max` guard for
+    `--chunk-size-for`, since a live run once scored an arm against a bench corpus
+    chunked at the wrong size and reported a number that looked like a model finding.
     """
+    recorded = recorded_chunk_size(conn, matrix.pilot_sources)
+    declared = (arm.chunk_target_tokens, arm.chunk_max_tokens)
+    if recorded is not None and recorded != declared:
+        raise BenchCorpusChunkSizeMismatch(arm.arm_id, declared=declared, recorded=recorded)
+
     entries = load_entries(matrix.golden_dir)
     relevance = None
     if span_relevance:

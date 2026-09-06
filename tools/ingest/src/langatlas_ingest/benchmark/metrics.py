@@ -18,6 +18,12 @@ class IndexStats:
     embed_seconds: float
     chunks_per_second: float | None
     tokens_per_second: float | None
+    # Only meaningful when `throughput_honest` is True — i.e. when every chunk in
+    # `chunks` was actually embedded fresh this round (`written == chunks`). An arm that
+    # embedded nothing (a prior arm already populated its embedding table) still reports
+    # `truncated_chunks=0`/`truncated_share=0%` for lack of anything else to report, but
+    # that 0% does NOT mean "this model doesn't truncate its content" — it means nothing
+    # was measured. Read it beside `throughput_honest`, never alone.
     truncated_chunks: int
     cached_vectors: int
     throughput_honest: bool
@@ -94,9 +100,10 @@ def embed_and_measure(ctx, conn, *, model: str, sources: Sequence[str],
     cached_before = ctx.embedding_cache_hits
 
     began = time.monotonic()
+    written = 0
     for source_id in sources:
-        embed_source(ctx, conn, source_id=source_id, config=arm_config,
-                     batch_size=batch_size, truncate=truncate)
+        written += embed_source(ctx, conn, source_id=source_id, config=arm_config,
+                                batch_size=batch_size, truncate=truncate)
     elapsed = time.monotonic() - began
 
     table = embedding_table_name(model)
@@ -105,6 +112,12 @@ def embed_and_measure(ctx, conn, *, model: str, sources: Sequence[str],
         chunks_per_second=None, tokens_per_second=None,
         truncated_chunks=ctx.embedding_truncations - truncated_before,
         cached_vectors=ctx.embedding_cache_hits - cached_before,
-        throughput_honest=True, table_bytes=table_bytes(conn, table),
+        # `written == chunks`: every chunk this arm claims to measure was actually sent
+        # to the provider this round. A prior arm sharing this model's embedding table
+        # (or the table pre-populated from production) leaves nothing pending —
+        # `embed_source` then does zero work and `cached_vectors` stays 0 (no embed call
+        # happened at all to register a hit), which the old `cached_vectors == 0` check
+        # alone could not tell apart from a genuinely honest fresh-embed run.
+        throughput_honest=written == chunks, table_bytes=table_bytes(conn, table),
         bytes_per_chunk=None,
         dimensions=ctx.config.embedding(model).dimensions))

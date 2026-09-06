@@ -34,6 +34,27 @@ uv --directory tools/ingest run langatlas-sources bench-run --chunk-size-for <mo
 
 `bench-run` is resumable: delete an arm's JSON (or pass `--force`) to re-measure it.
 
+### Indexing-throughput caveat on the committed arm results
+
+The `results/*.json` files committed here were generated before a post-merge fix to
+`throughput_honest` (Stage 2C final-review findings I2/I3): the flag now also requires
+that every chunk in the arm's corpus was embedded fresh during that arm's own run, not
+just that no cache hit occurred. Each model's `hybrid` and `hybrid-rerank` arms share
+their `vector` arm's embedding table (same model, same chunk size), so by the time those
+two arms ran there was nothing left pending — they embedded nothing and their
+`embed_seconds`/`chunks_per_second`/`truncated_chunks` numbers are artifacts of that,
+not a measurement. Under the old logic this showed as `throughput_honest: true` with an
+implausibly large `chunks_per_second`; the numbers themselves were not recomputed, so a
+result file that still shows that pattern should be read as "not honestly measured"
+regardless of what its own `throughput_honest` field says.
+
+In practice, only each model's first-populated arm gives a real indexing-cost number —
+typically `vector`, except `qwen3-embedding-4b`, whose embedding table was already
+populated from production ingestion before this benchmark ran, so none of its arms
+(including `vector`) measure a genuine cold embed. This caveat is about indexing-cost
+and truncation numbers only: the verdict's actual model/mode/reranker/chunking choice,
+which is driven by the retrieval metrics (recall/MRR/nDCG), is unaffected.
+
 Recall figures come from a four-source pilot. They are comparative between arms, not
 predictions of production recall — the distractor pool is a quarter of production's.
 

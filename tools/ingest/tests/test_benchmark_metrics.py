@@ -76,3 +76,32 @@ def test_embed_and_measure_reads_the_counters_off_the_context(searchable, fake_c
     assert stats.table_bytes > 0
     assert stats.truncated_chunks == 0     # nothing changed *during* the pass
     assert stats.dimensions == 4
+
+
+@pytest.mark.db
+def test_throughput_is_dishonest_when_a_prior_arm_already_embedded_everything(
+        searchable, fake_ctx):
+    # Finding I2/I3: the `searchable` fixture already ran `embed_source` once for
+    # `config.embedding_model` (see conftest), so re-running `embed_and_measure` for
+    # that SAME model against the same corpus finds nothing pending — `embed_source`
+    # does zero work, `cached_vectors` stays 0 (no embed call happened at all to record
+    # a cache hit), and the old logic reported `honest=True` despite having embedded
+    # nothing this round.
+    from langatlas_ingest.benchmark.metrics import embed_and_measure
+    from langatlas_ingest.config import IngestConfig
+
+    config = IngestConfig.load()
+
+    # A model nothing has embedded yet: every chunk in the corpus is embedded fresh.
+    fresh = embed_and_measure(fake_ctx, searchable, model="brand-new-model",
+                              sources=["s"], config=config)
+    assert fresh.chunks > 0
+    assert fresh.throughput_honest is True
+
+    # The corpus's default model was already fully embedded by the `searchable` fixture
+    # before this test ran — this arm's `embed_source` call finds nothing pending.
+    stale = embed_and_measure(fake_ctx, searchable, model=config.embedding_model,
+                              sources=["s"], config=config)
+    assert stale.chunks > 0
+    assert stale.cached_vectors == 0           # no embed call happened at all
+    assert stale.throughput_honest is False    # yet zero fresh embedding was done

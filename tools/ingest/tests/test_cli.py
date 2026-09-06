@@ -171,3 +171,65 @@ def test_bench_subcommands_are_registered():
 
     actions = build_parser()._subparsers._group_actions[0].choices
     assert {"bench-pilot", "bench-build", "bench-run", "bench-verdict"} <= set(actions)
+
+
+def _stub_bench_verdict(monkeypatch, *, changed: list[str], model: str,
+                        incumbent: str = "incumbent-model"):
+    """Stubs every collaborator `_cmd_bench_verdict` local-imports, so the CLI's own
+    warning logic can be exercised without a real matrix, database, or provider config."""
+    from pathlib import Path
+    from langatlas_ingest.benchmark import arms as arms_mod
+    from langatlas_ingest.benchmark import report as report_mod
+    from langatlas_ingest.benchmark import runner as runner_mod
+    from langatlas_ingest.benchmark import verdict as verdict_mod
+
+    matrix = type("StubMatrix", (), {"incumbent": incumbent, "results_dir": Path(".")})()
+    verdict = type("StubVerdict", (), {"model": model,
+                                       "to_markdown": lambda self: "# verdict"})()
+    monkeypatch.setattr(arms_mod, "load_matrix", lambda: matrix)
+    monkeypatch.setattr(runner_mod, "load_results", lambda root: {})
+    monkeypatch.setattr(verdict_mod, "decide", lambda results, matrix: verdict)
+    monkeypatch.setattr(report_mod, "write_verdict",
+                        lambda *a, **k: (Path("verdict.json"), Path("verdict.md")))
+    monkeypatch.setattr(report_mod, "pin_config", lambda *a, **k: changed)
+
+
+def test_bench_verdict_warns_on_a_chunking_only_move_but_not_a_model_move(
+        monkeypatch, capsys):
+    from langatlas_ingest.cli import main
+
+    _stub_bench_verdict(monkeypatch, changed=["chunking.target_tokens: 600 -> 400",
+                                              "chunking.max_tokens: 800 -> 600"],
+                        model="incumbent-model", incumbent="incumbent-model")
+    assert main(["bench-verdict", "--write"]) == 0
+    out = capsys.readouterr().out
+    assert "re-ingest" in out.lower()
+    assert "reingest" in out
+    assert "expected_chunks" in out
+    assert "The model moved" not in out
+
+
+def test_bench_verdict_warns_on_a_model_move_but_not_a_chunking_only_move(
+        monkeypatch, capsys):
+    from langatlas_ingest.cli import main
+
+    _stub_bench_verdict(monkeypatch, changed=["models.embedding: 'old-model' -> 'new-model'"],
+                        model="new-model", incumbent="old-model")
+    assert main(["bench-verdict", "--write"]) == 0
+    out = capsys.readouterr().out
+    assert "The model moved" in out
+    assert "re-ingest" not in out.lower()
+
+
+def test_bench_verdict_warns_on_both_when_model_and_chunking_move_together(
+        monkeypatch, capsys):
+    from langatlas_ingest.cli import main
+
+    _stub_bench_verdict(monkeypatch,
+                        changed=["models.embedding: 'old-model' -> 'new-model'",
+                                "chunking.target_tokens: 600 -> 400"],
+                        model="new-model", incumbent="old-model")
+    assert main(["bench-verdict", "--write"]) == 0
+    out = capsys.readouterr().out
+    assert "The model moved" in out
+    assert "re-ingest" in out.lower()

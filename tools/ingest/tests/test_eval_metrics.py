@@ -140,6 +140,30 @@ def test_an_entry_with_both_expectation_keys_is_rejected():
     assert recalls[5] == 1.0 and ndcg > 1.0      # nDCG is the bug the rejection prevents
 
 
+def test_recall_counts_distinct_expected_chunks_not_redundant_hits():
+    """Finding I5: 3 retrieved hits all satisfy the relevance predicate against the SAME
+    single expected chunk ("A") and none cover the other ("B") — exactly what
+    `benchmark/relevance.py`'s span-overlap predicate can produce when several
+    re-chunked candidates all cover one golden span. The old formula counted `found` as
+    the number of *relevant hits* (3, one per hit), then capped at the denominator:
+    `min(1.0, 3 / 2)` == 1.0 — a coincidentally-bounded but wrong answer that hides the
+    fact only 1 of 2 declared chunks was ever found. The fix counts *distinct* expected
+    chunks covered (1), giving 0.5 — a genuinely different, distinguishable number."""
+    entry = {"id": "q", "expected_chunks": ["A", "B"]}
+    hits = [_hit("r1"), _hit("r2"), _hit("r3")]
+
+    def relevant(entry, chunk):
+        # Stands in for a span-overlap predicate that always resolves these three
+        # retrieved chunks to the same expected span ("A"), never "B" — the sub-entry
+        # probing `_score` does per expected id is what lets this stub express that.
+        return chunk.chunk_id in {"r1", "r2", "r3"} and "A" in (entry.get("expected_chunks") or [])
+
+    recalls, _, _, _ = _score(entry, hits, relevant=relevant)
+
+    assert recalls[5] == 0.5
+    assert recalls[5] != 1.0     # the old hit-counting bug's answer
+
+
 def test_an_entry_with_either_expectation_key_validates_cleanly():
     _validate({"id": "ok1", "expected_chunks": ["A"]})
     _validate({"id": "ok2", "expected_sources": ["s"]})

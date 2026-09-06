@@ -4,6 +4,7 @@ from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import migrate
 from langatlas_ingest.pipeline import ingest_source
 from langatlas_ingest.snapshot import SnapshotStore
+from langatlas_ingest.store import SourceChunksStore
 
 # §8.6's arms re-chunk the corpus at 400 and 800 tokens. Doing that in the production
 # database would rewrite every chunk id the 2B golden sets cite — the single most
@@ -62,6 +63,30 @@ def build_bench_corpus(conn, *, sources: Sequence[str], config: IngestConfig,
         result = ingest_source(source_id, conn=conn, config=config, snapshots=snapshots)
         counts[source_id] = result.chunk_count
     return counts
+
+
+def recorded_chunk_size(conn, sources: Sequence[str]) -> tuple[int, int] | None:
+    """The `(target_tokens, max_tokens)` `build_bench_corpus` actually chunked this
+    bench database's sources at, read back off `source_ingestions.chunking` — the same
+    per-source ledger `ingest_source` already writes via `chunking_fingerprint`. No new
+    table: `build_bench_corpus` calls `ingest_source` for every pilot source, so the
+    value is already sitting there once the corpus exists.
+
+    `run_arm`'s defense-in-depth guard uses this rather than trusting the caller's
+    intent: a bench database chunked at one size but scored as if it were another is
+    exactly the mistake a live run once made through the CLI.
+
+    `None` when nothing is recorded yet (the bench corpus was never built) — the guard
+    that reads this treats "unknown" as "cannot verify", not as a mismatch.
+    """
+    for source_id in sources:
+        recorded = SourceChunksStore(conn).ingestion(source_id)
+        if recorded is None:
+            continue
+        chunking = recorded.get("chunking") or {}
+        if "target_tokens" in chunking and "max_tokens" in chunking:
+            return int(chunking["target_tokens"]), int(chunking["max_tokens"])
+    return None
 
 
 def chunk_ids(conn, source_id: str) -> list[str]:

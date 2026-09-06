@@ -91,6 +91,26 @@ class BenchCorpusMismatch(IngestError):
         self.differences = list(differences)
 
 
+class BenchCorpusChunkSizeMismatch(IngestError):
+    """`run_arm` was asked to score an arm against a bench corpus chunked at a
+    different size than the arm itself declares. A live run once let exactly this
+    happen through the CLI (fixed there with a `--chunk-target`/`--chunk-max` guard),
+    but `run_arm` is the primary-matrix path too, and scoring a chunk-size mismatch
+    reports a uniform garbage number that reads as a model finding rather than a setup
+    mistake. Raised eagerly, before any embedding work starts, rather than left for a
+    human to notice in a table of implausible numbers."""
+
+    def __init__(self, arm_id: str, *, declared: tuple[int, int], recorded: tuple[int, int]):
+        super().__init__(
+            f"arm {arm_id!r} declares chunk size {declared[0]}/{declared[1]} but the"
+            f" bench corpus was built at {recorded[0]}/{recorded[1]} — rebuild it at the"
+            " arm's chunk size (bench-build --chunk-target/--chunk-max) before scoring"
+            " this arm")
+        self.arm_id = arm_id
+        self.declared = declared
+        self.recorded = recorded
+
+
 class IncompleteMatrix(IngestError):
     """§8.6's decision rules were asked to conclude from a matrix with a hole in it.
     Raised rather than deciding on what is present: a rule comparing an arm against an

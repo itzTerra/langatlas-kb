@@ -160,8 +160,9 @@ _UNBOUNDED_WINDOW = 10 ** 9
 class EmbeddingProbe:
     """What one embedding model answered. `dimensions` is *measured* from the returned
     vector — the one fact a call can establish for free. `max_input_tokens` is never
-    guessed: the gateway's model-info route, else the existing recorded entry, else
-    None, which `apply_embedding_probe` refuses to write."""
+    guessed: it is read from the existing recorded entry in
+    `config/provider_capabilities.yaml` if one is already there, else it is `None`,
+    which `apply_embedding_probe` refuses to write."""
 
     model: str
     dimensions: int | None

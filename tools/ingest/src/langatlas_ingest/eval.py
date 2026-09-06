@@ -132,9 +132,22 @@ def _score(entry: dict, hits: list, *, relevant=_relevant
     axis can score a re-chunked corpus, where the golden set's chunk ids do not exist by
     construction, against document spans instead (see `benchmark/relevance.py`). The
     default is chunk-id/source-id equality — exactly what it always was.
+
+    For `expected_chunks`, recall's numerator is the number of *distinct* expected
+    chunks covered by at least one hit, not the number of relevant hits — under the
+    span-overlap relevance the chunk-size axis injects, several differently-chunked
+    retrieved candidates can all overlap the same one golden span, and counting each as
+    a separate "found" would inflate recall past what distinct coverage actually shows
+    (it would still happen to land <= 1.0 for the common single-expected-chunk case,
+    which is why this was invisible until an entry declares more than one). Coverage per
+    expected id is checked by re-asking `relevant` with that one id substituted in for
+    the entry's `expected_chunks` — the default equality predicate already keys off
+    exactly that field, and `make_span_relevance` resolves spans by chunk id for the
+    same reason.
     """
     flags = [relevant(entry, hit.chunk) for hit in hits]
     expected_chunks = entry.get("expected_chunks")
+    expected_ids = list(dict.fromkeys(expected_chunks)) if expected_chunks else []
     recalls: dict[int, float] = {}
 
     for cutoff in _RECALL_CUTOFFS:
@@ -142,8 +155,12 @@ def _score(entry: dict, hits: list, *, relevant=_relevant
             # Not measured at a depth the run never retrieved to.
             continue
         if expected_chunks:
-            found = sum(1 for flag in flags[:cutoff] if flag)
-            recalls[cutoff] = min(1.0, found / len(set(expected_chunks)))
+            window = hits[:cutoff]
+            covered = sum(
+                1 for expected_id in expected_ids
+                if any(relevant({**entry, "expected_chunks": [expected_id]}, hit.chunk)
+                      for hit in window))
+            recalls[cutoff] = min(1.0, covered / len(expected_ids))
         else:
             recalls[cutoff] = 1.0 if any(flags[:cutoff]) else 0.0
 
