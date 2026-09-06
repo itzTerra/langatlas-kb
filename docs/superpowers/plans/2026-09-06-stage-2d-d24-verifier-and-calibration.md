@@ -1327,7 +1327,7 @@ git commit -m "feat(#stage-2d): add the stage-1 evidence resolution ladder"
   - `since_token_present(since, text) -> bool`
   - `quote_within_cap(quote) -> bool`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_quotes.py`:
 
@@ -1426,12 +1426,12 @@ def test_the_quote_cap_is_d14s_fifty_words():
     assert quote_within_cap(None) is True
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_quotes.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.quotes'`
 
-- [ ] **Step 3: Write `quotes.py`**
+- [x] **Step 3: Write `quotes.py`**
 
 ```python
 import re
@@ -1560,7 +1560,7 @@ def quote_within_cap(quote: str | None) -> bool:
     return quote is None or len(quote.split()) <= MAX_QUOTE_WORDS
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_quotes.py -v`
 Expected: PASS (13 tests)
@@ -1569,7 +1569,7 @@ If `test_light_ocr_noise_lands_in_the_adjudication_band` lands outside the band,
 **test's** corrupted string (add or remove one garbled token) rather than the thresholds —
 0.90/0.80 are ratified numbers.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/quotes.py \
