@@ -1042,7 +1042,7 @@ git commit -m "feat(#stage-2d): add the verifier's stage-0 referential checks"
   - `resolve_evidence(conn, ctx, *, source_id, locator, claim_text, config, index=None,
     search=None) -> Evidence`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_evidence.py`. The DB-backed cases reuse the existing
 `searchable` fixture family in `tools/ingest/tests/conftest.py`; the ladder logic itself is
@@ -1192,12 +1192,12 @@ def test_resolution_against_the_real_index(searchable, fake_ctx):
 > `fake_ctx`, and **returns the connection**. `fake_ctx` is a separate fixture in the same
 > file. Read both before writing the DB test.
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_evidence.py -v -m "not db"`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.evidence'`
 
-- [ ] **Step 3: Write `evidence.py`**
+- [x] **Step 3: Write `evidence.py`**
 
 ```python
 from dataclasses import dataclass
@@ -1288,7 +1288,7 @@ def resolve_evidence(conn, ctx, *, source_id: str, locator: str, claim_text: str
                     resolution=resolution, expanded=expanded)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_evidence.py -v -m "not db"`
 Expected: PASS (7 tests)
@@ -1297,7 +1297,7 @@ Then, with the compose Postgres up (`docker compose up -d db`):
 Run: `cd tools/ingest && uv run pytest tests/test_verify_evidence.py -v -m db`
 Expected: PASS (1 test)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/evidence.py \
