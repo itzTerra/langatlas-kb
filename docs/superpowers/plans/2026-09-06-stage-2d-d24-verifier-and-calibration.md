@@ -2354,7 +2354,7 @@ git commit -m "feat(#stage-2d): add the verifier's model ladder and second-opini
   - `AbsenceResult(verdict, out, grep_chunk_ids, model)` — frozen dataclass
   - `run_absence(ctx, conn, *, claim, citation, evidence, alias, store=None) -> AbsenceResult`
 
-- [ ] **Step 1: Write the prompt file**
+- [x] **Step 1: Write the prompt file**
 
 Create `prompts/verify-absence/v-PLACEHOLDER.md`:
 
@@ -2405,7 +2405,7 @@ Passages:
 {{evidence}}
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_absence.py`:
 
@@ -2539,12 +2539,12 @@ def test_the_aliases_reach_the_prompt():
     assert "parametric polymorphism" in rendered
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_absence.py -v -m "not db"`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.absence'`
 
-- [ ] **Step 4: Write `absence.py`**
+- [x] **Step 4: Write `absence.py`**
 
 ```python
 import re
@@ -2643,7 +2643,7 @@ def run_absence(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
                          model=completion.resolved_model)
 ```
 
-- [ ] **Step 5: Register the prompt version**
+- [x] **Step 5: Register the prompt version**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
@@ -2655,14 +2655,14 @@ printf '# verify-absence — prompt versions\n\n- v1 — %s — 2026-09-06 — D
   "$HASH" > prompts/verify-absence/CHANGELOG.md
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_absence.py -v -m "not db"`
 Expected: PASS (5 tests)
 Run (with Postgres up): `cd tools/ingest && uv run pytest tests/test_verify_absence.py -v -m db`
 Expected: PASS (2 tests)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add prompts/verify-absence tools/ingest/src/langatlas_ingest/verify/absence.py \
