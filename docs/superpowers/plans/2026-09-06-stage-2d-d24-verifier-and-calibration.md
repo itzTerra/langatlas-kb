@@ -2686,7 +2686,7 @@ git commit -m "feat(#stage-2d): add D49's completeness check for absence claims"
     `.all_for(fact_id)`, `.verdicts_in_run(run_id)`, `.close()`, context-manager support
   - `LEDGER_SCHEMA_VERSION = 1`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_ledger.py`:
 
@@ -2761,12 +2761,12 @@ def test_the_ledger_lives_in_the_private_tier_by_default():
     assert VERDICT_LEDGER_PATH.parent == PRIVATE_DIR
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_ledger.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.ledger'`
 
-- [ ] **Step 3: Write `ledger.py`**
+- [x] **Step 3: Write `ledger.py`**
 
 ```python
 import json
@@ -2879,12 +2879,12 @@ def _from_row(row: sqlite3.Row) -> PairVerdict:
         hint=row["hint"], detail=row["detail"])
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_ledger.py -v`
 Expected: PASS (7 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/ledger.py \
