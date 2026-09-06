@@ -1596,7 +1596,7 @@ git commit -m "feat(#stage-2d): add the stage-2 quote fast path and since preche
     and `reason: str`
   - `adjudicate_quote(ctx, *, quote, evidence_text, source_id, alias) -> QuoteAdjudication`
 
-- [ ] **Step 1: Write the prompt file**
+- [x] **Step 1: Write the prompt file**
 
 Create `prompts/verify-quote-adjudication/v-PLACEHOLDER.md` (the real filename comes from
 Step 3):
@@ -1631,7 +1631,7 @@ Cited passage:
 {{evidence}}
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_adjudication.py`:
 
@@ -1709,7 +1709,7 @@ def test_sampling_is_temperature_zero():
     assert ctx.sampling.temperature == 0.0
 ```
 
-- [ ] **Step 3: Register the prompt version**
+- [x] **Step 3: Register the prompt version**
 
 The prompt registry is content-addressed. Compute the version and rename:
 
@@ -1726,12 +1726,12 @@ printf '# verify-quote-adjudication — prompt versions\n\n- v1 — %s — 2026-
 
 Verify: `uv --directory tools/pipeline run python -c "from langatlas_pipeline.prompts import load_prompt; print(load_prompt('verify-quote-adjudication').ref())"`
 
-- [ ] **Step 4: Run the test to verify it fails**
+- [x] **Step 4: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_adjudication.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.adjudication'`
 
-- [ ] **Step 5: Write `adjudication.py`**
+- [x] **Step 5: Write `adjudication.py`**
 
 ```python
 from typing import Literal
@@ -1774,12 +1774,12 @@ def adjudicate_quote(ctx, *, quote: str, evidence_text: str, source_id: str,
 > `tools/pipeline/src/langatlas_pipeline/providers/completion.py` before writing this — if
 > the dataclass names the field something other than `temperature`, match it.
 
-- [ ] **Step 6: Run the test to verify it passes**
+- [x] **Step 6: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_adjudication.py -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add prompts/verify-quote-adjudication \
