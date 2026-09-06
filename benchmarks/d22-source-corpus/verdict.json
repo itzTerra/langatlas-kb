@@ -1,0 +1,25 @@
+{
+  "chunk_max_tokens": 550,
+  "chunk_target_tokens": 400,
+  "dimensions": 2560,
+  "incumbent": "qwen3-embedding-4b",
+  "index_type": "hnsw-halfvec-cosine",
+  "mode": "hybrid",
+  "model": "qwen3-embedding-4b",
+  "moved": true,
+  "pilot_sources": [
+    "rust-fls",
+    "rust-reference",
+    "scott-plp",
+    "sebesta-copl"
+  ],
+  "queries_scored": 37,
+  "rationale": [
+    "incumbent qwen3-embedding-4b stays at 67.6 pts Recall@5; best challenger nomic-embed-text-v1.5 reached 62.2, short of the 5-point bar, and no local model came within 2",
+    "reranker adds +11.6 pts nDCG@10 on qwen3-embedding-4b \u2014 stays default-on",
+    "hybrid adds +13.5 pts Recall@5 over vector-only on qwen3-embedding-4b \u2014 stays hybrid",
+    "chunking at 400 tokens gained +2.7 pts Recall@5, clearing the 2-point bar"
+  ],
+  "rerank": true,
+  "table": "source-corpus"
+}

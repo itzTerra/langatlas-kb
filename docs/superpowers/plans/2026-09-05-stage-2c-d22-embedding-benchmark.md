@@ -4870,7 +4870,7 @@ moved — the production corpus being re-embedded.
 - Create: `benchmarks/d22-source-corpus/verdict.json`, `benchmarks/d22-source-corpus/verdict.md`
 - Modify: `config/ingest.yaml`
 
-- [ ] **Step 1: Produce the verdict record**
+- [x] **Step 1: Produce the verdict record**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-verdict
@@ -4878,7 +4878,7 @@ uv --directory tools/ingest run langatlas-sources bench-verdict
 
 Expected: the verdict markdown, the full 20-arm table, and both files written.
 
-- [ ] **Step 2: Developer checkpoint — adopt the verdict**
+- [x] **Step 2: Developer checkpoint — adopt the verdict**
 
 Read `benchmarks/d22-source-corpus/verdict.md` with the developer. The rules are mechanical; the
 adoption is not. Points to raise explicitly:
@@ -4896,7 +4896,7 @@ the verdict, the disagreement is with a rule in §8.6 — amend the spec and the
 `config/benchmark/d22-source-corpus.yaml`, then re-run `bench-verdict`. Never hand-edit
 `verdict.json`.
 
-- [ ] **Step 3: Pin the configuration**
+- [x] **Step 3: Pin the configuration**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources bench-verdict --write
@@ -4907,7 +4907,7 @@ Expected: either `config/ingest.yaml already matches the verdict` (the incumbent
 axis) or a listed set of changes. The command refuses to write if the verdict's dimension
 disagrees with `config/provider_capabilities.yaml`.
 
-- [ ] **Step 4: Re-embed the production corpus if the model moved (developer checkpoint)**
+- [x] **Step 4: Re-embed the production corpus if the model moved (developer checkpoint)**
 
 Only when Step 3 changed `models.embedding`:
 
@@ -4934,7 +4934,7 @@ run `langatlas-sources golden-validate --resolve` and expect failures, then re-r
 ids. Raise this with the developer as a scope consequence *before* running `reingest` — it is
 2B rework, and the 2-point margin exists precisely so it is not incurred lightly.
 
-- [ ] **Step 5: Verify the pinned stack answers the golden set**
+- [x] **Step 5: Verify the pinned stack answers the golden set**
 
 ```bash
 uv --directory tools/ingest run langatlas-sources eval --depth 50
@@ -4945,7 +4945,7 @@ if the model moved, unchanged if it did not). This is the check that the *produc
 not the bench one — retrieves correctly under the pinned configuration. 2D's stage-1
 retrieval-rescue ladder and Stage 3's `search_sources` both run against exactly this.
 
-- [ ] **Step 6: Commit the verdict and the pin**
+- [x] **Step 6: Commit the verdict and the pin**
 
 ```bash
 git add benchmarks/d22-source-corpus/verdict.json \
