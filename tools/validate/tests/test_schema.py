@@ -6,6 +6,7 @@ def test_record_kinds_complete():
     assert set(RECORD_KINDS) == {
         "feature", "feature-instance", "edge", "affects-quality-edge",
         "rule", "language", "language-registry", "concept", "source",
+        "contradiction",
     }
 
 

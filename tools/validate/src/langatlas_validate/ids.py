@@ -1,7 +1,9 @@
+import hashlib
 import re
 
 SLUG_RE = re.compile(r"^[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$")
 MAX_SLUG_LEN = 48
+CONTRADICTION_KEY_HEX_LEN = 12
 
 
 def is_valid_slug(s: str) -> bool:
@@ -36,3 +38,20 @@ def canonical_endpoints(a: str, b: str) -> tuple[str, str]:
 
 def canonical_when_all(feature_ids: list[str]) -> list[str]:
     return sorted(_require_slug(f) for f in feature_ids)
+
+
+def contradiction_key(participants: list[str]) -> str:
+    """D45's content-keyed contradiction id: `ctr-<12 hex of SHA-256>` over the sorted
+    participant ids.
+
+    Sorted and content-keyed so two processes discovering the same conflict from opposite
+    directions mint the same id and dedup automatically, rather than racing to create two
+    records for one disagreement.
+
+    @param participants: the ids/locators in conflict (facts, citations, ...); order is
+        irrelevant since the key sorts them first.
+    @returns: a string of the form `ctr-<12 lowercase hex chars>`.
+    """
+    body = "\n".join(sorted(participants))
+    digest = hashlib.sha256(body.encode("utf-8")).hexdigest()
+    return f"ctr-{digest[:CONTRADICTION_KEY_HEX_LEN]}"

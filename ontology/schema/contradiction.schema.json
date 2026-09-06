@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/contradiction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "type", "participants", "status", "mechanism", "minted"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^ctr-[0-9a-f]{12}$"},
+    "type": {"enum": ["verification", "cross-fact"]},
+    "participants": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"type": "string"}
+    },
+    "status": {"enum": ["open", "dissolved", "resolved", "confirmed-open"]},
+    "mechanism": {
+      "enum": ["verifier", "reconciler", "challenge-resolution", "contradiction-scan"]
+    },
+    "minted": {"type": "string"},
+    "closed": {"type": ["string", "null"]},
+    "closure": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "method": {"enum": ["since-qualification", "status-qualification",
+                            "tombstone-cross-reference", "human-adjudication"]},
+        "detail": {"type": "string"}
+      }
+    },
+    "chat_run_id": {"type": ["string", "null"]},
+    "detail": {"type": "string"}
+  }
+}

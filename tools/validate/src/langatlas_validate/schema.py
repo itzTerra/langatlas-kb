@@ -9,6 +9,7 @@ from langatlas_validate.paths import SCHEMA_DIR as _SCHEMA_DIR
 RECORD_KINDS = (
     "feature", "feature-instance", "edge", "affects-quality-edge",
     "rule", "language", "language-registry", "concept", "source",
+    "contradiction",
 )
 
 

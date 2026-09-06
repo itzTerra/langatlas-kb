@@ -14,12 +14,12 @@ def test_version_flag(capsys):
 
 def test_version_string():
     import langatlas_validate
-    assert langatlas_validate.__version__ == "0.1.0"
+    assert langatlas_validate.__version__ == "0.2.0"
 
 
 def test_version_file_matches_package():
     version_file = (REPO_ROOT / "ontology" / "VERSION").read_text().strip()
-    assert version_file == "0.1.0"
+    assert version_file == "0.2.0"
 
 
 class pytest_raises_systemexit:

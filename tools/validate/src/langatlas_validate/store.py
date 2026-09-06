@@ -4,7 +4,7 @@ from typing import Iterator
 from ruamel.yaml import YAML
 
 from langatlas_validate.claims import TEMPLATED_KINDS, validate_claim_template
-from langatlas_validate.ids import canonical_endpoints, canonical_when_all
+from langatlas_validate.ids import canonical_endpoints, canonical_when_all, contradiction_key
 from langatlas_validate.normalize import normalize_record
 from langatlas_validate.schema import validate_record
 
@@ -75,6 +75,40 @@ def _load(path: Path, kind: str) -> Iterator[tuple[Path, str, str, dict]]:
     yield path, kind, text, data
 
 
+def validate_contradictions(repo_root: Path) -> list[str]:
+    """D45's register is a root-level content-keyed ledger, not a walked record file, so
+    it needs its own gate: schema validity, the id-is-the-content-key invariant, and no
+    duplicate ids.
+
+    A missing file is valid — a repo that has never minted a contradiction is a normal
+    repo, and `contradictions: []` is the committed empty state.
+
+    @param repo_root: the canonical store's root directory.
+    @returns: error strings, one per violation found, each prefixed
+        `contradictions.yaml[<id>]:`.
+    """
+    path = repo_root / "contradictions.yaml"
+    if not path.exists():
+        return []
+    data = _yaml.load(path.read_text()) or {}
+    records = data.get("contradictions") or []
+    errors: list[str] = []
+    seen: set[str] = set()
+    for record in records:
+        record_id = record.get("id", "<no id>")
+        errors.extend(f"contradictions.yaml[{record_id}]: {e}"
+                      for e in validate_record(record, "contradiction"))
+        participants = record.get("participants") or []
+        if participants and record_id != contradiction_key(participants):
+            errors.append(f"contradictions.yaml[{record_id}]: id is not the content key"
+                          f" of its participants (expected"
+                          f" {contradiction_key(participants)})")
+        if record_id in seen:
+            errors.append(f"contradictions.yaml[{record_id}]: duplicate id")
+        seen.add(record_id)
+    return errors
+
+
 def validate_store(repo_root: Path) -> list[str]:
     """CI's store-validating gate (D13): schema validity + normalization drift for
     every live record, the claim-template registry's own self-check, and D64's
@@ -83,6 +117,8 @@ def validate_store(repo_root: Path) -> list[str]:
 
     for kind in TEMPLATED_KINDS:
         errors.extend(f"claim-templates/{kind}: {e}" for e in validate_claim_template(kind))
+
+    errors.extend(validate_contradictions(repo_root))
 
     for path, kind, text, data in iter_store_records(repo_root):
         rel = path

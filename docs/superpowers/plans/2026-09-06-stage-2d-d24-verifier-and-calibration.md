@@ -2914,7 +2914,7 @@ git commit -m "feat(#stage-2d): add the private verdict ledger"
   - `validate_contradictions(repo_root) -> list[str]` in `langatlas_validate.store`,
     called from `validate_store`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/validate/tests/test_contradictions.py`:
 
@@ -3002,12 +3002,12 @@ def test_a_missing_file_is_not_an_error(tmp_path):
     assert validate_contradictions(tmp_path) == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/validate && uv run pytest tests/test_contradictions.py -v`
 Expected: FAIL — `ImportError: cannot import name 'contradiction_key'`
 
-- [ ] **Step 3: Write the schema**
+- [x] **Step 3: Write the schema**
 
 Create `ontology/schema/contradiction.schema.json`:
 
@@ -3047,7 +3047,7 @@ Create `ontology/schema/contradiction.schema.json`:
 }
 ```
 
-- [ ] **Step 4: Add `contradiction_key` to `ids.py`**
+- [x] **Step 4: Add `contradiction_key` to `ids.py`**
 
 ```python
 import hashlib
@@ -3064,7 +3064,7 @@ def contradiction_key(participants) -> str:
     return "ctr-" + hashlib.sha256(body.encode("utf-8")).hexdigest()[:12]
 ```
 
-- [ ] **Step 5: Register the record kind and the ledger validator**
+- [x] **Step 5: Register the record kind and the ledger validator**
 
 In `tools/validate/src/langatlas_validate/schema.py`, add `"contradiction"` to
 `RECORD_KINDS`.
@@ -3107,13 +3107,13 @@ Import `contradiction_key` at the top of `store.py`, and call the new function f
     errors.extend(validate_contradictions(repo_root))
 ```
 
-- [ ] **Step 6: Bump the ontology version**
+- [x] **Step 6: Bump the ontology version**
 
 A new record kind is additive: bump the MINOR component in `ontology/VERSION` (0.1.0 →
 0.2.0) and add the corresponding casebook/migration note if `ontology/` carries one — check
 `ontology/` for an existing changelog convention and follow it.
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `cd tools/validate && uv run pytest tests/test_contradictions.py -v`
 Expected: PASS (12 tests)
@@ -3121,7 +3121,7 @@ Run: `cd tools/validate && uv run pytest -q && uv run langatlas-validate ci`
 Expected: the full suite green, and `ci` still exits 0 against the committed
 `contradictions: []`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add ontology/schema/contradiction.schema.json ontology/VERSION \
