@@ -884,7 +884,7 @@ git commit -m "feat(#stage-2d): derive confidence from source tier and CSL indep
 - Produces: `Stage0Result(ok, verdict, detail, locator_kind)`,
   `run_stage0(claim, citation, source_facts) -> Stage0Result`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_stage0.py`:
 
@@ -949,12 +949,12 @@ def test_registry_existence_still_requires_the_source_to_exist():
     assert got.verdict == "source-unavailable"
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_stage0.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.stage0'`
 
-- [ ] **Step 3: Write `stage0.py`**
+- [x] **Step 3: Write `stage0.py`**
 
 ```python
 from dataclasses import dataclass
@@ -1010,12 +1010,12 @@ def run_stage0(claim: ClaimInput, citation: CitationInput,
     return Stage0Result(True, locator_kind=kind)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_stage0.py -v`
 Expected: PASS (7 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/stage0.py \
