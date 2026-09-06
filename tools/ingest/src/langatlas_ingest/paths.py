@@ -30,3 +30,16 @@ GOLDEN_DEBATES_DIR = REPO_ROOT / "tests" / "golden" / "debates"
 # not.
 BENCHMARK_CONFIG_PATH = REPO_ROOT / "config" / "benchmark" / "d22-source-corpus.yaml"
 BENCHMARK_DIR = REPO_ROOT / "benchmarks" / "d22-source-corpus"
+
+# D23: verdicts are build-side and private — never written into authored YAML. The ledger
+# sits beside 1B's call cache and cost log so one tarball backs up the whole private tier.
+VERDICT_LEDGER_PATH = Path(os.environ.get("LANGATLAS_VERDICT_LEDGER",
+                                          PRIVATE_DIR / "verdicts.sqlite"))
+# D45's root-level content-keyed register. In git: it is canonical, not derived.
+CONTRADICTIONS_PATH = REPO_ROOT / "contradictions.yaml"
+# Section 6.2's per-batch known-bad canaries: golden item ids that must never come back
+# admitting. A pass halts the batch.
+GOLDEN_CANARIES_PATH = GOLDEN_VERIFIER_DIR / "canaries.yaml"
+# The published calibration record — the measured error rates are an honesty feature
+# (Section 6.2), so they live in git next to the D22 benchmark's verdict record.
+VERIFIER_CALIBRATION_DIR = REPO_ROOT / "benchmarks" / "d24-verifier"
