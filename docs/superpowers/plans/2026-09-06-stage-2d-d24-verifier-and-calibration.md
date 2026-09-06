@@ -1811,7 +1811,7 @@ git commit -m "feat(#stage-2d): adjudicate near-miss quotes between OCR noise an
   - `run_entailment(ctx, *, payload, evidence_text, source_id, alias) -> tuple[EntailmentOut, str]`
     (the second element is the resolved model id)
 
-- [ ] **Step 1: Write the prompt file**
+- [x] **Step 1: Write the prompt file**
 
 Create `prompts/verify-entailment/v-PLACEHOLDER.md`:
 
@@ -1867,7 +1867,7 @@ Passage:
 {{evidence}}
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_entailment.py`:
 
@@ -2001,12 +2001,12 @@ def test_the_evidence_is_delimited_and_stays_out_of_the_system_role():
             assert not is_delimited(message["content"])
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_entailment.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.entailment'`
 
-- [ ] **Step 4: Write `entailment.py`**
+- [x] **Step 4: Write `entailment.py`**
 
 ```python
 from typing import Literal
@@ -2104,7 +2104,7 @@ def run_entailment(ctx, *, payload: dict, evidence_text: str, source_id: str,
     return completion.parsed, completion.resolved_model
 ```
 
-- [ ] **Step 5: Register the prompt version**
+- [x] **Step 5: Register the prompt version**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
@@ -2116,12 +2116,12 @@ printf '# verify-entailment — prompt versions\n\n- v1 — %s — 2026-09-06 �
   "$HASH" > prompts/verify-entailment/CHANGELOG.md
 ```
 
-- [ ] **Step 6: Run the test to verify it passes**
+- [x] **Step 6: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_entailment.py -v`
 Expected: PASS (15 tests)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add prompts/verify-entailment tools/ingest/src/langatlas_ingest/verify/entailment.py \
