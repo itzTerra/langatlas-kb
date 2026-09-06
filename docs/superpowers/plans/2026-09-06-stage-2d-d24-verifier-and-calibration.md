@@ -576,7 +576,7 @@ git commit -m "feat(#stage-2d): add the D24 verdict vocabulary and fold table"
   - `are_independent(a: SourceFacts, b: SourceFacts) -> bool`
   - `derive_confidence(verification, pairs, source_facts, *, absent=False) -> str | None`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_confidence.py`:
 
@@ -702,12 +702,12 @@ def test_load_source_facts_reads_the_real_store():
     assert "_tombstones" not in loaded
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_confidence.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.sources'`
 
-- [ ] **Step 3: Write `sources.py`**
+- [x] **Step 3: Write `sources.py`**
 
 ```python
 from dataclasses import dataclass
@@ -789,7 +789,7 @@ def are_independent(a: SourceFacts, b: SourceFacts) -> bool:
     return not (venues_a & venues_b)
 ```
 
-- [ ] **Step 4: Write `confidence.py`**
+- [x] **Step 4: Write `confidence.py`**
 
 ```python
 from langatlas_ingest.verify.sources import are_independent
@@ -855,12 +855,12 @@ def derive_confidence(verification: str, pairs, source_facts: dict, *,
     return level
 ```
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_confidence.py -v`
 Expected: PASS (17 tests)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/sources.py \
