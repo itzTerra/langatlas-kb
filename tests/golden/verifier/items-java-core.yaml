@@ -12,7 +12,7 @@ items:
       source: jls-se25
       locator: '§14.4'
       quote: 'Note that some variables declared with var cannot be declared with an explicit type, because the type of the variable is not denotable.'
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00716']
     notes: 'plain support; the same passage also grounds v-java-core-0002''s contradicted item'
 
   - id: v-java-core-0002
@@ -26,7 +26,7 @@ items:
       source: jls-se25
       locator: '§14.4'
       quote: 'Note that some variables declared with var cannot be declared with an explicit type, because the type of the variable is not denotable.'
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00716']
     notes: 'the cited text directly states the opposite: some var-declared variables have a
       non-denotable type and cannot be given an explicit type'
 
@@ -42,7 +42,7 @@ items:
       source: jls-se25
       locator: '§8.1'
       quote: 'in a modular codebase, they must be co-located in the same module, as classes in different modules cannot refer to each other in a circular fashion'
-    evidence_chunk_ids: ['jls-se25#c00262']
+    evidence_chunk_ids: ['jls-se25#c00379']
     notes: 'plain support; the same passage also grounds v-java-core-0004''s overstated-claim item'
 
   - id: v-java-core-0004
@@ -56,7 +56,7 @@ items:
       source: jls-se25
       locator: '§8.1'
       quote: 'in a modular codebase, they must be co-located in the same module, as classes in different modules cannot refer to each other in a circular fashion'
-    evidence_chunk_ids: ['jls-se25#c00262']
+    evidence_chunk_ids: ['jls-se25#c00379']
     notes: 'the evidence conditions this on "a modular codebase" (named modules); the same
       section separately gives a package-based rule for the unnamed-module case. The claim
       drops the qualifier and generalises the module rule to always apply.'
@@ -84,7 +84,7 @@ items:
     citation:
       source: jls-se25
       locator: '§14.4'
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00716']
     contamination_gauge: true
     notes: 'true claim (Python does have duck typing), cited to the JLS''s local-variable
       declarations section, which cannot carry it'

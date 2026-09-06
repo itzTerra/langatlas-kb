@@ -11,7 +11,7 @@ items:
       source: ghc-users-guide
       locator: '§5.2.3'
       quote: 'Since GHC 7.10, Typeable is automatically derived for all types.'
-    evidence_chunk_ids: ['ghc-users-guide#c00178']
+    evidence_chunk_ids: ['ghc-users-guide#c00249']
     notes: 'the CONFLICT branch: the page states the explicit marker "Since GHC 7.10", which
       opposes the claimed 8.0'
 
@@ -26,7 +26,7 @@ items:
       source: ghc-users-guide
       locator: '§6.2.13'
       quote: 'Since GHC 9.4.1, it also allows expressions with multiple scrutinees'
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     contamination_gauge: true
     notes: 'the CONFLICT branch, a bigger gap this time: the page states the explicit marker
       "Since GHC 9.4.1" for the multi-scrutinee form specifically (a distinct capability from
@@ -82,7 +82,7 @@ items:
       source: sebesta-copl
       locator: '§1.3.3'
       quote: 'such facilities are practically nonexistent in some widely used languages, for example, C'
-    evidence_chunk_ids: ['sebesta-copl#c00051']
+    evidence_chunk_ids: ['sebesta-copl#c00062']
     notes: 'explicit, language-named absence statement -- not an inferred silence'
 
   - id: v-absent-0005
@@ -99,7 +99,7 @@ items:
       source: sebesta-copl
       locator: '§12.4.3'
       quote: 'Java does not have private derivation'
-    evidence_chunk_ids: ['sebesta-copl#c00702']
+    evidence_chunk_ids: ['sebesta-copl#c00940']
     notes: 'the same passage also grounds v-absent-0006''s absence claim on multiple
       inheritance -- reusing one real chunk for two independent (claim, citation) pairs'
 
@@ -118,7 +118,7 @@ items:
       source: sebesta-copl
       locator: '§12.4.3'
       quote: 'Java directly supports only single inheritance'
-    evidence_chunk_ids: ['sebesta-copl#c00702']
+    evidence_chunk_ids: ['sebesta-copl#c00940']
     contamination_gauge: true
     notes: 'a widely-known fact, but the perturbation discipline here does not apply --
       contamination defense targets the wrongness strata (invented version numbers, swapped

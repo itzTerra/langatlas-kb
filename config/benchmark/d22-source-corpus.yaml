@@ -29,7 +29,14 @@ candidates:
 modes: [vector, hybrid]
 
 chunk_sizes:
-  # Production's chunking; the primary matrix's only chunking.
+  # What production was chunked at when R2 ran (2026-09-05) and what every committed
+  # `*_c600.json` result is scored against — do not "sync" this to a later
+  # config/ingest.yaml change, or the historical results stop matching their own labels.
+  # The verdict itself moved chunking to 400/550 (see benchmarks/d22-source-corpus/
+  # verdict.md); production now runs at that size. A `bench-build` at this file's
+  # `primary` (600/800) will correctly raise `BenchCorpusMismatch` against production
+  # until this whole matrix is re-run fresh with `primary` updated to match — that is
+  # the parity check doing its job, not a bug to silence.
   primary: {target_tokens: 600, max_tokens: 800}
   # §8.6's "400 vs 800 chunk size as a secondary axis", keeping production's 1.33x
   # target-to-max ratio. Run for the chosen model only.

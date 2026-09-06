@@ -12,7 +12,7 @@ items:
       source: rust-reference
       locator: "p. 422"
       quote: "Shared references point to memory which is owned by some other value."
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     notes: "plainest possible support"
 
   - id: v-rust-core-0002
@@ -26,7 +26,7 @@ items:
       source: rust-reference
       locator: "p. 422"
       quote: "A mutable reference (that hasn’t been borrowed) is the only way to access the value it points to, so is not Copy ."
-    evidence_chunk_ids: ["rust-reference#c00457"]
+    evidence_chunk_ids: ["rust-reference#c00547"]
     notes:
       'the evidence supports "mutable references are not Copy"; the claim generalises
       to every reference type, a scope this passage (mutable references only) does not state'
@@ -42,7 +42,7 @@ items:
       source: rust-reference
       locator: "p. 416"
       quote: "Closure types all implement FnOnce , indicating that they can be called once by consuming ownership of the closure."
-    evidence_chunk_ids: ["rust-reference#c00447"]
+    evidence_chunk_ids: ["rust-reference#c00537"]
     notes:
       "exercises instance-field on a narrow, easily-misremembered detail (people recall
       Fn/FnMut/FnOnce as a flat trio and forget FnOnce is the universal base every closure
@@ -60,7 +60,7 @@ items:
       locator: "p. 416"
       quote: "Shared references point to memory which is owned by some other value."
     expected_annotations: ["quote-found-elsewhere"]
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     notes:
       "real quote, cited to a different page (Call traits and coercions) instead of its
       real home p. 422 -- auto-correctable to the true locator"

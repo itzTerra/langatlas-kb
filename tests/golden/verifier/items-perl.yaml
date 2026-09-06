@@ -12,7 +12,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'Perl includes associative arrays, which are called hashes.'
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'plain support; the same locus grounds v-perl-core-0007/0008/0009/0011/0012/0013'
 
   - id: v-perl-core-0002
@@ -26,7 +26,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'they have dynamic length, meaning that they can grow and shrink as needed during execution'
-    evidence_chunk_ids: ['sebesta-copl#c00177']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'plain support; the same locus grounds v-perl-core-0006''s contradicted item'
 
   - id: v-perl-core-0003
@@ -40,7 +40,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'it is always compiled, at least into an intermediate language, before it is executed'
-    evidence_chunk_ids: ['sebesta-copl#c00177']
+    evidence_chunk_ids: ['sebesta-copl#c00223']
     notes: 'plain support; the same locus grounds v-perl-core-0005''s overstated-claim item'
 
   - id: v-perl-core-0004
@@ -58,7 +58,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'Array indexing cannot be checked, because there is no set subscript range for any array.'
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'explicit absence statement, reinforced in the same paragraph by "References to
       nonexistent elements return undef... there is also no error detection in array
       element access"'
@@ -74,7 +74,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'it is always compiled, at least into an intermediate language, before it is executed'
-    evidence_chunk_ids: ['sebesta-copl#c00177']
+    evidence_chunk_ids: ['sebesta-copl#c00223']
     notes: 'the evidence says compilation is "at least into an intermediate language"; the
       claim strengthens this to native machine code and ahead-of-time compilation, a
       specificity this passage does not state'
@@ -90,7 +90,7 @@ items:
       source: sebesta-copl
       locator: '§2.18.1'
       quote: 'they have dynamic length, meaning that they can grow and shrink as needed during execution'
-    evidence_chunk_ids: ['sebesta-copl#c00177']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'the cited text explicitly states the opposite: dynamic, growable/shrinkable length'
 
   - id: v-perl-core-0007
@@ -229,7 +229,7 @@ items:
       source: python-langref-3
       locator: '§ 2.5.4.3. Octal character'
       quote: 'Changed in version 3.11: Octal escapes with value larger than 0o377 (255) produce a DeprecationWarning.'
-    evidence_chunk_ids: ['python-langref-3#c00031']
+    evidence_chunk_ids: ['python-langref-3#c00033']
     notes: 'a fourth python-langref-3 CONFLICT-branch item, a fresh feature (octal escape
       overflow warnings): the page states the explicit marker "Changed in version 3.11",
       opposing the claimed 3.8'
@@ -245,6 +245,6 @@ items:
       source: python-langref-3
       locator: '§ 2.5.4.5. Named Unicode character'
       quote: 'Changed in version 3.3: Support for name aliases has been added.'
-    evidence_chunk_ids: ['python-langref-3#c00033']
+    evidence_chunk_ids: ['python-langref-3#c00035']
     notes: 'a fifth python-langref-3 CONFLICT-branch item: the page states the explicit
       marker "Changed in version 3.3", opposing the claimed 3.1'

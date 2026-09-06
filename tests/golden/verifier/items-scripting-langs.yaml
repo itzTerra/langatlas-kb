@@ -11,7 +11,7 @@ items:
       source: sebesta-copl
       locator: '§5.4.2'
       quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'plain support; the same locus grounds v-php-core-0001/v-ruby-core-0003/0004 and
       v-js-core-0003/0004/0005/0006/0007/0008/0009'
 
@@ -26,7 +26,7 @@ items:
       source: sebesta-copl
       locator: '§5.4.2'
       quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'plain support, off the same sentence as v-js-core-0001'
 
   - id: v-ruby-core-0003
@@ -40,7 +40,7 @@ items:
       source: sebesta-copl
       locator: '§5.4.2'
       quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'plain support, off the same sentence as v-js-core-0001/v-php-core-0001'
 
   - id: v-js-core-0002
@@ -55,7 +55,7 @@ items:
       source: sebesta-copl
       locator: '§5.5.4'
       quote: 'Some languages, including C, C++, PHP, JavaScript, and Python, allow a program structure that is a sequence of function definitions, in which variable definitions can appear outside the functions.'
-    evidence_chunk_ids: ['sebesta-copl#c00324']
+    evidence_chunk_ids: ['sebesta-copl#c00431']
     notes: 'plain support; the same locus grounds v-php-core-0002 and v-js-core-0010''s
       overstated item'
 
@@ -71,7 +71,7 @@ items:
       source: sebesta-copl
       locator: '§5.5.4'
       quote: 'Some languages, including C, C++, PHP, JavaScript, and Python, allow a program structure that is a sequence of function definitions, in which variable definitions can appear outside the functions.'
-    evidence_chunk_ids: ['sebesta-copl#c00324']
+    evidence_chunk_ids: ['sebesta-copl#c00431']
     notes: 'plain support, off the same sentence as v-js-core-0002'
 
   - id: v-js-core-0003
@@ -85,7 +85,7 @@ items:
       source: sebesta-copl
       locator: '§5.4.2'
       quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'the cited text explicitly states the opposite: dynamic type binding'
 
   - id: v-js-core-0010
@@ -99,7 +99,7 @@ items:
       source: sebesta-copl
       locator: '§5.4.2'
       quote: 'In Python, Ruby, JavaScript, and PHP, type binding is dynamic.'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'the evidence names exactly four languages; the claim generalises to every
       scripting language, a scope this passage does not state'
 
@@ -113,7 +113,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§5.4.2'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to the dynamic-type-binding
       passage, which cannot carry it'
@@ -219,6 +219,6 @@ items:
       source: python-langref-3
       locator: '§ 2.5.4.7. Unrecognized escape sequences'
       quote: 'Changed in version 3.12: Unrecognized escape sequences produce a SyntaxWarning.'
-    evidence_chunk_ids: ['python-langref-3#c00035']
+    evidence_chunk_ids: ['python-langref-3#c00037']
     notes: 'a sixth python-langref-3 CONFLICT-branch item: the page states the explicit
       marker "Changed in version 3.12", opposing the claimed 3.9'

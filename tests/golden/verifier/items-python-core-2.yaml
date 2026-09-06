@@ -12,7 +12,7 @@ items:
       source: python-langref-3
       locator: "§ 6.2.10. Yield expressions"
       quote: "The yield expression is used when defining a generator function or an asynchronous generator function and thus can only be used in the body of a function definition."
-    evidence_chunk_ids: ["python-langref-3#c00175"]
+    evidence_chunk_ids: ["python-langref-3#c00207"]
     notes: "plain support; the same locus grounds v-py-core-0016/0018/0019/0021"
 
   - id: v-py-core-0014
@@ -27,7 +27,7 @@ items:
       source: python-langref-3
       locator: "§ 6.12. Assignment expressions"
       quote: 'An assignment expression (sometimes also called a "named expression" or "walrus") assigns an expression to an identifier, while also returning the value of the expression.'
-    evidence_chunk_ids: ["python-langref-3#c00206"]
+    evidence_chunk_ids: ["python-langref-3#c00247"]
     notes: "plain support; the same locus grounds v-py-core-0017/0020/0022"
 
   - id: v-since-0012
@@ -41,7 +41,7 @@ items:
       source: python-langref-3
       locator: "§ 2.3.2. Soft Keywords"
       quote: "Changed in version 3.12: type is now a soft keyword."
-    evidence_chunk_ids: ["python-langref-3#c00020"]
+    evidence_chunk_ids: ["python-langref-3#c00022"]
     notes: 'The page states the explicit marker "Changed in
       version 3.12", opposing the claimed 3.6.'
 
@@ -56,7 +56,7 @@ items:
       source: python-langref-3
       locator: "§ 2.5.7. f-strings"
       quote: "Changed in version 3.8: Added the debug specifier (=)"
-    evidence_chunk_ids: ["python-langref-3#c00038"]
+    evidence_chunk_ids: ["python-langref-3#c00040"]
     notes:
       "a second python-langref-3 CONFLICT-branch item, a different feature and a
       smaller (one-minor-version) gap this time"
@@ -72,7 +72,7 @@ items:
       source: python-langref-3
       locator: "§ 2.5.7. f-strings"
       quote: "Changed in version 3.12: Many restrictions on expressions within f-strings have been removed. Notably, nested strings, comments, and backslashes are now permitted."
-    evidence_chunk_ids: ["python-langref-3#c00038"]
+    evidence_chunk_ids: ["python-langref-3#c00040"]
     notes:
       'the evidence says "many restrictions... removed", naming three examples; the
       claim generalises to "no restrictions at all", a completeness this passage does not state'
@@ -118,7 +118,7 @@ items:
     citation:
       source: python-langref-3
       locator: "§ 6.2.10. Yield expressions"
-    evidence_chunk_ids: ["python-langref-3#c00175"]
+    evidence_chunk_ids: ["python-langref-3#c00207"]
     notes: "a language reference defines syntax and semantics; it makes no quality claims"
 
   - id: v-py-core-0019

@@ -172,7 +172,7 @@ items:
     citation:
       source: rust-fls
       locator: '§ B.377. lifetime¶'
-    evidence_chunk_ids: ['rust-fls#c00751']
+    evidence_chunk_ids: ['rust-fls#c00834']
     contamination_gauge: true
     notes: 'true claim (Prolog supports backtracking search), cited to the Rust FLS''s
       lifetime glossary entry, which cannot carry it'
@@ -247,6 +247,6 @@ items:
       source: python-langref-3
       locator: '§ 3.2.2. NotImplemented'
       quote: 'Changed in version 3.9: Evaluating NotImplemented in a boolean context was deprecated.'
-    evidence_chunk_ids: ['python-langref-3#c00049']
+    evidence_chunk_ids: ['python-langref-3#c00054']
     notes: 'an eighth python-langref-3 CONFLICT-branch item: the page states the explicit
       marker "Changed in version 3.9", opposing the claimed 3.6'

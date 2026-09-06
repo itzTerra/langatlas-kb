@@ -9,7 +9,7 @@ queries:
   - id: paraphrase-002
     band: paraphrase-concept
     query: giving one function name several implementations chosen by argument type
-    expected_chunks: ['haskell-2010-report#c00080']
+    expected_chunks: ['haskell-2010-report#c00104']
   - id: paraphrase-003
     band: paraphrase-concept
     query: letting a program keep going after something goes wrong instead of crashing
@@ -17,11 +17,11 @@ queries:
   - id: paraphrase-004
     band: paraphrase-concept
     query: code that always runs when leaving a block, success or failure
-    expected_chunks: ['sebesta-copl#c00833']
+    expected_chunks: ['sebesta-copl#c01116']
   - id: paraphrase-005
     band: paraphrase-concept
     query: writing one procedure body that works no matter what data type is passed in
-    expected_chunks: ['sebesta-copl#c00156']
+    expected_chunks: ['sebesta-copl#c00196']
   - id: paraphrase-006
     band: paraphrase-concept
     query: a function whose last action is calling itself so the runtime need not grow the stack
@@ -29,7 +29,7 @@ queries:
   - id: paraphrase-007
     band: paraphrase-concept
     query: bundling related data and operations behind one named unit for reuse
-    expected_chunks: ['sebesta-copl#c00156']
+    expected_chunks: ['sebesta-copl#c00196']
   - id: paraphrase-008
     band: paraphrase-concept
     query: two workers each getting their own private memory versus sharing one pool
@@ -37,11 +37,11 @@ queries:
   - id: paraphrase-009
     band: paraphrase-concept
     query: a pause point in a function that hands a value back without ending the call
-    expected_chunks: ['python-langref-3#c00175']
+    expected_chunks: ['python-langref-3#c00207']
   - id: paraphrase-010
     band: paraphrase-concept
     query: borrowing read access to memory someone else still owns
-    expected_chunks: ['rust-reference#c00456']
+    expected_chunks: ['rust-reference#c00546']
   - id: paraphrase-011
     band: paraphrase-concept
     query: describing what operations a type promises to support without saying how
@@ -49,11 +49,11 @@ queries:
   - id: paraphrase-012
     band: paraphrase-concept
     query: a numeric stand-in used because the language has no true yes/no type
-    expected_chunks: ['sebesta-copl#c00046']
+    expected_chunks: ['sebesta-copl#c00055']
   - id: paraphrase-013
     band: paraphrase-concept
     query: nothing stops code from reading past the end of a list at runtime
-    expected_chunks: ['sebesta-copl#c00178']
+    expected_chunks: ['sebesta-copl#c00224']
   - id: paraphrase-014
     band: paraphrase-concept
     query: choosing which code path runs by comparing the shape of a value against several patterns
@@ -61,24 +61,24 @@ queries:
   - id: paraphrase-015
     band: paraphrase-concept
     query: object fields that anyone can read or change, with no hiding at all
-    expected_chunks: ['scott-plp#c00417']
+    expected_chunks: ['scott-plp#c00653']
   - id: paraphrase-016
     band: paraphrase-concept
     query: a class family where every member has only one immediate parent
-    expected_chunks: ['scott-plp#c00282']
+    expected_chunks: ['scott-plp#c00439']
   - id: paraphrase-017
     band: paraphrase-concept
     query: knowing at compile time what kind of value a name holds versus finding out only when the program runs
-    expected_chunks: ['sebesta-copl#c00309']
+    expected_chunks: ['sebesta-copl#c00411']
   - id: paraphrase-018
     band: paraphrase-concept
     query: a compiled subroutine bundled together with the variables it was defined next to
-    expected_chunks: ['scott-plp#c00365']
+    expected_chunks: ['scott-plp#c00577']
   - id: paraphrase-019
     band: paraphrase-concept
     query: two independent processes taking turns using a rendezvous point to exchange data
-    expected_chunks: ['sebesta-copl#c00156']
+    expected_chunks: ['sebesta-copl#c00196']
   - id: paraphrase-020
     band: paraphrase-concept
     query: a warning flag whose behavior started at a specific compiler release
-    expected_chunks: ['ghc-users-guide#c00443']
+    expected_chunks: ['ghc-users-guide#c00627']

@@ -46,3 +46,6 @@ items, because it never reaches the entailment stage.
 - Staleness enforcement is soft: `golden-staleness` logs, never fails.
 
 Run `langatlas-sources golden-validate --resolve --complete` before declaring the set done.
+`--resolve` only checks that ids exist, not that their content still matches the claim —
+after a chunking change, re-derive by content (see `PENDING-REPAIR.md` for the D22 rework
+in progress) rather than trusting a clean `--resolve` run alone.

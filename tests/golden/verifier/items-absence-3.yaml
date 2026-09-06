@@ -14,7 +14,7 @@ items:
       source: sebesta-copl
       locator: '§1.3.1'
       quote: 'suppose a numeric type is used for an indicator flag because there is no Boolean type in the language. In such a language, for example, in the original version of C'
-    evidence_chunk_ids: ['sebesta-copl#c00046']
+    evidence_chunk_ids: ['sebesta-copl#c00055']
     contamination_gauge: true
     notes: 'explicit, language-named absence statement, illustrated with the timeout = 1
       example; a parenthetical historical aside rather than a headline C fact, so marked for
@@ -32,7 +32,7 @@ items:
       source: ghc-users-guide
       locator: '§6.2.13'
       quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     notes: 'a second CONFLICT-branch item off the same page as v-since-0002, this time a
       genuine off-by-one (patch-level) miss against the explicit "Since 7.6.1" marker rather
       than the earlier off-by-major miss'
@@ -48,7 +48,7 @@ items:
       source: scott-plp
       locator: 'pp. 673–675'
       quote: 'Python class members are always public.'
-    evidence_chunk_ids: ['scott-plp#c00417']
+    evidence_chunk_ids: ['scott-plp#c00653']
     notes: 'the base (no enforced access control) is supported by the passage; the extra
       claim that no naming convention exists at all is not addressed by this text either way
       -- an unstated overreach, not a contradiction'
@@ -69,7 +69,7 @@ items:
       source: scott-plp
       locator: 'pp. 673–675'
       quote: 'Python class members are always public.'
-    evidence_chunk_ids: ['scott-plp#c00417']
+    evidence_chunk_ids: ['scott-plp#c00653']
     notes: 'explicit, language-named absence statement'
 
   - id: v-absent-0009
@@ -87,7 +87,7 @@ items:
       source: scott-plp
       locator: 'pp. 500–502'
       quote: 'To assign one array into another in C, the program must copy the elements individually.'
-    evidence_chunk_ids: ['scott-plp#c00304']
+    evidence_chunk_ids: ['scott-plp#c00475']
     contamination_gauge: true
     notes: 'obscure-enough locus (a parenthetical aside on string/array implementation, not a
       headline C feature) for the contamination gauge'
@@ -166,7 +166,7 @@ items:
       source: c23-n3220
       locator: '§6.8.5'
       quote: 'A selection statement selects among a set of secondary blocks depending on the value of a controlling expression.'
-    evidence_chunk_ids: ['c23-n3220#c00277']
+    evidence_chunk_ids: ['c23-n3220#c00384']
     notes: 'plain support; pushes the correct-verdict share back over the 35% floor. Same
       locus as v-absent-0001''s absence claim and v-c-core-0001''s switch-statement claim,
       different feature'

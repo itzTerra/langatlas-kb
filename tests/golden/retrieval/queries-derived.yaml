@@ -6,43 +6,43 @@ queries:
   - id: retrieval-derived-001
     band: exact-term
     query: why C used a numeric flag instead of a Boolean type
-    expected_chunks: ['sebesta-copl#c00046']
+    expected_chunks: ['sebesta-copl#c00055']
   - id: retrieval-derived-002
     band: exact-term
     query: Python class members are always public
-    expected_chunks: ['scott-plp#c00417']
+    expected_chunks: ['scott-plp#c00653']
   - id: retrieval-derived-003
     band: exact-term
     query: copying one C array into another element by element
-    expected_chunks: ['scott-plp#c00304']
+    expected_chunks: ['scott-plp#c00475']
   - id: retrieval-derived-004
     band: exact-term
     query: C selection statements choosing among blocks
-    expected_chunks: ['c23-n3220#c00277']
+    expected_chunks: ['c23-n3220#c00384']
   - id: retrieval-derived-005
     band: exact-term
     query: why C++ containers need a generic element type
-    expected_chunks: ['scott-plp#c00232']
+    expected_chunks: ['scott-plp#c00361']
   - id: retrieval-derived-006
     band: exact-term
     query: Java has no distinguished struct type
-    expected_chunks: ['scott-plp#c00282']
+    expected_chunks: ['scott-plp#c00439']
   - id: retrieval-derived-007
     band: exact-term
     query: C functions returning a pointer instead of a closure
-    expected_chunks: ['scott-plp#c00365']
+    expected_chunks: ['scott-plp#c00577']
   - id: retrieval-derived-008
     band: exact-term
     query: why ML is not considered object-oriented
-    expected_chunks: ['scott-plp#c00434']
+    expected_chunks: ['scott-plp#c00682']
   - id: retrieval-derived-009
     band: exact-term
     query: Fortran 77 lacking recursion and array-returning functions
-    expected_chunks: ['scott-plp#c00450']
+    expected_chunks: ['scott-plp#c00707']
   - id: retrieval-derived-010
     band: exact-term
     query: instantiating a generic Ada procedure for a specific type
-    expected_chunks: ['sebesta-copl#c00156']
+    expected_chunks: ['sebesta-copl#c00196']
   - id: retrieval-derived-011
     band: exact-term
     query: Java threads sharing one address space
@@ -50,7 +50,7 @@ queries:
   - id: retrieval-derived-012
     band: exact-term
     query: purpose of the Java finally clause
-    expected_chunks: ['sebesta-copl#c00833']
+    expected_chunks: ['sebesta-copl#c01116']
   - id: retrieval-derived-013
     band: exact-term
     query: the base class of Python exceptions
@@ -58,15 +58,15 @@ queries:
   - id: retrieval-derived-014
     band: exact-term
     query: restricting what can be thrown in Java
-    expected_chunks: ['sebesta-copl#c00835']
+    expected_chunks: ['sebesta-copl#c01119']
   - id: retrieval-derived-015
     band: exact-term
     query: what a Haskell class declaration introduces
-    expected_chunks: ['haskell-2010-report#c00080']
+    expected_chunks: ['haskell-2010-report#c00104']
   - id: retrieval-derived-016
     band: exact-term
     query: a Java local variable whose type has no denotable form
-    expected_chunks: ['jls-se25#c00487']
+    expected_chunks: ['jls-se25#c00716']
   - id: retrieval-derived-017
     band: exact-term
     query: definition of a tail-recursive function in Scheme
@@ -74,11 +74,11 @@ queries:
   - id: retrieval-derived-018
     band: exact-term
     query: when a Python generator function can use yield
-    expected_chunks: ['python-langref-3#c00175']
+    expected_chunks: ['python-langref-3#c00207']
   - id: retrieval-derived-019
     band: exact-term
     query: what a Rust shared reference points to
-    expected_chunks: ['rust-reference#c00456']
+    expected_chunks: ['rust-reference#c00546']
   - id: retrieval-derived-020
     band: exact-term
     query: Rust trait glossary definition

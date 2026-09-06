@@ -15,7 +15,7 @@ items:
       source: scott-plp
       locator: 'pp. 384–387'
       quote: 'because C++ lacks a common Object base class, its containers must always be declared as generics and instantiated for some particular element type'
-    evidence_chunk_ids: ['scott-plp#c00232']
+    evidence_chunk_ids: ['scott-plp#c00361']
     notes: 'explicit, language-named absence statement, given as the reason C++ containers
       need generics rather than a common element type'
 
@@ -33,7 +33,7 @@ items:
       source: scott-plp
       locator: 'pp. 461–465'
       quote: 'Java has no distinguished notion of struct; its programmers use classes in all cases.'
-    evidence_chunk_ids: ['scott-plp#c00282']
+    evidence_chunk_ids: ['scott-plp#c00439']
     notes: 'explicit, language-named absence statement, contrasted directly with C# structs
       in the same passage'
 
@@ -52,7 +52,7 @@ items:
       source: scott-plp
       locator: 'pp. 500–502'
       quote: 'Ada does not provide a type constructor for sets, but its generic facility can be used to define a set package (module) with functionality comparable to the sets of Pascal'
-    evidence_chunk_ids: ['scott-plp#c00304']
+    evidence_chunk_ids: ['scott-plp#c00475']
     notes: 'same locus as v-absent-0009''s C array-assignment claim and v-c-core-0006''s
       fabricated-combination item -- a third independent (claim, citation) pair off one
       real chunk'
@@ -72,7 +72,7 @@ items:
       source: scott-plp
       locator: 'pp. 591–593'
       quote: 'C has no closures, but allows a function to return a pointer to a subroutine.'
-    evidence_chunk_ids: ['scott-plp#c00365']
+    evidence_chunk_ids: ['scott-plp#c00577']
     contamination_gauge: true
     notes: 'explicit, language-named absence statement, immediately contrasted with
       Modula-3/Ada 95 (which do support returning closures) in the same sentence'
@@ -92,7 +92,7 @@ items:
       source: scott-plp
       locator: 'pp. 705–707'
       quote: 'while ML provides Euclid-like module types, it does not provide inheritance, and thus cannot be considered an object-oriented language'
-    evidence_chunk_ids: ['scott-plp#c00434']
+    evidence_chunk_ids: ['scott-plp#c00682']
     notes: 'explicit, language-named absence statement; the same passage also grounds
       v-ml-core-0001''s correct claim about Java generics'
 
@@ -110,7 +110,7 @@ items:
       source: scott-plp
       locator: 'pp. 733–734'
       quote: 'Fortran 77 has no recursion, nor does it allow structured types (i.e., arrays) to be returned from functions.'
-    evidence_chunk_ids: ['scott-plp#c00450']
+    evidence_chunk_ids: ['scott-plp#c00707']
     contamination_gauge: true
     notes: 'explicit, version-scoped absence statement -- the same sentence also grounds
       v-fortran-core-0001''s contradicted item on array return types'
@@ -127,7 +127,7 @@ items:
       source: scott-plp
       locator: 'pp. 705–707'
       quote: 'Eiffel, Java, and C# all provide generics as well.'
-    evidence_chunk_ids: ['scott-plp#c00434']
+    evidence_chunk_ids: ['scott-plp#c00682']
     notes: 'plain support, off the same passage that grounds v-absent-0014''s ML-inheritance
       absence claim'
 
@@ -142,7 +142,7 @@ items:
       source: scott-plp
       locator: 'pp. 733–734'
       quote: 'Pascal and early versions of Modula-2 allow only simple and pointer types to be returned from functions.'
-    evidence_chunk_ids: ['scott-plp#c00450']
+    evidence_chunk_ids: ['scott-plp#c00707']
     notes: 'the cited text explicitly restricts Pascal function returns to simple and
       pointer types, directly opposing "any type including arrays"'
 
@@ -205,7 +205,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 705–707'
-    evidence_chunk_ids: ['scott-plp#c00434']
+    evidence_chunk_ids: ['scott-plp#c00682']
     notes: 'this survey passage states a design fact and a classification judgment about
       what counts as object-oriented, not a quality assessment in the project''s sense'
 
@@ -235,6 +235,6 @@ items:
       source: ghc-users-guide
       locator: '§5.2.3'
       quote: '-Wuseless-specialisations Since 9.14 Default on'
-    evidence_chunk_ids: ['ghc-users-guide#c00161']
+    evidence_chunk_ids: ['ghc-users-guide#c00222']
     notes: 'a third CONFLICT-branch item off ghc-users-guide, a different warning flag this
       time: the page states the explicit marker "Since 9.14", opposing the claimed 9.0'

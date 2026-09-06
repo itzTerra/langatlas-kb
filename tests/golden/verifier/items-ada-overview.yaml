@@ -12,7 +12,7 @@ items:
       source: sebesta-copl
       locator: '§2.14.3'
       quote: 'Packages in the Ada language provide the means for encapsulating data objects, specifications for data types, and procedures.'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'plain support; the same locus grounds v-ada-core-0009/0010/0011/0013/0014'
 
   - id: v-ada-core-0005
@@ -27,7 +27,7 @@ items:
       source: sebesta-copl
       locator: '§2.14.3'
       quote: 'Program units can be generic in Ada. For example, it is possible to write a sort procedure that uses an unspecified type for the data to be sorted.'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'plain support; the same locus grounds v-ada-core-0007/0008/0015'
 
   - id: v-ada-core-0006
@@ -42,7 +42,7 @@ items:
       source: sebesta-copl
       locator: '§2.14.3'
       quote: 'Rendezvous is the name of a method of intertask communication and synchronization.'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'plain support; the same locus grounds v-ada-core-0012''s fabricated-combination item'
 
   - id: v-ada-core-0007
@@ -56,7 +56,7 @@ items:
       source: sebesta-copl
       locator: '§2.14.3'
       quote: 'The availability of such generic units increases the range of program units that might be reused, rather than duplicated, by programmers.'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'the evidence says generics "increase the range" of reusable units; the claim
       strengthens this to eliminating all duplication everywhere, a completeness this
       passage does not state'
@@ -72,7 +72,7 @@ items:
       source: sebesta-copl
       locator: '§2.14.3'
       quote: 'Such a generic procedure must be instantiated for a specified type before it can be used'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'the cited text explicitly requires instantiation before use, directly opposing
       "used directly without instantiation"'
 
@@ -86,7 +86,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.14.3'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to the Ada language-overview
       passage, which cannot carry it'
@@ -101,7 +101,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.14.3'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'this survey passage states a design-purpose fact, not a quality judgment'
 
   - id: v-ada-core-0011
@@ -211,7 +211,7 @@ items:
       source: ghc-users-guide
       locator: '§5.2.3'
       quote: '-Winvalid-haddock Since 9.0'
-    evidence_chunk_ids: ['ghc-users-guide#c00177']
+    evidence_chunk_ids: ['ghc-users-guide#c00247']
     notes: 'an eighth CONFLICT-branch item off ghc-users-guide, yet another warning flag:
       the page states the explicit marker "Since 9.0", opposing the claimed 7.0'
 
@@ -226,7 +226,7 @@ items:
       source: python-langref-3
       locator: '§ 3.2.13.1.1. Special read-only attributes'
       quote: 'Deprecated since version 3.12: This attribute of code objects is deprecated, and may be removed in Python 3.15.'
-    evidence_chunk_ids: ['python-langref-3#c00080']
+    evidence_chunk_ids: ['python-langref-3#c00089']
     notes: 'a seventh python-langref-3 CONFLICT-branch item, using a "Deprecated since"
       marker rather than "Changed in"/"Added in": the page states the explicit marker
       "Deprecated since version 3.12", opposing the claimed 3.9'

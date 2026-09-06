@@ -26,7 +26,7 @@ items:
       source: sebesta-copl
       locator: '§15.8'
       quote: 'in ML (and most other programming languages) strict semantics are used'
-    evidence_chunk_ids: ['sebesta-copl#c00898']
+    evidence_chunk_ids: ['sebesta-copl#c01208']
     notes: 'plain support; the same passage also grounds v-haskell-core-0014''s nonstrict
       claim and v-ml-core-0010''s contradicted item'
 
@@ -42,7 +42,7 @@ items:
       source: sebesta-copl
       locator: '§15.7'
       quote: 'The type of every variable and expression can be statically determined.'
-    evidence_chunk_ids: ['sebesta-copl#c00893']
+    evidence_chunk_ids: ['sebesta-copl#c01200']
     notes: 'plain support'
 
   - id: v-ml-core-0006
@@ -59,7 +59,7 @@ items:
       source: sebesta-copl
       locator: '§15.8'
       quote: 'functions in Haskell can be overloaded (functions in ML cannot)'
-    evidence_chunk_ids: ['sebesta-copl#c00898']
+    evidence_chunk_ids: ['sebesta-copl#c01208']
     notes: 'explicit, language-named absence statement, given as the first of three stated
       differences between Haskell and ML'
 
@@ -78,7 +78,7 @@ items:
       source: sebesta-copl
       locator: '§15.7'
       quote: 'ML, like other functional programming languages, does not have variables in the sense of the imperative languages.'
-    evidence_chunk_ids: ['sebesta-copl#c00893']
+    evidence_chunk_ids: ['sebesta-copl#c01200']
     notes: 'explicit, language-named absence statement, off the same passage as
       v-ml-core-0005'
 
@@ -93,7 +93,7 @@ items:
       source: sebesta-copl
       locator: '§15.8'
       quote: 'nonstrict semantics are used in Haskell, whereas in ML (and most other programming languages) strict semantics are used'
-    evidence_chunk_ids: ['sebesta-copl#c00898']
+    evidence_chunk_ids: ['sebesta-copl#c01208']
     notes: 'plain support, the direct contrast case to v-ml-core-0004'
 
   - id: v-ml-core-0010
@@ -120,7 +120,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§15.7'
-    evidence_chunk_ids: ['sebesta-copl#c00893']
+    evidence_chunk_ids: ['sebesta-copl#c01200']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to an ML passage, which cannot
       carry it'
@@ -247,6 +247,6 @@ items:
       source: ghc-users-guide
       locator: '§5.2.3'
       quote: '-Wunrecognised-warning-flags Since 8.0 Default on'
-    evidence_chunk_ids: ['ghc-users-guide#c00159']
+    evidence_chunk_ids: ['ghc-users-guide#c00219']
     notes: 'a sixth CONFLICT-branch item off ghc-users-guide, yet another warning flag: the
       page states the explicit marker "Since 8.0", opposing the claimed 6.0'

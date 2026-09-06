@@ -12,7 +12,7 @@ items:
     citation:
       source: python-langref-3
       locator: '§ 8.6.1. Overview'
-    evidence_chunk_ids: ['python-langref-3#c00250']
+    evidence_chunk_ids: ['python-langref-3#c00298']
     notes: 'the SILENCE branch of the ratified since fold: the Overview subsection documents
       the match statement but states no version at all (confirmed: this source has zero
       "New in version" markers anywhere), so it cannot contradict 3.9 -- presence is
@@ -31,7 +31,7 @@ items:
       source: ghc-users-guide
       locator: '§6.2.13'
       quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     contamination_gauge: true
     notes: 'the CONFLICT branch of the same fold: the extension reference page states the
       explicit "Since 7.6.1" marker, which actively opposes the claimed 9.0. No
@@ -52,7 +52,7 @@ items:
     citation:
       source: c23-n3220
       locator: '§6.8.5'
-    evidence_chunk_ids: ['c23-n3220#c00277']
+    evidence_chunk_ids: ['c23-n3220#c00384']
     notes: 'D49 ladder: tier-A source, locator resolves to the Selection Statements section
       (switch/if only, constant-label dispatch, no destructuring), negative grep over the
       aliases, inverted-framing entailment on the absence_scope'
@@ -90,7 +90,7 @@ items:
       source: haskell-2010-report
       locator: '§4.3.1'
       quote: 'A class declaration introduces a new class and the operations ( class methods ) on it.'
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'the absence claim is wrong the other way: the cited source directly documents
       the feature, so the inverted-framing entailment must contradict the absence rather
       than accept it'
@@ -137,7 +137,7 @@ items:
       source: ghc-users-guide
       locator: '§6.2.13'
       quote: 'Allow the use of lambda-case syntax.'
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     contamination_gauge: true
     notes: 'plain support for an obscure GHC extension corner; companion to v-since-0002'
 
@@ -152,7 +152,7 @@ items:
       source: ghc-users-guide
       locator: '§6.2.13'
       quote: 'LambdaCase Since 7.6.1 Status Included in GHC2024'
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     contamination_gauge: true
     notes: 'the evidence states inclusion in GHC2024 specifically, not "every edition"; the
       base claim (the extension exists and is available) is supported, the universal-edition

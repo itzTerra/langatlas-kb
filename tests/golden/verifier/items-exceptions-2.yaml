@@ -12,7 +12,7 @@ items:
       source: sebesta-copl
       locator: '§14.3.6'
       quote: 'The finally clause was designed for these kinds of needs. A finally clause is placed at the end of the list'
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     notes: 'plain support; the same locus grounds v-java-core-0028/0029/0030/0031/0032/0033/0034'
 
   - id: v-java-core-0026
@@ -26,7 +26,7 @@ items:
       source: sebesta-copl
       locator: '§14.3.2'
       quote: 'The syntax of the try construct in Java is exactly as that of C++, except for the finally clause described in Section 14.3.6.'
-    evidence_chunk_ids: ['sebesta-copl#c00828']
+    evidence_chunk_ids: ['sebesta-copl#c01108']
     notes: 'the cited text explicitly carves out the finally clause as an exception to the
       otherwise-identical syntax, directly opposing "identical in every respect"'
 
@@ -55,7 +55,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.6'
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to the Java finally-clause
       passage, which cannot carry it'
