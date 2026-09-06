@@ -1065,7 +1065,7 @@ provides-extras = ["dev", "local-embed"]
 
 [[package]]
 name = "langatlas-validate"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "../validate" }
 dependencies = [
     { name = "jsonschema" },

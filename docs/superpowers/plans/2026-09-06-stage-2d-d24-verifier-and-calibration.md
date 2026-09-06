@@ -3149,7 +3149,7 @@ git commit -m "feat(#stage-2d): add the contradiction record schema and its vali
   - `mint_verification_record(pairs, *, fact_id, has_admissible_alternative, path=None,
     chat_run_id=None, today=None) -> list[str]`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_contradictions.py`:
 
@@ -3299,12 +3299,12 @@ def test_the_written_ledger_passes_the_validator(ledger_path, tmp_path):
     assert validate_contradictions(tmp_path) == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_contradictions.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.contradictions'`
 
-- [ ] **Step 3: Write `contradictions.py`**
+- [x] **Step 3: Write `contradictions.py`**
 
 ```python
 import re
@@ -3430,12 +3430,12 @@ def mint_verification_record(pairs, *, fact_id: str, has_admissible_alternative:
     return minted
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_contradictions.py -v`
 Expected: PASS (12 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/contradictions.py \
