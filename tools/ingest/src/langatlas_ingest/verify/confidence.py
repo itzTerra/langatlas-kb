@@ -1,12 +1,10 @@
 from langatlas_ingest.verify.sources import are_independent
-from langatlas_ingest.verify.verdicts import ADMITTING_VERDICTS
+from langatlas_ingest.verify.verdicts import ADMISSIBLE_TIERS, ADMITTING_VERDICTS
 
 # Ordinal, never numeric (Section 6.3), but comparable so D49's absence cap can be applied
 # as a ceiling rather than as a second branch of the lookup.
 _RANK = {"low": 0, "medium": 1, "high": 2}
 _BY_RANK = {rank: level for level, rank in _RANK.items()}
-
-_ADMISSIBLE_TIERS = frozenset({"A", "B"})
 
 
 def derive_confidence(verification: str, pairs, source_facts: dict, *,
@@ -34,7 +32,7 @@ def derive_confidence(verification: str, pairs, source_facts: dict, *,
 
     supporting = {pair.source_id for pair in pairs if pair.verdict in ADMITTING_VERDICTS}
     known = {source_id for source_id in supporting if source_id in source_facts}
-    admissible = {s for s in known if source_facts[s].tier in _ADMISSIBLE_TIERS}
+    admissible = {s for s in known if source_facts[s].tier in ADMISSIBLE_TIERS}
     tier_c = {s for s in known if source_facts[s].tier == "C"}
 
     if admissible:

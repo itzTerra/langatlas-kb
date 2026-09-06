@@ -13,6 +13,11 @@ ANNOTATIONS = ("quote-mismatch", "quote-found-elsewhere")
 # for claim narrowing and never admits.
 ADMITTING_VERDICTS = frozenset({"supported"})
 
+# The tiers that can establish admissibility (Section 6.2). Public: `confidence.py` and
+# `admissibility.py` both read this same set rather than keeping their own copies, so a
+# tier-policy change can't drift between the fold table, the confidence lookup, and the gate.
+ADMISSIBLE_TIERS = frozenset({"A", "B"})
+
 # Section 6.2's `since` split: the source supports the exact origin, or only bounds it
 # from above. The second is a legitimate `partial` and lands in the back-dating queue.
 SINCE_STATUSES = ("since-supported", "as-of-supported")
@@ -20,8 +25,6 @@ SINCE_STATUSES = ("since-supported", "as-of-supported")
 # The fields the fold table runs over (Section 6.2). `since` participates only when the
 # fact carries one.
 LOAD_BEARING_FIELDS = ("base", "since")
-
-_ADMISSIBLE_TIERS = frozenset({"A", "B"})
 
 # How a pair's support for one field is ranked. `None` means "this pair says nothing
 # about this field" and is not the same as "this pair says the field is wrong".
@@ -113,7 +116,7 @@ def fold_verification(pairs, *, tier_of, has_since: bool) -> str:
     if not pairs:
         return "unverified"
     admissible = any(pair.verdict in ADMITTING_VERDICTS
-                     and tier_of(pair.source_id) in _ADMISSIBLE_TIERS for pair in pairs)
+                     and tier_of(pair.source_id) in ADMISSIBLE_TIERS for pair in pairs)
     if not admissible:
         return "failed"
 

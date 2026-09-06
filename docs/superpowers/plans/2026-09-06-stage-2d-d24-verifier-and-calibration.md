@@ -3461,7 +3461,7 @@ git commit -m "feat(#stage-2d): mint type:verification contradiction records wit
   - `decide_fact(fact_id, pairs, source_facts, *, has_since=False, absent=False,
     queue=None, bounce_budget=2, contradictions_path=None, chat_run_id=None) -> FactOutcome`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_admissibility.py`:
 
@@ -3611,12 +3611,12 @@ def test_no_pairs_at_all_is_unverified_and_does_not_bounce():
     assert queue.filed == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_admissibility.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.admissibility'`
 
-- [ ] **Step 3: Write `admissibility.py`**
+- [x] **Step 3: Write `admissibility.py`**
 
 ```python
 from dataclasses import dataclass
@@ -3723,12 +3723,12 @@ def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = Fa
                        contradiction_ids=contradiction_ids, exhausted=exhausted)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_admissibility.py -v`
 Expected: PASS (14 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/admissibility.py \
