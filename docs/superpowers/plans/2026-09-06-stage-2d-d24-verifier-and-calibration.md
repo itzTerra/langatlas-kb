@@ -3754,7 +3754,7 @@ git commit -m "feat(#stage-2d): apply the admissibility rule and the two-bounce 
   - `verify_pair(ctx, conn, *, claim, citation, config=None, deps=None, queue=None,
     anchor=None, grep_chunk_ids=None) -> PairVerdict`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_pipeline.py`:
 
@@ -4024,12 +4024,12 @@ def test_the_verdict_is_written_to_the_ledger_when_one_is_supplied(tmp_path):
         assert len(ledger.all_for("f-000000000001")) == 1
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_pipeline.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.pipeline'`
 
-- [ ] **Step 3: Write `pipeline.py`**
+- [x] **Step 3: Write `pipeline.py`**
 
 ```python
 from dataclasses import dataclass
@@ -4244,7 +4244,7 @@ def _finish(verdict: PairVerdict, deps: VerifyDeps) -> PairVerdict:
     return verdict
 ```
 
-- [ ] **Step 4: Export the composition**
+- [x] **Step 4: Export the composition**
 
 Add to `tools/ingest/src/langatlas_ingest/verify/__init__.py`:
 
@@ -4257,12 +4257,12 @@ from langatlas_ingest.verify.pipeline import VerifyDeps, verify_pair
 and extend `__all__` with `"FactOutcome"`, `"VerdictLedger"`, `"VerifyDeps"`,
 `"decide_fact"`, `"verify_pair"`.
 
-- [ ] **Step 5: Run the test to verify it passes**
+- [x] **Step 5: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_pipeline.py -v`
 Expected: PASS (15 tests)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/{pipeline.py,__init__.py} \

@@ -2,12 +2,16 @@
 
 Four stages of increasingly expensive filters, not one LLM call. Import the composed
 entry points from here; the per-stage modules are importable directly for testing."""
+from langatlas_ingest.verify.admissibility import FactOutcome, decide_fact
 from langatlas_ingest.verify.inputs import CitationInput, ClaimInput, whitelist_payload
+from langatlas_ingest.verify.ledger import VerdictLedger
+from langatlas_ingest.verify.pipeline import VerifyDeps, verify_pair
 from langatlas_ingest.verify.verdicts import (
     ADMITTING_VERDICTS, ANNOTATIONS, Assertion, PairVerdict, SINCE_STATUSES, VERDICTS,
     fold_verification,
 )
 
 __all__ = ["ADMITTING_VERDICTS", "ANNOTATIONS", "Assertion", "CitationInput", "ClaimInput",
-           "PairVerdict", "SINCE_STATUSES", "VERDICTS", "fold_verification",
+           "FactOutcome", "PairVerdict", "SINCE_STATUSES", "VERDICTS", "VerdictLedger",
+           "VerifyDeps", "decide_fact", "fold_verification", "verify_pair",
            "whitelist_payload"]
