@@ -4955,7 +4955,7 @@ git add benchmarks/d22-source-corpus/verdict.json \
 git commit -m "feat(#stage-2c): pin the source-corpus retrieval stack from the D22 verdict"
 ```
 
-- [ ] **Step 7: Update the Stage 2 checklist**
+- [x] **Step 7: Update the Stage 2 checklist**
 
 In [context/spec.md](../../../context/spec.md) §14, check off Stage 2's fourth item ("R2: run the
 D22 embedding benchmark on a pilot corpus; record per-table verdicts"). Match the surrounding

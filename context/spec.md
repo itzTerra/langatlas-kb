@@ -1825,7 +1825,7 @@ wait on.
 - [ ] Co-author the retrieval golden set (40–60 queries) during QA skims; author the
       verifier golden set (D44 taxonomy, ~200–300 items) + the ~10–15-item held-out
       slice + the ~15–20 bootstrap controversy cases.
-- [ ] R2: run the D22 embedding benchmark on a pilot corpus; record per-table verdicts.
+- [x] R2: run the D22 embedding benchmark on a pilot corpus; record per-table verdicts.
       *(Deferred question folded here: "Embedding-model choices — D22's benchmark
       decides per use case." The fact-index re-run happens at Stage 5.)*
 - [ ] Stand up the D24 verifier against the golden set; calibrate to FA ≤2% / FR ≤10%;
