@@ -1,5 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel, Field
+from langatlas_ingest.verify.inputs import delimit_agent_text
 from langatlas_pipeline.prompts import load_prompt
 from langatlas_pipeline.providers.completion import Sampling
 
@@ -42,7 +43,13 @@ def fold_assertions(assertions) -> str:
     if any(a.status == "contradicted" for a in assertions):
         return "contradicted"
     core = [a for a in assertions if a.kind == CORE_KIND]
-    if core and any(a.status != "supported" for a in core):
+    if not core or any(a.status != "supported" for a in core):
+        # No `presence` assertion at all means the claim's core was never judged — the
+        # same standing as a decomposition that produced nothing, and treated the same
+        # way: `unsupported` here (fail closed even with escalation disabled) *and*
+        # inconsistent in `is_inconsistent` (so the escalated pass gets to produce a real
+        # decomposition). Folding a lone supported `qualifier` to `supported` would admit
+        # a fact whose presence claim no model ever checked.
         return "unsupported"
     if all(a.status == "supported" for a in assertions):
         return "supported"
@@ -59,6 +66,11 @@ def is_inconsistent(out: EntailmentOut, *, has_since: bool) -> bool:
     @returns True when the decomposition is internally inconsistent
     """
     if not out.assertions:
+        return True
+    if not any(a.kind == CORE_KIND for a in out.assertions):
+        # Every prompt in this stage asks for the core assertion by name, so its absence
+        # is a decomposition that did not do the work — worth the reasoning pass, exactly
+        # like an empty one.
         return True
     since_assertions = [a for a in out.assertions if a.kind == "since"]
     if has_since:
@@ -94,9 +106,13 @@ def run_entailment(ctx, *, payload: dict, evidence_text: str, source_id: str,
     """
     prompt = load_prompt(PROMPT_ID)
     evidence = ctx.tool_result(tool=PROMPT_ID, text=evidence_text, source_id=source_id)
-    messages = prompt.render(claim=payload["claim"],
-                             since=str(payload.get("since") or "none"),
-                             locator=payload["locator"], evidence=evidence)
+    # The claim, its version and its locator are agent-authored, so they go through the
+    # same D31 door as the evidence rather than being rendered raw into the prompt.
+    messages = prompt.render(
+        claim=delimit_agent_text(ctx, payload["claim"], "claim"),
+        since=delimit_agent_text(ctx, payload.get("since"), "version"),
+        locator=delimit_agent_text(ctx, payload["locator"], "locator"),
+        evidence=evidence)
     completion = ctx.complete(alias, messages, prompt=prompt, schema=EntailmentOut,
                               sampling=Sampling(temperature=0.0))
     return completion.parsed, completion.resolved_model
