@@ -39,7 +39,19 @@ def test_golden_validate_exits_one_on_a_bad_item(tmp_path, capsys):
     assert "cannot expect verdict" in capsys.readouterr().out
 
 
-def test_golden_score_exits_three_when_no_verifier_is_registered(tmp_path, capsys):
+def test_golden_score_exits_three_when_no_verifier_is_registered(tmp_path, capsys,
+                                                                  monkeypatch):
+    # 2D's calibration entry point is now the config default (`verify/calibration.py`),
+    # so the "unregistered" guard is exercised here by clearing it, not by the config's
+    # ambient state — a config with neither entry point set is still a real, reachable
+    # condition (a fresh checkout before `config/ingest.yaml` names one).
+    from dataclasses import replace
+    from langatlas_ingest import cli as cli_module
+    from langatlas_ingest.config import IngestConfig
+
+    unset = replace(IngestConfig.load(), verifier_entry_point=None,
+                    controversy_assessor_entry_point=None)
+    monkeypatch.setattr(cli_module.IngestConfig, "load", staticmethod(lambda *a, **k: unset))
     (tmp_path / "items-cli.yaml").write_text(ITEMS)
     assert main(["golden-score", "--verifier-dir", str(tmp_path)]) == 3
     assert "no verifier registered" in capsys.readouterr().out.lower()

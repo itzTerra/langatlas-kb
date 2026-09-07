@@ -4644,7 +4644,7 @@ git commit -m "feat(#stage-2d): add the verification batch runner with known-bad
   - `reset_session()` — drops the lazily-opened process-wide session (tests)
   - `langatlas-verify` console script with `pair | fact | batch | canaries | ledger`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_calibration.py`:
 
@@ -4741,12 +4741,12 @@ def test_the_entry_point_resolves():
         "langatlas_ingest.verify.calibration:verify_golden_item"))
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_calibration.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.calibration'`
 
-- [ ] **Step 3: Write `calibration.py`**
+- [x] **Step 3: Write `calibration.py`**
 
 ```python
 from langatlas_ingest.config import IngestConfig
@@ -4823,7 +4823,7 @@ def reset_session() -> None:
     verify_golden_item.close()
 ```
 
-- [ ] **Step 4: Point the config at it**
+- [x] **Step 4: Point the config at it**
 
 In `config/ingest.yaml`:
 
@@ -4831,7 +4831,7 @@ In `config/ingest.yaml`:
   verifier_entry_point: langatlas_ingest.verify.calibration:verify_golden_item
 ```
 
-- [ ] **Step 5: Write `cli.py`**
+- [x] **Step 5: Write `cli.py`**
 
 > `cli.py`'s `batch` command imports `verify.job_support`, which Step 7 creates. Write both
 > before running anything from this task; the split exists because Task 17 needs
@@ -4956,7 +4956,7 @@ if __name__ == "__main__":
     sys.exit(main())
 ```
 
-- [ ] **Step 6: Add the console script and the CI check**
+- [x] **Step 6: Add the console script and the CI check**
 
 In `tools/ingest/pyproject.toml`:
 
@@ -4975,7 +4975,7 @@ In `.github/workflows/ci.yml`, after the existing `golden-validate` step:
         run: uv --directory tools/ingest run langatlas-verify canaries --check
 ```
 
-- [ ] **Step 7: Write `job_support.py` (used by the CLI and Task 17)**
+- [x] **Step 7: Write `job_support.py` (used by the CLI and Task 17)**
 
 Create `tools/ingest/src/langatlas_ingest/verify/job_support.py`:
 
@@ -5010,7 +5010,7 @@ def work_for_fact(fact: dict):
 > derivation is its own change, and Stage 3 is where facts that carry `since` and
 > `absence_scope` start existing.
 
-- [ ] **Step 8: Run the tests to verify they pass**
+- [x] **Step 8: Run the tests to verify they pass**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_calibration.py -v`
 Expected: PASS (5 tests)
@@ -5019,7 +5019,7 @@ Expected: `0 canaries, 0 missing`, exit 0
 Run: `cd tools/ingest && uv run langatlas-sources golden-score --help`
 Expected: the existing help, unchanged
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/{calibration.py,cli.py,job_support.py} \

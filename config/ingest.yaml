@@ -46,9 +46,9 @@ goldens:
   thresholds:
     false_accept_max: 0.02          # §6.2; an FA poisons a public RAG-recycled corpus
     false_reject_max: 0.10          # an FR costs one retry — deliberate asymmetry
-  # Dotted `module:attr` path to the D24 verifier factory. Null until 2D ships it;
-  # `golden-score` says so plainly rather than scoring nothing and reporting 0%.
-  verifier_entry_point:
+  # Dotted `module:attr` path to the D24 verifier factory. `golden-score` resolves this
+  # to score 2D's pipeline against the golden set (Section 6.4).
+  verifier_entry_point: langatlas_ingest.verify.calibration:verify_golden_item
   controversy_assessor_entry_point:
 verification:
   # D24's model ladder (§6.2/§7.1). Aliases, never model ids: the resolved model is

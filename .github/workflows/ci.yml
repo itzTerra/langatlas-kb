@@ -22,6 +22,10 @@ jobs:
         # Shape only: no database, no provider. The *scored* harness is deliberately not
         # a CI gate (§8.6) — a golden run is a measurement, not a merge condition.
         run: uv --directory tools/ingest run langatlas-sources golden-validate
+      - name: Check the verification canary list
+        # No database, no provider: only that every canary id still names a committed
+        # golden item. A canary pointing at a deleted item would silently stop guarding.
+        run: uv --directory tools/ingest run langatlas-verify canaries --check
 
   publish:
     needs: validate

@@ -73,4 +73,7 @@ def test_the_config_exposes_the_goldens_block():
     # Decorrelated from the D24 verifier's own models (deepseek / deepseek-thinking /
     # mini) — see Section 6.4.
     assert config.golden_candidate_model not in ("deepseek", "deepseek-thinking", "mini")
-    assert config.verifier_entry_point is None      # 2D sets it
+    # 2D wires this in `verify/calibration.py`; the exact dotted path is pinned by
+    # test_verify_calibration.py so a drift there reads as "no verifier registered"
+    # rather than a silently un-scored 2D pipeline.
+    assert config.verifier_entry_point is not None

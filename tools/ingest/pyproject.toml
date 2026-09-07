@@ -27,6 +27,7 @@ local-embed = ["langatlas-pipeline[local-embed]"]
 
 [project.scripts]
 langatlas-sources = "langatlas_ingest.cli:main"
+langatlas-verify = "langatlas_ingest.verify.cli:main"
 
 [build-system]
 requires = ["hatchling"]
