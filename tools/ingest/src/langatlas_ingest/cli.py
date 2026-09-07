@@ -226,8 +226,20 @@ def _cmd_golden_score(args) -> int:
     if dotted:
         items = load_verifier_items(Path(args.verifier_dir or GOLDEN_VERIFIER_DIR),
                                     include_held_out=args.include_held_out)
-        score = run_verifier_goldens(items, load_entry_point(dotted),
-                                     thresholds=config.golden_thresholds)
+        verifier = load_entry_point(dotted)
+        try:
+            score = run_verifier_goldens(items, verifier,
+                                         thresholds=config.golden_thresholds)
+        finally:
+            # A verifier that opened a session (2D's `GoldenVerifier` opens a RunContext
+            # and a DB connection lazily) must get to close it: `RunContext.close()` is
+            # what finalizes the transcript and writes the run's `manifest.yaml`, and a
+            # calibration run whose whole point is a published, audited number cannot
+            # leave that unwritten. `Verifier` is only a bare callable protocol, so this
+            # is a duck-typed hook rather than part of it.
+            close = getattr(verifier, "close", None)
+            if callable(close):
+                close()
         print(score.to_markdown())
         if args.json:
             payload = json.loads(score.to_json())
