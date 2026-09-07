@@ -1,5 +1,6 @@
 from typing import Literal
 from pydantic import BaseModel
+from langatlas_ingest.verify.inputs import delimit_agent_text
 from langatlas_pipeline.prompts import load_prompt
 from langatlas_pipeline.providers.completion import Sampling
 
@@ -21,8 +22,10 @@ def adjudicate_quote(ctx, *, quote: str, evidence_text: str, source_id: str,
     mechanical matcher has already decided every other case, and this call is the reason
     an OCR-noisy corpus does not produce a wall of false rejects.
 
-    Evidence goes through `ctx.tool_result` (the D31 door): it is scanned, logged and
-    delimited before it reaches the model, and it occupies a user-role message only.
+    Both sides of the comparison go through `ctx.tool_result` (the D31 door) — the
+    passage as untrusted external text, the claimed quote as agent-authored text — so
+    each is scanned, logged and delimited before it reaches the model, in a user-role
+    message only.
 
     D6: `alias` resolves through the model-alias/config machinery (`config/
     provider_capabilities.yaml`) like every other pipeline call — Claude is never in the
@@ -40,7 +43,11 @@ def adjudicate_quote(ctx, *, quote: str, evidence_text: str, source_id: str,
     """
     prompt = load_prompt(PROMPT_ID)
     evidence = ctx.tool_result(tool=PROMPT_ID, text=evidence_text, source_id=source_id)
-    messages = prompt.render(quote=quote, evidence=evidence, ratio=f"{ratio:.3f}")
+    # The claimed quote is agent-authored — the half of this comparison that might be
+    # fabricated — so it goes through the same door as the passage rather than being
+    # rendered raw.
+    messages = prompt.render(quote=delimit_agent_text(ctx, quote, "quote"),
+                             evidence=evidence, ratio=f"{ratio:.3f}")
     completion = ctx.complete(alias, messages, prompt=prompt,
                               schema=QuoteAdjudication, sampling=Sampling(temperature=0.0))
     return completion.parsed

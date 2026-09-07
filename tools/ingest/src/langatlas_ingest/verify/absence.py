@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from langatlas_ingest.verify.entailment import EntailmentOut, fold_assertions
 from langatlas_ingest.verify.evidence import Evidence
-from langatlas_ingest.verify.inputs import CitationInput, ClaimInput
+from langatlas_ingest.verify.inputs import CitationInput, ClaimInput, delimit_agent_text
 from langatlas_pipeline.prompts import load_prompt
 from langatlas_pipeline.providers.completion import Sampling
 
@@ -98,11 +98,15 @@ def run_absence(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
                    if grep_chunk_ids else "no passage in this source mentions the "
                                           "feature's names")
     prompt = load_prompt(PROMPT_ID)
-    messages = prompt.render(claim=claim.claim,
-                             absence_scope=claim.absence_scope or "(none argued)",
-                             aliases=", ".join(claim.feature_aliases) or "(none)",
-                             locator=citation.locator, evidence=delimited,
-                             grep_result=grep_result)
+    # The claim, the scope argued for it, the alias vocabulary and the locator are all
+    # agent-authored — the argument this stage exists to test — so they reach the model
+    # delimited, exactly like the passages (D31).
+    messages = prompt.render(
+        claim=delimit_agent_text(ctx, claim.claim, "claim"),
+        absence_scope=delimit_agent_text(ctx, claim.absence_scope, "absence-scope"),
+        aliases=delimit_agent_text(ctx, ", ".join(claim.feature_aliases), "aliases"),
+        locator=delimit_agent_text(ctx, citation.locator, "locator"),
+        evidence=delimited, grep_result=grep_result)
     completion = ctx.complete(alias, messages, prompt=prompt, schema=EntailmentOut,
                               sampling=Sampling(temperature=0.0))
     out = completion.parsed

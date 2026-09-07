@@ -44,3 +44,25 @@ def whitelist_payload(claim: ClaimInput, citation: CitationInput) -> dict:
         payload["absence_scope"] = claim.absence_scope
         payload["feature_aliases"] = list(claim.feature_aliases)
     return payload
+
+
+def delimit_agent_text(ctx, text, field: str) -> str:
+    """Send one agent-authored field to the model through D31's untrusted-content door.
+
+    The claim, its version and its locator are written by the proposing agent — they are
+    the very content this gate exists to check, so they get the same delimiting,
+    injection scan and transcript entry the evidence does. `source_id` is deliberately
+    None: naming the fact's own source inside the block would hand the model the
+    identifying context `whitelist_payload` withholds.
+
+    @param ctx - a `RunContext` (or test double exposing `tool_result`)
+    @param text - the field's value; None/empty renders the literal "none", which is our
+        own text and needs no block
+    @param field - what the value is, rendered as the block's `kind` attribute
+
+    @returns the delimited block, or "none"
+    """
+    if not text:
+        return "none"
+    return ctx.tool_result(tool="agent-authored", text=str(text), source_id=None,
+                           kind=f"agent-authored-{field}")
