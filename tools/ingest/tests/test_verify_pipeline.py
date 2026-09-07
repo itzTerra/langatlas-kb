@@ -148,6 +148,27 @@ def test_an_uningested_source_parks_the_claim_and_never_calls_a_model():
     assert ctx.aliases == []
 
 
+def test_a_citation_to_an_unknown_source_also_parks_the_claim():
+    # Stage 0's `source-unavailable` (no source record at all) is the case a human most
+    # needs to see, so it files into the queue like the un-ingested case above rather
+    # than dying as a verdict nobody reads.
+    ctx = ScriptedCtx()
+    queue = FakeQueue()
+    got = verify_pair(ctx, None, claim=CLAIM, citation=CitationInput("nope", "p. 1"),
+                      config=CONFIG, deps=deps(), queue=queue)
+    assert got.verdict == "source-unavailable"
+    assert queue.filed == [("pending-source", "nope", "not-ingested")]
+    assert ctx.aliases == []
+
+
+def test_a_stage_zero_rejection_that_is_not_source_unavailable_files_nothing():
+    queue = FakeQueue()
+    verify_pair(ScriptedCtx(), None, claim=CLAIM,
+                citation=CitationInput("s", "page four"), config=CONFIG, deps=deps(),
+                queue=queue)
+    assert queue.filed == []
+
+
 def test_an_unresolvable_locator_is_locator_not_found_with_the_hint_preserved():
     ctx = ScriptedCtx()
     got = verify_pair(ctx, None, claim=CLAIM, citation=CITATION, config=CONFIG,

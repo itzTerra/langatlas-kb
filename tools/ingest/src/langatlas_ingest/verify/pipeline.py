@@ -121,6 +121,17 @@ def verify_pair(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
     # ---- stage 0: schema + referential checks -----------------------------------
     stage0 = run_stage0(claim, citation, deps.source_facts)
     if not stage0.ok:
+        if stage0.verdict == "source-unavailable" and queue is not None:
+            # A citation to a source with no record at all is the case a human most needs
+            # to see, so it parks in the queue like the un-ingested case below rather than
+            # dying as a verdict nobody reads.
+            # `not-ingested` rather than a new reason: the queue's reasons are a DB-level
+            # closed set, and a source with no record is not ingested either — the detail
+            # line is what tells the human the record itself is missing.
+            queue.file(kind="pending-source", source_id=citation.source_id,
+                       reason="not-ingested",
+                       detail=f"{claim.fact_id} cites {citation.source_id}, which has no"
+                              f" source record at all")
         verdict = _terminal(claim, citation, stage0.verdict, detail=stage0.detail,
                             ctx=ctx, anchor=anchor)
         return _finish(verdict, deps)
