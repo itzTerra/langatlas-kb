@@ -1,8 +1,9 @@
 """D43's periodic-job inventory (context/spec.md §14, decisions.md D43's 2026-07-20
-follow-up) names ten jobs total; four are real by this stage (`r0-exit-test`,
-`monthly-capability-probe`) or don't need driver wiring. The six below all depend on
-data or infrastructure a *later* stage produces — an ingested corpus (Stage 2), real
-verified facts (Stage 5), or the public site's self-hosted Umami install (Stage 6).
+follow-up) names ten jobs total; five are real by this stage (`r0-exit-test`,
+`monthly-capability-probe`, `nightly-verification`) or don't need driver wiring. The
+five below all depend on data or infrastructure a *later* stage produces — an ingested
+corpus (Stage 2), real verified facts (Stage 5), or the public site's self-hosted Umami
+install (Stage 6).
 Registering them now with a loud, specific `NotImplementedError` (rather than leaving
 `config/jobs/*.yaml` reference an unregistered `kind`, or silently no-op-ing) keeps
 `config/jobs/crontab.example` honest today: a cron invocation against one of these
@@ -24,8 +25,6 @@ def _deferred(kind: str, stage: str, needs: str):
     register_job_kind(kind, _enumerate, _run_item)
 
 
-_deferred("nightly-verification", "Stage 2/5",
-         "the calibrated D24 verifier and real facts to assess")
 _deferred("monthly-link-checker", "Stage 2",
          "an ingested corpus with url-locator sources to check")
 _deferred("monthly-finding-aid-mirror-refresh", "Stage 2",

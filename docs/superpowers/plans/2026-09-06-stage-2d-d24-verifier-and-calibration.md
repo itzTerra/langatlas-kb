@@ -5046,7 +5046,7 @@ git commit -m "feat(#stage-2d): wire the verifier into the golden harness and a 
   `VerdictLedger` (Task 10), `land_record` (existing).
 - Produces: a registered `nightly-verification` job kind whose item key is a `fact_id`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Create `tools/orchestrator/tests/test_verification_job.py`:
 
@@ -5171,12 +5171,12 @@ def test_the_job_spec_still_loads():
 > whatever the existing `tests/test_spec.py` does to locate `config/jobs/`; reuse its
 > helper rather than inventing a second path convention.
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `cd tools/orchestrator && uv run pytest tests/test_verification_job.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_orchestrator.jobs.verification'`
 
-- [ ] **Step 3: Drop the stub**
+- [x] **Step 3: Drop the stub**
 
 In `tools/orchestrator/src/langatlas_orchestrator/jobs/deferred.py`, delete:
 
@@ -5188,7 +5188,7 @@ _deferred("nightly-verification", "Stage 2/5",
 and update the module docstring's count ("six below" → "five below"; the inventory line
 naming which stages replace them stays accurate for the rest).
 
-- [ ] **Step 4: Write `jobs/verification.py`**
+- [x] **Step 4: Write `jobs/verification.py`**
 
 ```python
 """D24's nightly verification batch (context/spec.md Section 6.2), driven through the
@@ -5279,7 +5279,7 @@ def _run_item(ctx, item_key: str, extra: dict, repo_root: Path) -> ItemOutcome:
 register_job_kind("nightly-verification", _enumerate, _run_item)
 ```
 
-- [ ] **Step 5: Register the module and update the spec file**
+- [x] **Step 5: Register the module and update the spec file**
 
 In `tools/orchestrator/src/langatlas_orchestrator/jobs/__init__.py`:
 
@@ -5300,13 +5300,13 @@ budget:
   max_wall_seconds: 21600
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `cd tools/orchestrator && uv run pytest tests/ -v`
 Expected: PASS — the 10 new tests, plus `test_deferred_jobs.py` still green (update its
 expected stub list if it enumerates the six kinds by name).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/orchestrator/src/langatlas_orchestrator/jobs/{verification.py,deferred.py,__init__.py} \
