@@ -4294,7 +4294,7 @@ git commit -m "feat(#stage-2d): compose the four verification stages into verify
     canary_ids=None) -> BatchResult`, where `work` is a sequence of
     `(ClaimInput, CitationInput)`
 
-- [ ] **Step 1: Write the canary file**
+- [x] **Step 1: Write the canary file**
 
 Create `tests/golden/verifier/canaries.yaml`:
 
@@ -4318,7 +4318,7 @@ canaries: []
 > an item whose evidence ids are being re-derived would halt every batch for the wrong
 > reason.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 Create `tools/ingest/tests/test_verify_batch.py`:
 
@@ -4459,7 +4459,7 @@ def test_a_batch_summary_reaches_the_transcript(monkeypatch):
                for _role, content in ctx.writer.events)
 ```
 
-- [ ] **Step 3: Add `CanaryPassed` to `errors.py`**
+- [x] **Step 3: Add `CanaryPassed` to `errors.py`**
 
 ```python
 class CanaryPassed(IngestError):
@@ -4476,12 +4476,12 @@ class CanaryPassed(IngestError):
         self.item_ids = list(item_ids)
 ```
 
-- [ ] **Step 4: Run the test to verify it fails**
+- [x] **Step 4: Run the test to verify it fails**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_batch.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.verify.batch'`
 
-- [ ] **Step 5: Write `batch.py`**
+- [x] **Step 5: Write `batch.py`**
 
 ```python
 from dataclasses import dataclass
@@ -4608,12 +4608,12 @@ def verify_batch(ctx, conn, work, *, config: IngestConfig | None = None, deps=No
     return result
 ```
 
-- [ ] **Step 6: Run the test to verify it passes**
+- [x] **Step 6: Run the test to verify it passes**
 
 Run: `cd tools/ingest && uv run pytest tests/test_verify_batch.py -v`
 Expected: PASS (8 tests)
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/ingest/src/langatlas_ingest/verify/batch.py \

@@ -1,0 +1,12 @@
+# Section 6.2's per-batch known-bad canaries. Each id names a committed golden item whose
+# expected verdict does NOT admit. Before a batch runs, the verifier is asked these
+# questions; if it answers `supported` to any of them, the batch HALTS — a verifier that
+# has started rubber-stamping must not be allowed to spend a night admitting facts.
+#
+# Pick canaries across distinct failure modes, not the easiest items: a fabricated
+# locator, a contradicted claim, an overstated claim, and a fabricated quote each fail
+# for a different reason, so a single passing canary localizes what broke.
+#
+# These ids must exist in tests/golden/verifier/*.yaml. `langatlas-verify canaries
+# --check` verifies that and is wired into CI's golden-validate step.
+canaries: []

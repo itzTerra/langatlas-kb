@@ -122,6 +122,20 @@ class IncompleteMatrix(IngestError):
         self.missing = list(missing)
 
 
+class CanaryPassed(IngestError):
+    """Section 6.2's per-batch canary answered `supported` to a known-bad item.
+
+    Raised — not logged — because the correct response is to stop the batch. A verifier
+    that admits a fabricated locator has stopped reading, and every verdict it produces
+    for the rest of the night is worthless in the one direction the project cannot
+    tolerate (a false accept poisons a public, RAG-recycled corpus)."""
+
+    def __init__(self, item_ids):
+        super().__init__("verification canaries passed (they must not): "
+                         + ", ".join(item_ids))
+        self.item_ids = list(item_ids)
+
+
 class NoVerifierRegistered(IngestError):
     """`golden-score` was asked to score a verifier that does not exist yet. Typed so the
     CLI can say "2D has not shipped the verifier" instead of reporting a 0% error rate
