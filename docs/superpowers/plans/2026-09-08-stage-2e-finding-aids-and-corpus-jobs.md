@@ -207,7 +207,7 @@ the two private result tables the checks read to decide "has this drifted?" and 
   anchor_present, content_hash, drifted)` and
   `source_edition_checks(source_id PK, checked_at, edition, matched, detail)`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/ingest/tests/test_currency_store.py
@@ -259,13 +259,13 @@ def test_currency_tables_exist(db_conn):
         assert cur.fetchone() == ("source_link_checks", "source_edition_checks")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `docker compose up -d db && uv --directory tools/ingest run pytest tests/test_currency_store.py -m db -v`
 Expected: FAIL — `CheckViolation` on the first `link-dead` file, and
 `to_regclass` returning `(None, None)`.
 
-- [ ] **Step 3: Write the migration**
+- [x] **Step 3: Write the migration**
 
 ```sql
 -- db/0006_currency_signals.sql — what the D37 standing jobs need in order to say
@@ -315,12 +315,12 @@ CREATE TABLE IF NOT EXISTS source_edition_checks (
 );
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_store.py -m db -v`
 Expected: 4 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
@@ -3303,7 +3303,7 @@ git commit -m "feat(#stage-2e): read PLDB and Hyperpolyglot leads from their mir
   - `SPARQL_TEMPLATE_PATH`, `load_template() -> str`
   - Both take the channel explicitly — there is no path to the network that skips it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_adapters_live.py
@@ -3399,12 +3399,12 @@ def test_an_empty_result_set_is_an_empty_list_not_an_error(config):
                           config=config) == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_adapters_live.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...adapters.wikidata`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```sparql
 # tools/finding-aids/src/langatlas_finding_aids/queries/wikidata-language.rq
@@ -3506,12 +3506,12 @@ def query_wikipedia(channel, query: str, *, config: FindingAidsConfig | None = N
         retrieved_at=utc_now())][:limit]
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_adapters_live.py -v`
 Expected: 7 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
@@ -4799,7 +4799,7 @@ exists.
 - Create: `tools/finding-aids/README.md`
 - Modify: `config/jobs/crontab.example` (verify all four Stage-2 lines are accurate)
 
-- [ ] **Step 1: Add the package to CI**
+- [x] **Step 1: Add the package to CI**
 
 ```diff
        - name: Install packages
@@ -4814,7 +4814,7 @@ exists.
 +        run: uv --directory tools/finding-aids run pytest
 ```
 
-- [ ] **Step 2: Write the package README and the CONTRIBUTING paragraph**
+- [x] **Step 2: Write the package README and the CONTRIBUTING paragraph**
 
 `tools/finding-aids/README.md`:
 
@@ -4847,7 +4847,7 @@ Never registered on the public MCP (D8/D60).
 > pipeline what to look for; they never back a claim. If a fact's only support is a finding
 > aid, it does not enter the store — go find the tier-A/B source the lead was pointing at.
 
-- [ ] **Step 3: Run every package's tests plus the store gate**
+- [x] **Step 3: Run every package's tests plus the store gate**
 
 ```bash
 docker compose up -d db
@@ -4864,7 +4864,7 @@ uv --directory tools/validate run langatlas-validate ci
 Expected: all green. Any failure here is a real regression from this plan's changes — fix it
 before continuing rather than noting it.
 
-- [ ] **Step 4: Run the 2E exit check end to end**
+- [x] **Step 4: Run the 2E exit check end to end**
 
 ```bash
 # 1. the mirrors exist and are versioned
@@ -4889,7 +4889,7 @@ Read the queue output with the developer: a first real link-check run over 2A's 
 also the first honest statement of how much of the committed corpus still resolves. Findings are
 work for a later session, not for this plan — but they are the point of having built it.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

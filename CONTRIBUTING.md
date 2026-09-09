@@ -17,3 +17,9 @@ under this project's licenses (code: MIT; corpus: CC BY-SA 4.0). Add it with
 
 Human contribution lanes and the fact-challenge process are documented in full once Stage 6
 lands (D32); this file will grow those sections then.
+
+## Sourcing
+
+**Finding aids are not sources.** PLDB, Wikidata, Hyperpolyglot and Wikipedia tell the
+pipeline what to look for; they never back a claim. If a fact's only support is a finding
+aid, it does not enter the store — go find the tier-A/B source the lead was pointing at.

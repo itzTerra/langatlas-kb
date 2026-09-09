@@ -16,6 +16,11 @@ jobs:
           uv --directory tools/validate sync
           uv --directory tools/pipeline sync
           uv --directory tools/ingest sync
+          uv --directory tools/finding-aids sync --extra dev
+      - name: Test the finding-aids package
+        # No database and no network: every adapter takes an injected client, and the
+        # `live` marker is deselected by default.
+        run: uv --directory tools/finding-aids run pytest
       - name: Run the store-validating gate
         run: uv --directory tools/validate run langatlas-validate ci
       - name: Shape-check the committed golden sets
