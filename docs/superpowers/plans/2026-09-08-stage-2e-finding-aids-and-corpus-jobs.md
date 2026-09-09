@@ -4610,7 +4610,7 @@ The last of the three Stage-2-owned stubs.
   `langatlas_finding_aids.mirror.refresh`, `MirrorRefusedByRobots`, `register_job_kind`
 - Produces: job kind `monthly-finding-aid-mirror-refresh`, one work item per mirrored source
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/orchestrator/tests/test_mirror_refresh_job.py
@@ -4688,12 +4688,12 @@ def test_only_the_two_non_stage_2_stubs_remain():
         get_job_kind("backstop-sweep-18mo")[0]({}, None)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_mirror_refresh_job.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...jobs.mirror_refresh`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/orchestrator/src/langatlas_orchestrator/jobs/mirror_refresh.py
@@ -4767,12 +4767,12 @@ dependencies = [
 langatlas-finding-aids = { path = "../finding-aids", editable = true }
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/orchestrator sync && uv --directory tools/orchestrator run pytest -v`
 Expected: all pass, including the updated `test_deferred_jobs.py`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

@@ -10,6 +10,7 @@ dependencies = [
   "langatlas-commit",
   "langatlas-pipeline",
   "langatlas-ingest",
+  "langatlas-finding-aids",
 ]
 
 [project.scripts]
@@ -30,6 +31,7 @@ langatlas-validate = { path = "../validate", editable = true }
 langatlas-commit = { path = "../commit", editable = true }
 langatlas-pipeline = { path = "../pipeline", editable = true }
 langatlas-ingest = { path = "../ingest", editable = true }
+langatlas-finding-aids = { path = "../finding-aids", editable = true }
 
 [tool.pytest.ini_options]
 markers = ["db: needs the docker compose Postgres; run with -m db after `docker compose up -d db`"]

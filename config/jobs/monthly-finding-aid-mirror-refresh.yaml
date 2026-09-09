@@ -1,5 +1,10 @@
-# Deferred to Stage 2 (needs ingested finding-aid sources to mirror).
+# D53's monthly mirror refresh: a git pull for PLDB, a scoped page fetch for
+# Hyperpolyglot. All finding-aid reads are served from these mirrors, so this job is what
+# keeps a checklist's leads current — and the only place the pipeline touches either site.
 kind: monthly-finding-aid-mirror-refresh
 checkpoint_path: .private/orchestrator/monthly-finding-aid-mirror-refresh.sqlite
 budget:
-  max_wall_seconds: 3600
+  # ~7 Hyperpolyglot pages plus git's own traffic, with headroom for the page list to grow.
+  max_calls: 50
+  max_wall_seconds: 1800
+# sources: [pldb]   # uncomment to refresh a single mirror

@@ -6,4 +6,5 @@ from langatlas_orchestrator.jobs import deferred  # noqa: F401
 from langatlas_orchestrator.jobs import edition_check  # noqa: F401
 from langatlas_orchestrator.jobs import exit_test  # noqa: F401
 from langatlas_orchestrator.jobs import link_checker  # noqa: F401
+from langatlas_orchestrator.jobs import mirror_refresh  # noqa: F401
 from langatlas_orchestrator.jobs import verification  # noqa: F401
