@@ -70,6 +70,15 @@ def test_a_quote_in_the_query_cannot_break_out_of_the_template(config):
     assert '"Ru\\"st"' in channel.calls[0]["params"]["query"]
 
 
+def test_a_carriage_return_in_the_query_cannot_break_out_of_the_template(config):
+    """SPARQL's STRING_LITERAL2 grammar forbids a raw CR inside a double-quoted string
+    literal the same way it forbids a raw LF; an unescaped CR is the same class of
+    string-literal-breakout risk the newline handling exists to prevent."""
+    channel = _Channel({"results": {"bindings": []}})
+    query_wikidata(channel, "Ru\rst", config=config)
+    assert "\r" not in channel.calls[0]["params"]["query"]
+
+
 def test_wikipedia_summary_is_normalized(config):
     results = query_wikipedia(_Channel(SUMMARY_PAYLOAD),
                               "Rust (programming language)", config=config)

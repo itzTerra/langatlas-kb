@@ -21,8 +21,12 @@ def load_template(config: FindingAidsConfig | None = None) -> str:
 
 def _escape(label: str) -> str:
     """SPARQL string-literal escaping. The label reaches us from an agent, so this is the
-    boundary between 'a search term' and 'a query'."""
-    return label.replace("\\", "\\\\").replace('"', '\\"').replace("\n", " ")
+    boundary between 'a search term' and 'a query'.
+
+    `STRING_LITERAL2` forbids a raw CR the same way it forbids a raw LF, so both are
+    neutralized here alongside the backslash/quote escaping."""
+    return (label.replace("\\", "\\\\").replace('"', '\\"')
+                 .replace("\r", " ").replace("\n", " "))
 
 
 def query_wikidata(channel, query: str, *, config: FindingAidsConfig | None = None,
