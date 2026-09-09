@@ -19,7 +19,7 @@ items:
       locator: '§3.6'
       quote: 'Higher-order prograrnrning is the collection of prograrnrning techniques that becorne available when using procedure values in prograrns.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['vanroy-haridi-2003#c00255']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00348']
     notes: 'real quote is "Higher-order programming is the collection of programming
       techniques that become available when using procedure values in programs." with
       letter-level noise injected (m/rn confusion, the single most common real PDF-OCR
@@ -37,7 +37,7 @@ items:
       locator: '§4.3'
       quote: 'A strearn is a potentially unbounded list of rnessages, i.e., it is a list whose tail is an unbound datafow variable.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['vanroy-haridi-2003#c00349']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00483']
     notes: 'real quote is "A stream is a potentially unbounded list of messages, i.e., it
       is a list whose tail is an unbound dataflow variable." with m/rn confusion plus a
       dropped letter in "dataflow"'
@@ -54,7 +54,7 @@ items:
       locator: '§2.2.6'
       quote: 'A partial value is a data structure that rnay contain unbound variabIes.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['vanroy-haridi-2003#c00110']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00145']
     notes: 'real quote is "A partial value is a data structure that may contain unbound
       variables." with m/rn confusion and an l/I swap in "variables"'
 
@@ -70,7 +70,7 @@ items:
       locator: '§4.3.1'
       quote: 'A ciass declaration introduces a new ciass and the operations ( ciass rnethods ) on it.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'real quote is "A class declaration introduces a new class and the operations
       ( class methods ) on it." with l/i confusion in "class" and m/rn confusion in
       "methods"'
@@ -87,7 +87,7 @@ items:
       locator: '§6.8.5'
       quote: 'A seiection staternent selects arnong a set of secondary blocks depending on the vaIue of a controlling expression.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['c23-n3220#c00277']
+    evidence_chunk_ids: ['c23-n3220#c00384']
     notes: 'real quote is "A selection statement selects among a set of secondary blocks
       depending on the value of a controlling expression." with l/i and m/rn confusion,
       plus an l/I swap in "value"'
@@ -104,7 +104,7 @@ items:
       locator: '§ B.673. trait¶'
       quote: 'A trait is an iten that describes an interface a type can irnplement.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     notes: 'real quote is "A trait is an item that describes an interface a type can
       implement." with an m/n confusion in "item" and m/rn confusion in "implement"'
 
@@ -120,7 +120,7 @@ items:
       locator: '§8.1'
       quote: 'in a rnodular codebase, they rnust be co-located in the sarne rnodule, as ciasses in different rnodules cannot refer to each other in a circuIar fashion'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['jls-se25#c00262']
+    evidence_chunk_ids: ['jls-se25#c00379']
     notes: 'real quote is "in a modular codebase, they must be co-located in the same
       module, as classes in different modules cannot refer to each other in a circular
       fashion" with heavy m/rn confusion (four occurrences) plus l/i and l/I swaps -- a
@@ -140,7 +140,7 @@ items:
       locator: '§6.2.13'
       quote: 'AIIow the use of larnbda-case syntax.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['ghc-users-guide#c00443']
+    evidence_chunk_ids: ['ghc-users-guide#c00627']
     notes: 'real quote is "Allow the use of lambda-case syntax." with an l/I swap and an
       m/rn confusion -- the shortest example in this batch, showing the annotation fires
       even on a brief quote'
@@ -155,7 +155,7 @@ items:
     citation:
       source: c23-n3220
       locator: '§7.24.3'
-    evidence_chunk_ids: ['c23-n3220#c00567']
+    evidence_chunk_ids: ['c23-n3220#c00789']
     contamination_gauge: true
     notes: 'true claim (Scheme has first-class continuations via call/cc), cited to C''s
       memory-management-functions section, which cannot carry it -- diversifying this
@@ -187,7 +187,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 673–675'
-    evidence_chunk_ids: ['scott-plp#c00417']
+    evidence_chunk_ids: ['scott-plp#c00653']
     notes: 'true claim (C has pointers), cited to a Python member-visibility passage,
       which cannot carry it'
 
@@ -201,7 +201,7 @@ items:
     citation:
       source: ghc-users-guide
       locator: '§5.2.3'
-    evidence_chunk_ids: ['ghc-users-guide#c00161']
+    evidence_chunk_ids: ['ghc-users-guide#c00219']
     notes: 'true claim (Java has garbage collection), cited to a GHC warning-flags
       reference page, which cannot carry it'
 
@@ -215,7 +215,7 @@ items:
     citation:
       source: haskell-2010-report
       locator: 'p. 23'
-    evidence_chunk_ids: ['haskell-2010-report#c00023']
+    evidence_chunk_ids: ['haskell-2010-report#c00030']
     contamination_gauge: true
     notes: 'true claim (Python has list comprehensions), cited to the Haskell report''s
       own introduction, which cannot carry it'

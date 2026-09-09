@@ -46,7 +46,7 @@ queries:
   - id: retrieval-derived-011
     band: exact-term
     query: Java threads sharing one address space
-    expected_chunks: ['sebesta-copl#c00772']
+    expected_chunks: ['sebesta-copl#c01035']
   - id: retrieval-derived-012
     band: exact-term
     query: purpose of the Java finally clause
@@ -54,7 +54,7 @@ queries:
   - id: retrieval-derived-013
     band: exact-term
     query: the base class of Python exceptions
-    expected_chunks: ['sebesta-copl#c00837']
+    expected_chunks: ['sebesta-copl#c01121']
   - id: retrieval-derived-014
     band: exact-term
     query: restricting what can be thrown in Java
@@ -70,7 +70,7 @@ queries:
   - id: retrieval-derived-017
     band: exact-term
     query: definition of a tail-recursive function in Scheme
-    expected_chunks: ['sebesta-copl#c00887']
+    expected_chunks: ['sebesta-copl#c01191']
   - id: retrieval-derived-018
     band: exact-term
     query: when a Python generator function can use yield
@@ -82,4 +82,4 @@ queries:
   - id: retrieval-derived-020
     band: exact-term
     query: Rust trait glossary definition
-    expected_chunks: ['rust-fls#c01034']
+    expected_chunks: ['rust-fls#c01117']

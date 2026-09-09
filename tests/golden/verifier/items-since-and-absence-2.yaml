@@ -45,7 +45,7 @@ items:
     citation:
       source: haskell-2010-report
       locator: '§4.3.1'
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'the SILENCE branch: a single-version language report never states a since
       version for anything, so it cannot contradict 1.0 -- presence is supported, since tops
       out at as-of-supported'
@@ -62,7 +62,7 @@ items:
     citation:
       source: jls-se25
       locator: '§14.4'
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00713']
     notes: 'another SILENCE branch, different source: the JLS body never states a JDK version
       number for var (real introduction was JDK 10), so an incorrect claimed version cannot
       be contradicted by this text -- as-of-supported, not contradicted'
@@ -134,7 +134,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§1.3.3'
-    evidence_chunk_ids: ['sebesta-copl#c00051']
+    evidence_chunk_ids: ['sebesta-copl#c00062']
     notes: 'this survey passage states a design fact, not a quality judgment'
 
   - id: v-c-core-0004
@@ -147,7 +147,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§12.4.3'
-    evidence_chunk_ids: ['sebesta-copl#c00702']
+    evidence_chunk_ids: ['sebesta-copl#c00940']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to a Java inheritance passage,
       which cannot carry it'

@@ -128,7 +128,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.14.3'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     contamination_gauge: true
     notes: 'Ada does not mandate a tracing garbage collector (memory management is
       scope-based and implementation-defined); the pairing itself is invented, and this
@@ -146,7 +146,7 @@ items:
       locator: '§2.14.3'
       quote: 'rendezvous calls time out automatically after 30 milliseconds if the receiving task has not accepted the call'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     notes: 'fabricated numeric-timeout quote in the shape of a plausible one; the real
       passage states only that rendezvous is a communication/synchronization method, with
       no timeout value'
@@ -179,7 +179,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.14.3'
-    evidence_chunk_ids: ['sebesta-copl#c00156']
+    evidence_chunk_ids: ['sebesta-copl#c00196']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'

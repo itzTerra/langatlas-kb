@@ -128,7 +128,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§5.4.2'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'this survey passage states a design classification, not a quality judgment'
 
   - id: v-js-core-0006
@@ -154,7 +154,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§5.4.2'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     contamination_gauge: true
     notes: 'plain JavaScript (without a superset like TypeScript) has no compile-time
       static type checker; the pairing itself is invented, and this passage says the
@@ -172,7 +172,7 @@ items:
       locator: '§5.4.2'
       quote: 'the ECMAScript 2020 standard introduced an opt-in static type annotation syntax that the reference implementation enforces at parse time'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     notes: 'fabricated standards-history quote in the shape of a plausible one; the real
       passage makes no mention of ECMAScript 2020 or a static annotation syntax'
 
@@ -203,7 +203,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§5.4.2'
-    evidence_chunk_ids: ['sebesta-copl#c00309']
+    evidence_chunk_ids: ['sebesta-copl#c00411']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'

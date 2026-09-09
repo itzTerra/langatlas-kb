@@ -41,7 +41,7 @@ items:
       source: sebesta-copl
       locator: '§14.3.2'
       quote: 'The exception handlers of Java have the same form as those of C++, except that every catch must have a parameter and the class of the parameter must be a descendant of the predefined class Throwable.'
-    evidence_chunk_ids: ['sebesta-copl#c00828']
+    evidence_chunk_ids: ['sebesta-copl#c01108']
     notes: 'the evidence supports "same form" (with one stated exception); the claim adds an
       unstated performance-equivalence claim this passage never makes'
 
@@ -70,7 +70,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.6'
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     notes: 'this survey passage states a design rationale (guaranteed cleanup), not a
       quality judgment'
 
@@ -98,7 +98,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.6'
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     contamination_gauge: true
     notes: 'Java has no RAII/deterministic-destructor mechanism (finally is an explicit,
       manually-written block, not automatic scope-exit cleanup); the pairing itself is
@@ -116,7 +116,7 @@ items:
       locator: '§14.3.6'
       quote: 'a finally block may itself throw at most one checked exception, which is silently discarded if the try block already threw'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     notes: 'fabricated behavioral-rule quote in the shape of a plausible one; the real
       passage states only the clause''s purpose (guaranteed cleanup), not this discard rule'
 
@@ -148,7 +148,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.6'
-    evidence_chunk_ids: ['sebesta-copl#c00833']
+    evidence_chunk_ids: ['sebesta-copl#c01116']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'
@@ -164,7 +164,7 @@ items:
       source: ghc-users-guide
       locator: '§6.3.4'
       quote: 'pattern is provided by the PatternSynonyms extension and requires GHC ≥7.8'
-    evidence_chunk_ids: ['ghc-users-guide#c00469']
+    evidence_chunk_ids: ['ghc-users-guide#c00661']
     notes: 'a seventh CONFLICT-branch item off ghc-users-guide, yet another page and
       feature (the pattern import keyword from PatternSynonyms): the page states the
       explicit marker "GHC ≥7.8", opposing the claimed 7.6'

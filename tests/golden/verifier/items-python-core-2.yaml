@@ -102,7 +102,7 @@ items:
     citation:
       source: python-langref-3
       locator: "§ 6.12. Assignment expressions"
-    evidence_chunk_ids: ["python-langref-3#c00206"]
+    evidence_chunk_ids: ["python-langref-3#c00247"]
     contamination_gauge: true
     notes:
       "true claim (Rust has an ownership system), cited to the Python assignment-
@@ -131,7 +131,7 @@ items:
     citation:
       source: python-langref-3
       locator: "§ 6.2.10. Yield expressions"
-    evidence_chunk_ids: ["python-langref-3#c00175"]
+    evidence_chunk_ids: ["python-langref-3#c00207"]
     contamination_gauge: true
     notes:
       "Python has no Java-style checked-exception mechanism; the pairing itself is
@@ -149,7 +149,7 @@ items:
       locator: "§ 6.12. Assignment expressions"
       quote: "assignment expressions may not be used to rebind names already bound in an enclosing comprehension scope, and doing so raises SyntaxError at compile time"
     expected_annotations: ["quote-mismatch"]
-    evidence_chunk_ids: ["python-langref-3#c00206"]
+    evidence_chunk_ids: ["python-langref-3#c00247"]
     notes:
       "fabricated restriction-shaped quote in the shape of a plausible one; the cited
       chunk never states this particular rule"
@@ -185,7 +185,7 @@ items:
     citation:
       source: python-langref-3
       locator: "§ 6.12. Assignment expressions"
-    evidence_chunk_ids: ["python-langref-3#c00206"]
+    evidence_chunk_ids: ["python-langref-3#c00247"]
     contamination_gauge: true
     notes:
       "no quote supplied and the claim carries no natural-language overlap with the

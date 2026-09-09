@@ -71,7 +71,7 @@ items:
     citation:
       source: c23-n3220
       locator: '§7.24.3'
-    evidence_chunk_ids: ['c23-n3220#c00567']
+    evidence_chunk_ids: ['c23-n3220#c00789']
     contamination_gauge: true
     notes: 'the memory management functions section documents manual aligned_alloc / calloc
       / malloc / realloc / free only -- an obscure-enough locus for the contamination gauge'
@@ -168,7 +168,7 @@ items:
     citation:
       source: c23-n3220
       locator: '§6.8.5'
-    evidence_chunk_ids: ['c23-n3220#c00277']
+    evidence_chunk_ids: ['c23-n3220#c00384']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to C''s selection-statements
       section, which cannot carry it'
@@ -185,7 +185,7 @@ items:
       locator: '§ 8.6.1. Overview'
       quote: 'match statements compile to an efficient decision-tree bytecode via structural hashing'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['python-langref-3#c00250']
+    evidence_chunk_ids: ['python-langref-3#c00298']
     notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
       Overview section describes control flow, not bytecode compilation strategy'
 

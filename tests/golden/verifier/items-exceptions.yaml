@@ -11,7 +11,7 @@ items:
       source: sebesta-copl
       locator: '§14.4.1'
       quote: 'In Python, exceptions are objects. The base class of all exception classes is BaseException, from which the Exception class is derived.'
-    evidence_chunk_ids: ['sebesta-copl#c00837']
+    evidence_chunk_ids: ['sebesta-copl#c01121']
     notes: 'plain support; the same locus grounds v-py-core-0025/0026/0027'
 
   - id: v-java-core-0020
@@ -84,7 +84,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.4.1'
-    evidence_chunk_ids: ['sebesta-copl#c00837']
+    evidence_chunk_ids: ['sebesta-copl#c01121']
     contamination_gauge: true
     notes: 'true claim (Haskell does have type classes), cited to the Python exceptions
       passage, which cannot carry it'
@@ -99,7 +99,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.8'
-    evidence_chunk_ids: ['sebesta-copl#c00835']
+    evidence_chunk_ids: ['sebesta-copl#c01119']
     notes: 'this survey passage states a design-restriction fact, not a quality judgment'
 
   - id: v-java-core-0023
@@ -125,7 +125,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.4.1'
-    evidence_chunk_ids: ['sebesta-copl#c00837']
+    evidence_chunk_ids: ['sebesta-copl#c01121']
     contamination_gauge: true
     notes: 'Python has no compile-time null-safety enforcement; the pairing itself is
       invented, and this exceptions passage says nothing about it'
@@ -142,7 +142,7 @@ items:
       locator: '§14.3.8'
       quote: 'the restriction to Throwable subtypes was relaxed in Java 17 to permit any Serializable object to be thrown'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00835']
+    evidence_chunk_ids: ['sebesta-copl#c01119']
     notes: 'fabricated version-history quote in the shape of a plausible one; the real
       passage states the restriction with no version qualifier or relaxation'
 
@@ -158,7 +158,7 @@ items:
       locator: '§14.3.8'
       quote: 'In Python, exceptions are objects. The base class of all exception classes is BaseException, from which the Exception class is derived.'
     expected_annotations: ['quote-found-elsewhere']
-    evidence_chunk_ids: ['sebesta-copl#c00837']
+    evidence_chunk_ids: ['sebesta-copl#c01121']
     notes: 'real quote, cited to the Java/C++ evaluation section instead of its real home
       §14.4.1 -- auto-correctable to the true locator'
 
@@ -173,7 +173,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§14.3.8'
-    evidence_chunk_ids: ['sebesta-copl#c00835']
+    evidence_chunk_ids: ['sebesta-copl#c01119']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'
@@ -189,7 +189,7 @@ items:
       source: python-langref-3
       locator: '§ 2.6.1. Integer literals'
       quote: 'Changed in version 3.6: Underscores are now allowed for grouping purposes in literals.'
-    evidence_chunk_ids: ['python-langref-3#c00041']
+    evidence_chunk_ids: ['python-langref-3#c00045']
     notes: 'a third python-langref-3 CONFLICT-branch item, a fresh feature (underscore
       digit grouping): the page states the explicit marker "Changed in version 3.6",
       opposing the claimed 3.3'

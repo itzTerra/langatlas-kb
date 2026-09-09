@@ -12,7 +12,7 @@ items:
       source: sebesta-copl
       locator: '§15.5.12'
       quote: 'A function is tail recursive if its recursive call is the last operation in the function.'
-    evidence_chunk_ids: ['sebesta-copl#c00887']
+    evidence_chunk_ids: ['sebesta-copl#c01191']
     notes: 'plain support; the same locus grounds v-scheme-core-0002/0003/0004'
 
   - id: v-ml-core-0004
@@ -135,7 +135,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§15.5.12'
-    evidence_chunk_ids: ['sebesta-copl#c00887']
+    evidence_chunk_ids: ['sebesta-copl#c01191', 'sebesta-copl#c01192']
     notes: 'this survey passage states a semantic definition and an optimization
       opportunity, not a quality judgment'
 
@@ -167,7 +167,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§15.7'
-    evidence_chunk_ids: ['sebesta-copl#c00893']
+    evidence_chunk_ids: ['sebesta-copl#c01200']
     contamination_gauge: true
     notes: 'ML has no macro system (hygienic or otherwise); the pairing itself is invented,
       and this passage says nothing about it'
@@ -184,7 +184,7 @@ items:
       locator: '§15.8'
       quote: 'the Haskell committee mandated nonstrict semantics in the 1990 report specifically to enable infinite data structures in scientific computing'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00898']
+    evidence_chunk_ids: ['sebesta-copl#c01208']
     notes: 'fabricated historical/motivational quote in the shape of a plausible one; the
       real passage states the fact plainly with no committee narrative or rationale'
 
@@ -200,7 +200,7 @@ items:
       locator: '§15.7'
       quote: 'A function is tail recursive if its recursive call is the last operation in the function.'
     expected_annotations: ['quote-found-elsewhere']
-    evidence_chunk_ids: ['sebesta-copl#c00887']
+    evidence_chunk_ids: ['sebesta-copl#c01191']
     notes: 'real quote, cited to the ML section instead of its real home §15.5.12 --
       auto-correctable to the true locator'
 
@@ -216,7 +216,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§15.7'
-    evidence_chunk_ids: ['sebesta-copl#c00895']
+    evidence_chunk_ids: ['sebesta-copl#c01203']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'

@@ -116,7 +116,7 @@ items:
     citation:
       source: haskell-2010-report
       locator: '§4.3.1'
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'a language report defines syntax and semantics; it makes no quality claims'
 
   - id: v-haskell-core-0009
@@ -129,7 +129,7 @@ items:
     citation:
       source: haskell-2010-report
       locator: '§4.3.1'
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'Haskell 2010 has no dependent types; the pairing itself is invented, and this
       section (ordinary type classes) says nothing about it'
 
@@ -145,7 +145,7 @@ items:
       locator: '§4.3.1'
       quote: 'type classes provide ad-hoc polymorphism through runtime vtable dispatch'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['haskell-2010-report#c00080']
+    evidence_chunk_ids: ['haskell-2010-report#c00104']
     notes: 'fabricated quote in the shape of a plausible one; the real section never
       mentions vtables or runtime dispatch mechanics'
 
@@ -177,7 +177,7 @@ items:
       locator: '§1.8'
       quote: 'In lazv evaluation, a calculation is dane only when the resuIt is nee ded.'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['vanroy-haridi-2003#c00071']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00093']
     contamination_gauge: true
     notes: 'real quote is "In lazy evaluation, a calculation is done only when the result
       is needed." with letter-level noise injected (v/y, a/o, split "needed"); the LLM
@@ -194,7 +194,7 @@ items:
     citation:
       source: vanroy-haridi-2003
       locator: '§1.8'
-    evidence_chunk_ids: ['vanroy-haridi-2003#c00071']
+    evidence_chunk_ids: ['vanroy-haridi-2003#c00093']
     contamination_gauge: true
     notes: 'no quote supplied and the claim string carries no natural-language overlap
       with the source prose; retrieval/entailment must work from the locator and chunk

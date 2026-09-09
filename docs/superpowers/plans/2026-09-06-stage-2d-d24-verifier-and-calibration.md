@@ -88,12 +88,17 @@ Stage 1's and Stage 2's constraints carry over verbatim. These bind every task b
 
 ## Gate state at the time of writing (read this before Task 18)
 
-2A and 2C have landed. **2B has one open item that blocks Task 18 (the calibration run) and
-nothing else:**
+**Closed (2026-09-09).** 2A, 2B, and 2C have all landed; nothing blocks Task 18 anymore.
 
-1. `tests/golden/verifier/PENDING-REPAIR.md` lists **126 verifier items and 10 retrieval
-   entries** whose `evidence_chunk_ids` still need human re-derivation after the D22 chunking
-   move.
+`tests/golden/verifier/PENDING-REPAIR.md` (126 verifier items + 10 retrieval entries needing
+`evidence_chunk_ids` re-derived after the D22 chunking move) is resolved and deleted: 13 of
+the 126 were false positives (`stratum: fabricated-locator`, correctly empty already — the
+flagging script didn't check stratum); the remaining 113 verifier items and all 10 retrieval
+entries were re-derived against the live corpus and independently re-verified (every
+`evidence_chunk_ids` confirmed to exist, belong to the cited source, and — where a real
+`citation.quote` is present and the stratum doesn't itself test a quote mismatch — contain
+that quote verbatim modulo PDF-extraction typography). `golden-validate --resolve --complete`
+passes with 0 errors.
 
 The held-out audit slice (2B's former last task) was **abandoned by developer ruling
 (2026-09-09)**: `SET_INVARIANTS["held_out_min"/"held_out_max"]` now reads `0`/`0`, and Task 18

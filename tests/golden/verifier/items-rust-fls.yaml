@@ -12,7 +12,7 @@ items:
       source: rust-fls
       locator: '§ B.673. trait¶'
       quote: 'A trait is an item that describes an interface a type can implement.'
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     notes: 'plain support from the formal Rust language specification''s glossary entry'
 
   - id: v-rustfls-0002
@@ -56,7 +56,7 @@ items:
       source: rust-fls
       locator: '§ 15.4. Borrowing¶'
       quote: 'An implicit borrow is a borrow that is not present syntactically in program text.'
-    evidence_chunk_ids: ['rust-fls#c00314']
+    evidence_chunk_ids: ['rust-fls#c00377']
     notes: 'the cited legality rule directly states the opposite: implicit borrows exist and
       are, by definition, not present syntactically'
 
@@ -84,7 +84,7 @@ items:
     citation:
       source: rust-fls
       locator: '§ B.673. trait¶'
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     contamination_gauge: true
     notes: 'true claim (Haskell does have type classes), cited to the Rust FLS''s trait
       glossary entry, which cannot carry it'
@@ -99,7 +99,7 @@ items:
     citation:
       source: rust-fls
       locator: '§ B.673. trait¶'
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     notes: 'a formal language specification defines terms and rules; it makes no quality claims'
 
   - id: v-rustfls-0008
@@ -112,7 +112,7 @@ items:
     citation:
       source: rust-fls
       locator: '§ B.673. trait¶'
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     contamination_gauge: true
     notes: 'Rust has no checked-exception mechanism (it uses Result/Option instead); the
       pairing itself is invented, and this glossary entry says nothing about it'
@@ -129,7 +129,7 @@ items:
       locator: '§ B.673. trait¶'
       quote: 'a trait may declare at most one default method, and all others must be abstract'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     notes: 'fabricated constraint-shaped quote; the real glossary entry states no such
       limitation and is a single generic sentence'
 
@@ -145,7 +145,7 @@ items:
       locator: '§ B.377. lifetime¶'
       quote: 'A trait is an item that describes an interface a type can implement.'
     expected_annotations: ['quote-found-elsewhere']
-    evidence_chunk_ids: ['rust-fls#c01034']
+    evidence_chunk_ids: ['rust-fls#c01117']
     notes: 'real quote, cited to the neighbouring lifetime glossary entry instead of its
       real home §B.673 -- auto-correctable to the true locator'
 
@@ -161,7 +161,7 @@ items:
     citation:
       source: rust-fls
       locator: '§ B.377. lifetime¶'
-    evidence_chunk_ids: ['rust-fls#c00751']
+    evidence_chunk_ids: ['rust-fls#c00834']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       terse glossary definition'
@@ -210,7 +210,7 @@ items:
       source: ghc-users-guide
       locator: '§6.3.4'
       quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies Since 7.6.1'
-    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    evidence_chunk_ids: ['ghc-users-guide#c00660']
     notes: 'a fifth CONFLICT-branch item, a different extension again: the page states the
       explicit marker "Since 7.6.1", opposing the claimed 9.0'
 
@@ -225,7 +225,7 @@ items:
       source: ghc-users-guide
       locator: '§6.3.4'
       quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies'
-    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    evidence_chunk_ids: ['ghc-users-guide#c00660']
     notes: 'the page names exactly two implying extensions, TypeOperators and TypeFamilies;
       the claim generalises to any type-namespace-touching extension, a scope this passage
       does not state'

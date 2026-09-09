@@ -11,7 +11,7 @@ items:
       source: sebesta-copl
       locator: '§13.7'
       quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space.'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'plain support; the same locus grounds v-ada-core-0001/0002/0003 and
       v-java-core-0013/0014/0015/0016/0017/0018/0019'
 
@@ -26,7 +26,7 @@ items:
       source: sebesta-copl
       locator: '§13.7'
       quote: 'This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'plain support, the direct contrast case to v-java-core-0012'
 
   - id: v-java-core-0013
@@ -40,7 +40,7 @@ items:
       source: sebesta-copl
       locator: '§13.7'
       quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space. This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'the cited text explicitly contrasts Java''s shared-address-space model with
       Ada''s separate-address-space model'
 
@@ -55,7 +55,7 @@ items:
       source: sebesta-copl
       locator: '§13.7'
       quote: 'This is different from Ada tasks, which are heavyweight threads (they run in their own address spaces).'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'the evidence names exactly one comparison language, Ada; the claim generalises
       to every non-Java language, a scope this passage does not state'
 
@@ -69,7 +69,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§13.7'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to a Java-threads passage,
       which cannot carry it'
@@ -84,7 +84,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§13.7'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'this survey passage states an implementation-model fact, not a quality judgment'
 
   - id: v-java-core-0016
@@ -111,7 +111,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§13.7'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     contamination_gauge: true
     notes: 'the JVM specification does not guarantee tail-call optimization; the pairing
       itself is invented, and this threading passage says nothing about it'
@@ -128,7 +128,7 @@ items:
       locator: '§13.7'
       quote: 'the JVM specification mandates a maximum of 256 concurrently live threads per process on conforming implementations'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'fabricated specification-limit quote in the shape of a plausible one; the real
       passage states no such numeric limit'
 
@@ -144,7 +144,7 @@ items:
       locator: '§13.3.1'
       quote: 'Java''s threads are lightweight tasks, which means that they all run in the same address space.'
     expected_annotations: ['quote-found-elsewhere']
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     notes: 'real quote, cited to the semaphore-introduction section instead of its real home
       §13.7 -- auto-correctable to the true locator'
 
@@ -159,7 +159,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§13.7'
-    evidence_chunk_ids: ['sebesta-copl#c00772']
+    evidence_chunk_ids: ['sebesta-copl#c01035']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'
@@ -176,7 +176,7 @@ items:
       source: ghc-users-guide
       locator: '§6.3.4'
       quote: 'ExplicitNamespaces Implied by TypeOperators, TypeFamilies Since 7.6.1'
-    evidence_chunk_ids: ['ghc-users-guide#c00468']
+    evidence_chunk_ids: ['ghc-users-guide#c00660']
     notes: 'a patch-level off-by-one variant off the same ExplicitNamespaces page as
       v-since-0010''s off-by-major item and v-rustfls-0013''s overstated item: the page
       states the explicit marker "Since 7.6.1", opposing the claimed 7.6.0'

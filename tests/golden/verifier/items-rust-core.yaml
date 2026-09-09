@@ -88,7 +88,7 @@ items:
     citation:
       source: rust-reference
       locator: "p. 422"
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     contamination_gauge: true
     notes:
       "true claim (Haskell does have type classes), cited to the Rust reference's
@@ -106,7 +106,7 @@ items:
       locator: "p. 422"
       quote: "shared references are reclaimed by a tracing garbage collector once their reference count reaches zero"
     expected_annotations: ["quote-mismatch"]
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     notes:
       "fabricated quote in the shape of a plausible one; the real passage never mentions
       garbage collection or reference counting"
@@ -121,7 +121,7 @@ items:
     citation:
       source: rust-reference
       locator: "p. 422"
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     notes: "a language reference defines syntax and semantics; it makes no quality claims"
 
   - id: v-rust-core-0009
@@ -134,7 +134,7 @@ items:
     citation:
       source: rust-reference
       locator: "p. 422"
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     contamination_gauge: true
     notes:
       "Rust has no tracing garbage collector -- it uses ownership/borrowing instead;
@@ -153,7 +153,7 @@ items:
     citation:
       source: rust-reference
       locator: "p. 422"
-    evidence_chunk_ids: ["rust-reference#c00456"]
+    evidence_chunk_ids: ["rust-reference#c00546"]
     contamination_gauge: true
     notes:
       "no quote supplied and the claim carries no natural-language overlap with the

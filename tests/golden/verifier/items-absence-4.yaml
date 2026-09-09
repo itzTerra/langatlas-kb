@@ -160,7 +160,7 @@ items:
       locator: 'pp. 384–387'
       quote: 'the ISO C++ committee rejected a proposed universal Object base class in the 2011 standard after prolonged debate'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['scott-plp#c00232']
+    evidence_chunk_ids: ['scott-plp#c00361']
     notes: 'fabricated historical/committee-process quote in the shape of a plausible one;
       the real passage never mentions a standards committee or a rejected proposal'
 
@@ -174,7 +174,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 461–465'
-    evidence_chunk_ids: ['scott-plp#c00282']
+    evidence_chunk_ids: ['scott-plp#c00440']
     contamination_gauge: true
     notes: 'Java has only single class inheritance (see v-absent-0006); claiming it present
       is a fabricated pairing, and this struct-focused passage says nothing about it either
@@ -190,7 +190,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 1025–1026'
-    evidence_chunk_ids: ['scott-plp#c00642']
+    evidence_chunk_ids: ['scott-plp#c00999']
     contamination_gauge: true
     notes: 'true claim (Haskell does have type classes), cited to a Python/Ruby inheritance
       passage, which cannot carry it'

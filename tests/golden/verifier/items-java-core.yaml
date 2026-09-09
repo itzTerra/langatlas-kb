@@ -99,7 +99,7 @@ items:
     citation:
       source: jls-se25
       locator: '§8.1'
-    evidence_chunk_ids: ['jls-se25#c00262']
+    evidence_chunk_ids: ['jls-se25#c00379']
     notes: 'a language specification defines syntax and semantics; it makes no quality claims'
 
   - id: v-java-core-0008
@@ -112,7 +112,7 @@ items:
     citation:
       source: jls-se25
       locator: '§14.4'
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00716']
     contamination_gauge: true
     notes: 'Java has no syntactic macro system; the pairing itself is invented, and this
       section (local variable declarations) says nothing about it'
@@ -129,7 +129,7 @@ items:
       locator: '§14.4'
       quote: 'the var keyword triggers a full-program type inference pass equivalent to Hindley-Milner unification'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['jls-se25#c00487']
+    evidence_chunk_ids: ['jls-se25#c00716']
     notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
       passage describes local, per-declaration type inference, not a whole-program algorithm'
 

@@ -102,7 +102,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 673–675'
-    evidence_chunk_ids: ['scott-plp#c00417']
+    evidence_chunk_ids: ['scott-plp#c00653']
     contamination_gauge: true
     notes: 'wrong claim (C99 does have _Bool, but this claim as posed is unqualified "C has a
       Boolean type" which the cited passage never discusses at all), cited to a Python
@@ -118,7 +118,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 673–675'
-    evidence_chunk_ids: ['scott-plp#c00417']
+    evidence_chunk_ids: ['scott-plp#c00653']
     notes: 'a language pragmatics survey states a design fact here, not a quality judgment'
 
   - id: v-c-core-0005
@@ -135,7 +135,7 @@ items:
       locator: '§1.3.1'
       quote: 'the C committee added a native _Bool keyword to the language as early as 1989 to resolve this exact readability complaint'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00046']
+    evidence_chunk_ids: ['sebesta-copl#c00055']
     notes: 'fabricated historical quote in the shape of a plausible one (bool was not added
       until C99, 1999); the real passage never mentions a committee decision or a date'
 
@@ -149,7 +149,7 @@ items:
     citation:
       source: scott-plp
       locator: 'pp. 500–502'
-    evidence_chunk_ids: ['scott-plp#c00304']
+    evidence_chunk_ids: ['scott-plp#c00474']
     contamination_gauge: true
     notes: 'C has no runtime reflection facility; the pairing itself is invented, and this
       section (array/string implementation) says nothing about it'

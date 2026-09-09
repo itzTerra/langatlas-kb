@@ -103,7 +103,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.18.1'
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     contamination_gauge: true
     notes: 'true claim (Rust has an ownership system), cited to the Perl origins/
       characteristics passage, which cannot carry it'
@@ -118,7 +118,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.18.1'
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'this survey passage states an implementation fact, not a quality judgment'
 
   - id: v-perl-core-0009
@@ -145,7 +145,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.18.1'
-    evidence_chunk_ids: ['sebesta-copl#c00177']
+    evidence_chunk_ids: ['sebesta-copl#c00223']
     contamination_gauge: true
     notes: 'Perl performs no compile-time static type checking of scalar VALUES (its
       scalars coerce freely between strings and numbers, per §2.18.1''s own later
@@ -164,7 +164,7 @@ items:
       locator: '§2.18.1'
       quote: 'hashes are implemented as self-balancing red-black trees to guarantee O(log n) worst-case lookup'
     expected_annotations: ['quote-mismatch']
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'fabricated implementation-detail quote in the shape of a plausible one; the real
       passage says hashes are "implicitly controlled hash tables" with no mention of
       balanced trees or complexity guarantees'
@@ -181,7 +181,7 @@ items:
       locator: '§6.5.3'
       quote: 'Perl includes associative arrays, which are called hashes.'
     expected_annotations: ['quote-found-elsewhere']
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     notes: 'real quote, cited to the general array-subscript-bindings section instead of
       its real home §2.18.1 -- auto-correctable to the true locator'
 
@@ -197,7 +197,7 @@ items:
     citation:
       source: sebesta-copl
       locator: '§2.18.1'
-    evidence_chunk_ids: ['sebesta-copl#c00178']
+    evidence_chunk_ids: ['sebesta-copl#c00224']
     contamination_gauge: true
     notes: 'no quote supplied and the claim carries no natural-language overlap with the
       source prose'
