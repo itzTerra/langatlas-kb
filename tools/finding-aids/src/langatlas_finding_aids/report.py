@@ -57,6 +57,23 @@ def _cmd_mirror_refresh(args) -> int:
     return 0
 
 
+def _cmd_mint_identification(args) -> int:
+    from langatlas_finding_aids.identification import mint_identification_source
+
+    ctx = _run_context("mint-identification")
+    try:
+        results = search_finding_aids(ctx, args.query, sources=[args.source], limit=1)
+    finally:
+        ctx.close()
+    if not results:
+        print(f"no {args.source} result for {args.query!r}")
+        return 1
+    path = mint_identification_source(results[0], args.field)
+    print(f"{path}\nreview and commit it; the value itself belongs on the language"
+          " registry record, not in a gated fact")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="langatlas-finding-aids",
@@ -79,6 +96,15 @@ def main(argv: list[str] | None = None) -> int:
     refresh = sub.add_parser("mirror-refresh", help="refresh the PLDB/Hyperpolyglot mirrors")
     refresh.add_argument("--source", default=None)
     refresh.set_defaults(func=_cmd_mirror_refresh)
+
+    mint = sub.add_parser("mint-identification",
+                          help="mint a tier-D attribution citation for one identification"
+                               " metadata point (D29's carve-out)")
+    mint.add_argument("query")
+    mint.add_argument("--source", required=True)
+    mint.add_argument("--field", required=True,
+                      help="file-extension | first-appeared")
+    mint.set_defaults(func=_cmd_mint_identification)
 
     args = parser.parse_args(argv)
     return args.func(args)

@@ -4380,7 +4380,7 @@ default output.
     repo_root=None) -> Path` — raises `NotIdentificationMetadata` for any other field
   - `class NotIdentificationMetadata(ValueError)`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_identification.py
@@ -4453,12 +4453,12 @@ def test_minting_twice_is_idempotent(repo):
     assert len(list((repo / "sources").glob("*.yaml"))) == 1
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_identification.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...identification`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/finding-aids/src/langatlas_finding_aids/identification.py
@@ -4572,13 +4572,13 @@ def _cmd_mint_identification(args) -> int:
     mint.set_defaults(func=_cmd_mint_identification)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_identification.py -v` then
 `uv --directory tools/validate run langatlas-validate ci`
 Expected: 6 passed; the store gate stays green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
