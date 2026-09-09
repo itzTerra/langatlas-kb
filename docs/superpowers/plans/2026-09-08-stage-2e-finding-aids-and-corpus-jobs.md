@@ -3899,7 +3899,7 @@ finding aid knows about X for language L; does our store?*
   - CLI `main(argv=None) -> int` with subcommands `checklist`, `lookup`, `mirror-refresh`
     (`mint-identification` added in Task 16)
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/finding-aids/tests/test_checklist.py
@@ -4085,12 +4085,12 @@ class _FakeRun:
         pass
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_checklist.py tests/test_report_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...checklist`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/finding-aids/src/langatlas_finding_aids/checklist.py
@@ -4328,12 +4328,12 @@ if __name__ == "__main__":
     raise SystemExit(main())
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_checklist.py tests/test_report_cli.py -v`
 Expected: 11 passed.
 
-- [ ] **Step 5: Developer checkpoint, then commit**
+- [x] **Step 5: Developer checkpoint, then commit**
 
 Show the developer a real checklist before committing — this is the artifact Stage 3 consumes,
 and its shape is the thing worth an opinion:
