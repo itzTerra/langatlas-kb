@@ -20,8 +20,16 @@ pldb:
   concepts_glob: "concepts/*.scroll"
   # The line-prefixed keys the adapter lifts out of a concept file. Unknown keys are
   # ignored, so this list is additive, never a parser change.
-  fields: [id, name, title, appeared, type, paradigms, fileExtensions, influencedBy,
-           wikipedia, description]
+  #
+  # Verified against a real clone (Task 11 Step 3, 2026-09-09, HEAD at clone time):
+  # `title` and `type` are each present in exactly 1 of 5154 `concepts/*.scroll` files
+  # (false positives from nested citation-block lines, not real top-level fields), and
+  # `paradigms` appears in none — paradigm language ("supports functional and imperative
+  # paradigms") lives in free-text `summary`/`description` prose, not a structured field.
+  # `name` and `appeared` are the real top-level id/title/date fields; `tags` (present in
+  # 5151/5154 files, e.g. `tags pl`) is PLDB's actual type/paradigm classifier.
+  # `influencedBy` (119/5154) and `wikipedia` (1974/5154) are real but sparse.
+  fields: [id, name, appeared, tags, fileExtensions, influencedBy, wikipedia, description]
 
 hyperpolyglot:
   base_url: https://hyperpolyglot.org

@@ -2650,7 +2650,7 @@ All later reads are served from these mirrors — no adapter live-fetches either
     "item_count", "items": {<key>: <sha256>}}`; PLDB's payload is the clone under
     `<mirror_dir>/repo/`, Hyperpolyglot's is `<mirror_dir>/pages/<slug>.html`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_mirror.py
@@ -2800,12 +2800,12 @@ def test_refresh_dispatches_by_source_name(tmp_path, config):
         mirror.refresh("wikidata", _Ctx(), config=config, root=tmp_path)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_mirror.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...mirror`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Before writing the parser-facing parts, **clone PLDB once by hand and look at it**:
 
@@ -3006,12 +3006,12 @@ def refresh(source: str, ctx, **kwargs) -> MirrorState:
     return _REFRESHERS[source](ctx, **kwargs)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_mirror.py -v`
 Expected: 9 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
