@@ -1071,7 +1071,7 @@ the edition string survive.
     detail: str, fetched: bool)`
   - `check_edition(source_id, facts, *, fetch) -> EditionCheckResult`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/ingest/tests/test_currency_editions.py
@@ -1162,12 +1162,12 @@ def test_matching_ignores_whitespace_and_case():
     assert result.matched is True
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_editions.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...currency.editions`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/ingest/src/langatlas_ingest/currency/editions.py
@@ -1256,12 +1256,12 @@ def check_edition(source_id: str, facts: SourceFacts, *, fetch) -> EditionCheckR
                               matched=matched, detail=detail, fetched=True)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_editions.py -v`
 Expected: 11 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
