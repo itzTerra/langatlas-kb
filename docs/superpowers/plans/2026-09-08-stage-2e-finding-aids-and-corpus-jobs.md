@@ -357,7 +357,7 @@ network, no database.
     counts as one failed attempt
   - `content_hash(text: str) -> str` — SHA-256 over whitespace-collapsed text
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/ingest/tests/test_currency_links.py
@@ -455,12 +455,12 @@ def test_signals_are_independent_and_all_reported():
     assert result.findings == ("anchor-missing", "content-drift")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_links.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.currency'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/ingest/src/langatlas_ingest/currency/__init__.py
@@ -569,12 +569,12 @@ def check_link(source_id: str, url: str, *, fetch,
                            drifted=drifted, findings=tuple(findings))
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_links.py -v`
 Expected: 10 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
