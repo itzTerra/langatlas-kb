@@ -793,7 +793,7 @@ exactly: enumerate work items from the committed store, run one item inside the 
 - Produces: job kind `monthly-link-checker`; module-level `_enumerate(extra, repo_root)` and
   `_run_item(ctx, item_key, extra, repo_root)`; `_http_fetch(ctx)` building the fetcher
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/orchestrator/tests/test_link_checker_job.py
@@ -897,12 +897,12 @@ def test_an_unreachable_database_blocks_rather_than_completing(tmp_path, monkeyp
     assert outcome.status == "blocked" and "database" in outcome.detail
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_link_checker_job.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...jobs.link_checker`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/orchestrator/src/langatlas_orchestrator/jobs/link_checker.py
@@ -1022,7 +1022,7 @@ budget:
 # source_ids: [python-langref-3]   # uncomment to re-check a single source by hand
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_link_checker_job.py -v` then
 `uv --directory tools/orchestrator run pytest tests/test_link_checker_job.py -m db -v` and
@@ -1031,7 +1031,7 @@ Expected: all pass; the deferred-stub test now expects four remaining stubs
 (`monthly-finding-aid-mirror-refresh`, `quarterly-edition-check`, `monthly-demand-export`,
 `backstop-sweep-18mo`).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

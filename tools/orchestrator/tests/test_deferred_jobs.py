@@ -4,7 +4,6 @@ from langatlas_orchestrator.registry import UnknownJobKind, get_job_kind
 import langatlas_orchestrator.jobs  # noqa: F401
 
 _DEFERRED_KINDS = (
-    "monthly-link-checker",
     "monthly-finding-aid-mirror-refresh", "monthly-demand-export",
     "quarterly-edition-check", "backstop-sweep-18mo",
 )

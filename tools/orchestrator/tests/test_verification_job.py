@@ -24,10 +24,10 @@ def test_it_is_no_longer_a_deferred_stub():
     assert isinstance(enumerate_fn({}, Path(".")), list)
 
 
-def test_the_other_five_stubs_are_still_deferred():
+def test_the_other_four_stubs_are_still_deferred():
     from langatlas_orchestrator.registry import get_job_kind
     from pathlib import Path
-    for kind in ("monthly-link-checker", "quarterly-edition-check",
+    for kind in ("quarterly-edition-check",
                  "monthly-finding-aid-mirror-refresh", "monthly-demand-export",
                  "backstop-sweep-18mo"):
         enumerate_fn, _ = get_job_kind(kind)

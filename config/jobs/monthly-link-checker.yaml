@@ -1,5 +1,10 @@
-# Deferred to Stage 2 (needs an ingested corpus with url-locator sources).
+# §4.4's monthly link-checker: resolution, anchor presence, content-hash drift, as three
+# independent signals. Findings land in `sourcing_queue` (kind: link-checker) — nothing
+# here can change a fact's verification status.
 kind: monthly-link-checker
 checkpoint_path: .private/orchestrator/monthly-link-checker.sqlite
 budget:
+  # ~30 sources x 2 attempts, with room for the corpus to grow before anyone edits this.
+  max_calls: 200
   max_wall_seconds: 3600
+# source_ids: [python-langref-3]   # uncomment to re-check a single source by hand
