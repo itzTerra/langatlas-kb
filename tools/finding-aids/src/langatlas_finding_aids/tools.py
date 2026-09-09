@@ -3,6 +3,7 @@
 **Never public (Section 9/D60).** `SERVER_NAME` and `TOOL_NAMES` live only in this module,
 exactly as `langatlas_ingest.tools` does for the citable retrieval pair, so nothing can
 register this on the public MCP server without importing this file on purpose."""
+from langatlas_finding_aids.channel import FindingAidChannel
 from langatlas_finding_aids.config import ALL_SOURCES, FindingAidsConfig
 from langatlas_finding_aids.query import render_for_prompt, search_finding_aids
 from langatlas_finding_aids.results import NON_CITABLE_CAVEAT
@@ -42,13 +43,18 @@ def sdk_finding_aid_tools(ctx, *, config: FindingAidsConfig | None = None):
     from claude_agent_sdk import create_sdk_mcp_server, tool
 
     config = config or FindingAidsConfig.load()
+    # Built once per session, not once per call: the channel owns the per-source
+    # `Throttle`, so a session that makes several tool calls (the normal case) needs one
+    # shared channel or the configured throttle never accumulates state between calls.
+    channel = FindingAidChannel(ctx, config=config)
 
     @tool("search_finding_aids", TOOL_DESCRIPTION, SEARCH_SCHEMA)
     async def _search(args):
         results = search_finding_aids(ctx, args["query"],
                                       sources=args.get("sources") or None,
-                                      limit=args.get("limit", 10), config=config)
+                                      limit=args.get("limit", 10), config=config,
+                                      channel=channel)
         return {"content": [{"type": "text",
-                             "text": render_for_prompt(ctx, results)}]}
+                             "text": render_for_prompt(ctx, results, channel=channel)}]}
 
     return create_sdk_mcp_server(name=SERVER_NAME, version="0.1.0", tools=[_search])

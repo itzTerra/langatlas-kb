@@ -15,6 +15,7 @@ from pathlib import Path
 from langatlas_validate.paths import REPO_ROOT
 from langatlas_validate.store import iter_store_records
 
+from langatlas_finding_aids.channel import FindingAidChannel
 from langatlas_finding_aids.config import FindingAidsConfig
 from langatlas_finding_aids.mirror import mirror_state
 from langatlas_finding_aids.paths import CHECKLIST_DIR
@@ -97,6 +98,11 @@ def build_checklist(ctx, theme_slug: str, *, config: FindingAidsConfig | None = 
     coverage = store_coverage(repo_root)
     versions = {source: state.version for source in ("pldb", "hyperpolyglot")
                 for state in [mirror_state(source, root=root)] if state}
+    # One channel for the whole build (not one per `search_finding_aids` call): the
+    # channel owns the per-source `Throttle`, and a fresh channel per call would reset
+    # that throttle's clock every row — silently defeating the configured
+    # `min_interval_seconds` on exactly the path that fans out to the most live calls.
+    channel = channel or FindingAidChannel(ctx, config=config)
     rows: list[ChecklistRow] = []
     for term in theme["terms"]:
         covered = tuple(sorted(coverage.get(term.strip().lower(), ())))

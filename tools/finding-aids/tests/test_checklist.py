@@ -105,6 +105,33 @@ def test_the_checklist_header_pins_the_mirror_versions(config, theme, tmp_path,
     assert checklist.mirror_versions["pldb"] == "abc1234"
 
 
+def test_one_channel_is_shared_across_every_row_so_the_throttle_accumulates_state(
+        config, theme, tmp_path, monkeypatch):
+    """Regression for the silently-defeated throttle: `build_checklist` must construct
+    exactly one `FindingAidChannel` (and therefore one per-source `Throttle`) and pass
+    the *same instance* into every `search_finding_aids` call. A fresh channel per row
+    would reset the throttle's clock every call, making the configured
+    `min_interval_seconds` a no-op on the one path (checklist generation) that fans out
+    to the most live requests."""
+    seen_channels = []
+
+    def _search(ctx, query, *, sources=None, limit=10, config=None, channel=None,
+                root=None):
+        seen_channels.append(channel)
+        return [FindingAidResult(source="pldb", item_id="rust", label="Rust",
+                                 fields={}, url="https://pldb.io/concepts/rust.html",
+                                 retrieved_at="2026-09-08T00:00:00Z",
+                                 mirror_version="abc1234")]
+
+    monkeypatch.setattr("langatlas_finding_aids.checklist.search_finding_aids", _search)
+
+    build_checklist(_Ctx(), theme, config=config, repo_root=_store(tmp_path))
+
+    assert len(seen_channels) > 1
+    assert all(channel is not None for channel in seen_channels)
+    assert len({id(channel) for channel in seen_channels}) == 1
+
+
 def test_an_unknown_theme_is_refused_before_any_query(config, tmp_path, stub_search):
     with pytest.raises(UnknownTheme):
         build_checklist(_Ctx(), "no-such-theme", config=config,

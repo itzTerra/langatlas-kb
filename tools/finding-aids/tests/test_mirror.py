@@ -145,6 +145,73 @@ def test_refresh_dispatches_by_source_name(tmp_path, config):
         mirror.refresh("wikidata", _Ctx(), config=config, root=tmp_path)
 
 
+class _FakeRobotsResponse:
+    def __init__(self, headers):
+        self.headers = headers
+
+
+def _patch_robots_txt(monkeypatch, body: str) -> None:
+    """`RobotsPolicy.__init__` calls the real `RobotFileParser.read()`, which does a
+    real network fetch. Monkeypatching `read()` to `parse()` a fixed robots.txt body
+    keeps every downstream `can_fetch` call running the *real* `RobotFileParser` matching
+    logic, with no network access."""
+    import urllib.robotparser
+
+    def _fake_read(self):
+        self.parse(body.splitlines())
+
+    monkeypatch.setattr(urllib.robotparser.RobotFileParser, "read", _fake_read)
+
+
+def _patch_head(monkeypatch, headers: dict) -> None:
+    import httpx
+
+    monkeypatch.setattr(httpx, "head",
+                        lambda url, **kwargs: _FakeRobotsResponse(headers))
+
+
+def test_robots_policy_disallows_a_blocked_path(monkeypatch, config):
+    """The real `RobotsPolicy.can_fetch`, not the `_Robots` fake every other test in this
+    file injects — nothing previously exercised the actual `RobotFileParser` matching
+    logic."""
+    _patch_robots_txt(monkeypatch, "User-agent: *\nDisallow: /c\n")
+    policy = mirror.RobotsPolicy(config.hyperpolyglot["base_url"], config.user_agent)
+    assert policy.can_fetch(config.user_agent,
+                            f"{config.hyperpolyglot['base_url']}/c") is False
+
+
+def test_robots_policy_allows_an_unblocked_path(monkeypatch, config):
+    _patch_robots_txt(monkeypatch, "User-agent: *\nDisallow: /private\n")
+    policy = mirror.RobotsPolicy(config.hyperpolyglot["base_url"], config.user_agent)
+    assert policy.can_fetch(config.user_agent,
+                            f"{config.hyperpolyglot['base_url']}/c") is True
+
+
+def test_robots_policy_honours_a_tdm_reservation_header(monkeypatch, config):
+    _patch_robots_txt(monkeypatch, "User-agent: *\n")
+    _patch_head(monkeypatch, {"tdm-reservation": "1"})
+    policy = mirror.RobotsPolicy(config.hyperpolyglot["base_url"], config.user_agent)
+    assert policy.tdm_reservation(f"{config.hyperpolyglot['base_url']}/c") is True
+
+
+def test_robots_policy_honours_an_x_robots_tag_noai_header(monkeypatch, config):
+    _patch_robots_txt(monkeypatch, "User-agent: *\n")
+    _patch_head(monkeypatch, {"X-Robots-Tag": "noai"})
+    policy = mirror.RobotsPolicy(config.hyperpolyglot["base_url"], config.user_agent)
+    assert policy.tdm_reservation(f"{config.hyperpolyglot['base_url']}/c") is True
+
+
+def test_robots_policy_is_permissive_by_default(monkeypatch, config):
+    """Neither header present, robots.txt silent: both checks pass — the default a
+    normal, unrestricted page must produce."""
+    _patch_robots_txt(monkeypatch, "User-agent: *\n")
+    _patch_head(monkeypatch, {"content-type": "text/html"})
+    policy = mirror.RobotsPolicy(config.hyperpolyglot["base_url"], config.user_agent)
+    url = f"{config.hyperpolyglot['base_url']}/c"
+    assert policy.can_fetch(config.user_agent, url) is True
+    assert policy.tdm_reservation(url) is False
+
+
 class _FullCtx:
     """Unlike `_Ctx` above, this stands in for everything `FindingAidChannel` itself
     needs (`check_budget`, `note_usage`, `cache`) — required only when a test exercises

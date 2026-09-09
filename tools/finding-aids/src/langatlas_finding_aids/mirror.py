@@ -157,6 +157,12 @@ class RobotsPolicy:
         self._parser = RobotFileParser()
         parsed = urlparse(base_url)
         self._parser.set_url(f"{parsed.scheme}://{parsed.netloc}/robots.txt")
+        # Known gap: stdlib `RobotFileParser.read()` takes no timeout, so a hung
+        # robots.txt fetch could hang the monthly mirror-refresh job indefinitely. A
+        # timeout here would mean replacing `read()` with a hand-rolled fetch-and-parse
+        # (`urlopen`/`httpx` plus `self._parser.parse(...)`), which is more than a small,
+        # safe change for a job that runs once a month against a small, stable site —
+        # filed rather than worked around.
         self._parser.read()
         self._channel = channel
         self._user_agent = user_agent
