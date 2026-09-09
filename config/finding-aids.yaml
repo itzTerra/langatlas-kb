@@ -1,0 +1,56 @@
+# config/finding-aids.yaml — D53's four finding aids.
+#
+# NOTHING HERE IS CITABLE. These sources supply candidate (language, feature) pairs and
+# coverage checklists; D29/D3 forbid their content from ever reaching a `sources:` list or
+# a claim's text. The one carve-out is identification metadata (file extensions,
+# first-appeared year), minted through `mint_identification_source` as ungated registry
+# data with a tier-D attribution citation.
+#
+# Endpoints, page lists, repo URLs and throttles are configuration for the same reason
+# model ids are: they change on someone else's schedule, and a change must never be a code
+# change.
+sources: [pldb, wikidata, hyperpolyglot, wikipedia]
+user_agent: "LangAtlas/0.1 (+https://langatlas.dev; research tooling; contact via the repo)"
+
+pldb:
+  # D53 ratified: a git-clone-style mirror of PLDB's published repo, not a scrape.
+  repo_url: https://github.com/breck7/pldb.git
+  # Verify against the actual clone at implementation time (Task 11 Step 3) and correct
+  # here rather than in code: PLDB has reorganised its data layout before.
+  concepts_glob: "concepts/*.scroll"
+  # The line-prefixed keys the adapter lifts out of a concept file. Unknown keys are
+  # ignored, so this list is additive, never a parser change.
+  fields: [id, name, title, appeared, type, paradigms, fileExtensions, influencedBy,
+           wikipedia, description]
+
+hyperpolyglot:
+  base_url: https://hyperpolyglot.org
+  # A scoped list, never a crawl: D14 rule 8's fetcher discipline plus simple courtesy to
+  # a small hand-maintained site. Add a page here when a theme needs it.
+  pages: ["/c", "/functional", "/logical", "/more-functional", "/scripting",
+          "/stack-oriented", "/lisp"]
+  min_interval_seconds: 5.0
+
+wikidata:
+  endpoint: https://query.wikidata.org/sparql
+  # The scoped SPARQL template, versioned: the version is part of the cache key, so
+  # editing the query invalidates its cached answers instead of silently reusing them.
+  template: wikidata-language.rq
+  template_version: 1
+  min_interval_seconds: 2.0
+  timeout_seconds: 60
+
+wikipedia:
+  api_base: https://en.wikipedia.org/api/rest_v1
+  min_interval_seconds: 1.0
+  timeout_seconds: 30
+
+# R3 batch-survey themes (§7.4). Stage 3 adds one entry per theme cycle; the seed below
+# exists so the tooling is exercised end to end rather than shipped untested.
+themes:
+  type-systems:
+    label: Type systems
+    languages: [python, c, java, rust, haskell, prolog]
+    terms: [type system, static typing, type inference, generics, subtyping,
+            algebraic data types]
+    wikipedia_titles: [Type_system, Type_inference, Parametric_polymorphism]

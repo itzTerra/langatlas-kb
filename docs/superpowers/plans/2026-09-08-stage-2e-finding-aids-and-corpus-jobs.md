@@ -1802,7 +1802,7 @@ be reviewed on its own, and every following task adds one module to it.
     `ALL_SOURCES = MIRRORED_SOURCES + LIVE_SOURCES`
   - `class UnknownFindingAidSource(ValueError)`, `class UnknownTheme(KeyError)`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_config.py
@@ -1861,12 +1861,12 @@ def test_mirrors_live_in_the_private_tier():
     assert paths.mirror_dir("pldb").name == "pldb"
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest -v`
 Expected: FAIL — the package does not exist yet (`uv` cannot sync a missing directory).
 
-- [ ] **Step 3: Write the package**
+- [x] **Step 3: Write the package**
 
 ```toml
 # tools/finding-aids/pyproject.toml
@@ -2078,12 +2078,12 @@ themes:
     wikipedia_titles: [Type_system, Type_inference, Parametric_polymorphism]
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/finding-aids sync --extra dev && uv --directory tools/finding-aids run pytest -v`
 Expected: 8 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
