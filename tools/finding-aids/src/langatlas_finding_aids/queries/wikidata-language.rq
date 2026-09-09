@@ -1,0 +1,16 @@
+# tools/finding-aids/src/langatlas_finding_aids/queries/wikidata-language.rq
+# Scoped, versioned finding-aid query (D53 §O2): programming languages only (Q9143 and
+# its subclasses), a fixed property set, and one interpolated slot. Bump
+# `wikidata.template_version` in config/finding-aids.yaml whenever this file changes —
+# the version is part of the cache key, so an edit without a bump serves stale answers.
+SELECT ?item ?itemLabel ?inception ?paradigmLabel ?extension ?influencedByLabel WHERE {
+  ?item wdt:P31/wdt:P279* wd:Q9143 .
+  ?item rdfs:label ?label .
+  FILTER(LANG(?label) = "en" && CONTAINS(LCASE(?label), LCASE("{label}")))
+  OPTIONAL { ?item wdt:P571  ?inception . }
+  OPTIONAL { ?item wdt:P3966 ?paradigm . }
+  OPTIONAL { ?item wdt:P1195 ?extension . }
+  OPTIONAL { ?item wdt:P737  ?influencedBy . }
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+}
+LIMIT 50
