@@ -603,7 +603,7 @@ queue entry a human reads.
   - `record_edition_check(conn, result: EditionCheckResult) -> None` and
     `last_edition_check(conn, source_id) -> datetime | None` (used by Task 5)
 
-- [ ] **Step 1: Write the failing test (append to `tools/ingest/tests/test_currency_store.py`)**
+- [x] **Step 1: Write the failing test (append to `tools/ingest/tests/test_currency_store.py`)**
 
 ```python
 from langatlas_ingest.currency.links import LinkCheckResult
@@ -666,12 +666,12 @@ def test_a_clean_check_files_nothing(db_conn):
     assert queue.open_entries(kind="link-checker") == []
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_store.py -m db -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_ingest.currency.store'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/ingest/src/langatlas_ingest/currency/store.py
@@ -755,12 +755,12 @@ def record_edition_check(conn, result) -> None:
             (result.source_id, result.edition, result.matched, result.detail))
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_store.py -m db -v`
 Expected: 9 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
