@@ -2112,7 +2112,7 @@ for**". This task makes that structural claim testable rather than aspirational.
   - `candidate_source_for(result) -> str` — the `provenance.candidate_source` enum value
   - `utc_now() -> str`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_results.py
@@ -2175,12 +2175,12 @@ def test_the_caveat_names_the_policy_not_just_a_warning():
     assert "sources:" in NON_CITABLE_CAVEAT
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_results.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...results`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/finding-aids/src/langatlas_finding_aids/results.py
@@ -2236,12 +2236,12 @@ def candidate_source_for(result: FindingAidResult) -> str:
     return _CANDIDATE_SOURCE[result.source]
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_results.py -v`
 Expected: 6 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
