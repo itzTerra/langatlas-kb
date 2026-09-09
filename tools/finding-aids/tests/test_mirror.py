@@ -3,6 +3,7 @@ import json
 import pytest
 
 from langatlas_finding_aids import mirror
+from langatlas_finding_aids.channel import FindingAidChannel
 from langatlas_finding_aids.config import FindingAidsConfig
 
 
@@ -142,3 +143,80 @@ def test_the_version_changes_when_a_page_changes(tmp_path, config):
 def test_refresh_dispatches_by_source_name(tmp_path, config):
     with pytest.raises(mirror.UnknownMirror):
         mirror.refresh("wikidata", _Ctx(), config=config, root=tmp_path)
+
+
+class _FullCtx:
+    """Unlike `_Ctx` above, this stands in for everything `FindingAidChannel` itself
+    needs (`check_budget`, `note_usage`, `cache`) — required only when a test exercises
+    the channel's *default construction* rather than injecting a pre-built `_Channel`."""
+
+    def __init__(self):
+        self.run_id = "run-1"
+        self.cache = None
+        self.checks = []
+        self.usage = []
+        self.logged = []
+
+    def check_budget(self, **kwargs):
+        self.checks.append(kwargs)
+
+    def note_usage(self, **kwargs):
+        self.usage.append(kwargs)
+
+    class _W:
+        def __init__(self, outer):
+            self.outer = outer
+
+        def append(self, **event):
+            self.outer.logged.append(event)
+
+    @property
+    def writer(self):
+        return self._W(self)
+
+
+class _NoThrottle:
+    def run(self, call):
+        return call()
+
+
+class _FakeHttpClient:
+    """The minimal `httpx.Client`-shaped surface `FindingAidChannel._http()` calls
+    through — injected via the `client=` kwarg `FindingAidChannel` already accepts."""
+
+    def __init__(self, pages):
+        self.pages, self.calls = pages, []
+
+    def get(self, url, params=None, headers=None):
+        self.calls.append(url)
+        return self._Response(self.pages[url])
+
+    class _Response:
+        def __init__(self, text):
+            self.text = text
+
+        def raise_for_status(self):
+            pass
+
+
+def test_refresh_hyperpolyglot_default_constructs_a_channel_when_none_given(
+        tmp_path, config, monkeypatch):
+    """A bare `refresh(source, ctx)` — exactly what the CLI's `mirror-refresh` (Task 15)
+    and the monthly job's `_run_item` (Task 17) both call — passes no `channel`. The
+    default-construction path has to actually work rather than leave `channel` as `None`
+    and crash on the first `get_raw`."""
+    base = config.hyperpolyglot["base_url"]
+    pages = {f"{base}{path}": f"<html>{path}</html>"
+             for path in config.hyperpolyglot["pages"]}
+    client = _FakeHttpClient(pages)
+    monkeypatch.setattr(
+        mirror, "FindingAidChannel",
+        lambda ctx, **kw: FindingAidChannel(ctx, config=kw.get("config") or config,
+                                            client=client, throttle=_NoThrottle()))
+
+    state = mirror.refresh_hyperpolyglot(_FullCtx(), config=config, root=tmp_path,
+                                         robots=_Robots())
+
+    assert state.source == "hyperpolyglot"
+    assert state.item_count == len(config.hyperpolyglot["pages"])
+    assert sorted(client.calls) == sorted(pages)

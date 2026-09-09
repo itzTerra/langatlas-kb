@@ -15,6 +15,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from urllib.parse import urlparse
 
+from langatlas_finding_aids.channel import FindingAidChannel
 from langatlas_finding_aids.config import MIRRORED_SOURCES, FindingAidsConfig
 from langatlas_finding_aids.paths import MIRROR_ROOT
 from langatlas_finding_aids.results import utc_now
@@ -117,6 +118,10 @@ def refresh_hyperpolyglot(ctx, *, config: FindingAidsConfig | None = None,
     never becomes a crawl."""
     config = config or FindingAidsConfig.load()
     settings = config.hyperpolyglot
+    # A bare `refresh(source, ctx)` call (the CLI's `mirror-refresh` with no explicit
+    # source, and Task 17's monthly job) never passes a channel — default-construct one
+    # exactly the way `render_for_prompt` does, or every such call crashes on `get_raw`.
+    channel = channel or FindingAidChannel(ctx, config=config)
     robots = robots or RobotsPolicy(settings["base_url"], config.user_agent,
                                     channel=channel)
     directory = _dir("hyperpolyglot", root)
