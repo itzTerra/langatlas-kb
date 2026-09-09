@@ -3057,14 +3057,20 @@ set is done when the developer says it is, not when the counter hits 200.**
 
 ---
 
-## Task 10: Author the held-out audit slice
+## Task 10: Author the held-out audit slice — ABANDONED (2026-09-09)
 
-**Files:**
-- Create: `tests/golden/verifier/held-out/items-audit.yaml`
+**Developer ruling:** the developer decided to abandon hand-authoring the held-out slice.
+`SET_INVARIANTS["held_out_min"/"held_out_max"]` in `goldens/loader.py` now reads `0`/`0`
+instead of `10`/`15`, so an empty `tests/golden/verifier/held-out/` is the committed,
+permanent state — not a gap. 2D's Task 18 no longer runs the held-out audit (Step 5 dropped).
+The steps below are left unstruck for the record; do not execute them.
 
-**Developer checkpoint — this task has no agent-assisted step.** §6.4: "a ~10–15 item
+~~**Files:**~~
+~~- Create: `tests/golden/verifier/held-out/items-audit.yaml`~~
+
+~~**Developer checkpoint — this task has no agent-assisted step.** §6.4: "a ~10–15 item
 **fully-developer-authored** held-out audit slice". No candidate generation, no Claude drafting,
-no derivation from existing items.
+no derivation from existing items.~~
 
 - [ ] **Step 1: Author 10–15 items by hand**
 

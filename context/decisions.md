@@ -1410,9 +1410,12 @@ overstated-claim and wrong-`since` over-weighted. **Contamination defense** is p
 structural: perturb toward counterfactual, specifically-invented wrongness (invented version
 numbers, swapped similar-language attribution, altered page/section loci) rather than "famous
 facts stated wrong," supplemented by obscure-locus targeting, the existing D24 cross-family
-sample repurposed as a passive contamination gauge, and a small (~10–15 item) fully-developer-
-authored held-out slice for occasional manual audits; no dedicated red-teaming role (matches
-D31's disproportionality precedent). **Hand-labeled controversy cases**: keep D25's ~50-case
+sample repurposed as a passive contamination gauge, and ~~a small (~10–15 item) fully-developer-
+authored held-out slice for occasional manual audits~~ (**amended 2026-09-09**: the held-out
+slice is abandoned — no manual-audit slice is authored; `SET_INVARIANTS` in
+`goldens/loader.py` requires exactly 0 held-out items, and 2D's calibration runs and publishes
+without a held-out audit step); no dedicated red-teaming role (matches D31's disproportionality
+precedent). **Hand-labeled controversy cases**: keep D25's ~50-case
 target, reached via a bootstrap lane (~15–20 synthetic structured-input cases authored at project
 start) plus an opportunistic lane (D25's own Claude-escalation-review process already produces
 real hand-labeled cases as a byproduct); genuine field-dispute cases minted opportunistically as

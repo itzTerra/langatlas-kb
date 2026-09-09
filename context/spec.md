@@ -954,8 +954,9 @@ R1 QA skims; ~40% correct / 60% wrong, overstated-claim and wrong-`since` over-w
 **Contamination defense** is structural: perturb toward counterfactual,
 specifically-invented wrongness (invented version numbers, swapped similar-language
 attribution, altered loci) rather than famous-facts-stated-wrong; obscure-locus
-targeting; the cross-family sample doubles as a passive contamination gauge; a ~10–15
-item fully-developer-authored held-out audit slice. **Controversy cases**: ~50 target via
+targeting; the cross-family sample doubles as a passive contamination gauge. (No
+held-out audit slice — abandoned by developer ruling 2026-09-09.) **Controversy cases**:
+~50 target via
 a bootstrap lane (~15–20 synthetic structured-input cases at project start) + an
 opportunistic lane (the Claude-escalation reviews produce real hand-labeled cases);
 genuine field-dispute cases minted as opposing tier-A/B literature arrives. **Retrieval
@@ -1823,8 +1824,8 @@ wait on.
       `canonical_source`/`acquisition_note` backfill (D37) and phase-1 `grounding`
       classification (D51).
 - [ ] Co-author the retrieval golden set (40–60 queries) during QA skims; author the
-      verifier golden set (D44 taxonomy, ~200–300 items) + the ~10–15-item held-out
-      slice + the ~15–20 bootstrap controversy cases.
+      verifier golden set (D44 taxonomy, ~200–300 items) + the ~15–20 bootstrap
+      controversy cases.
 - [x] R2: run the D22 embedding benchmark on a pilot corpus; record per-table verdicts.
       *(Deferred question folded here: "Embedding-model choices — D22's benchmark
       decides per use case." The fact-index re-run happens at Stage 5.)*

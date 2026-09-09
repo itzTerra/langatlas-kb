@@ -120,7 +120,15 @@ def test_set_invariants_catch_an_under_sized_unbalanced_set():
     errors = validate_set(thin, held_out=[])
     assert any("200" in e for e in errors)              # size floor
     assert any("stratum" in e for e in errors)          # missing strata
-    assert any("held-out" in e for e in errors)         # audit slice missing
+
+
+def test_set_invariants_allow_an_empty_held_out_slice_the_developer_abandoned_it():
+    from langatlas_ingest.goldens.items import Citation, Claim, VerifierItem
+    claim = Claim(kind="instance-exists", text="instance-exists(i-x, status=present)")
+    thin = [VerifierItem(id=f"v-{n:04d}", stratum="correct", expected_verdict="supported",
+                         claim=claim, citation=Citation(source="ctm", locator="p. 1"))
+            for n in range(10)]
+    assert not any("held-out" in e for e in validate_set(thin, held_out=[]))
 
 
 def test_a_controversy_case_may_not_smuggle_human_challenge_inputs(tmp_path):

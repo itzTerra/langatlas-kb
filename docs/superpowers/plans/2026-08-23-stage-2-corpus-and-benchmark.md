@@ -191,8 +191,10 @@ volume, deliberately decorrelated from the verifier model per §6.4); the transc
   paraphrase-heavy correct. Mix ~40% correct / 60% wrong, with overstated-claim and wrong-`since`
   over-weighted. **Must include `status: absent` items** so 2D's D49 completeness-check ladder is
   covered by the same calibration.
-- **Held-out audit slice** — ~10–15 items authored entirely by the developer, no LLM in the loop,
-  committed separately and never used for tuning.
+- ~~**Held-out audit slice** — ~10–15 items authored entirely by the developer, no LLM in the
+  loop, committed separately and never used for tuning.~~ **Abandoned by developer ruling
+  (2026-09-09)** — no held-out slice is authored; `SET_INVARIANTS` in `goldens/loader.py`
+  requires exactly 0.
 - **Bootstrap controversy cases** — ~15–20 synthetic structured-input cases under
   `tests/golden/controversy/`, seeding the ~50-case target that Stage 3's opportunistic lane grows.
 - **A scored, threshold-gated runner** for the verifier and controversy sets — the counterpart to
@@ -209,14 +211,14 @@ volume, deliberately decorrelated from the verifier model per §6.4); the transc
 **Produces for 2C:** the retrieval golden set — 2C's entire benchmark is scored against it, and
 `run_eval` is the scoring function.
 
-**Produces for 2D:** the verifier golden set, held-out slice, and the scored runner — 2D's
-calibration gate is defined entirely in terms of these.
+**Produces for 2D:** the verifier golden set and the scored runner — 2D's calibration gate is
+defined entirely in terms of these. (No held-out slice — abandoned 2026-09-09.)
 
 **Not built here:** `tests/golden/debates/` stays empty — debate machinery is Stage 3. The public
 golden-set benchmark is a stretch goal and explicitly out of scope (§6.4).
 
 **Developer checkpoints:** curation of every LLM-generated candidate (the developer curates, the
-LLM only supplies volume); authorship of the held-out slice.
+LLM only supplies volume).
 
 **Spec pointer:** §6.4, §8.6 (golden-set clause), §7.4 (R1's "QA skims double as golden-set
 co-authoring time").
@@ -363,8 +365,8 @@ inputs are debate records and reconciler conflicts that do not exist yet; Stage 
 bootstrap golden cases (2B). Human-challenge resolution and the D63 hard-override are Stage 6.
 
 **Developer checkpoints:** accepting the calibration result (and, if the targets are missed,
-deciding between prompt work, the mandatory-`mini`-second-vote hardening, and golden-set revision);
-the held-out slice is run **once**, at the end, as an audit — not as a tuning signal.
+deciding between prompt work, the mandatory-`mini`-second-vote hardening, and golden-set
+revision). (No held-out audit step — the slice was abandoned 2026-09-09.)
 
 **Spec pointer:** §6.2, §6.3, §6.4, §6.5, §6.6 (D49), §7.1, §4.3.
 
@@ -428,8 +430,8 @@ interface deliverables being real and pinned:
 
 1. Seed corpus + phase-1 language specs ingested, QA-skimmed, with `canonical_source` /
    `acquisition_note` backfilled and phase-1 `grounding` classified (2A).
-2. Retrieval golden set (40–60), verifier golden set (~200–300 + 10–15 held-out + 15–20 bootstrap
-   controversy) committed and scored by a working runner (2B).
+2. Retrieval golden set (40–60), verifier golden set (~200–300 + 15–20 bootstrap controversy;
+   no held-out slice — abandoned 2026-09-09) committed and scored by a working runner (2B).
 3. D22 source-corpus verdict recorded and the model/dimension/index type pinned in
    `config/ingest.yaml` (2C).
 4. D24 verifier calibrated at **FA ≤2% / FR ≤10%** against the golden set with canaries wired and

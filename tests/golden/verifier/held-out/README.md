@@ -1,11 +1,9 @@
 <!-- tests/golden/verifier/held-out/README.md -->
-# Held-out audit slice (§6.4)
+# Held-out audit slice (§6.4) — ABANDONED (2026-09-09)
 
-10–15 items **authored entirely by the developer, with no LLM in the loop**, kept out of
-every tuning signal. `load_verifier_items()` excludes this directory unless a caller
-passes `include_held_out=True`, and `golden-score` requires the explicit
-`--include-held-out` flag.
-
-Run it **once**, at the end of 2D's calibration, as an audit. If it is consulted while
-tuning prompts or models, it has stopped being a held-out slice and a fresh one must be
-authored.
+D44 originally called for 10–15 items authored entirely by the developer, with no LLM in
+the loop, kept out of every tuning signal and run once at the end of 2D's calibration as
+an audit. The developer ruled to abandon hand-authoring this slice; `SET_INVARIANTS` in
+`goldens/loader.py` now requires exactly 0 held-out items, and this directory stays empty
+permanently. `load_verifier_items(include_held_out=True)` and `golden-score
+--include-held-out` still work, but have nothing to load.

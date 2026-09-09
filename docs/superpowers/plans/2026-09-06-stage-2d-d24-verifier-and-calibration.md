@@ -88,19 +88,21 @@ Stage 1's and Stage 2's constraints carry over verbatim. These bind every task b
 
 ## Gate state at the time of writing (read this before Task 18)
 
-2A and 2C have landed. **2B has two open items that block Task 18 (the calibration run) and
+2A and 2C have landed. **2B has one open item that blocks Task 18 (the calibration run) and
 nothing else:**
 
 1. `tests/golden/verifier/PENDING-REPAIR.md` lists **126 verifier items and 10 retrieval
    entries** whose `evidence_chunk_ids` still need human re-derivation after the D22 chunking
    move.
-2. `tests/golden/verifier/held-out/` contains only a README — the **10–15-item developer-authored
-   audit slice has not been written** (2B's last task).
+
+The held-out audit slice (2B's former last task) was **abandoned by developer ruling
+(2026-09-09)**: `SET_INVARIANTS["held_out_min"/"held_out_max"]` now reads `0`/`0`, and Task 18
+below no longer runs a held-out audit step. It is no longer a gate.
 
 Tasks 1–17 are pure engineering and do not depend on either. Task 18 is a developer checkpoint
-that cannot start until both are closed. Do not "work around" a thin golden set by tuning
-against it — the measured false-accept rate is published as an honesty feature, and a rate
-measured over unrepaired items is a false number.
+that cannot start until PENDING-REPAIR is closed. Do not "work around" a thin golden set by
+tuning against it — the measured false-accept rate is published as an honesty feature, and a
+rate measured over unrepaired items is a false number.
 
 ---
 
@@ -5318,13 +5320,12 @@ git commit -m "feat(#stage-2d): promote nightly-verification from stub to a real
 
 ---
 
-## Task 18: Calibrate, publish the error rates, run the held-out audit
+## Task 18: Calibrate and publish the error rates
 
 **Files:**
 - Modify: `tests/golden/verifier/canaries.yaml`
 - Create: `benchmarks/d24-verifier/README.md`
 - Create: `benchmarks/d24-verifier/calibration.json`
-- Create: `benchmarks/d24-verifier/held-out-audit.json`
 - Modify: `context/spec.md` (Stage 2 checklist), `context/decisions.md` (if the calibration
   forces a decision — e.g. flipping `mandatory_second_opinion`)
 
@@ -5333,8 +5334,10 @@ git commit -m "feat(#stage-2d): promote nightly-verification from stub to a real
 - Produces: the published, machine-readable error rates the D35 bundle manifest and the
   site read.
 
-**This task is a developer checkpoint from end to end. It cannot start until both 2B gaps
-named in "Gate state" are closed.**
+**This task is a developer checkpoint from end to end. It cannot start until the PENDING-REPAIR
+gap named in "Gate state" is closed. There is no held-out audit step — that slice was
+abandoned by developer ruling (2026-09-09); `benchmarks/d24-verifier/held-out-audit.json` is
+not produced.**
 
 - [ ] **Step 1: Confirm the gate**
 
@@ -5344,13 +5347,12 @@ uv --directory tools/ingest run langatlas-sources golden-validate --resolve --co
 ```
 
 Expected: exit 0. A non-zero exit means the set-level invariants (`SET_INVARIANTS` in
-`goldens/loader.py`) are unmet — most likely the held-out slice is still empty or the
-PENDING-REPAIR items still carry stale `evidence_chunk_ids`. **Stop and finish 2B.** Do not
-proceed with a partially-repaired set: the false-accept rate this task publishes is a
-number the project shows the public as an honesty feature.
+`goldens/loader.py`) are unmet — most likely the PENDING-REPAIR items still carry stale
+`evidence_chunk_ids`. **Stop and finish 2B.** Do not proceed with a partially-repaired set:
+the false-accept rate this task publishes is a number the project shows the public as an
+honesty feature.
 
-Also confirm `tests/golden/verifier/PENDING-REPAIR.md` is gone or reduced to an empty
-list, and that `tests/golden/verifier/held-out/` holds 10–15 developer-authored items.
+Also confirm `tests/golden/verifier/PENDING-REPAIR.md` is gone or reduced to an empty list.
 
 - [ ] **Step 2: Choose and commit the canaries**
 
@@ -5372,7 +5374,7 @@ canaries:
 Verify: `uv --directory tools/ingest run langatlas-verify canaries --check`
 Expected: `5 canaries, 0 missing`, exit 0
 
-- [ ] **Step 3: Run the calibration (excluding the held-out slice)**
+- [ ] **Step 3: Run the calibration**
 
 With the compose Postgres up and the university API reachable:
 
@@ -5418,20 +5420,7 @@ Section 6.2 names three, in this order of preference:
 
 Re-run Step 3 after any change, and keep the final `calibration.json`.
 
-- [ ] **Step 5: Run the held-out audit — once**
-
-Only after Step 3 (and any Step 4 iterations) has settled:
-
-```bash
-uv --directory tools/ingest run langatlas-sources golden-score --include-held-out \
-  --json ../../benchmarks/d24-verifier/held-out-audit.json
-```
-
-This is an **audit, not a tuning signal**. Do not iterate on it. If the held-out slice's
-error rates are materially worse than the tuned set's, that gap is itself the finding —
-record it in the write-up and treat the tuned numbers as optimistic.
-
-- [ ] **Step 6: Write the calibration record**
+- [ ] **Step 5: Write the calibration record**
 
 Create `benchmarks/d24-verifier/README.md`, following the shape of
 `benchmarks/d22-source-corpus/README.md`:
@@ -5453,11 +5442,11 @@ a gate whose error rates are private is a gate no reader can weigh.
 | Absence false accept (D49) | <fill> | ≤2% |
 | Contamination gauge (obscure vs mainstream) | <fill> | narrow gap |
 
-Held-out audit slice (run once, never tuned against): <fill>.
+No held-out audit slice: abandoned by developer ruling (2026-09-09).
 
 ## Configuration measured
 
-- Golden set: <N> items over 13 strata, held-out slice <M> items
+- Golden set: <N> items over 13 strata; no held-out slice (abandoned 2026-09-09)
 - Primary / escalation / second opinion: `deepseek` / `deepseek-thinking` / `mini`
 - Second-opinion rate: <fill>; mandatory second vote: <fill>
 - Prompts: `verify-entailment@<version>`, `verify-absence@<version>`,
@@ -5485,7 +5474,7 @@ read; keep it in step with this file.
 
 Fill every `<fill>` from the two JSON files. Do not round in the flattering direction.
 
-- [ ] **Step 7: Check off the spec's Stage 2 items**
+- [ ] **Step 6: Check off the spec's Stage 2 items**
 
 In `context/spec.md` §14's "Stage 2" checklist, tick:
 
@@ -5500,7 +5489,7 @@ If Step 4 forced a ratified change (flipping `mandatory_second_opinion`, or a go
 revision), record it in `context/decisions.md` as a dated amendment to D24, per the
 decision-hygiene convention.
 
-- [ ] **Step 8: Verify the whole gate end to end**
+- [ ] **Step 7: Verify the whole gate end to end**
 
 ```bash
 cd /home/terra/Projects/langatlas-kb
@@ -5516,7 +5505,7 @@ uv --directory tools/orchestrator run langatlas-orchestrator \
 Expected: every suite green, `ci` exit 0, canaries clean, and the orchestrator run exiting
 0 (or 75 on a budget pause — both are correct outcomes; a nonzero-but-not-75 exit is not).
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add tests/golden/verifier/canaries.yaml benchmarks/d24-verifier \

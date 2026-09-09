@@ -27,8 +27,11 @@ SET_INVARIANTS = {
     "wrong_since_share_min": 0.10,      # both `since` strata together, over-weighted
     "min_absent_items": 15,             # so D49's ladder is calibrated by the same set
     "min_contamination_gauge": 20,
-    "held_out_min": 10,
-    "held_out_max": 15,
+    # The 10-15-item developer-authored held-out slice was abandoned (2026-09-09): no
+    # agent-assisted step exists for it and the developer chose not to author it by hand.
+    # `0` is the only legal size now; held-out auditing (2D Task 18 Step 5) is skipped.
+    "held_out_min": 0,
+    "held_out_max": 0,
 }
 
 
