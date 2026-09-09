@@ -59,6 +59,24 @@ def cache_key(*, endpoint: str, resolved_model: str, messages: list[dict],
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def finding_aid_cache_key(*, source: str, query_shape: str, params: dict,
+                          version: str | None) -> str:
+    """D53 §O3's fifth-channel cache key. `cache_key` above is completion-shaped
+    (resolved model, messages, sampling, schema, prompt) and none of those exist here, so
+    the key collapses to the four things that actually determine a finding-aid answer:
+    which aid, what kind of question, its parameters, and the version of the data or
+    template that answered it.
+
+    `version` is the load-bearing member: a mirror refresh or a SPARQL-template edit must
+    invalidate, or a run reads a fresh mirror and is served a stale answer that looks
+    identical to a real one."""
+    payload = json.dumps({"channel": "finding-aid", "source": source,
+                          "query_shape": query_shape,
+                          "params": _normalize_numerics(params), "version": version},
+                         sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 class CallCache:
     """Content-addressed response cache in the private tier (same backup as the D15
     snapshot store). On by default for pipeline runs; `--no-cache` for prompt tuning."""

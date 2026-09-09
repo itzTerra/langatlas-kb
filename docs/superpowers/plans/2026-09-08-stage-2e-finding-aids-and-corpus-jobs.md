@@ -2278,7 +2278,7 @@ D53's ratification).
     - `.get_text(source, url, *, query_shape, version=None) -> str`
     - `.cached_calls: int`, `.network_calls: int`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/pipeline/tests/test_cache.py  (append)
@@ -2440,14 +2440,14 @@ def test_the_configured_user_agent_is_sent(config):
     assert client.calls  # header assertion below
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_cache.py -v` and
 `uv --directory tools/finding-aids run pytest tests/test_channel.py -v`
 Expected: FAIL — `ImportError: cannot import name 'finding_aid_cache_key'`, then
 `ModuleNotFoundError: ...channel`.
 
-- [ ] **Step 3: Write the implementations**
+- [x] **Step 3: Write the implementations**
 
 ```python
 # tools/pipeline/src/langatlas_pipeline/cache.py  (append)
@@ -2605,13 +2605,13 @@ and finish the test:
 
 (adjusting the earlier `client.calls` tuple unpackings accordingly).
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/pipeline run pytest tests/test_cache.py -v` and
 `uv --directory tools/finding-aids run pytest tests/test_channel.py -v`
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

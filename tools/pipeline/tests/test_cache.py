@@ -1,5 +1,5 @@
 from pathlib import Path
-from langatlas_pipeline.cache import CallCache, cache_key
+from langatlas_pipeline.cache import CallCache, cache_key, finding_aid_cache_key
 
 BASE = dict(endpoint="chat", resolved_model="glm-5.2",
             messages=[{"role": "user", "content": "hi"}],
@@ -96,3 +96,23 @@ def test_check_same_thread_disabled(tmp_path: Path):
     cache.put(key, {"test": "data"})
     assert cache.get(key) == {"test": "data"}
     cache.close()
+
+
+def test_finding_aid_keys_separate_sources_shapes_params_and_versions():
+    base = dict(source="wikidata", query_shape="language-facts",
+                params={"qid": "Q575"}, version="1")
+    key = finding_aid_cache_key(**base)
+    assert key != finding_aid_cache_key(**{**base, "source": "wikipedia"})
+    assert key != finding_aid_cache_key(**{**base, "query_shape": "other"})
+    assert key != finding_aid_cache_key(**{**base, "params": {"qid": "Q42"}})
+    # A mirror refresh or a template edit must invalidate: serving a pre-refresh answer
+    # from a post-refresh mirror is the one cache bug this key exists to prevent.
+    assert key != finding_aid_cache_key(**{**base, "version": "2"})
+
+
+def test_finding_aid_keys_ignore_param_ordering():
+    a = finding_aid_cache_key(source="pldb", query_shape="lookup",
+                              params={"a": 1, "b": 2}, version=None)
+    b = finding_aid_cache_key(source="pldb", query_shape="lookup",
+                              params={"b": 2, "a": 1}, version=None)
+    assert a == b
