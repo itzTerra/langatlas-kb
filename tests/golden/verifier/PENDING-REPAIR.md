@@ -4,7 +4,16 @@ Auto-repaired: 93 of 219 verifier items (82 clean single-match + 11 overlap-boun
 resolved), propagating to 30 of 40 stale retrieval golden entries. This file lists
 everything still needing human judgment.
 
-Total remaining: 126 verifier items, 10 retrieval entries.
+**Correction (2026-09-09):** 13 of the original 126 "no quote to match against" entries
+were false positives — all `stratum: fabricated-locator`, whose `evidence_chunk_ids: []`
+is the *correct*, intentional state (the citation's locator is deliberately nonexistent, so
+nothing should resolve). The flagging script listed every empty `evidence_chunk_ids` without
+checking stratum. Removed from this file without any YAML edit: `v-ada-core-0011`,
+`v-java-core-0016`, `v-java-core-0030`, `v-java-core-0023`, `v-haskell-core-0005`,
+`v-java-core-0005`, `v-scheme-core-0003`, `v-perl-core-0009`, `v-py-core-0016`,
+`v-rust-core-0005`, `v-rustfls-0005`, `v-js-core-0006`, `v-ghc-core-0003`.
+
+Total remaining: 113 verifier items, 10 retrieval entries.
 
 ## Retrieval golden set — still stale (10 entries)
 
@@ -39,7 +48,7 @@ real corpus text. Repair by reading the claim and finding the real passage by ha
 - `items-ocr-and-diversity.yaml` `v-ocr-0007`: current `['jls-se25#c00262']`
 - `items-ocr-and-diversity.yaml` `v-ocr-0008`: current `['ghc-users-guide#c00443']`
 
-### No quote to match against (79)
+### No quote to match against (66)
 
 Items with no `citation.quote` field — often siblings of a quote-bearing item pointing at
 the same old chunk (a shared passage supporting several claims). Check whether the sibling
@@ -54,36 +63,29 @@ human confirmation the claim is still actually supported by that passage's new b
 - `items-absence-4.yaml` `v-ml-core-0002`: current `['scott-plp#c00434']`
 - `items-ada-overview.yaml` `v-ada-core-0009`: current `['sebesta-copl#c00156']`
 - `items-ada-overview.yaml` `v-ada-core-0010`: current `['sebesta-copl#c00156']`
-- `items-ada-overview.yaml` `v-ada-core-0011`: current `[]`
 - `items-ada-overview.yaml` `v-ada-core-0012`: current `['sebesta-copl#c00156']`
 - `items-ada-overview.yaml` `v-ada-core-0015`: current `['sebesta-copl#c00156']`
 - `items-concurrency.yaml` `v-java-core-0014`: current `['sebesta-copl#c00772']`
 - `items-concurrency.yaml` `v-java-core-0015`: current `['sebesta-copl#c00772']`
-- `items-concurrency.yaml` `v-java-core-0016`: current `[]`
 - `items-concurrency.yaml` `v-java-core-0017`: current `['sebesta-copl#c00772']`
 - `items-concurrency.yaml` `v-ada-core-0003`: current `['sebesta-copl#c00772']`
 - `items-exceptions-2.yaml` `v-java-core-0028`: current `['sebesta-copl#c00833']`
 - `items-exceptions-2.yaml` `v-java-core-0029`: current `['sebesta-copl#c00833']`
-- `items-exceptions-2.yaml` `v-java-core-0030`: current `[]`
 - `items-exceptions-2.yaml` `v-java-core-0031`: current `['sebesta-copl#c00833']`
 - `items-exceptions-2.yaml` `v-java-core-0034`: current `['sebesta-copl#c00833']`
 - `items-exceptions.yaml` `v-py-core-0025`: current `['sebesta-copl#c00837']`
 - `items-exceptions.yaml` `v-java-core-0022`: current `['sebesta-copl#c00835']`
-- `items-exceptions.yaml` `v-java-core-0023`: current `[]`
 - `items-exceptions.yaml` `v-py-core-0026`: current `['sebesta-copl#c00837']`
 - `items-exceptions.yaml` `v-cpp-core-0004`: current `['sebesta-copl#c00835']`
-- `items-haskell-core.yaml` `v-haskell-core-0005`: current `[]`
 - `items-haskell-core.yaml` `v-haskell-core-0007`: current `['haskell-2010-report#c00080']`
 - `items-haskell-core.yaml` `v-haskell-core-0008`: current `['haskell-2010-report#c00080']`
 - `items-haskell-core.yaml` `v-haskell-core-0009`: current `['haskell-2010-report#c00080']`
 - `items-haskell-core.yaml` `v-haskell-core-0013`: current `['vanroy-haridi-2003#c00071']`
-- `items-java-core.yaml` `v-java-core-0005`: current `[]`
 - `items-java-core.yaml` `v-java-core-0006`: current `['jls-se25#c00487']`
 - `items-java-core.yaml` `v-java-core-0007`: current `['jls-se25#c00262']`
 - `items-java-core.yaml` `v-java-core-0008`: current `['jls-se25#c00487']`
 - `items-ml-scheme-haskell.yaml` `v-ml-core-0007`: current `['sebesta-copl#c00893']`
 - `items-ml-scheme-haskell.yaml` `v-scheme-core-0002`: current `['sebesta-copl#c00887']`
-- `items-ml-scheme-haskell.yaml` `v-scheme-core-0003`: current `[]`
 - `items-ml-scheme-haskell.yaml` `v-ml-core-0008`: current `['sebesta-copl#c00893']`
 - `items-ml-scheme-haskell.yaml` `v-ml-core-0009`: current `['sebesta-copl#c00895']`
 - `items-ocr-and-diversity.yaml` `v-diversity-0001`: current `['c23-n3220#c00567']`
@@ -93,27 +95,22 @@ human confirmation the claim is still actually supported by that passage's new b
 - `items-ocr-and-diversity.yaml` `v-diversity-0005`: current `['haskell-2010-report#c00023']`
 - `items-perl.yaml` `v-perl-core-0007`: current `['sebesta-copl#c00178']`
 - `items-perl.yaml` `v-perl-core-0008`: current `['sebesta-copl#c00178']`
-- `items-perl.yaml` `v-perl-core-0009`: current `[]`
 - `items-perl.yaml` `v-perl-core-0010`: current `['sebesta-copl#c00177']`
 - `items-perl.yaml` `v-perl-core-0013`: current `['sebesta-copl#c00178']`
-- `items-python-core-2.yaml` `v-py-core-0016`: current `[]`
 - `items-python-core-2.yaml` `v-py-core-0017`: current `['python-langref-3#c00206']`
 - `items-python-core-2.yaml` `v-py-core-0018`: current `['python-langref-3#c00175']`
 - `items-python-core-2.yaml` `v-py-core-0019`: current `['python-langref-3#c00175']`
 - `items-python-core-2.yaml` `v-py-core-0022`: current `['python-langref-3#c00206']`
-- `items-rust-core.yaml` `v-rust-core-0005`: current `[]`
 - `items-rust-core.yaml` `v-rust-core-0006`: current `['rust-reference#c00456']`
 - `items-rust-core.yaml` `v-rust-core-0008`: current `['rust-reference#c00456']`
 - `items-rust-core.yaml` `v-rust-core-0009`: current `['rust-reference#c00456']`
 - `items-rust-core.yaml` `v-rust-core-0010`: current `['rust-reference#c00456']`
-- `items-rust-fls.yaml` `v-rustfls-0005`: current `[]`
 - `items-rust-fls.yaml` `v-rustfls-0006`: current `['rust-fls#c01034']`
 - `items-rust-fls.yaml` `v-rustfls-0007`: current `['rust-fls#c01034']`
 - `items-rust-fls.yaml` `v-rustfls-0008`: current `['rust-fls#c01034']`
 - `items-rust-fls.yaml` `v-rustfls-0011`: current `['rust-fls#c00751']`
 - `items-scripting-langs.yaml` `v-js-core-0004`: current `['sebesta-copl#c00309']`
 - `items-scripting-langs.yaml` `v-js-core-0005`: current `['sebesta-copl#c00309']`
-- `items-scripting-langs.yaml` `v-js-core-0006`: current `[]`
 - `items-scripting-langs.yaml` `v-js-core-0007`: current `['sebesta-copl#c00309']`
 - `items-scripting-langs.yaml` `v-ruby-core-0004`: current `['sebesta-copl#c00309']`
 - `items-since-and-absence-2.yaml` `v-since-0005`: current `['haskell-2010-report#c00080']`
@@ -124,7 +121,6 @@ human confirmation the claim is still actually supported by that passage's new b
 - `items-since-and-absence.yaml` `v-absent-0001`: current `['c23-n3220#c00277']`
 - `items-since-and-absence.yaml` `v-absent-0002`: current `['c23-n3220#c00567']`
 - `items-since-and-absence.yaml` `v-c-core-0002`: current `['c23-n3220#c00277']`
-- `items-since-and-absence.yaml` `v-ghc-core-0003`: current `[]`
 
 ### Quote not found in re-chunked corpus (34)
 
