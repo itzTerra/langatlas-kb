@@ -3550,7 +3550,7 @@ here.
     `TOOL_NAMES = ("mcp__langatlas_finding_aids__search_finding_aids",)`
   - `TOOL_DESCRIPTION: str`, `sdk_finding_aid_tools(ctx, *, config=None)`
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/finding-aids/tests/test_query.py
@@ -3700,12 +3700,12 @@ def test_the_schema_marks_only_query_required():
     assert SEARCH_SCHEMA["properties"]["limit"]["maximum"] <= 25
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_query.py tests/test_tools.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...query`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/finding-aids/src/langatlas_finding_aids/query.py
@@ -3853,12 +3853,12 @@ def sdk_finding_aid_tools(ctx, *, config: FindingAidsConfig | None = None):
     return create_sdk_mcp_server(name=SERVER_NAME, version="0.1.0", tools=[_search])
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_query.py tests/test_tools.py -v`
 Expected: 11 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
