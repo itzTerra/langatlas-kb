@@ -1551,7 +1551,7 @@ carrier at all — D25's own re-verification queue is Stage 5.
     queue: SourcingQueue | None = None) -> list[Path]` — returns the changed paths
   - CLI `langatlas-sources supersede --old <id> --new <id> [--note TEXT]`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/ingest/tests/test_currency_supersede.py
@@ -1643,12 +1643,12 @@ def test_the_staleness_trigger_is_filed(db_conn):
         [("docs-3-14", "edition-superseded")]
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_supersede.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...currency.supersede`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/ingest/src/langatlas_ingest/currency/supersede.py
@@ -1753,13 +1753,13 @@ def _cmd_supersede(args) -> int:
 
 (Import `TOMBSTONE_REASON` alongside `supersede_source` at the top of `_cmd_supersede`.)
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_currency_supersede.py -v` then the same
 with `-m db`, then `uv --directory tools/validate run langatlas-validate ci`
 Expected: 7 passed; the store gate stays green.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

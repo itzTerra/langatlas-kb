@@ -298,6 +298,21 @@ def _cmd_golden_staleness(args) -> int:
     return 0
 
 
+def _cmd_supersede(args) -> int:
+    from langatlas_ingest.currency.supersede import TOMBSTONE_REASON, supersede_source
+    from langatlas_ingest.db import connect
+    from langatlas_ingest.store import SourcingQueue
+    from langatlas_validate.paths import REPO_ROOT
+
+    with connect(IngestConfig.load().dsn) as conn:
+        changed = supersede_source(REPO_ROOT, old_id=args.old, new_id=args.new,
+                                   note=args.note or "", queue=SourcingQueue(conn))
+    print("\n".join(str(path) for path in changed))
+    print(f"filed an {TOMBSTONE_REASON} trigger for {args.old};"
+          " review and commit the two records above")
+    return 0
+
+
 def _cmd_new_source(args) -> int:
     from langatlas_ingest.paths import REPO_ROOT
     from langatlas_ingest.scaffold import render_source_yaml
@@ -573,6 +588,13 @@ def build_parser() -> argparse.ArgumentParser:
     candidates.add_argument("--topic", help="seed retrieval instead of random sampling")
     candidates.add_argument("--out", required=True)
     candidates.set_defaults(func=_cmd_golden_candidates)
+
+    supersede = sub.add_parser(
+        "supersede", help="tombstone a superseded source and fire its staleness trigger")
+    supersede.add_argument("--old", required=True)
+    supersede.add_argument("--new", required=True)
+    supersede.add_argument("--note", default="")
+    supersede.set_defaults(func=_cmd_supersede)
 
     new_source = sub.add_parser("new-source",
                                 help="scaffold a schema-valid sources/<id>.yaml record")
