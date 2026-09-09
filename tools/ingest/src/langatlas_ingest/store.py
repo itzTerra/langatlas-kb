@@ -146,15 +146,30 @@ class SourceChunksStore:
 
 class SourcingQueue:
     """D37/D41's single private queue. Re-filing an already-open entry updates it in place
-    rather than stacking duplicates — the queue is a state, not a log."""
+    rather than stacking duplicates — the queue is a state, not a log.
+
+    For `kind="pending-source"` a source has at most one open issue at a time, so the
+    dedup key is `(kind, source_id)` alone — refiling under a new reason replaces the
+    open entry rather than adding a second. Every other kind dedupes on
+    `(kind, source_id, reason)` instead: a single source can carry several independent,
+    simultaneously-open findings (e.g. a link-checker run's `anchor-missing` and
+    `content-drift` on the same source), and those must stay separate, independently
+    resolvable rows, while refiling the *same* reason still updates in place rather than
+    stacking duplicates."""
 
     def __init__(self, conn):
         self.conn = conn
 
     def file(self, *, kind: str, source_id: str, reason: str, detail: str = "") -> int:
         with self.conn.cursor() as cur:
-            cur.execute("SELECT id FROM sourcing_queue WHERE kind = %s AND source_id = %s"
-                        " AND resolved_at IS NULL", (kind, source_id))
+            if kind == "pending-source":
+                cur.execute(
+                    "SELECT id FROM sourcing_queue WHERE kind = %s AND source_id = %s"
+                    " AND resolved_at IS NULL", (kind, source_id))
+            else:
+                cur.execute(
+                    "SELECT id FROM sourcing_queue WHERE kind = %s AND source_id = %s"
+                    " AND reason = %s AND resolved_at IS NULL", (kind, source_id, reason))
             existing = cur.fetchone()
             if existing:
                 cur.execute("UPDATE sourcing_queue SET reason = %s, detail = %s WHERE id = %s",

@@ -1,9 +1,12 @@
 """Persistence for §4.4's two standing checks, plus the `sourcing_queue` filing that is
 their only externally visible consequence.
 
-`SourcingQueue.file()` is idempotent per (kind, source_id) — it updates an open entry in
-place rather than stacking duplicates. Both checks lean on that: a link that has been dead
-for four months is one open entry with a refreshed detail line, not four."""
+`SourcingQueue.file()` is idempotent per (kind, source_id, reason) for these non-
+pending-source kinds — it updates an open entry in place rather than stacking duplicates
+when the same reason is refiled. Both checks lean on that: a link that has been dead for
+four months is one open entry with a refreshed detail line, not four. Distinct reasons on
+the same source (an `anchor-missing` alongside a `content-drift`) stay as separate,
+independently resolvable entries."""
 from datetime import datetime
 
 from langatlas_ingest.currency.links import LinkCheckResult
@@ -49,18 +52,9 @@ _DETAIL = {
 
 
 def file_link_findings(queue: SourcingQueue, result: LinkCheckResult) -> list[str]:
-    """One queue entry per finding. Returns the reasons filed, for the job's `detail`.
-
-    `SourcingQueue.file()` dedupes on (kind, source_id) alone — correct for
-    `pending-source`, where a source has at most one open issue at a time, but a single
-    dead link can carry several independent findings (a moved anchor *and* drifted
-    content) that must stay as separate, independently resolvable entries. Scoping
-    `source_id` by reason keeps `.file()`'s per-finding idempotency (re-running the
-    checker refreshes each finding's own entry in place) without letting a second
-    finding on the same source overwrite the first."""
+    """One queue entry per finding. Returns the reasons filed, for the job's `detail`."""
     for reason in result.findings:
-        queue.file(kind="link-checker", source_id=f"{result.source_id}:{reason}",
-                   reason=reason,
+        queue.file(kind="link-checker", source_id=result.source_id, reason=reason,
                    detail=_DETAIL[reason].format(url=result.url, anchor=result.anchor,
                                                  status=result.http_status))
     return list(result.findings)
