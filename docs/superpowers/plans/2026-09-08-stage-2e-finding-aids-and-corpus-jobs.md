@@ -3040,7 +3040,7 @@ git commit -m "feat(#stage-2e): mirror PLDB by git clone and Hyperpolyglot by sc
   - Both are pure mirror reads: no `ctx`, no network, no cache — the channel's job is
     fetching, and there is nothing to fetch here.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/finding-aids/tests/test_adapters_mirrored.py
@@ -3145,12 +3145,12 @@ def test_hyperpolyglot_without_a_mirror_raises(tmp_path, config):
         query_hyperpolyglot("anything", config=config, root=tmp_path)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_adapters_mirrored.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...adapters`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/finding-aids/src/langatlas_finding_aids/adapters/__init__.py
@@ -3269,12 +3269,12 @@ def query_hyperpolyglot(query: str, *, config: FindingAidsConfig | None = None,
     return results
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/finding-aids run pytest tests/test_adapters_mirrored.py -v`
 Expected: 8 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \
