@@ -5,7 +5,7 @@ import langatlas_orchestrator.jobs  # noqa: F401
 
 _DEFERRED_KINDS = (
     "monthly-finding-aid-mirror-refresh", "monthly-demand-export",
-    "quarterly-edition-check", "backstop-sweep-18mo",
+    "backstop-sweep-18mo",
 )
 
 

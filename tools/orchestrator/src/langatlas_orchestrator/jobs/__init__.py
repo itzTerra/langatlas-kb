@@ -3,6 +3,7 @@ inventory) as a side effect. `driver.main()` imports this once before dispatchin
 tests import individual `jobs/*` submodules directly and rely on the same import."""
 from langatlas_orchestrator.jobs import capability_probe  # noqa: F401
 from langatlas_orchestrator.jobs import deferred  # noqa: F401
+from langatlas_orchestrator.jobs import edition_check  # noqa: F401
 from langatlas_orchestrator.jobs import exit_test  # noqa: F401
 from langatlas_orchestrator.jobs import link_checker  # noqa: F401
 from langatlas_orchestrator.jobs import verification  # noqa: F401

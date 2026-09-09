@@ -22,8 +22,10 @@
 # monthly Umami `demand` export (D52) — no-ops until Stage 6's Umami instance exists
 0 3 4 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-demand-export.yaml
 
-# quarterly edition-check (D37)
-0 4 1 1,4,7,10 *  cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/quarterly-edition-check.yaml
+# Runs monthly, but each source is only checked once its own interval has elapsed
+# (§4.2: formal-spec keeps §4.4's quarterly cadence; every other grounding gets a flat
+# shorter 30-day one, which a quarterly cron could never deliver).
+0 4 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/quarterly-edition-check.yaml
 
 # 18-month backstop sweep, checked monthly — the job's own logic no-ops until due (D43 §2.5)
 0 5 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/backstop-sweep-18mo.yaml

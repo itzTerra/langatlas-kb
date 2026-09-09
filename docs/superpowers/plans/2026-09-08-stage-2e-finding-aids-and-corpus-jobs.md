@@ -1292,7 +1292,7 @@ git commit -m "feat(#stage-2e): compare a pinned edition against its live page o
 **Developer checkpoint:** this task lands plan decision 2 (due-driven job, monthly cron). Confirm
 before merging.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/orchestrator/tests/test_edition_check_job.py
@@ -1404,12 +1404,12 @@ def test_a_match_files_nothing_and_records_the_check(tmp_path, monkeypatch, dsn)
         assert last_edition_check(conn, "docs") is not None
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_edition_check_job.py -v`
 Expected: FAIL — `ModuleNotFoundError: ...jobs.edition_check`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/orchestrator/src/langatlas_orchestrator/jobs/edition_check.py
@@ -1511,13 +1511,13 @@ budget:
 
 Plus the `deferred.py` stub deletion and the `jobs/__init__.py` import, as in Task 4.
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_edition_check_job.py -v -m db`
 and `uv --directory tools/orchestrator run pytest -v`
 Expected: all pass.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-08-stage-2e-finding-aids-and-corpus-jobs.md \

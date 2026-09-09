@@ -1,5 +1,7 @@
-# Deferred to Stage 2 (needs ingested spec sources with edition metadata).
+# §4.4's edition check, run monthly and gated per source by §4.2's grounding-driven
+# interval (formal-spec 90d, everything else 30d). Plain page fetch, never a re-ingest.
 kind: quarterly-edition-check
 checkpoint_path: .private/orchestrator/quarterly-edition-check.sqlite
 budget:
+  max_calls: 100
   max_wall_seconds: 3600
