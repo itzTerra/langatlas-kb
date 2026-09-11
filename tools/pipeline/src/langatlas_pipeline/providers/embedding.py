@@ -1,7 +1,9 @@
 import time
 from langatlas_pipeline.cache import cache_key
 from langatlas_pipeline.errors import ContextTooLarge
-from langatlas_pipeline.providers.completion import build_client, estimate_tokens, truncate_to_tokens
+from langatlas_pipeline.providers.completion import (
+    build_client, call_with_hard_timeout, estimate_tokens, truncate_to_tokens,
+)
 from langatlas_pipeline.providers.throttle import Throttle
 
 # Live D22 benchmark evidence (2026-09-05): real gateway tokenizers vary in tokens-per-char
@@ -37,6 +39,9 @@ class EmbeddingClient:
         self.throttle = throttle or Throttle(
             min_interval=(settings.get("min_interval_seconds") or {}).get("embedding", 0.1),
             max_attempts=settings.get("max_attempts", 5))
+        # Same rationale as `CompletionClient._hard_timeout_seconds` (completion.py):
+        # httpx's `timeout=` bounds each response chunk, not the call's total duration.
+        self._hard_timeout_seconds = settings.get("timeout_seconds", 900)
 
     @property
     def client(self):
@@ -108,8 +113,10 @@ class EmbeddingClient:
                 began = time.monotonic()
                 try:
                     response = self.throttle.run(
-                        lambda b=batch: self.client.embeddings.create(
-                            model=model, input=[text for _, text, _, _ in b]))
+                        lambda b=batch: call_with_hard_timeout(
+                            lambda: self.client.embeddings.create(
+                                model=model, input=[text for _, text, _, _ in b]),
+                            self._hard_timeout_seconds))
                 except Exception as exc:
                     retruncatable = any(original is not None for _, _, _, original in batch)
                     if (attempt == _MAX_CONTEXT_RETRUNCATIONS or not retruncatable

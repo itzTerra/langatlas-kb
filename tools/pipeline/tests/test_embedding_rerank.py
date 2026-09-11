@@ -1,6 +1,7 @@
 import json
+import time
 import pytest
-from langatlas_pipeline.errors import ContextTooLarge, UnknownAlias
+from langatlas_pipeline.errors import ContextTooLarge, UnknownAlias, ProviderTransportError
 from langatlas_pipeline.providers.completion import estimate_tokens, truncate_to_tokens
 from langatlas_pipeline.providers.embedding import EmbeddingClient
 from langatlas_pipeline.providers.rerank import RerankClient
@@ -30,6 +31,32 @@ def test_embed_returns_one_vector_per_text(ctx):
                                                       model="qwen3-embedding-4b")
     assert len(vectors) == 2
     assert vectors[0][0] == 5.0
+
+
+def test_a_stuck_embed_call_is_bounded_not_left_to_hang(ctx):
+    # Live evidence (2026-09-11): the equivalent completion-channel hang was fixed, but
+    # EmbeddingClient.embed() called `self.client.embeddings.create(...)` directly through
+    # Throttle with no hard-timeout wrapper -- the exact same httpx per-chunk-not-total-
+    # duration gap, just in the embedding channel. A real D24 calibration run then hung for
+    # hours on a stage-1 scoped-retrieval bounce-hint embed call. Regression test for the fix.
+    class HangingEmbeddings:
+        def create(self, *, model, input):
+            time.sleep(5)                    # far longer than the hard timeout below
+            raise AssertionError("unreachable: must be bounded before this call returns")
+
+    class HangingClient:
+        def __init__(self):
+            self.embeddings = HangingEmbeddings()
+
+    client = EmbeddingClient(ctx, client=HangingClient())
+    client._hard_timeout_seconds = 0.05
+    client.throttle.max_attempts = 1
+
+    started = time.monotonic()
+    with pytest.raises(ProviderTransportError):
+        client.embed(["alpha"], model="qwen3-embedding-4b")
+    assert time.monotonic() - started < 2.0, \
+        "a stuck embed call must be bounded by the hard timeout, not left to hang"
 
 
 def test_embed_batches_and_caches_by_content(ctx):
