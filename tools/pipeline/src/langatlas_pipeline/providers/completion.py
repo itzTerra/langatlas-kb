@@ -1,5 +1,6 @@
 import os
 import re
+import threading
 import time
 from dataclasses import asdict, dataclass
 from typing import Any
@@ -95,6 +96,38 @@ def split_reasoning(text: str, reasoning_field: str | None) -> tuple[str, str | 
     return _THINK.sub("", text, count=1), match.group(1).strip()
 
 
+def call_with_hard_timeout(fn, timeout_seconds: float):
+    """Run `fn()` with a real wall-clock deadline, independent of the transport's own
+    timeout.
+
+    `httpx.Timeout` (which the openai client's `timeout=` becomes) bounds the wait for
+    *each chunk* of the response, not the call's total duration — live evidence
+    (2026-09-11): a call sat on an ESTABLISHED socket for nearly 9 hours with zero bytes
+    moving, past any configured `timeout_seconds`, because nothing ever violated the
+    per-chunk bound. `fn` runs on a daemon thread so a genuinely stuck call can never
+    block process exit (or this function's caller) past `timeout_seconds`; the thread
+    itself is abandoned, not killed — Python cannot forcibly stop a running thread —
+    which is an acceptable resource leak against the alternative of an unbounded hang.
+    """
+    box: dict[str, Any] = {}
+
+    def runner():
+        try:
+            box["value"] = fn()
+        except BaseException as exc:       # noqa: BLE001 - re-raised on the caller's thread
+            box["error"] = exc
+
+    thread = threading.Thread(target=runner, daemon=True)
+    thread.start()
+    thread.join(timeout_seconds)
+    if thread.is_alive():
+        raise TimeoutError(
+            f"provider call exceeded the {timeout_seconds}s hard wall-clock timeout")
+    if "error" in box:
+        raise box["error"]
+    return box["value"]
+
+
 def build_client(config):
     """The whole 'provider abstraction' for transport: one openai SDK client with the
     base_url swapped and the gateway's non-standard auth header (D26)."""
@@ -125,6 +158,9 @@ class CompletionClient:
             max_attempts=settings.get("max_attempts", 5),
             circuit_breaker_failures=settings.get("circuit_breaker_failures", 5),
         )
+        # Same config value `build_client` gives the transport, but enforced as a real
+        # wall-clock deadline per attempt — see `call_with_hard_timeout`.
+        self._hard_timeout_seconds = settings.get("timeout_seconds", 900)
 
     @property
     def client(self):
@@ -175,9 +211,11 @@ class CompletionClient:
             attempts += 1
             started = time.monotonic()
             response = self.throttle.run(
-                lambda: self.client.chat.completions.create(
-                    model=alias, messages=conversation,
-                    **self._structured_kwargs(mode, schema), **sampling.as_dict()))
+                lambda: call_with_hard_timeout(
+                    lambda: self.client.chat.completions.create(
+                        model=alias, messages=conversation,
+                        **self._structured_kwargs(mode, schema), **sampling.as_dict()),
+                    self._hard_timeout_seconds))
             latency_ms = int((time.monotonic() - started) * 1000)
             resolved = getattr(response, "model", None) or resolved_hint
             self.ctx.pin_alias(alias, resolved)

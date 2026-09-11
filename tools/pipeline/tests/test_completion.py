@@ -1,4 +1,5 @@
 import json
+import time
 import pytest
 from pydantic import BaseModel
 from langatlas_pipeline.errors import (
@@ -8,7 +9,7 @@ from langatlas_pipeline.errors import (
 from langatlas_pipeline.injection import delimit_untrusted
 from langatlas_pipeline.prompts import load_prompt
 from langatlas_pipeline.providers.completion import (
-    CompletionClient, Sampling, estimate_tokens, split_reasoning,
+    CompletionClient, Sampling, call_with_hard_timeout, estimate_tokens, split_reasoning,
 )
 
 
@@ -145,6 +146,59 @@ def test_transport_failures_back_off_then_raise(ctx, monkeypatch):
     with pytest.raises(ProviderTransportError):
         client.complete("glm", prompt.render(), prompt=prompt)
     assert len(fake.responses.requests) == 5
+
+
+def test_call_with_hard_timeout_bounds_a_stuck_call():
+    # Real time.sleep, deliberately not monkeypatched: the point is that a call which
+    # never returns is still bounded by the wall clock, not by cooperative timing.
+    started = time.monotonic()
+    with pytest.raises(TimeoutError):
+        call_with_hard_timeout(lambda: time.sleep(5), 0.05)
+    assert time.monotonic() - started < 1.0
+
+
+def test_call_with_hard_timeout_returns_the_fast_result():
+    assert call_with_hard_timeout(lambda: 42, 5) == 42
+
+
+def test_call_with_hard_timeout_reraises_the_call_s_own_exception():
+    def boom():
+        raise ValueError("real failure")
+
+    with pytest.raises(ValueError, match="real failure"):
+        call_with_hard_timeout(boom, 5)
+
+
+def test_a_stuck_provider_call_is_bounded_not_left_to_hang(ctx):
+    # Live evidence (2026-09-11): a real call sat on an open socket for ~9 hours because
+    # httpx's `timeout=` bounds each response chunk, not the call's total duration. This
+    # is the regression test for the fix: `complete()` must not block past its own
+    # configured hard timeout even when the transport itself never gives up.
+    prompt = load_prompt("capability-probe")
+
+    class HangingResponses:
+        def __init__(self):
+            self.requests = []
+
+        def create(self, **kwargs):
+            self.requests.append(kwargs)
+            time.sleep(5)                   # far longer than the hard timeout below
+            return _response("too late")    # pragma: no cover - never reached in time
+
+    class HangingClient:
+        def __init__(self):
+            self.responses = HangingResponses()
+            self.chat = type("Chat", (), {"completions": self.responses})()
+
+    client = CompletionClient(ctx, client=HangingClient())
+    client._hard_timeout_seconds = 0.05
+    client.throttle.max_attempts = 1
+
+    started = time.monotonic()
+    with pytest.raises(ProviderTransportError):
+        client.complete("glm", prompt.render(), prompt=prompt)
+    assert time.monotonic() - started < 2.0, \
+        "a stuck call must be bounded by the hard timeout, not left to hang"
 
 
 def test_delimited_content_may_not_sit_in_a_system_message(ctx):
