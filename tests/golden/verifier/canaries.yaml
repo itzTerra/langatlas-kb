@@ -9,4 +9,9 @@
 #
 # These ids must exist in tests/golden/verifier/*.yaml. `langatlas-verify canaries
 # --check` verifies that and is wired into CI's golden-validate step.
-canaries: []
+canaries:
+  - v-java-core-0030   # fabricated-locator (items-exceptions-2.yaml)
+  - v-ml-core-0010     # contradicted (items-ml-scheme-haskell.yaml)
+  - v-js-core-0010     # overstated-claim (items-scripting-langs.yaml)
+  - v-java-core-0032   # quote-mismatch (items-exceptions-2.yaml)
+  - v-absent-0003      # status: absent, source documents the feature -> contradicted (items-since-and-absence.yaml)
