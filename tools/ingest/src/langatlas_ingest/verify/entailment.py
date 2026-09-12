@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from langatlas_ingest.verify.inputs import delimit_agent_text
 from langatlas_pipeline.prompts import load_prompt
 from langatlas_pipeline.providers.completion import Sampling
@@ -22,9 +22,17 @@ class AssertionOut(BaseModel):
 class EntailmentOut(BaseModel):
     """Section 6.2's structured entailment output. Deliberately carries **no overall
     verdict field**: the overall verdict is a fixed rule (`fold_assertions`) applied in
-    code, so a model cannot talk its way past the decomposition it just produced."""
+    code, so a model cannot talk its way past the decomposition it just produced.
 
-    assertions: list[AssertionOut] = Field(default_factory=list)
+    `assertions` has no default. Live calibration evidence (2026-09-12): 50 of 276 real
+    responses omitted it entirely (returning only `since_status`); a permissive default
+    let those validate as "zero assertions" and silently fold to `unsupported` without
+    ever being flagged as a parse failure — which meant `complete()`'s one-repair-turn
+    retry never got a chance to ask the model to try again. A response missing the
+    field now fails validation like any other malformed response. Construct an
+    intentionally empty decomposition explicitly with `assertions=[]`."""
+
+    assertions: list[AssertionOut]
     since_status: Literal["since-supported", "as-of-supported"] | None = None
 
 

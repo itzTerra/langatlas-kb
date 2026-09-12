@@ -1,4 +1,5 @@
 import pytest
+from pydantic import ValidationError
 from langatlas_ingest.verify.entailment import (
     AssertionOut, EntailmentOut, fold_assertions, is_inconsistent, run_entailment,
 )
@@ -38,6 +39,19 @@ def test_a_supported_core_with_an_unsupported_since_folds_to_partial():
 
 def test_no_assertions_at_all_is_unsupported():
     assert fold_assertions([]) == "unsupported"
+
+
+def test_a_response_with_no_assertions_key_fails_to_parse():
+    # Live calibration evidence (2026-09-12): 50 of 276 real EntailmentOut-shaped
+    # responses across the run omitted `assertions` entirely (returning only
+    # `since_status`). With a permissive default this validated as "zero assertions",
+    # silently folded to `unsupported`, and was never flagged as a parse failure -- so
+    # completion.py's one-repair-turn retry never got a chance to ask the model to try
+    # again. `assertions` must be a required field: a response missing it is a parse
+    # failure like any other, not a legitimate empty decomposition (which a caller can
+    # still construct directly with `assertions=[]` in tests and in `fold_assertions`).
+    with pytest.raises(ValidationError):
+        EntailmentOut.model_validate_json('{"since_status": "since-supported"}')
 
 
 def test_a_set_with_no_presence_assertion_is_never_supported():

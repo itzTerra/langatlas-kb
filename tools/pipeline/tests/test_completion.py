@@ -91,6 +91,31 @@ def test_second_identical_call_is_a_cache_hit(ctx):
     assert len(fake.responses.requests) == 1
 
 
+def test_a_cache_entry_that_no_longer_matches_the_schema_is_treated_as_a_miss(ctx):
+    # A cached response is only ever content-addressed by the *request*, never the
+    # schema's own shape — so a schema tightened after the entry was written (exactly
+    # what happened to EntailmentOut, 2026-09-12: `assertions` went from optional to
+    # required) leaves stale entries in the cache that no longer validate. Without this,
+    # replaying one crashes `complete()` with an uncaught ValidationError instead of
+    # falling through to a fresh call the way an actual cache miss would.
+    prompt = load_prompt("capability-probe")
+    fake = FakeClient([_response(json.dumps({"verdict": "supported", "confidence": 0.9}))])
+    client = CompletionClient(ctx, client=fake)
+    client.complete("glm", prompt.render(), prompt=prompt, schema=Verdict)
+
+    row = ctx.cache._conn.execute("SELECT key, value FROM calls").fetchone()
+    key, value = row
+    stale = json.loads(value)
+    stale["text"] = json.dumps({"confidence": 0.9})       # missing the required `verdict`
+    ctx.cache.put(key, stale)
+
+    fake.responses.script.append(
+        _response(json.dumps({"verdict": "partial", "confidence": 0.4})))
+    result = client.complete("glm", prompt.render(), prompt=prompt, schema=Verdict)
+    assert result.cache_hit is False
+    assert result.parsed.verdict == "partial"
+
+
 def test_json_schema_mode_is_used_only_when_probed(ctx, monkeypatch):
     prompt = load_prompt("capability-probe")
     payload = json.dumps({"verdict": "supported", "confidence": 0.9})

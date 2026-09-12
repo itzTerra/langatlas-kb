@@ -221,7 +221,15 @@ class CompletionClient:
         if self.ctx.cache is not None:
             hit = self.ctx.cache.get(key)
             if hit is not None:
-                return self._from_cache(hit, alias, prompt, messages, schema)
+                try:
+                    return self._from_cache(hit, alias, prompt, messages, schema)
+                except (ValidationError, ValueError):
+                    # A cache entry is content-addressed by the request, never by the
+                    # schema's own shape — a schema tightened since this entry was
+                    # written (or any other reason the stored text no longer parses)
+                    # makes it stale, not a cache hit. Fall through to a real call
+                    # rather than letting a `_from_cache` failure crash `complete()`.
+                    pass
 
         mode = cap.structured_mode() if schema else None
         attempts = 0
