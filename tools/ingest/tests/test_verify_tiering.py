@@ -33,6 +33,23 @@ def test_inconsistent_output_escalates_even_when_supported():
     assert needs_escalation("supported", out(), has_since=False) is True
 
 
+def test_unsupported_does_not_escalate_by_default():
+    # The common case: most `unsupported` verdicts are strata that are SUPPOSED to be
+    # unsupported (right-claim-wrong-source, category-error, ...). Escalating all of them
+    # would double the batch's cost for no benefit and risk flipping some to a false
+    # accept, so plain `unsupported` with no independent quote confirmation stays final.
+    assert needs_escalation("unsupported", out("not-supported"), has_since=False) is False
+
+
+def test_unsupported_escalates_when_the_quote_independently_matched():
+    # 2026-09-12 calibration finding: a quote that passed the fast path (or was
+    # adjudicated as OCR noise) is strong independent evidence the citation is real. If
+    # entailment still says unsupported, that specific combination is exactly the shape
+    # of a primary-model misread worth a second look rather than a final verdict.
+    assert needs_escalation("unsupported", out("not-supported"), has_since=False,
+                            quote_matched=True) is True
+
+
 def test_second_opinion_sampling_is_deterministic():
     args = ("f-000000000001", "scott-plp", "p. 12")
     first = sampled_for_second_opinion(*args, rate=DEFAULT_SECOND_OPINION_RATE)

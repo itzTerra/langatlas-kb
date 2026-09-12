@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import date as _date
 from typing import Any
 from langatlas_ingest.config import IngestConfig
@@ -169,6 +169,11 @@ def verify_pair(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
 
     # ---- stage 2: quote fast path -----------------------------------------------
     annotations: list[str] = []
+    # True once the fast path has independent confirmation the citation's quote is real
+    # (a clean match, an LLM-adjudicated OCR-noise call, or a real quote found at another
+    # locator) — `needs_escalation`'s signal that a resulting `unsupported` is suspicious
+    # enough to deserve a second look rather than standing as the final verdict.
+    quote_matched = False
     if citation.quote:
         quote_check = check_quote(citation.quote, evidence.text)
         if quote_check.status == "adjudicate":
@@ -181,14 +186,27 @@ def verify_pair(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
                 # miss and falls into the whole-source search below like any other.
                 quote_check = QuoteCheck("mismatch", quote_check.ratio,
                                          annotation="quote-mismatch")
+            else:
+                quote_matched = True
+        elif quote_check.status == "pass":
+            quote_matched = True
         if quote_check.status == "mismatch":
-            elsewhere = find_quote_in_source(deps.store.by_source(citation.source_id),
-                                             citation.quote,
+            source_chunks = deps.store.by_source(citation.source_id)
+            elsewhere = find_quote_in_source(source_chunks, citation.quote,
                                              exclude=evidence.chunk_ids)
             if elsewhere.status == "found-elsewhere":
                 # A real quote at the wrong locator is a locator error, not a
                 # fabrication: annotate, keep going, let the locator be auto-corrected.
+                # Stage 3 must judge the claim against the passage that actually contains
+                # the quote — leaving `evidence` pointed at the wrong-locator text (which
+                # is what failed the fast path in the first place) makes a real match
+                # read as a false reject.
                 annotations.append("quote-found-elsewhere")
+                located = next(c for c in source_chunks
+                              if c.chunk_id == elsewhere.located_chunk_id)
+                evidence = replace(evidence, chunk_ids=(elsewhere.located_chunk_id,),
+                                   text=located.text, resolution="found-elsewhere")
+                quote_matched = True
             else:
                 verdict = _terminal(claim, citation, "unsupported",
                                     detail=f"quote does not appear in this source"
@@ -218,7 +236,7 @@ def verify_pair(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
 
     detail_parts = [p for p in (since_hint, evidence.hint) if p]
 
-    if needs_escalation(verdict_name, out, has_since=has_since):
+    if needs_escalation(verdict_name, out, has_since=has_since, quote_matched=quote_matched):
         escalated = _run_stage3(ctx, conn, claim=claim, citation=citation,
                                 evidence=evidence, alias=escalation, store=deps.store,
                                 grep_chunk_ids=grep_chunk_ids)

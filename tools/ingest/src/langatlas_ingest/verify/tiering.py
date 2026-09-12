@@ -16,9 +16,21 @@ ESCALATING_VERDICTS = frozenset({"partial", "contradicted"})
 _UINT32 = 2 ** 32
 
 
-def needs_escalation(verdict: str, out: EntailmentOut, *, has_since: bool) -> bool:
-    """Whether this pair should be re-run on the reasoning model (~5-15% of pairs)."""
-    return verdict in ESCALATING_VERDICTS or is_inconsistent(out, has_since=has_since)
+def needs_escalation(verdict: str, out: EntailmentOut, *, has_since: bool,
+                     quote_matched: bool = False) -> bool:
+    """Whether this pair should be re-run on the reasoning model (~5-15% of pairs).
+
+    @param quote_matched - the fast path independently confirmed the citation's quote
+        (a clean match, or an LLM-adjudicated OCR-noise call) — live calibration evidence
+        (2026-09-12) found the primary model misreading on-point evidence straight to
+        `unsupported` often enough to dominate the false-reject rate. Plain `unsupported`
+        with no such confirmation is not escalated: most `unsupported` verdicts are
+        strata that are supposed to land there, and escalating all of them would double
+        the batch's cost while risking new false accepts for no benefit.
+    """
+    if verdict in ESCALATING_VERDICTS or is_inconsistent(out, has_since=has_since):
+        return True
+    return verdict == "unsupported" and quote_matched
 
 
 def sampled_for_second_opinion(fact_id: str, source_id: str, locator: str, *,

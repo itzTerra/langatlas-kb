@@ -201,7 +201,11 @@ def test_a_fabricated_quote_short_circuits_to_unsupported_with_the_annotation():
     assert "quote-mismatch" in got.annotations
 
 
-def test_a_quote_found_elsewhere_is_annotated_and_still_entailed():
+def test_a_quote_found_elsewhere_reroutes_evidence_to_the_located_chunk():
+    # A real quote at the wrong locator must send the LOCATED chunk's text to entailment,
+    # not the wrong-locator text that failed the fast path -- otherwise stage 3 judges the
+    # claim against evidence that never contained the quote, and a real match reads as a
+    # false reject.
     other = chunk("s#c00002", text=PASSAGE, locator="p. 400")
     here = chunk("s#c00001", text="an unrelated paragraph about lexing", locator="p. 1")
     ctx = ScriptedCtx(ent("supported"))
@@ -210,6 +214,9 @@ def test_a_quote_found_elsewhere_is_annotated_and_still_entailed():
                       deps=deps(store=FakeStore([here, other])))
     assert "quote-found-elsewhere" in got.annotations
     assert got.verdict in ("supported", "partial")
+    assert got.evidence_chunk_ids == ("s#c00002",)
+    assert PASSAGE in str(ctx.messages[-1])
+    assert "unrelated paragraph about lexing" not in str(ctx.messages[-1])
 
 
 def test_an_over_cap_quote_is_rejected_before_the_model_sees_it():
@@ -231,6 +238,27 @@ def test_a_partial_verdict_escalates_to_the_reasoning_model():
                       deps=deps())
     assert ctx.aliases[:2] == ["deepseek", "deepseek-thinking"]
     assert got.verdict == "partial"
+
+
+def test_an_unsupported_verdict_escalates_when_the_quote_matched():
+    # 2026-09-12 calibration finding: the primary model misreading on-point,
+    # quote-confirmed evidence straight to `unsupported` dominated the false-reject rate.
+    # A matched quote is independent confirmation the citation is real, so this specific
+    # combination gets the reasoning model's second look, unlike a plain unsupported.
+    ctx = ScriptedCtx(ent("not-supported"), ent("supported"))
+    citation = CitationInput("s", "p. 1", quote="destructures a value against a sequence")
+    got = verify_pair(ctx, None, claim=CLAIM, citation=citation, config=CONFIG,
+                      deps=deps())
+    assert ctx.aliases == ["deepseek", "deepseek-thinking"]
+    assert got.verdict == "supported"
+
+
+def test_an_unsupported_verdict_with_no_quote_does_not_escalate():
+    ctx = ScriptedCtx(ent("not-supported"))
+    got = verify_pair(ctx, None, claim=CLAIM, citation=CITATION, config=CONFIG,
+                      deps=deps())
+    assert ctx.aliases == ["deepseek"]
+    assert got.verdict == "unsupported"
 
 
 def test_an_escalation_that_reverses_the_verdict_wins():
