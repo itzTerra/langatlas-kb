@@ -32,12 +32,32 @@ def normalize_tokens(text: str) -> list[str]:
     return _WORD_RE.findall(folded)
 
 
-def quote_ratio(quote: str, text: str) -> float:
-    """Best token-level similarity of `quote` against any same-length window of `text`.
+# How much of the gap between the token-level and character-level reads to credit
+# toward the character-level score. Calibrated against the 8 ocr-noisy golden items
+# (2026-09-12): every one of them needs some credit (their token ratio alone stays
+# below QUOTE_FAIL_RATIO), 0.6 lands all 8 inside the adjudication band or above without
+# pushing a real fabrication's blended score anywhere near either floor (fabrications
+# score low on both reads, so the blend stays low regardless of weight).
+_CHAR_BLEND_WEIGHT = 0.6
 
-    Token-level rather than character-level so a single garbled word costs one token, not
-    a run of characters — which is what keeps OCR noise inside the adjudication band
-    instead of below the fabrication floor.
+
+def quote_ratio(quote: str, text: str) -> float:
+    """Best similarity of `quote` against any same-length window of `text`, blending a
+    token-level and a character-level read of the same window.
+
+    Token-level alone was the original design — a single garbled word costs one token,
+    not a run of characters, keeping a light OCR slip inside the adjudication band
+    instead of below the fabrication floor. But token equality gives a corrupted token
+    *zero* credit no matter how close it is character-for-character ("prograrnrning" vs
+    "programming"), so real OCR noise that hits several words in one short quote can
+    still push the token ratio below the floor before the LLM adjudicator ever sees it
+    (live calibration evidence, 2026-09-12: this terminal-rejected an entire golden-set
+    stratum). Character-level similarity on the same window recovers that credit, but
+    unweighted it overshoots — a quote sharing most of its characters with an unrelated
+    passage (shared spaces, common short words) can score deceptively high purely at the
+    character level, so `_CHAR_BLEND_WEIGHT` credits only part of the gap rather than
+    taking the character read outright. A genuine fabrication scores low on both reads,
+    so the blend stays low regardless of the weight.
 
     @param quote - the claimed quote to find
     @param text - the source text to search within
@@ -47,10 +67,14 @@ def quote_ratio(quote: str, text: str) -> float:
     if not needle or not haystack:
         return 0.0
     width = len(needle)
+    needle_chars = " ".join(needle)
     best = 0.0
     for start in range(max(1, len(haystack) - width + 1)):
-        ratio = SequenceMatcher(a=needle, b=haystack[start:start + width]).ratio()
-        best = max(best, ratio)
+        window = haystack[start:start + width]
+        token_ratio = SequenceMatcher(a=needle, b=window).ratio()
+        char_ratio = SequenceMatcher(a=needle_chars, b=" ".join(window)).ratio()
+        blended = token_ratio + (char_ratio - token_ratio) * _CHAR_BLEND_WEIGHT
+        best = max(best, blended)
         if best >= 1.0:
             break
     return best

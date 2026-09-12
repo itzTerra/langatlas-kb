@@ -46,12 +46,29 @@ def test_an_unrelated_quote_is_a_mismatch_with_the_annotation():
     assert got.annotation == "quote-mismatch"
 
 
-def test_light_ocr_noise_lands_in_the_adjudication_band():
-    # rn -> m is the classic OCR confusion; one corrupted token in eight should be
-    # neither a clean pass nor a clean fabrication call.
+def test_a_single_dropped_character_passes_outright():
+    # One dropped letter in an eight-word quote is close enough, character-for-character,
+    # that it does not need the LLM adjudicator's judgment call — the blended ratio
+    # (2026-09-12) credits that closeness and this clears QUOTE_PASS_RATIO outright.
     got = check_quote("destructures a value against a sequenee of patterns", PASSAGE)
-    assert got.status == "adjudicate"
-    assert QUOTE_FAIL_RATIO < got.ratio < QUOTE_PASS_RATIO
+    assert got.status == "pass"
+
+
+def test_heavy_ocr_noise_across_several_words_still_lands_in_the_adjudication_band():
+    # Live calibration finding (2026-09-12): real OCR noise that hits several words in one
+    # short quote (rn->m repeated, e/o dropped) pushed the pure token-level ratio below
+    # QUOTE_FAIL_RATIO, terminal-rejecting the whole ocr-noisy stratum before the LLM
+    # adjudicator ever ran. A garbled token is still character-similar to the real one, so
+    # the ratio must give it partial credit rather than the zero a token-level compare
+    # gives an entirely different word.
+    quote = ("Higher-order prograrnrning is the collection of prograrnrning techniques"
+             " that becorne available when using procedure values in prograrns.")
+    passage = ("Higher-order programming is the collection of programming techniques"
+               " that become available when using procedure values in programs.")
+    got = check_quote(quote, passage)
+    assert got.status == "adjudicate", (
+        f"ratio {got.ratio} should land strictly between {QUOTE_FAIL_RATIO} and"
+        f" {QUOTE_PASS_RATIO}, not fall to a hard mismatch")
 
 
 def test_an_empty_quote_never_passes():
