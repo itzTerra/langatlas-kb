@@ -1,5 +1,6 @@
 import os
 import re
+import signal
 import threading
 import time
 from dataclasses import asdict, dataclass
@@ -96,36 +97,55 @@ def split_reasoning(text: str, reasoning_field: str | None) -> tuple[str, str | 
     return _THINK.sub("", text, count=1), match.group(1).strip()
 
 
+class _HardTimeoutFired(BaseException):
+    """Private to this module's SIGALRM handler — never escapes `call_with_hard_timeout`,
+    which always translates it to a plain `TimeoutError` (the exception `Throttle`
+    already treats as transient). `BaseException`, not `Exception`: it must not be
+    swallowed by a `except Exception` inside `fn` (the provider SDK's own retry/error
+    handling, for one) the way a normal exception could be."""
+
+
 def call_with_hard_timeout(fn, timeout_seconds: float):
     """Run `fn()` with a real wall-clock deadline, independent of the transport's own
     timeout.
 
     `httpx.Timeout` (which the openai client's `timeout=` becomes) bounds the wait for
-    *each chunk* of the response, not the call's total duration — live evidence
-    (2026-09-11): a call sat on an ESTABLISHED socket for nearly 9 hours with zero bytes
-    moving, past any configured `timeout_seconds`, because nothing ever violated the
-    per-chunk bound. `fn` runs on a daemon thread so a genuinely stuck call can never
-    block process exit (or this function's caller) past `timeout_seconds`; the thread
-    itself is abandoned, not killed — Python cannot forcibly stop a running thread —
-    which is an acceptable resource leak against the alternative of an unbounded hang.
+    *each chunk* of the response, not the call's total duration — a call to a slow model
+    can sit well past `timeout_seconds` as long as some byte trickles in periodically.
+    `SIGALRM` (via `signal.setitimer`) is delivered by the kernel and interrupts whatever
+    blocking syscall `fn` is inside (the socket read included) with `EINTR`, enforcing the
+    deadline regardless of what the transport itself is waiting on.
+
+    Signal delivery and handling only happen on the main thread in CPython, so this only
+    supports being called from there — every current caller (golden-score,
+    nightly-verification) processes one pair at a time on the main thread. A future
+    concurrent caller needs process- or asyncio-based isolation instead; the loud
+    `RuntimeError` below is deliberate rather than a silent no-op.
     """
-    box: dict[str, Any] = {}
+    if threading.current_thread() is not threading.main_thread():
+        raise RuntimeError(
+            "call_with_hard_timeout only supports the main thread (SIGALRM cannot be"
+            " delivered anywhere else) -- add process- or asyncio-based isolation before"
+            " calling it from a worker thread")
 
-    def runner():
-        try:
-            box["value"] = fn()
-        except BaseException as exc:       # noqa: BLE001 - re-raised on the caller's thread
-            box["error"] = exc
+    def _on_alarm(signum, frame):
+        raise _HardTimeoutFired
 
-    thread = threading.Thread(target=runner, daemon=True)
-    thread.start()
-    thread.join(timeout_seconds)
-    if thread.is_alive():
+    previous_handler = signal.signal(signal.SIGALRM, _on_alarm)
+    previous_delay, _ = signal.setitimer(signal.ITIMER_REAL, timeout_seconds)
+    try:
+        return fn()
+    except _HardTimeoutFired:
         raise TimeoutError(
-            f"provider call exceeded the {timeout_seconds}s hard wall-clock timeout")
-    if "error" in box:
-        raise box["error"]
-    return box["value"]
+            f"provider call exceeded the {timeout_seconds}s hard wall-clock timeout"
+        ) from None
+    finally:
+        # Cancel before restoring the old delay: an alarm must never fire against a
+        # handler that no longer expects it.
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+        if previous_delay:
+            signal.setitimer(signal.ITIMER_REAL, previous_delay)
 
 
 def build_client(config):

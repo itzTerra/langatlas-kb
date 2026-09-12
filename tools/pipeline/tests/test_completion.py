@@ -169,6 +169,27 @@ def test_call_with_hard_timeout_reraises_the_call_s_own_exception():
         call_with_hard_timeout(boom, 5)
 
 
+def test_call_with_hard_timeout_refuses_a_non_main_thread():
+    # SIGALRM can only be delivered to the main thread in CPython. A silent fallback to
+    # the thread-based approach this function replaced is refused deliberately -- that
+    # mechanism already failed to enforce its timeout once under real load (2026-09-11).
+    import threading
+
+    result = {}
+
+    def worker():
+        try:
+            call_with_hard_timeout(lambda: 1, 5)
+        except BaseException as exc:               # noqa: BLE001 - captured for assertion
+            result["error"] = exc
+
+    t = threading.Thread(target=worker)
+    t.start()
+    t.join(5)
+    assert isinstance(result.get("error"), RuntimeError)
+    assert "main thread" in str(result["error"])
+
+
 def test_a_stuck_provider_call_is_bounded_not_left_to_hang(ctx):
     # Live evidence (2026-09-11): a real call sat on an open socket for ~9 hours because
     # httpx's `timeout=` bounds each response chunk, not the call's total duration. This
