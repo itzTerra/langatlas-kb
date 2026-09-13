@@ -822,7 +822,7 @@ git has no per-field ACL, and D1 rejects a PR gate. The gate is a *checkpoint ar
 and the digest binding makes a forged or stale sign-off visible rather than invisible. Do not add
 enforcement theater on top; state the property and move on.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_cycle.py
@@ -907,12 +907,12 @@ def test_recording_minted_nodes_is_append_only_and_deduped(repo):
     assert load_cycle(1, repo_root=repo).nodes_minted == cycle.nodes_minted
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_cycle.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.cycle'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/research/src/langatlas_research/cycle.py
@@ -1072,12 +1072,12 @@ def record_minted(cycle: Cycle, node_ids, *, repo_root: Path | None = None) -> C
     return updated
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 18 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/
