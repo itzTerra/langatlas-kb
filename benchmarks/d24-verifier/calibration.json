@@ -1,0 +1,118 @@
+{
+  "absent_false_accept_rate": 0.0,
+  "absent_items": 20,
+  "annotation_accuracy": 0.75,
+  "contamination_gauge": {
+    "gap": -0.1077441077441077,
+    "gauge_exact_rate": 0.9259259259259259,
+    "gauge_items": 54,
+    "mainstream_exact_rate": 0.8181818181818182,
+    "mainstream_items": 165
+  },
+  "exact_verdict_accuracy": 0.8447488584474886,
+  "false_accept_rate": 0.03731343283582089,
+  "false_accepts": [
+    "v-cpp-core-0003",
+    "v-scheme-core-0002",
+    "v-since-0022",
+    "v-js-core-0010",
+    "v-since-0001"
+  ],
+  "false_reject_rate": 0.07058823529411765,
+  "false_rejects": [
+    "v-ada-core-0001",
+    "v-haskell-core-0013",
+    "v-ml-core-0006",
+    "v-ocr-0002",
+    "v-ocr-0003",
+    "v-ocr-0007"
+  ],
+  "generated": "2026-09-13T01:45:41.355779+00:00",
+  "items": 219,
+  "per_stratum": {
+    "category-error": {
+      "exact": 12,
+      "false_accepts": 1,
+      "false_rejects": 0,
+      "items": 15
+    },
+    "contradicted": {
+      "exact": 12,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 12
+    },
+    "correct": {
+      "exact": 51,
+      "false_accepts": 0,
+      "false_rejects": 2,
+      "items": 53
+    },
+    "fabricated-combination": {
+      "exact": 12,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 14
+    },
+    "fabricated-locator": {
+      "exact": 13,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 13
+    },
+    "ocr-noisy": {
+      "exact": 6,
+      "false_accepts": 0,
+      "false_rejects": 3,
+      "items": 9
+    },
+    "overstated-claim": {
+      "exact": 4,
+      "false_accepts": 2,
+      "false_rejects": 0,
+      "items": 22
+    },
+    "paraphrase-heavy-correct": {
+      "exact": 10,
+      "false_accepts": 0,
+      "false_rejects": 1,
+      "items": 11
+    },
+    "quote-found-elsewhere": {
+      "exact": 12,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 12
+    },
+    "quote-mismatch": {
+      "exact": 15,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 15
+    },
+    "right-claim-wrong-source": {
+      "exact": 21,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 21
+    },
+    "wrong-since-off-by-major": {
+      "exact": 9,
+      "false_accepts": 0,
+      "false_rejects": 0,
+      "items": 11
+    },
+    "wrong-since-off-by-one": {
+      "exact": 8,
+      "false_accepts": 2,
+      "false_rejects": 0,
+      "items": 11
+    }
+  },
+  "thresholds": {
+    "false_accept_max": 0.02,
+    "false_reject_max": 0.1
+  },
+  "thresholds_met": false,
+  "verifier_entry_point": "langatlas_ingest.verify.calibration:verify_golden_item"
+}

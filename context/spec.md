@@ -1823,14 +1823,15 @@ wait on.
       at ingestion (D15); QA skim per source; retroactive
       `canonical_source`/`acquisition_note` backfill (D37) and phase-1 `grounding`
       classification (D51).
-- [ ] Co-author the retrieval golden set (40–60 queries) during QA skims; author the
+- [x] Co-author the retrieval golden set (40–60 queries) during QA skims; author the
       verifier golden set (D44 taxonomy, ~200–300 items) + the ~15–20 bootstrap
       controversy cases.
 - [x] R2: run the D22 embedding benchmark on a pilot corpus; record per-table verdicts.
       *(Deferred question folded here: "Embedding-model choices — D22's benchmark
       decides per use case." The fact-index re-run happens at Stage 5.)*
-- [ ] Stand up the D24 verifier against the golden set; calibrate to FA ≤2% / FR ≤10%;
-      wire canaries.
+- [x] Stand up the D24 verifier against the golden set; calibrate to FA ≤2% / FR ≤10%;
+      wire canaries. *(Measured FA 3.73% / FR 7.06%, accepted by developer decision
+      rather than pursued further — see `benchmarks/d24-verifier/README.md`.)*
 
 ### Stage 3 — R3→R5 theme cycles (repeat per theme, ~12 themes)
 
