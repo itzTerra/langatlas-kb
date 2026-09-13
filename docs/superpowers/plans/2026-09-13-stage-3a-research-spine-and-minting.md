@@ -1231,7 +1231,7 @@ git commit -m "feat(#stage-3a): plan R5's rotating paradigm-spread language samp
 rendering pure means the renderer is testable without git and re-runnable after a rebase, which
 is exactly what the shared-file mints in Task 8 need.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_mint_nodes.py
@@ -1308,12 +1308,12 @@ def test_a_concept_renders_with_its_excluded_rationale():
     assert "excluded_rationale" in yaml.load(minted.text)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_mint_nodes.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.drafts'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/research/src/langatlas_research/drafts.py
@@ -1507,13 +1507,13 @@ def _render_feature(draft: FeatureDraft) -> MintedRecord:
                   node_ids=(node_id,))
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest tests/test_mint_nodes.py -v`
 Expected: 7 passed. (`test_mint_nodes.py` only; the full suite goes green at the end of Task 7,
 when `mint_edges` exists.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/
