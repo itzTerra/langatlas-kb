@@ -3840,7 +3840,7 @@ git commit -m "feat(#stage-3b): apply surveyor theme amendments and detect re-op
   - CLI: `langatlas-research survey pool|run|scout|finalize N`,
     `langatlas-research themes amend N INDEX [--reject]`, and `cycle status` printing `STALE`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_survey_finalize.py
@@ -3993,13 +3993,13 @@ def test_cycle_status_flags_a_stale_sign_off(research_repo, signed_cycle, capsys
     assert "STALE" in capsys.readouterr().out
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_finalize.py tests/test_survey_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.finalize`, and argparse
 rejecting `amend`.
 
-- [ ] **Step 3: Write finalize**
+- [x] **Step 3: Write finalize**
 
 ```python
 # tools/research/src/langatlas_research/survey/finalize.py
@@ -4079,7 +4079,7 @@ def finalize_r3(cycle_number: int, *, repo_root: Path, lookup: ChunkLookup,
     return updated, [survey_result, cycle_result]
 ```
 
-- [ ] **Step 4: Extend the CLI**
+- [x] **Step 4: Extend the CLI**
 
 In `tools/research/src/langatlas_research/cli.py`, add to the parser construction in `main`
 (after the existing `themes list` parser and before `args = parser.parse_args(argv)`):
@@ -4255,12 +4255,12 @@ def _dispatch_survey(args, root: Path | None) -> int:
         return 0 if updated.status == "r3-done" else 1
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest -q -m ''`
 Expected: PASS — the new finalize/CLI tests plus every earlier 3A/3B test.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \
