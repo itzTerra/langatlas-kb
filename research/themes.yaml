@@ -1,0 +1,84 @@
+# The R3 theme list (context/spec.md §7.4). Seeded from the spec's twelve, NOT frozen:
+# §7.4 makes the final theme list itself an early R3 deliverable, so the surveyor may
+# propose amendments. Amending a theme changes its digest, which re-opens the sign-off
+# gate for any cycle that signed the old text (D27).
+themes:
+  - slug: typing
+    label: Typing
+    summary: >-
+      Type systems, checking discipline, inference, polymorphism and the design choices
+      that distinguish them.
+    seed_terms: [type system, static typing, dynamic typing, type inference, generics,
+                 subtyping, algebraic data types]
+  - slug: memory-management
+    label: Memory management
+    summary: >-
+      How storage is allocated, reclaimed and made safe: manual management, garbage
+      collection, ownership, regions, reference counting.
+    seed_terms: [garbage collection, manual memory management, ownership, borrow checking,
+                 reference counting, region inference]
+  - slug: concurrency
+    label: Concurrency
+    summary: >-
+      Models for concurrent and parallel execution and the synchronization they imply.
+    seed_terms: [threads, actors, message passing, communicating sequential processes,
+                 software transactional memory, async await, data race freedom]
+  - slug: higher-order-programming
+    label: Higher-order programming
+    summary: >-
+      First-class functions, closures, currying and the abstractions built from them.
+    seed_terms: [first-class functions, closures, lambda, currying, partial application,
+                 higher-order function]
+  - slug: adts-and-pattern-matching
+    label: ADTs and pattern matching
+    summary: >-
+      Algebraic data types, variants, destructuring and exhaustiveness.
+    seed_terms: [algebraic data type, sum type, product type, pattern matching,
+                 exhaustiveness checking, destructuring]
+  - slug: modules
+    label: Modules
+    summary: >-
+      Modularity, namespacing, interfaces, separate compilation and functors.
+    seed_terms: [module system, namespace, interface, separate compilation, functor,
+                 information hiding]
+  - slug: metaprogramming
+    label: Metaprogramming
+    summary: >-
+      Macros, reflection, staged computation and code generation.
+    seed_terms: [macro, hygienic macro, reflection, staged computation, code generation,
+                 template metaprogramming]
+  - slug: evaluation-and-parameter-passing
+    label: Evaluation and parameter passing
+    summary: >-
+      Evaluation order, strictness, and how arguments reach a callee.
+    seed_terms: [call by value, call by reference, call by name, lazy evaluation,
+                 strictness, evaluation order]
+  - slug: effects-and-exceptions
+    label: Effects and exceptions
+    summary: >-
+      Effect tracking, exception handling, error values and resource safety.
+    seed_terms: [exception handling, checked exceptions, effect system, error values,
+                 resource acquisition is initialization, algebraic effects]
+  - slug: dispatch-and-inheritance
+    label: Dispatch and inheritance
+    summary: >-
+      Method dispatch, subtyping relationships, inheritance, traits and protocols.
+    seed_terms: [dynamic dispatch, single dispatch, multiple dispatch, inheritance,
+                 mixin, trait, protocol, interface default method]
+  - slug: syntax-layer-constructs
+    label: Syntax-layer constructs
+    summary: >-
+      Layer-1 surface constructs: block structure, significant whitespace, operators,
+      literals and the grammar-level choices they encode.
+    seed_terms: [significant whitespace, block delimiter, operator overloading,
+                 literal syntax, expression-oriented syntax]
+  - slug: qualities-vocabulary
+    label: Qualities vocabulary
+    summary: >-
+      The controlled quality vocabulary itself (readability, safety, performance,
+      learnability, ...) and what the literature actually supports about it.
+    seed_terms: [readability, maintainability, safety, performance, learnability,
+                 expressiveness, empirical evidence]
+    note: >-
+      Feeds ontology/taxonomy/qualities.yaml rather than features/; Kaijanaho (2015) is
+      the ratified empirical-evidence source for quality edges.

@@ -578,7 +578,7 @@ digest of the exact theme entry means editing a theme's scope after sign-off inv
 sign-off instead of silently inheriting it — §7.4 explicitly makes the final theme list itself an
 R3 deliverable, so theme edits mid-stage are expected, not exceptional.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_themes.py
@@ -625,12 +625,12 @@ def test_loading_an_invalid_registry_raises(tmp_path):
         load_themes(tmp_path)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_themes.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.themes'`.
 
-- [ ] **Step 3: Write the seed list and the loader**
+- [x] **Step 3: Write the seed list and the loader**
 
 ```yaml
 # research/themes.yaml
@@ -777,12 +777,12 @@ def load_themes(repo_root: Path | None = None) -> dict[str, Theme]:
     }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 11 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md \

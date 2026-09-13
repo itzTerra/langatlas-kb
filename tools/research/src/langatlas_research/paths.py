@@ -69,7 +69,19 @@ def ensure_layout(repo_root: Path | None = None) -> list[Path]:
     @param repo_root: repository root; defaults to this checkout.
     @returns: the paths this call created, empty when there was nothing to do."""
     created: list[Path] = []
-    research_schema_dir(repo_root).mkdir(parents=True, exist_ok=True)
+    schema_dir = research_schema_dir(repo_root)
+    schema_dir.mkdir(parents=True, exist_ok=True)
+
+    # Copy schema files from the real repo root if setting up a different root
+    if repo_root is not None and repo_root != REPO_ROOT:
+        real_schema_dir = research_schema_dir(REPO_ROOT)
+        if real_schema_dir.exists():
+            for schema_file in real_schema_dir.glob("*.schema.json"):
+                target = schema_dir / schema_file.name
+                if not target.exists():
+                    target.write_text(schema_file.read_text())
+                    created.append(target)
+
     for name, body in _READMES.items():
         directory = research_root(repo_root) / name
         if not directory.exists():
