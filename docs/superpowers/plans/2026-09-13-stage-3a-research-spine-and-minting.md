@@ -1825,7 +1825,7 @@ records the digest of what it read; the lander re-renders when that digest no lo
 defaults to `exclusive` (D39) and `applies_to` defaults to `[general-purpose]` (D50). Neither
 waits for the feature that needs it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_taxonomy.py
@@ -1904,12 +1904,12 @@ def test_an_invalid_slug_is_refused_everywhere(repo):
         mint_quality("Learn Ability", label="x", summary="y", repo_root=repo)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_taxonomy.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.taxonomy'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/research/src/langatlas_research/taxonomy.py
@@ -1997,12 +1997,12 @@ def register_language(language_id: str, *, name: str,
                        base_digest=digest)
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 43 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/
