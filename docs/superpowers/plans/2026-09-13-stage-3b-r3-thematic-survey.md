@@ -3622,7 +3622,7 @@ git commit -m "feat(#stage-3b): scout sources for unevidenced candidates into th
   - `mark_amendment(survey: dict, index: int, status: str) -> dict` — a new survey dict with
     `theme_amendments[index].status` set (`applied` | `rejected`).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_amend.py
@@ -3697,12 +3697,12 @@ def test_mark_amendment_returns_a_new_survey():
     assert survey["theme_amendments"][0]["status"] == "proposed"
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_amend.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.amend`.
 
-- [ ] **Step 3: Write the amendment module**
+- [x] **Step 3: Write the amendment module**
 
 ```python
 # tools/research/src/langatlas_research/survey/amend.py
@@ -3801,12 +3801,12 @@ def mark_amendment(survey: dict, index: int, status: str) -> dict:
     return {**survey, "theme_amendments": amendments}
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_amend.py -v`
 Expected: PASS (9 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \
