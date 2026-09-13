@@ -2038,7 +2038,7 @@ callable returning a `MintedRecord` (how a shared-file mint is passed —
 re-invoked on retry, which is what makes a shared-file mint re-read the file it lost a race on
 rather than clobbering the winner.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/conftest.py
@@ -2212,12 +2212,12 @@ def test_themes_list_prints_every_theme(tmp_path, capsys):
     assert "typing" in out and "qualities-vocabulary" in out
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_land.py tests/test_cli.py -v -m ''`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.land'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/research/src/langatlas_research/land.py
@@ -2400,12 +2400,12 @@ def _dispatch(args, root: Path | None) -> int:
     raise AssertionError("unreachable: argparse requires a subcommand")
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest -v -m ''`
 Expected: 51 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/
