@@ -4285,7 +4285,7 @@ git commit -m "feat(#stage-3b): close R3 by landing the survey and expose the su
 - Produces: the proof that a signed-off cycle goes pool → tags → survey → scout → finalize and
   ends as two landed commits and a cycle at `r3-done`, with no provider and no database.
 
-- [ ] **Step 1: Write the exit test**
+- [x] **Step 1: Write the exit test**
 
 ```python
 # tools/research/tests/test_exit_3b.py
@@ -4431,14 +4431,14 @@ def test_a_signed_off_cycle_closes_r3_with_a_landed_inventory(store_repo, fake_c
     assert survey["unevidenced"][0]["disposition"] == "scouted"
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `uv --directory tools/research run pytest tests/test_exit_3b.py -v -m ''`
 Expected: PASS. If `land_record` refuses because the machine's global pre-commit hook rejects
 subprocess commits, the `store_repo` fixture's `core.hooksPath` override is what should prevent
 it — do not add `--no-verify` anywhere in package code.
 
-- [ ] **Step 3: Wire CI**
+- [x] **Step 3: Wire CI**
 
 In `.github/workflows/ci.yml`, in the `validate` job's "Install packages" step, append:
 
@@ -4457,7 +4457,7 @@ and after the "Test the research package" step add:
           tests/test_r3_tagging_job.py tests/test_driver_overrides.py
 ```
 
-- [ ] **Step 4: Document the R3 commands**
+- [x] **Step 4: Document the R3 commands**
 
 In `tools/research/README.md`, append to the `## Commands` code block:
 
@@ -4490,7 +4490,7 @@ Applying a theme amendment edits `research/themes.yaml`, which re-opens the sign
 cycle signed against the old text (`cycle status` shows `STALE`).
 ```
 
-- [ ] **Step 5: Run everything**
+- [x] **Step 5: Run everything**
 
 Run:
 ```bash
@@ -4501,7 +4501,7 @@ uv --directory tools/validate run langatlas-validate ci
 ```
 Expected: all green; `validate` reports `0 error(s)` against the real `research/` tree.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \

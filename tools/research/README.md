@@ -30,7 +30,30 @@ langatlas-research cycle sign-off 1           # the developer checkpoint
 langatlas-research cycle status
 langatlas-research cycle advance 1 --to r3-done
 langatlas-research validate                   # every research artifact against its schema
+
+# R3 — one signed-off cycle, in order (each step refuses an unsigned or stale cycle):
+langatlas-research survey pool 1              # freeze the candidate-chunk pool (private tier)
+langatlas-orchestrator run config/jobs/r3-corpus-tagging.yaml --set cycle=1   # bulk tagging
+langatlas-research survey run 1               # checklist + surveyor -> research/surveys/01-typing.yaml
+langatlas-research themes amend 1 0 [--reject]   # decide each proposed theme amendment
+langatlas-research survey scout 1             # file unevidenced gaps into sourcing_queue
+langatlas-research survey finalize 1          # land survey + cycle, status r3-done
 ```
+
+## R3: the survey
+
+Candidates in `research/surveys/*.yaml` are **leads, never facts** — nothing there is citable,
+and nothing there is a node. Evidence is bound by chunk id; source ids and locators are copied
+from `source_chunks`, never from a model. The tagger (university API) grounds every term against
+its chunk text in code; the surveyor and scout (Claude) are separate roles on purpose (§7.4).
+
+Scouted sources are only *filed*: ingest one with the printed `langatlas-sources new-source …`
+line plus `langatlas-sources ingest`, then re-run `survey pool` → tagging → `survey run` to let the
+surveyor evidence what used to be a gap. Re-running `survey run` replaces the survey, so re-run
+`survey scout` after it.
+
+Applying a theme amendment edits `research/themes.yaml`, which re-opens the sign-off gate for any
+cycle signed against the old text (`cycle status` shows `STALE`).
 
 ## Tests
 
