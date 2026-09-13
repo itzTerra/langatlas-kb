@@ -336,7 +336,7 @@ git commit -m "feat(#stage-3a): add the research package and the research/ direc
   "reality-checks": "reality-check"}`. 3B/3C/3E add their schema files; this validator
   picks them up by filename with no code change.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_schema.py
@@ -392,12 +392,12 @@ def test_a_populated_directory_with_no_schema_yet_is_a_loud_error(research_repo)
     assert any("survey.schema.json" in e for e in errors), errors
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_schema.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.schema'`.
 
-- [ ] **Step 3: Write the schemas and the validator**
+- [x] **Step 3: Write the schemas and the validator**
 
 ```json
 // research/schema/theme-registry.schema.json
@@ -545,12 +545,12 @@ def validate_research_tree(repo_root: Path | None = None) -> list[str]:
     return errors
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 7 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md \

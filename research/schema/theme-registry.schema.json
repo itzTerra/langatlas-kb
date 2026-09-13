@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/research-schema/theme-registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["themes"],
+  "properties": {
+    "themes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["slug", "label", "summary"],
+        "properties": {
+          "slug": { "type": "string" },
+          "label": { "type": "string" },
+          "summary": { "type": "string" },
+          "seed_terms": { "type": "array", "items": { "type": "string" } },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

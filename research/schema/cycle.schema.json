@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/research-schema/cycle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cycle", "theme", "theme_digest", "status", "languages", "nodes_minted",
+               "artifacts"],
+  "properties": {
+    "cycle": { "type": "integer", "minimum": 1 },
+    "theme": { "type": "string" },
+    "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "status": {
+      "enum": ["drafted", "signed-off", "r3-done", "r4-done", "r5-done", "settled"]
+    },
+    "languages": { "type": "array", "items": { "type": "string" } },
+    "signed_off": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "date", "theme_digest"],
+      "properties": {
+        "by": { "type": "string" },
+        "date": { "type": "string" },
+        "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" }
+      }
+    },
+    "nodes_minted": { "type": "array", "items": { "type": "string" } },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "survey": { "type": "string" },
+        "reality_check": { "type": "string" },
+        "debates": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}
