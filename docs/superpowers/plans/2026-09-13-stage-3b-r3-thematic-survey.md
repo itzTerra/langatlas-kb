@@ -2443,7 +2443,7 @@ git commit -m "feat(#stage-3b): run Claude roles from registered prompts with sc
     `SurveyOutputInvalid` on schema errors); `load_survey(cycle_slug, *, repo_root=None) -> dict`
     (raises `FileNotFoundError`).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_inventory.py
@@ -2550,12 +2550,12 @@ def test_saving_an_invalid_survey_is_refused(research_repo):
         save_survey({"cycle": 1, "theme": "typing"}, repo_root=research_repo)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_inventory.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.inventory`.
 
-- [ ] **Step 3: Write the inventory module**
+- [x] **Step 3: Write the inventory module**
 
 ```python
 # tools/research/src/langatlas_research/survey/inventory.py
@@ -2738,12 +2738,12 @@ def load_survey(cycle_slug: str, *, repo_root: Path | None = None) -> dict:
     return _yaml.load(survey_path(cycle_slug, repo_root).read_text())
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_inventory.py -v`
 Expected: PASS (7 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \
