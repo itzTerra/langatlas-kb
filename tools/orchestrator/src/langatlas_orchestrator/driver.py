@@ -1,5 +1,8 @@
 import time
+from dataclasses import replace
 from pathlib import Path
+
+from ruamel.yaml import YAML
 
 from langatlas_commit.trailers import find_record_key_in_history
 from langatlas_pipeline.errors import BudgetExceeded, ClaudeLimitSignal
@@ -21,14 +24,34 @@ EXIT_HALTED = 1
 _CLAUDE_LIMIT_COOLDOWN_SECONDS = 4 * 60 * 60
 
 
+def parse_overrides(pairs: list[str]) -> dict:
+    """`--set KEY=VALUE` entries as batch-spec extras. Values parse as YAML scalars, so
+    `cycle=1` is an int, exactly as if it had been written in the spec file.
+
+    @raises ValueError: an entry with no `=`."""
+    yaml = YAML(typ="safe")
+    overrides = {}
+    for pair in pairs:
+        key, sep, value = pair.partition("=")
+        if not sep or not key:
+            raise ValueError(f"--set expects KEY=VALUE, got {pair!r}")
+        overrides[key] = yaml.load(value)
+    return overrides
+
+
 def run(spec_path: Path, *, repo_root: Path, status_path: Path | None = None,
-       transcripts_root: Path | None = None, private_dir: Path | None = None) -> int:
+       transcripts_root: Path | None = None, private_dir: Path | None = None,
+       extra_overrides: dict | None = None) -> int:
     """The one generic loop every job kind shares (D43 §2.1): enumerate → for each item,
     skip if already `done`, resolve ambiguous rows via the git trailer, otherwise call
     the job's item runner inside a `RunContext`-scoped run → checkpoint → decide
     continue/pause/halt. Resume is calling this function again with the same spec —
     there is no separate resume mode (D43 §2.3)."""
     spec = load_batch_spec(spec_path)
+    if extra_overrides:
+        # A per-invocation parameter (R3's cycle number) without a per-invocation spec
+        # file. Checkpoint and status stay keyed by `kind`, exactly as before.
+        spec = replace(spec, extra={**spec.extra, **extra_overrides})
     enumerator, item_runner = get_job_kind(spec.kind)
 
     existing = read_status(status_path).get(spec.kind)
@@ -130,10 +153,13 @@ def main(argv: list[str] | None = None) -> int:
     p_run.add_argument("spec", type=Path)
     p_run.add_argument("--repo-root", type=Path, default=REPO_ROOT)
     p_run.add_argument("--status-path", type=Path, default=None)
+    p_run.add_argument("--set", action="append", default=[], metavar="KEY=VALUE",
+                       dest="overrides", help="override a batch-spec extra for this run")
 
     args = parser.parse_args(argv)
     if args.command == "run":
-        return run(args.spec, repo_root=args.repo_root, status_path=args.status_path)
+        return run(args.spec, repo_root=args.repo_root, status_path=args.status_path,
+                   extra_overrides=parse_overrides(args.overrides))
     parser.print_help()
     return 0
 

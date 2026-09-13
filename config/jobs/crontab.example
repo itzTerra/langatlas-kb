@@ -29,3 +29,6 @@
 
 # 18-month backstop sweep, checked monthly — the job's own logic no-ops until due (D43 §2.5)
 0 5 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/backstop-sweep-18mo.yaml
+
+# R3 corpus tagging (Stage 3B) is deliberately absent too: it runs once per signed-off
+# cycle, launched by hand with `--set cycle=<N>` (see config/jobs/r3-corpus-tagging.yaml).

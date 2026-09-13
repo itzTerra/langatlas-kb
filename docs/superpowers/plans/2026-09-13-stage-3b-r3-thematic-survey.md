@@ -1523,7 +1523,7 @@ git commit -m "feat(#stage-3b): tag pooled chunks on the university API with gro
     `ValueError` on an entry without `=`); `driver.run(..., extra_overrides: dict | None = None)`;
     `langatlas-orchestrator run SPEC --set KEY=VALUE [--set ...]`.
 
-- [ ] **Step 1: Add the dependency**
+- [x] **Step 1: Add the dependency**
 
 In `tools/orchestrator/pyproject.toml` add `"langatlas-research",` to `dependencies` and
 `langatlas-research = { path = "../research", editable = true }` to `[tool.uv.sources]`.
@@ -1531,7 +1531,7 @@ In `tools/orchestrator/pyproject.toml` add `"langatlas-research",` to `dependenc
 Run: `uv --directory tools/orchestrator sync --extra dev`
 Expected: resolves.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 ```python
 # tools/orchestrator/tests/test_driver_overrides.py
@@ -1683,13 +1683,13 @@ def test_an_unreachable_database_blocks(repo, monkeypatch):
     assert outcome.status == "blocked"
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_driver_overrides.py tests/test_r3_tagging_job.py -v`
 Expected: FAIL — `AttributeError: module 'langatlas_orchestrator.driver' has no attribute
 'parse_overrides'` and `r3-corpus-tagging` not registered.
 
-- [ ] **Step 4: Add overrides to the driver**
+- [x] **Step 4: Add overrides to the driver**
 
 In `tools/orchestrator/src/langatlas_orchestrator/driver.py`, add `from dataclasses import replace`
 and `from ruamel.yaml import YAML` to the imports, then add:
@@ -1735,7 +1735,7 @@ In `main`, add the flag and pass it through:
                    extra_overrides=parse_overrides(args.overrides))
 ```
 
-- [ ] **Step 5: Write the job kind**
+- [x] **Step 5: Write the job kind**
 
 ```python
 # tools/orchestrator/src/langatlas_orchestrator/jobs/r3_tagging.py
@@ -1829,7 +1829,7 @@ register_job_kind(KIND, _enumerate, _run_item)
 Add `from langatlas_orchestrator.jobs import r3_tagging  # noqa: F401` to
 `tools/orchestrator/src/langatlas_orchestrator/jobs/__init__.py`, keeping the imports sorted.
 
-- [ ] **Step 6: Write the batch spec and the crontab note**
+- [x] **Step 6: Write the batch spec and the crontab note**
 
 ```yaml
 # config/jobs/r3-corpus-tagging.yaml
@@ -1856,12 +1856,12 @@ Append to `config/jobs/crontab.example`:
 # cycle, launched by hand with `--set cycle=<N>` (see config/jobs/r3-corpus-tagging.yaml).
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv --directory tools/orchestrator run pytest -q`
 Expected: PASS, including every pre-existing orchestrator test.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \

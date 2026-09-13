@@ -1,0 +1,14 @@
+# R3's corpus-tagging volume pass (§7.4, Stage 3B). Hand-launched once per cycle, after
+# `langatlas-research survey pool <N>` — never cron (D27: nothing runs before sign-off):
+#
+#   uv run --package langatlas-orchestrator langatlas-orchestrator run \
+#     config/jobs/r3-corpus-tagging.yaml --set cycle=<N>
+#
+# Optional per-run extras: `--set batch_size=<n>`, `--set alias=<alias>` (defaults come from
+# config/research.yaml).
+kind: r3-corpus-tagging
+checkpoint_path: .private/orchestrator/r3-corpus-tagging.sqlite
+budget:
+  max_calls: 400          # ~600-chunk pool / 6 per batch, plus headroom for repair turns
+  max_total_tokens: 4000000
+  max_wall_seconds: 43200

@@ -688,6 +688,7 @@ dependencies = [
     { name = "langatlas-finding-aids" },
     { name = "langatlas-ingest" },
     { name = "langatlas-pipeline" },
+    { name = "langatlas-research" },
     { name = "langatlas-validate" },
     { name = "ruamel-yaml" },
 ]
@@ -703,6 +704,7 @@ requires-dist = [
     { name = "langatlas-finding-aids", editable = "../finding-aids" },
     { name = "langatlas-ingest", editable = "../ingest" },
     { name = "langatlas-pipeline", editable = "../pipeline" },
+    { name = "langatlas-research", editable = "../research" },
     { name = "langatlas-validate", editable = "../validate" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "ruamel-yaml", specifier = ">=0.18" },
@@ -734,6 +736,35 @@ requires-dist = [
     { name = "ruamel-yaml", specifier = ">=0.18" },
 ]
 provides-extras = ["dev", "local-embed"]
+
+[[package]]
+name = "langatlas-research"
+version = "0.1.0"
+source = { editable = "../research" }
+dependencies = [
+    { name = "jsonschema" },
+    { name = "langatlas-commit" },
+    { name = "langatlas-finding-aids" },
+    { name = "langatlas-ingest" },
+    { name = "langatlas-pipeline" },
+    { name = "langatlas-validate" },
+    { name = "pydantic" },
+    { name = "ruamel-yaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "jsonschema", specifier = ">=4.21" },
+    { name = "langatlas-commit", editable = "../commit" },
+    { name = "langatlas-finding-aids", editable = "../finding-aids" },
+    { name = "langatlas-ingest", editable = "../ingest" },
+    { name = "langatlas-pipeline", editable = "../pipeline" },
+    { name = "langatlas-validate", editable = "../validate" },
+    { name = "pydantic", specifier = ">=2.7" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
+    { name = "ruamel-yaml", specifier = ">=0.18" },
+]
+provides-extras = ["dev"]
 
 [[package]]
 name = "langatlas-validate"
