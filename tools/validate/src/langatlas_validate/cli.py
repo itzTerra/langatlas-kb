@@ -173,6 +173,12 @@ def main(argv: list[str] | None = None) -> int:
     p_reg = sub.add_parser("regression")
     p_reg.add_argument("regression_command", choices=["run"])
 
+    p_version = sub.add_parser("version-bump")
+    p_version.add_argument("--since", default="HEAD~1",
+                           help="git ref to diff the store against (default HEAD~1)")
+    p_version.add_argument("--apply", action="store_true",
+                           help="write ontology/VERSION and append to ontology/CHANGELOG.md")
+
     args = parser.parse_args(argv)
     if args.command == "precommit":
         return cmd_precommit(args.files, args.kind)
@@ -182,6 +188,24 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_ci()
     if args.command == "regression":
         return cmd_regression_run()
+    if args.command == "version-bump":
+        from langatlas_validate.version import (
+            bump, classify_change, read_version, snapshot_at, store_snapshot, write_version,
+        )
+
+        root = _REPO_ROOT
+        change = classify_change(snapshot_at(root, args.since), store_snapshot(root))
+        current = read_version(root)
+        new = bump(current, change)
+        rendered = ".".join(str(p) for p in new)
+        print(f"change since {args.since}: {change}; version"
+              f" {'.'.join(str(p) for p in current)} -> {rendered}")
+        if args.apply and new != current:
+            write_version(root, new)
+            changelog = root / "ontology" / "CHANGELOG.md"
+            changelog.write_text(changelog.read_text().rstrip("\n") +
+                                 f"\n\n## {rendered}\n\n- {change} change since {args.since}\n")
+        return 0
     parser.print_help()
     return 0
 

@@ -2679,7 +2679,7 @@ git commit -m "feat(#stage-3a): check referential integrity and filename/id agre
 | Only free text changed (`name`, `slug`, `summary.text`, `statement.text`, `message`) | PATCH | PATCH |
 | Nothing changed | unchanged | unchanged |
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/validate/tests/test_version.py
@@ -2747,12 +2747,12 @@ def test_after_one_zero_additive_is_still_minor():
     assert bump((1, 4, 0), "additive") == (1, 5, 0)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/validate run pytest tests/test_version.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.version'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/validate/src/langatlas_validate/version.py
@@ -2910,12 +2910,12 @@ Add to `cli.py`'s `main`:
         return 0
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest -v`
 Expected: all green, including the 9 new version tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/validate/
