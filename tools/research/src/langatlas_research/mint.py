@@ -60,7 +60,7 @@ def finish(data: dict, *, path: str, kind: str, node_ids: tuple[str, ...],
                         base_digest=base_digest)
 
 
-def _provenance(draft) -> dict:
+def provenance_block(draft) -> dict:
     provenance = {"proposer": draft.proposer.as_dict(),
                   "claim_origin": draft.claim_origin,
                   "chat_run_id": draft.chat_run_id,
@@ -101,7 +101,7 @@ def render_draft(draft, *, repo_root: Path | None = None) -> MintedRecord:
 def _render_concept(draft: ConceptDraft) -> MintedRecord:
     node_id = _require_id(draft)
     data = {"id": node_id, "slug": draft.slug or node_id, "name": draft.name,
-            "summary": _fact_block(draft), "provenance": _provenance(draft)}
+            "summary": _fact_block(draft), "provenance": provenance_block(draft)}
     if draft.excluded_rationale:
         data["excluded_rationale"] = draft.excluded_rationale
     return finish(data, path=f"concepts/{node_id}.yaml", kind="concept",
@@ -112,7 +112,7 @@ def _render_feature(draft: FeatureDraft) -> MintedRecord:
     node_id = _require_id(draft)
     data = {"id": node_id, "slug": draft.slug or node_id, "name": draft.name,
             "layer": draft.layer, "summary": _fact_block(draft),
-            "provenance": _provenance(draft)}
+            "provenance": provenance_block(draft)}
     if draft.dimension:
         data["dimension"] = draft.dimension
     if draft.cross_cutting:

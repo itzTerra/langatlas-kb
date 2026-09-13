@@ -1551,7 +1551,7 @@ lexicographically sorted before it is written (`then` stays in authored order â€
 carry meaning); arity floor `len(when_all) >= 2` with the D64 message naming the edge type the
 degenerate case belongs in instead.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_mint_edges.py
@@ -1640,12 +1640,12 @@ def test_an_unsourced_edge_is_refused():
             evidence=(), proposer=PROPOSER, chat_run_id="r"))
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_mint_edges.py -v`
 Expected: FAIL â€” `ImportError: cannot import name 'EdgeDraft'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 Append to `tools/research/src/langatlas_research/drafts.py`:
 
@@ -1783,12 +1783,12 @@ def _render_rule(draft: RuleDraft) -> MintedRecord:
 Then in `mint.py`, rename `_provenance` to `provenance_block` (public, since `mint_edges` imports
 it) and update its two call sites in `_render_concept` / `_render_feature`.
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 37 passed (the whole suite, including Task 6's).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/

@@ -57,3 +57,58 @@ class FeatureDraft(_NodeDraft):
     cross_cutting: bool = False
     aliases: tuple[str, ...] = ()
     realizes: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class EdgeDraft:
+    """`frm` rather than `from`, which is a Python keyword; the rendered field is `from`."""
+    type: str
+    frm: str
+    to: str
+    statement: str
+    evidence: tuple[Evidence, ...]
+    proposer: Proposer
+    chat_run_id: str
+    polarity: str | None = None
+    debate_id: str | None = None
+    claim_origin: str = "source-derived"
+    candidate_source: str = "internal-survey"
+
+
+@dataclass(frozen=True)
+class Assessment:
+    """One entry in an `affects-quality` edge. `key` is minted once and immutable (§3.3):
+    renaming it is a supersession, never an edit."""
+    key: str
+    assessor: Proposer
+    polarity: str
+    strength: str
+    statement: str
+    evidence: tuple[Evidence, ...]
+
+
+@dataclass(frozen=True)
+class QualityEdgeDraft:
+    frm: str
+    to: str
+    assessments: tuple[Assessment, ...]
+    proposer: Proposer
+    chat_run_id: str
+    debate_id: str | None = None
+    claim_origin: str = "source-derived"
+    candidate_source: str = "internal-survey"
+
+
+@dataclass(frozen=True)
+class RuleDraft:
+    slug: str
+    when_all: tuple[str, ...]
+    effect: str
+    then: tuple[str, ...]
+    message: str
+    evidence: tuple[Evidence, ...]
+    proposer: Proposer
+    chat_run_id: str
+    debate_id: str | None = None
+    claim_origin: str = "source-derived"
+    candidate_source: str = "internal-survey"
