@@ -33,8 +33,11 @@ def test_the_digest_changes_when_the_scope_changes():
 
 
 def test_loading_an_invalid_registry_raises(tmp_path):
-    from langatlas_research.paths import ensure_layout, themes_path
+    from langatlas_research.paths import REPO_ROOT, ensure_layout, research_schema_dir, themes_path
     ensure_layout(tmp_path)
+    # Copy schema file from real repo so validation can proceed
+    (research_schema_dir(tmp_path) / "theme-registry.schema.json").write_text(
+        (REPO_ROOT / "research" / "schema" / "theme-registry.schema.json").read_text())
     themes_path(tmp_path).write_text("themes: [{slug: typing}]\n")
 
     with pytest.raises(ValueError, match="label"):

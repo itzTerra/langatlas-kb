@@ -450,6 +450,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "claude-agent-sdk", specifier = ">=0.2.128" },
+    { name = "fastembed", marker = "extra == 'local-embed'", specifier = ">=0.4,<0.8" },
     { name = "httpx", specifier = ">=0.27" },
     { name = "openai", specifier = ">=2.0" },
     { name = "pydantic", specifier = ">=2.7" },
@@ -457,11 +458,11 @@ requires-dist = [
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "ruamel-yaml", specifier = ">=0.18" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "local-embed"]
 
 [[package]]
 name = "langatlas-validate"
-version = "0.1.0"
+version = "0.2.0"
 source = { editable = "../validate" }
 dependencies = [
     { name = "jsonschema" },
