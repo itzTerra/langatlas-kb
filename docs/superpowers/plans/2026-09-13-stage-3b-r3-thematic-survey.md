@@ -2779,7 +2779,7 @@ git commit -m "feat(#stage-3b): bind surveyor candidates to real chunk ids and p
     allowed_tools=(), prompt=None, now=None) -> tuple[dict, BindReport]` — returns the
     schema-valid survey record (not yet saved) and the bind report.
 
-- [ ] **Step 1: Register the surveyor prompt**
+- [x] **Step 1: Register the surveyor prompt**
 
 ```bash
 PROMPT=$(mktemp) && cat > "$PROMPT" <<'EOF'
@@ -2848,7 +2848,7 @@ rm "$PROMPT"
 
 Expected: prints `r3-surveyor@v-<8hex>`.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_surveyor.py
@@ -2951,12 +2951,12 @@ def test_the_surveyor_refuses_a_pool_built_for_another_theme_text(fake_ctx, rese
     assert fake_ctx.claude_calls == []
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_surveyor.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.surveyor`.
 
-- [ ] **Step 4: Write the surveyor**
+- [x] **Step 4: Write the surveyor**
 
 ```python
 # tools/research/src/langatlas_research/survey/surveyor.py
@@ -3051,12 +3051,12 @@ def run_surveyor(ctx, cycle: Cycle, *, repo_root: Path | None, inputs: SurveyInp
     return data, report
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_surveyor.py -v`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md prompts/r3-surveyor \
