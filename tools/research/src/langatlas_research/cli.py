@@ -11,7 +11,7 @@ from pathlib import Path
 
 from langatlas_research.cycle import CYCLE_STATUSES, advance, load_cycle, new_cycle, save_cycle, sign_off
 from langatlas_research.errors import ResearchError
-from langatlas_research.paths import ensure_layout
+from langatlas_research.paths import REPO_ROOT, ensure_layout
 from langatlas_research.rotation import plan_languages
 from langatlas_research.schema import validate_research_tree
 from langatlas_research.themes import load_themes
@@ -168,9 +168,9 @@ def _dispatch_survey(args, root: Path | None) -> int:
     from langatlas_research.paths import research_config_path
     from langatlas_research.survey.chunks import db_chunk_lookup, db_search_fn
 
-    config = ResearchConfig.load(research_config_path(root))
-    repo = root or Path(".")
-    cycle = load_cycle(args.number, repo_root=root)
+    repo = root or REPO_ROOT
+    config = ResearchConfig.load(research_config_path(repo))
+    cycle = load_cycle(args.number, repo_root=repo)
 
     with connect(IngestConfig.load().dsn) as conn:
         lookup = db_chunk_lookup(conn)
@@ -179,7 +179,7 @@ def _dispatch_survey(args, root: Path | None) -> int:
             from langatlas_research.survey.pool import build_pool, save_pool
 
             with RunContext.start(kind="r3-pool", slug=cycle.slug) as ctx:
-                pool = build_pool(ctx, cycle, repo_root=root, search_fn=db_search_fn(ctx, conn),
+                pool = build_pool(ctx, cycle, repo_root=repo, search_fn=db_search_fn(ctx, conn),
                                   lookup=lookup, config=config.pool)
             path = save_pool(pool)
             print(f"froze {len(pool.entries)} chunks for {cycle.slug} at {path}")
@@ -197,7 +197,7 @@ def _dispatch_survey(args, root: Path | None) -> int:
             )
             from langatlas_research.survey.tags import TagStore
 
-            pool = require_current_pool(cycle, repo_root=root)
+            pool = require_current_pool(cycle, repo_root=repo)
             with TagStore() as store:
                 tags = store.for_cycle(cycle.slug)
             if not any(row.status == "tagged" for row in tags):
@@ -210,10 +210,10 @@ def _dispatch_survey(args, root: Path | None) -> int:
                 checklist = build_cycle_checklist(ctx, cycle, repo_root=repo)
                 servers, tools = surveyor_tools(ctx, conn)
                 data, report = run_surveyor(
-                    ctx, cycle, repo_root=root,
+                    ctx, cycle, repo_root=repo,
                     inputs=SurveyInputs(pool=pool, tags=tags, checklist=checklist),
                     lookup=lookup, config=config, mcp_servers=servers, allowed_tools=tools)
-            path = save_survey(data, repo_root=root)
+            path = save_survey(data, repo_root=repo)
             print(f"wrote {path}: {len(data['candidates'])} candidates,"
                   f" {len(data['unevidenced'])} unevidenced,"
                   f" {len(data['theme_amendments'])} theme amendment(s)")
@@ -229,7 +229,7 @@ def _dispatch_survey(args, root: Path | None) -> int:
             from langatlas_research.survey.inventory import load_survey, save_survey
             from langatlas_research.survey.scout import new_source_command, run_scout
 
-            survey = load_survey(cycle.slug, repo_root=root)
+            survey = load_survey(cycle.slug, repo_root=repo)
             with RunContext.start(kind="r3-scout", slug=cycle.slug,
                                   budget=role_budget(config.scout),
                                   agents=[{"role": "source-scout"}]) as ctx:
@@ -237,7 +237,7 @@ def _dispatch_survey(args, root: Path | None) -> int:
                                     queue=SourcingQueue(conn),
                                     mcp_servers={SERVER_NAME: sdk_source_tools(ctx, conn)},
                                     allowed_tools=TOOL_NAMES)
-            save_survey(updated, repo_root=root)
+            save_survey(updated, repo_root=repo)
             new_entries = updated["scouting"][len(survey["scouting"]):]
             for entry in new_entries:
                 print(f"{entry['status']:9} {entry['source_id']}"

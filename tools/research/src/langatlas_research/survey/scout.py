@@ -11,7 +11,7 @@ import json
 import shlex
 from pathlib import Path
 from typing import Literal
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 from pydantic import BaseModel, Field
 from ruamel.yaml import YAML
@@ -66,29 +66,15 @@ def normalize_url(url: str) -> str:
 
 
 def _host(url: str | None) -> str:
-    """Extract hostname from URL, hardened against D29 finding-aid bypass via schemeless
-    or trailing-dot domains.
-
-    D29 bypass case 1 (schemeless): 'en.wikipedia.org/wiki/X' has urlsplit.netloc == '' (the
-    domain ends up in .path), so bare endswith() check fails. Prepend default scheme to reparse.
-
-    D29 bypass case 2 (trailing dot): 'https://en.wikipedia.org./wiki/X' has urlsplit.netloc ==
-    'en.wikipedia.org.' (trailing dot is valid DNS), so endswith('wikipedia.org') fails. Strip
-    trailing dot before comparison.
+    """Extract the bare hostname from a URL, hardened against D29 finding-aid bypasses:
+    schemeless URLs, a trailing DNS dot (plain or percent-encoded), userinfo, and port
+    suffixes. `.hostname` (unlike `.netloc`) already strips userinfo/port and lowercases;
+    `unquote` collapses percent-encoding (e.g. a trailing '%2e') before the dot is stripped.
     """
     if not url:
         return ""
-    parts = urlsplit(url)
-    host = parts.netloc.lower()
-
-    # If netloc is empty, urlsplit put the domain in path (schemeless URL). Retry with scheme.
-    if not host:
-        parts = urlsplit("https://" + url)
-        host = parts.netloc.lower()
-
-    # Remove trailing dot (valid in DNS but conceptually same host; prevents bypass of
-    # endswith() finding-aid checks)
-    return host.rstrip(".")
+    parsed = urlsplit(url if "//" in url else "https://" + url)
+    return unquote(parsed.hostname or "").rstrip(".")
 
 
 def existing_source_index(repo_root: Path | None) -> dict:
@@ -134,7 +120,8 @@ def screen_proposals(proposals, *, repo_root: Path | None, open_queue_ids: set[s
         if not url_key and not doi_key:
             entries.append(_entry(proposal, "rejected",
                                   "no resolvable bibliographic identifier (url or doi)"))
-        elif any(_host(proposal.url).endswith(host) for host in FINDING_AID_HOSTS):
+        elif (host := _host(proposal.url)) and any(
+                host == aid or host.endswith("." + aid) for aid in FINDING_AID_HOSTS):
             entries.append(_entry(proposal, "rejected",
                                   "finding aids are never citations (D29/D53)"))
         elif not is_valid_slug(proposal.source_id):

@@ -78,6 +78,30 @@ def test_a_survey_run_produces_a_schema_valid_record(fake_ctx, research_repo, si
     assert options.tools == [] and list(options.allowed_tools) == ["mcp__srv__search_sources"]
 
 
+def test_stale_out_of_pool_tags_are_not_counted_in_the_tagging_summary(fake_ctx, research_repo,
+                                                                       signed_cycle, config):
+    """TagStore rows accumulate across every tagging pass ever run for a cycle slug; after a
+    pool rebuild, a row tagged for a chunk that is no longer in the CURRENT pool must not
+    inflate `tagging.chunks_tagged` / `chunks_relevant` in the survey header."""
+    fake_ctx.claude_results.append(_result())
+    lookup = {REF.chunk_id: REF}.get
+    stale_row = ChunkTags(chunk_id="stale#c99999", content_hash="h", status="tagged",
+                          relevance=3, defined_terms=("obsolete term",), mentioned_terms=(),
+                          dropped_terms=0, prompt_ref="r3-tagger@v-00000001",
+                          resolved_model="deepseek-v4-pro")
+
+    data, _ = run_surveyor(
+        fake_ctx, signed_cycle, repo_root=research_repo,
+        inputs=SurveyInputs(pool=_pool(signed_cycle), tags=[*TAGS, stale_row],
+                            checklist=CHECKLIST),
+        lookup=lookup, config=config, mcp_servers={"srv": object()},
+        allowed_tools=("mcp__srv__search_sources",), now="2026-09-20T10:00:00Z")
+
+    # Only REF's row (in the current pool) counts; the stale row is excluded.
+    assert data["tagging"]["chunks_tagged"] == 1
+    assert data["tagging"]["chunks_relevant"] == 1
+
+
 def test_the_surveyor_refuses_an_unsigned_cycle(fake_ctx, research_repo, config):
     cycle = new_cycle(2, "modules", repo_root=research_repo, languages=("c",))
     with pytest.raises(SignOffMissing):

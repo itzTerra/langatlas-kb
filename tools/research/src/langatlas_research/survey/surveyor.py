@@ -60,7 +60,13 @@ def run_surveyor(ctx, cycle: Cycle, *, repo_root: Path | None, inputs: SurveyInp
     theme = themes[cycle.theme]
     min_relevance = config.tagger.min_relevance
 
-    entries = build_term_index(inputs.tags, inputs.pool, min_relevance=min_relevance,
+    # TagStore rows accumulate across every tagging pass ever run for this cycle slug; after a
+    # pool rebuild (theme re-signed, corpus re-ingested) stale rows for chunks no longer in the
+    # CURRENT pool must not count toward either the term index or the survey's tagging summary.
+    pool_chunk_ids = {entry.chunk_id for entry in inputs.pool.entries}
+    current_tags = [row for row in inputs.tags if row.chunk_id in pool_chunk_ids]
+
+    entries = build_term_index(current_tags, inputs.pool, min_relevance=min_relevance,
                                seed_terms=theme.seed_terms)
     variables = {
         "theme_label": theme.label, "theme_summary": theme.summary,
@@ -80,7 +86,7 @@ def run_surveyor(ctx, cycle: Cycle, *, repo_root: Path | None, inputs: SurveyInp
 
     data = build_survey_record(
         cycle=cycle, surveyor_run_id=ctx.run_id, generated_at=now or utc_now(),
-        tagging=tagging_summary(inputs.tags, min_relevance=min_relevance),
+        tagging=tagging_summary(current_tags, min_relevance=min_relevance),
         pool={"digest": inputs.pool.digest, "chunk_count": len(inputs.pool.entries),
               "queries": list(inputs.pool.queries)},
         checklist={"mirror_versions": dict(inputs.checklist.mirror_versions),

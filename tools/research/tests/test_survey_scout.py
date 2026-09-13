@@ -102,6 +102,43 @@ def test_screening_rejects_d29_finding_aid_bypasses_schemeless_and_trailing_dot(
         assert "D29" in entry["rejection"], f"Expected D29 rejection for {entry['source_id']}"
 
 
+def test_screening_rejects_d29_finding_aid_bypasses_port_and_percent_encoded_dot(sources_repo):
+    """Further D29 bypass regressions found in final review:
+
+    Case 3 (port suffix): 'https://en.wikipedia.org:443/wiki/X' — hand-parsed .netloc kept the
+    port ('en.wikipedia.org:443'), so a bare endswith('wikipedia.org') check still matched by
+    luck here but the underlying approach was fragile; .hostname strips the port properly.
+
+    Case 4 (percent-encoded trailing dot): 'https://en.wikipedia.org%2e/wiki/X' — the dot is
+    percent-encoded, so naive .rstrip('.') on the raw netloc does not see a dot to strip.
+    unquote() must run before the trailing dot is stripped.
+    """
+    entries = screen_proposals(
+        [_proposal(source_id="wiki-port", url="https://en.wikipedia.org:443/wiki/Gradual_typing",
+                   doi=None),
+         _proposal(source_id="wiki-percent-dot",
+                   url="https://en.wikipedia.org%2e/wiki/Gradual_typing", doi=None)],
+        repo_root=sources_repo, open_queue_ids=set(), candidate_keys={"gradual-typing"},
+        max_proposals=10)
+    assert [e["status"] for e in entries] == ["rejected"] * 2
+    for entry in entries:
+        assert "D29" in entry["rejection"], f"Expected D29 rejection for {entry['source_id']}"
+
+
+def test_screening_does_not_false_positive_on_a_lookalike_domain(sources_repo):
+    """'notwikipedia.org' is a genuinely different domain from 'wikipedia.org' — a bare
+    substring endswith() check would wrongly flag it as a finding aid. It must pass the D29
+    finding-aid check (it may still be rejected by other screening logic, e.g. for lacking a
+    known candidate key, but not with the D29 finding-aid rejection reason)."""
+    entries = screen_proposals(
+        [_proposal(source_id="notwikipedia", url="https://notwikipedia.org/x", doi=None)],
+        repo_root=sources_repo, open_queue_ids=set(), candidate_keys={"gradual-typing"},
+        max_proposals=10)
+    assert len(entries) == 1
+    if entries[0]["status"] == "rejected":
+        assert "D29" not in entries[0]["rejection"]
+
+
 def test_screening_marks_committed_pending_and_repeated_sources_as_duplicates(sources_repo):
     entries = screen_proposals(
         [_proposal(source_id="tapl-again", doi="10.5555/509043", url=None),
