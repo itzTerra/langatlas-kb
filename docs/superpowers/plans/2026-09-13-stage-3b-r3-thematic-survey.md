@@ -707,7 +707,7 @@ git commit -m "feat(#stage-3b): add the research config, survey schema, and R3 t
   - `batches(pool, size) -> list[tuple[ChunkRef, ...]]`; `batch_key(cycle_slug, index) -> str`
     (`"01-typing:batch-0003"`); `parse_batch_key(key) -> tuple[str, int]`.
 
-- [ ] **Step 1: Add the shared cycle fixture**
+- [x] **Step 1: Add the shared cycle fixture**
 
 Append to `tools/research/tests/conftest.py`:
 
@@ -736,7 +736,7 @@ def signed_cycle(research_repo):
     return sign_off(cycle, by="Michal Dolezel", date="2026-09-20", repo_root=research_repo)
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_pool.py
@@ -854,12 +854,12 @@ def test_batches_and_keys(fake_ctx, research_repo, signed_cycle, private_dir):
     assert parse_batch_key("01-typing:batch-0003") == ("01-typing", 3)
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_pool.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.chunks`.
 
-- [ ] **Step 4: Write the chunk adapters**
+- [x] **Step 4: Write the chunk adapters**
 
 ```python
 # tools/research/src/langatlas_research/survey/chunks.py
@@ -913,7 +913,7 @@ def db_search_fn(ctx, conn, config=None) -> SearchFn:
     return lambda query, k: search_sources(ctx, query, k=k, conn=conn, config=config)
 ```
 
-- [ ] **Step 5: Write the pool**
+- [x] **Step 5: Write the pool**
 
 ```python
 # tools/research/src/langatlas_research/survey/pool.py
@@ -1049,12 +1049,12 @@ def parse_batch_key(key: str) -> tuple[str, int]:
     return slug, int(batch)
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_pool.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \

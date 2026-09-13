@@ -104,3 +104,27 @@ def private_dir(tmp_path, monkeypatch):
     root.mkdir()
     monkeypatch.setattr("langatlas_pipeline.paths.PRIVATE_DIR", root)
     return root
+
+
+from langatlas_research.cycle import new_cycle, sign_off
+from langatlas_research.paths import themes_path
+
+
+@pytest.fixture
+def research_repo(tmp_path):
+    """A research/ tree with the real schemas and theme list, no git."""
+    repo = tmp_path / "repo"
+    ensure_layout(repo)
+    for schema in (REPO_ROOT / "research" / "schema").glob("*.schema.json"):
+        (repo / "research" / "schema" / schema.name).write_text(schema.read_text())
+    themes_path(repo).write_text(themes_path(REPO_ROOT).read_text())
+    (repo / "config").mkdir()
+    (repo / "config" / "research.yaml").write_text(
+        (REPO_ROOT / "config" / "research.yaml").read_text())
+    return repo
+
+
+@pytest.fixture
+def signed_cycle(research_repo):
+    cycle = new_cycle(1, "typing", repo_root=research_repo, languages=("python", "haskell"))
+    return sign_off(cycle, by="Michal Dolezel", date="2026-09-20", repo_root=research_repo)
