@@ -58,14 +58,14 @@ def test_a_quality_edge_carries_its_assessments():
 def test_a_rule_sorts_its_antecedents_and_keeps_then_in_authored_order():
     minted = render_draft(RuleDraft(
         slug="laziness-needs-purity", when_all=("lazy-evaluation", "algebraic-data-types"),
-        effect="requires", then=("purity", "referential-transparency"),
+        effect="requires", then=("referential-transparency", "purity"),
         message="Lazy evaluation is only predictable under purity.",
         evidence=EVIDENCE, proposer=PROPOSER, chat_run_id="r"))
 
     data = yaml.load(minted.text)
     assert minted.path == "rules/rule-laziness-needs-purity.yaml"
     assert data["when_all"] == ["algebraic-data-types", "lazy-evaluation"]
-    assert data["then"] == ["purity", "referential-transparency"]
+    assert data["then"] == ["referential-transparency", "purity"]
 
 
 def test_a_one_antecedent_rule_names_the_edge_type_it_belongs_in():
@@ -81,3 +81,25 @@ def test_an_unsourced_edge_is_refused():
         render_draft(EdgeDraft(
             type="requires", frm="a-feature", to="b-feature", statement="x.",
             evidence=(), proposer=PROPOSER, chat_run_id="r"))
+
+
+def test_a_quality_edge_with_no_assessments_is_refused():
+    with pytest.raises(UnsourcedNode):
+        render_draft(QualityEdgeDraft(
+            frm="ownership", to="learnability", proposer=PROPOSER, chat_run_id="r",
+            assessments=()))
+
+
+def test_an_edge_with_a_malformed_endpoint_is_an_invalid_draft_not_a_bare_value_error():
+    with pytest.raises(InvalidDraft):
+        render_draft(EdgeDraft(
+            type="requires", frm="Not A Slug", to="b-feature", statement="x.",
+            evidence=EVIDENCE, proposer=PROPOSER, chat_run_id="r"))
+
+
+def test_a_rule_with_a_malformed_slug_is_an_invalid_draft_not_a_bare_value_error():
+    with pytest.raises(InvalidDraft):
+        render_draft(RuleDraft(
+            slug="Not A Slug", when_all=("a-feature", "b-feature"), effect="requires",
+            then=("c-feature",), message="x.", evidence=EVIDENCE, proposer=PROPOSER,
+            chat_run_id="r"))

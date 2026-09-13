@@ -1,8 +1,53 @@
+import subprocess
+from pathlib import Path
+
 import pytest
 
+from langatlas_validate.normalize import normalize_record
 from langatlas_validate.version import (
-    MajorRequiresGovernance, bump, classify_change,
+    MajorRequiresGovernance, bump, classify_change, snapshot_at, store_snapshot,
 )
+
+
+def _git(args, cwd):
+    return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, check=True)
+
+
+def _write(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text)
+
+
+@pytest.fixture
+def git_store(tmp_path):
+    """A tiny real git repo carrying one of every kind `iter_store_records` walks,
+    including a ledger under `sources/` and `languages/_registry.yaml` — exactly the mix
+    `snapshot_at` must agree with `store_snapshot` about (Finding 1)."""
+    _write(tmp_path / "features" / "pattern-matching.yaml", normalize_record(
+        "id: pattern-matching\nslug: pattern-matching\nname: Pattern Matching\n"
+        "layer: 2\nsummary:\n  text: X.\n  sources:\n    - source: s\n      locator: p. 1\n"
+        "provenance:\n  claim_origin: source-derived\n", "feature"))
+    _write(tmp_path / "languages" / "_registry.yaml", "languages:\n  rust:\n    name: Rust\n")
+    _write(tmp_path / "sources" / "_tombstones.yaml", "[]\n")
+    (tmp_path / "concepts" / ".gitkeep").parent.mkdir(parents=True, exist_ok=True)
+    (tmp_path / "concepts" / ".gitkeep").write_text("")
+
+    hooks = tmp_path.parent / f"{tmp_path.name}-no-hooks"
+    hooks.mkdir()
+    _git(["init", "-q", "-b", "main"], tmp_path)
+    for key, value in (("user.email", "bot@example.com"), ("user.name", "bot"),
+                       ("commit.gpgsign", "false"), ("core.hooksPath", str(hooks))):
+        _git(["config", key, value], tmp_path)
+    _git(["add", "-A"], tmp_path)
+    _git(["commit", "-q", "-m", "seed"], tmp_path)
+    return tmp_path
+
+
+def test_snapshot_at_agrees_with_store_snapshot_on_an_unmodified_repo(git_store):
+    """The regression test for Finding 1: `snapshot_at` and `store_snapshot` must walk
+    exactly the same files, or a completely unchanged repo classifies as "additive"
+    forever instead of "none"."""
+    assert classify_change(snapshot_at(git_store, "HEAD"), store_snapshot(git_store)) == "none"
 
 BEFORE = {"features/pattern-matching.yaml": {
     "id": "pattern-matching", "slug": "pattern-matching", "name": "Pattern matching",

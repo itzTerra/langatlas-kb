@@ -66,3 +66,19 @@ def test_an_invalid_draft_never_reaches_git(store_repo):
         land_drafts([_draft(evidence=())], repo_root=store_repo, chat_run_id="r")
 
     assert not (store_repo / "features" / "pattern-matching.yaml").exists()
+
+
+def test_losing_every_race_raises_instead_of_returning_a_silent_none_outcome(
+        store_repo, monkeypatch):
+    """Finding 6's regression test: if a shared-file mint finds the file stale on every
+    attempt, `land_record` never even runs — the loop must not exit with a silent
+    `(minted, None)` result."""
+    import langatlas_research.land as land
+
+    monkeypatch.setattr(land, "_is_stale", lambda minted, repo_root: True)
+
+    with pytest.raises(land.RaceExhausted):
+        land_drafts([partial(mint_dimension, "typing-discipline",
+                             label="Typing discipline", values=("static",),
+                             repo_root=store_repo)],
+                    repo_root=store_repo, chat_run_id="r", attempts=3)

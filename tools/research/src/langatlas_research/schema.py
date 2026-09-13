@@ -54,8 +54,13 @@ def validate_research_tree(repo_root: Path | None = None) -> list[str]:
 
     registry = root / "themes.yaml"
     if registry.exists():
-        errors.extend(f"research/themes.yaml: {e}" for e in validate_research_record(
-            _yaml.load(registry.read_text()) or {}, "theme-registry", repo_root=repo_root))
+        if _load_validator("theme-registry", repo_root) is None:
+            errors.append("research/themes.yaml: no schema"
+                          " (research/schema/theme-registry.schema.json) — the sub-plan"
+                          " that writes this file must ship one")
+        else:
+            errors.extend(f"research/themes.yaml: {e}" for e in validate_research_record(
+                _yaml.load(registry.read_text()) or {}, "theme-registry", repo_root=repo_root))
 
     for name, kind in DIR_KINDS.items():
         directory = root / name

@@ -29,3 +29,10 @@ class InvalidTransition(ResearchError):
 
 class UnknownTheme(ResearchError):
     """A cycle names a theme that `research/themes.yaml` does not define."""
+
+
+class RaceExhausted(ResearchError):
+    """A shared-file mint (taxonomy.py) kept losing its race against a competing writer
+    on every retry `land_drafts` was given — the file never stopped looking stale long
+    enough for `land_record` to even attempt a commit. Never silence this as a
+    `(minted, None)` result: a lost race is data loss if nobody is told about it."""

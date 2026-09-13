@@ -9,6 +9,7 @@ from pathlib import Path
 from langatlas_commit.land import ContentionExhausted, Landed, land_record
 
 from langatlas_research.cycle import record_minted
+from langatlas_research.errors import RaceExhausted
 from langatlas_research.mint import MintedRecord, content_digest, render_draft
 from langatlas_research.schema import validate_research_tree
 from langatlas_validate.store import validate_store
@@ -39,7 +40,9 @@ def land_drafts(items, *, repo_root: Path, chat_run_id: str, cycle=None,
     @param items: draft objects, or zero-argument callables returning a `MintedRecord`.
     @param cycle: when given, every landed record's node ids are appended to it.
     @returns: one `(MintedRecord, LandResult)` per item, in input order.
-    @raises ResearchError: from rendering — an invalid draft never reaches git."""
+    @raises ResearchError: from rendering — an invalid draft never reaches git.
+    @raises RaceExhausted: a shared-file mint found the file stale on every attempt, so
+        `land_record` never even got to try landing it."""
     results = []
     for item in items:
         outcome = None
@@ -57,5 +60,9 @@ def land_drafts(items, *, repo_root: Path, chat_run_id: str, cycle=None,
                 break
             if not isinstance(outcome, ContentionExhausted):
                 break
+        if outcome is None:
+            raise RaceExhausted(
+                f"{minted.path}: lost the shared-file race on every one of {attempts}"
+                f" attempts — land_record never got a chance to try landing it")
         results.append((minted, outcome))
     return results

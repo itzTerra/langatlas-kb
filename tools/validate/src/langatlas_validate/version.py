@@ -11,7 +11,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-from langatlas_validate.store import iter_store_records
+from langatlas_validate.store import _LEDGERS, iter_store_records
 
 _yaml = YAML(typ="safe")
 
@@ -23,7 +23,7 @@ _COSMETIC_SUBFIELDS = {("summary", "text"), ("statement", "text")}
 _STRUCTURAL_FIELDS = {"id", "layer", "dimension", "type", "from", "to", "when_all",
                       "language", "feature", "effect", "polarity"}
 
-STORE_DIRS = ("concepts", "features", "edges", "rules", "languages")
+STORE_DIRS = ("concepts", "features", "edges", "rules", "languages", "sources")
 
 
 class MajorRequiresGovernance(Exception):
@@ -47,12 +47,20 @@ def store_snapshot(repo_root: Path) -> dict[str, dict]:
 
 def snapshot_at(repo_root: Path, ref: str) -> dict[str, dict]:
     """The same mapping for a git ref, read through `git show` so no worktree or
-    checkout is needed."""
+    checkout is needed.
+
+    Mirrors `iter_store_records`'s exact walk-and-exclude rules so the two never disagree
+    on what "the store" is: a ledger name (`_LEDGERS`) is skipped, EXCEPT
+    `languages/_registry.yaml`, which `iter_store_records` walks back in explicitly as its
+    own `language-registry` record."""
     listing = subprocess.run(["git", "ls-tree", "-r", "--name-only", ref, "--", *STORE_DIRS],
                              cwd=repo_root, capture_output=True, text=True, check=True)
     snapshot: dict[str, dict] = {}
     for rel in listing.stdout.splitlines():
-        if not rel.endswith(".yaml") or rel.endswith("_registry.yaml"):
+        if not rel.endswith(".yaml"):
+            continue
+        name = rel.rsplit("/", 1)[-1]
+        if name in _LEDGERS and rel != "languages/_registry.yaml":
             continue
         blob = subprocess.run(["git", "show", f"{ref}:{rel}"], cwd=repo_root,
                               capture_output=True, text=True, check=True)

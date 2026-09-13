@@ -62,18 +62,23 @@ def validate_references(repo_root: Path) -> list[str]:
                         f"realizes {concept_id!r}: no such concept")
         if kind in ("edge", "affects-quality-edge"):
             frm, to = data.get("from"), data.get("to")
-            expected_id = compose_edge_id(data["type"], frm, to)
-            require(record_id == expected_id, path,
-                    f"id {record_id!r} is not the composition of its type and endpoints"
-                    f" (expected {expected_id!r})")
-            require(path.name == f"{data['type']}--{to}.yaml" and path.parent.name == frm,
-                    path, f"filename must be edges/{frm}/{data['type']}--{to}.yaml (§3.3)")
-            require(frm in features, path, f"from {frm!r}: no such feature")
-            if kind == "edge":
-                require(to in features, path, f"to {to!r}: no such feature")
+            try:
+                edge_type = data["type"]
+                expected_id = compose_edge_id(edge_type, frm, to)
+            except (ValueError, KeyError, TypeError) as e:
+                errors.append(f"{path.relative_to(repo_root)}: {e}")
             else:
-                require(to in qualities, path,
-                        f"to {to!r}: not in ontology/taxonomy/qualities.yaml")
+                require(record_id == expected_id, path,
+                        f"id {record_id!r} is not the composition of its type and endpoints"
+                        f" (expected {expected_id!r})")
+                require(path.name == f"{edge_type}--{to}.yaml" and path.parent.name == frm,
+                        path, f"filename must be edges/{frm}/{edge_type}--{to}.yaml (§3.3)")
+                require(frm in features, path, f"from {frm!r}: no such feature")
+                if kind == "edge":
+                    require(to in features, path, f"to {to!r}: no such feature")
+                else:
+                    require(to in qualities, path,
+                            f"to {to!r}: not in ontology/taxonomy/qualities.yaml")
         if kind == "rule":
             for feature_id in list(data.get("when_all", [])) + list(data.get("then", [])):
                 require(feature_id in features, path,
@@ -81,8 +86,13 @@ def validate_references(repo_root: Path) -> list[str]:
         if kind == "feature-instance":
             language, feature = data.get("language"), data.get("feature")
             if record_id is not None:
-                require(record_id == compose_instance_id(language, feature), path,
-                        f"id {record_id!r} is not fi.<language>.<feature>")
+                try:
+                    expected_instance_id = compose_instance_id(language, feature)
+                except (ValueError, KeyError, TypeError) as e:
+                    errors.append(f"{path.relative_to(repo_root)}: {e}")
+                else:
+                    require(record_id == expected_instance_id, path,
+                            f"id {record_id!r} is not fi.<language>.<feature>")
             require(path.stem == feature, path,
                     f"filename must be languages/{language}/instances/{feature}.yaml (§3.3)")
             require(language in languages, path,
