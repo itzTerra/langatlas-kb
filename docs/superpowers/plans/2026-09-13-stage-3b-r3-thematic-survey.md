@@ -3098,7 +3098,7 @@ git commit -m "feat(#stage-3b): synthesize an evidenced candidate inventory with
   - `new_source_command(entry) -> str` — the `langatlas-sources new-source` line the developer
     runs at ingestion time.
 
-- [ ] **Step 1: Register the scout prompt**
+- [x] **Step 1: Register the scout prompt**
 
 ```bash
 PROMPT=$(mktemp) && cat > "$PROMPT" <<'EOF'
@@ -3159,7 +3159,7 @@ rm "$PROMPT"
 
 Expected: prints `r3-scout@v-<8hex>`.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_scout.py
@@ -3333,12 +3333,12 @@ def test_the_new_source_command_carries_the_bibliographic_identity():
     assert "--issued-year 2006" in command
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_scout.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.scout`.
 
-- [ ] **Step 4: Write the scout**
+- [x] **Step 4: Write the scout**
 
 ```python
 # tools/research/src/langatlas_research/survey/scout.py
@@ -3586,12 +3586,12 @@ def new_source_command(entry: dict) -> str:
     return shlex.join(parts)
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_scout.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md prompts/r3-scout \
