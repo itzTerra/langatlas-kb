@@ -17,10 +17,14 @@ jobs:
           uv --directory tools/pipeline sync
           uv --directory tools/ingest sync
           uv --directory tools/finding-aids sync --extra dev
+          uv --directory tools/research sync --extra dev
       - name: Test the finding-aids package
         # No database and no network: every adapter takes an injected client, and the
         # `live` marker is deselected by default.
         run: uv --directory tools/finding-aids run pytest
+      - name: Test the research package
+        # No database, no provider; the `git`-marked tests build throwaway local repos.
+        run: uv --directory tools/research run pytest -m ''
       - name: Run the store-validating gate
         run: uv --directory tools/validate run langatlas-validate ci
       - name: Shape-check the committed golden sets
@@ -88,3 +92,30 @@ jobs:
             -f event_type=kb-updated \
             -f client_payload[tag]="${{ steps.tag.outputs.tag }}" \
             -f client_payload[sha]="${{ github.sha }}"
+
+  version:
+    needs: validate
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: astral-sh/setup-uv@v3
+      - run: uv --directory tools/validate sync
+      - name: Auto-bump the 0.x ontology version (§5.1)
+        # The bump commit touches only ontology/VERSION and ontology/CHANGELOG.md, neither
+        # of which is in STORE_DIRS — so the next run classifies "none" and writes nothing.
+        # No loop, no [skip ci] needed.
+        run: |
+          uv --directory tools/validate run langatlas-validate version-bump \
+            --since HEAD~1 --apply
+          if ! git diff --quiet -- ontology/VERSION; then
+            git config user.name "langatlas-bot"
+            git config user.email "bot@langatlas.dev"
+            git add ontology/VERSION ontology/CHANGELOG.md
+            git commit -m "chore: bump ontology version"
+            git push origin HEAD:main
+          fi

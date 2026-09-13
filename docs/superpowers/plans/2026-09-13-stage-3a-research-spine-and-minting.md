@@ -2940,7 +2940,7 @@ git commit -m "feat(#stage-3a): auto-bump the 0.x ontology version from the stor
 `ontology/CHANGELOG.md` only. Neither is inside `STORE_DIRS`, so the next run classifies the
 change as `none` and writes nothing.
 
-- [ ] **Step 1: Write the failing exit test**
+- [x] **Step 1: Write the failing exit test**
 
 ```python
 # tools/research/tests/test_exit_3a.py
@@ -3002,13 +3002,13 @@ def test_a_signed_off_cycle_mints_a_theme_subtree_and_bumps_the_version(store_re
     assert bump(read_version(store_repo), change) == (0, 3, 0)
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_exit_3a.py -v -m ''`
 Expected: FAIL. Fix whatever it exposes — this test is the first time all twelve tasks run
 together, and any signature drift between them surfaces here.
 
-- [ ] **Step 3: Write the README and wire CI**
+- [x] **Step 3: Write the README and wire CI**
 
 ```markdown
 <!-- tools/research/README.md -->
@@ -3100,7 +3100,7 @@ and add a third job:
           fi
 ```
 
-- [ ] **Step 4: Run everything**
+- [x] **Step 4: Run everything**
 
 Run:
 ```bash
@@ -3110,7 +3110,7 @@ uv --directory tools/validate run langatlas-validate ci
 ```
 Expected: all green; `ci` reports no errors against the real (still node-free) store.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md \
