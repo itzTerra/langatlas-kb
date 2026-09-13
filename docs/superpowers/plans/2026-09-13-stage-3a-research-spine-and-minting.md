@@ -1105,7 +1105,7 @@ any consecutive window is spread by construction; cycle N takes a `size`-wide wi
 `(N-1) * size`, wrapping. At the default size 5 that means cycles 1–3 cover all fifteen exactly
 once before any language repeats.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_rotation.py
@@ -1143,12 +1143,12 @@ def test_a_four_language_sample_is_supported():
     assert len({PARADIGM_FAMILIES[lang] for lang in plan}) >= 3
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_rotation.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.rotation'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/research/src/langatlas_research/rotation.py
@@ -1189,12 +1189,12 @@ def plan_languages(cycle_number: int, *, size: int = 5) -> tuple[str, ...]:
     return tuple(SPREAD_ORDER[(start + offset) % len(SPREAD_ORDER)] for offset in range(size))
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `uv --directory tools/research run pytest -v`
 Expected: 23 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/research/
