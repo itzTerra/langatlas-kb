@@ -1092,7 +1092,7 @@ git commit -m "feat(#stage-3b): freeze a sign-off-gated candidate-chunk pool per
   - `tag_batch(ctx, theme, cycle_slug, batch, *, lookup, store, alias, prompt=None)
     -> TagBatchResult(tagged: int, skipped: int, missing: int, stale: int, dropped_terms: int)`.
 
-- [ ] **Step 1: Register the tagger prompt**
+- [x] **Step 1: Register the tagger prompt**
 
 ```bash
 PROMPT=$(mktemp) && cat > "$PROMPT" <<'EOF'
@@ -1134,7 +1134,7 @@ rm "$PROMPT"
 Expected: prints `r3-tagger@v-<8hex>`; `prompts/r3-tagger/CHANGELOG.md` and one
 `v-<8hex>.md` exist.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_survey_tagger.py
@@ -1251,12 +1251,12 @@ def test_a_response_naming_none_of_its_batch_is_refused(fake_ctx, theme, store):
                   lookup=_ref, store=store, alias="deepseek")
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_tagger.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.survey.tagger`.
 
-- [ ] **Step 4: Write the tag store**
+- [x] **Step 4: Write the tag store**
 
 ```python
 # tools/research/src/langatlas_research/survey/tags.py
@@ -1352,7 +1352,7 @@ class TagStore:
         self.close()
 ```
 
-- [ ] **Step 5: Write the tagger**
+- [x] **Step 5: Write the tagger**
 
 ```python
 # tools/research/src/langatlas_research/survey/tagger.py
@@ -1482,12 +1482,12 @@ def tag_batch(ctx, theme: Theme, cycle_slug: str, batch, *, lookup: ChunkLookup,
     return TagBatchResult(**counts)
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_tagger.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md prompts/r3-tagger \
