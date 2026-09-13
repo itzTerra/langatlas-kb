@@ -1901,7 +1901,7 @@ git commit -m "feat(#stage-3b): run R3 corpus tagging as a resumable orchestrato
     -> Checklist`.
   - `gap_terms(checklist) -> list[str]`; `render_checklist(ctx, checklist) -> str`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_survey_index.py
@@ -2047,12 +2047,12 @@ def test_the_rendered_checklist_leads_with_the_caveat_and_is_delimited(fake_ctx)
     assert is_delimited(rendered)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_index.py tests/test_survey_checklist.py -v`
 Expected: FAIL — `ModuleNotFoundError`.
 
-- [ ] **Step 3: Write the term index**
+- [x] **Step 3: Write the term index**
 
 ```python
 # tools/research/src/langatlas_research/survey/index.py
@@ -2145,7 +2145,7 @@ def tagging_summary(tags, *, min_relevance: int) -> dict:
             "chunks_relevant": sum(1 for row in tagged if row.relevance >= min_relevance)}
 ```
 
-- [ ] **Step 4: Write the checklist adapter**
+- [x] **Step 4: Write the checklist adapter**
 
 ```python
 # tools/research/src/langatlas_research/survey/checklist.py
@@ -2195,12 +2195,12 @@ def render_checklist(ctx, checklist: Checklist) -> str:
     return f"{NON_CITABLE_CAVEAT}\n\n{block}"
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_survey_index.py tests/test_survey_checklist.py -v`
 Expected: PASS (10 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3b-r3-thematic-survey.md \
