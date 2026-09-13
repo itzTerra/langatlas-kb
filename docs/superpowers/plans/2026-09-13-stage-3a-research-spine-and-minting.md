@@ -2432,7 +2432,7 @@ endpoint, a feature pointing at an undeclared dimension, or a record whose filen
 its id can exist at all. §3.3 states the filename rules and §3.5 states the ordering rules; until
 now there was nothing to check them against.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/validate/tests/test_references.py
@@ -2513,12 +2513,12 @@ def test_a_rule_antecedent_must_name_a_committed_feature(store):
     assert any("purity" in e for e in validate_references(store))
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/validate run pytest tests/test_references.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_validate.references'`.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```python
 # tools/validate/src/langatlas_validate/references.py
@@ -2635,12 +2635,12 @@ def validate_store(repo_root: Path) -> list[str]:
 (The import is function-local: `references.py` imports `iter_store_records` from `store.py`, so a
 module-level import would be circular.)
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest -v && uv --directory tools/research run pytest -v -m ''`
 Expected: the validate suite green (6 new tests) and the research suite still 51 passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-13-stage-3a-research-spine-and-minting.md tools/validate/

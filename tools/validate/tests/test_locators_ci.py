@@ -26,6 +26,14 @@ def _write_instance_with_locator(root: Path, locator: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(normalize_record(raw, "feature-instance"))
 
+    (root / "features").mkdir(parents=True, exist_ok=True)
+    (root / "features" / "pattern-matching.yaml").write_text(
+        normalize_record(
+            "id: pattern-matching\nslug: pattern-matching\nname: Pattern Matching\n"
+            "layer: 2\nsummary:\n  text: X.\n  sources:\n    - source: s\n      locator: p. 1\n"
+            "provenance:\n  claim_origin: source-derived\n", "feature"))
+    (root / "languages" / "_registry.yaml").write_text("languages:\n  rust:\n    name: Rust\n")
+
 
 def test_ci_with_index_passes_when_locator_resolves(tmp_path):
     _write_instance_with_locator(tmp_path, "p. 42")

@@ -111,8 +111,11 @@ def validate_contradictions(repo_root: Path) -> list[str]:
 
 def validate_store(repo_root: Path) -> list[str]:
     """CI's store-validating gate (D13): schema validity + normalization drift for
-    every live record, the claim-template registry's own self-check, and D64's
-    canonical-ordering rule for `alternative-to` edges and rules' `when_all`."""
+    every live record, the claim-template registry's own self-check, D64's canonical-ordering
+    rule for `alternative-to` edges and rules' `when_all`, and cross-record referential
+    integrity (§3.3 — added in Stage 3A, the first stage that mints nodes)."""
+    from langatlas_validate.references import validate_references
+
     errors: list[str] = []
 
     for kind in TEMPLATED_KINDS:
@@ -142,4 +145,5 @@ def validate_store(repo_root: Path) -> list[str]:
             if not custom.get("canonical_source") and not custom.get("acquisition_note"):
                 errors.append(f"{rel}: custom.acquisition_note required for a non-canonical source")
 
+    errors.extend(validate_references(repo_root))
     return errors

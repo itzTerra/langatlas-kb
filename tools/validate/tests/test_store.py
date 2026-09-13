@@ -27,8 +27,21 @@ def store(tmp_path):
     root = tmp_path
     (root / "concepts" / ".gitkeep").parent.mkdir(parents=True, exist_ok=True)
     (root / "concepts" / ".gitkeep").write_text("")
+
+    # Create the feature that the instance references
+    _write(root / "features" / "pattern-matching.yaml",
+          normalize_record(
+              "id: pattern-matching\nslug: pattern-matching\nname: Pattern Matching\n"
+              "layer: 2\nsummary:\n  text: X.\n  sources:\n    - source: s\n      locator: p. 1\n"
+              "provenance:\n  claim_origin: source-derived\n", "feature"))
+
+    # Create the language registry
+    _write(root / "languages" / "_registry.yaml", "languages:\n  rust:\n    name: Rust\n")
+
+    # Create the feature instance
     _write(root / "languages" / "rust" / "instances" / "pattern-matching.yaml",
           _feature_instance_yaml())
+
     (root / "sources" / "_tombstones.yaml").parent.mkdir(parents=True, exist_ok=True)
     (root / "sources" / "_tombstones.yaml").write_text("[]\n")
     return root
@@ -37,8 +50,8 @@ def store(tmp_path):
 def test_iter_store_records_finds_the_instance_and_skips_ledgers(store):
     found = list(iter_store_records(store))
     kinds = {kind for _path, kind, _text, _data in found}
-    assert kinds == {"feature-instance"}
-    assert len(found) == 1
+    assert kinds == {"feature", "feature-instance", "language-registry"}
+    assert len(found) == 3
 
 
 def test_iter_store_records_skips_gitkeep_and_tombstones(store):
