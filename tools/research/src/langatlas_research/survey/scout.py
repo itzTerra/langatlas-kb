@@ -66,7 +66,29 @@ def normalize_url(url: str) -> str:
 
 
 def _host(url: str | None) -> str:
-    return urlsplit(url).netloc.lower() if url else ""
+    """Extract hostname from URL, hardened against D29 finding-aid bypass via schemeless
+    or trailing-dot domains.
+
+    D29 bypass case 1 (schemeless): 'en.wikipedia.org/wiki/X' has urlsplit.netloc == '' (the
+    domain ends up in .path), so bare endswith() check fails. Prepend default scheme to reparse.
+
+    D29 bypass case 2 (trailing dot): 'https://en.wikipedia.org./wiki/X' has urlsplit.netloc ==
+    'en.wikipedia.org.' (trailing dot is valid DNS), so endswith('wikipedia.org') fails. Strip
+    trailing dot before comparison.
+    """
+    if not url:
+        return ""
+    parts = urlsplit(url)
+    host = parts.netloc.lower()
+
+    # If netloc is empty, urlsplit put the domain in path (schemeless URL). Retry with scheme.
+    if not host:
+        parts = urlsplit("https://" + url)
+        host = parts.netloc.lower()
+
+    # Remove trailing dot (valid in DNS but conceptually same host; prevents bypass of
+    # endswith() finding-aid checks)
+    return host.rstrip(".")
 
 
 def existing_source_index(repo_root: Path | None) -> dict:

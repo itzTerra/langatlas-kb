@@ -76,6 +76,32 @@ def test_screening_rejects_finding_aids_and_identifierless_proposals(sources_rep
     assert "D29" in entries[0]["rejection"]
 
 
+def test_screening_rejects_d29_finding_aid_bypasses_schemeless_and_trailing_dot(sources_repo):
+    """Regression tests for D29 finding-aid bypass via schemeless and trailing-dot URLs.
+
+    Case 1: schemeless URL like 'en.wikipedia.org/wiki/X' — urlsplit puts domain in .path
+    not .netloc, so bare endswith() check would fail without prepending a scheme first.
+
+    Case 2: trailing-dot domain like 'https://en.wikipedia.org./wiki/X' — valid DNS syntax
+    but endswith('wikipedia.org') would fail with trailing dot. Must strip it before check.
+    """
+    entries = screen_proposals(
+        [_proposal(source_id="wiki-schemeless", url="en.wikipedia.org/wiki/Gradual_typing",
+                   doi=None),
+         _proposal(source_id="wiki-trailing-dot", url="https://en.wikipedia.org./wiki/Gradual_typing",
+                   doi=None),
+         _proposal(source_id="wikidata-schemeless", url="wikidata.org/wiki/Q123",
+                   doi=None),
+         _proposal(source_id="pldb-trailing-dot", url="https://pldb.io./index.html",
+                   doi=None)],
+        repo_root=sources_repo, open_queue_ids=set(), candidate_keys={"gradual-typing"},
+        max_proposals=10)
+    # All must be rejected as finding aids (D29), not slip through as valid proposals
+    assert [e["status"] for e in entries] == ["rejected"] * 4
+    for entry in entries:
+        assert "D29" in entry["rejection"], f"Expected D29 rejection for {entry['source_id']}"
+
+
 def test_screening_marks_committed_pending_and_repeated_sources_as_duplicates(sources_repo):
     entries = screen_proposals(
         [_proposal(source_id="tapl-again", doi="10.5555/509043", url=None),
