@@ -7,9 +7,12 @@ license = "MIT"
 dependencies = [
   "ruamel.yaml>=0.18",
   "jsonschema>=4.21",
+  "pydantic>=2.7",
   "langatlas-validate",
   "langatlas-commit",
   "langatlas-pipeline",
+  "langatlas-ingest",
+  "langatlas-finding-aids",
 ]
 
 [project.optional-dependencies]
@@ -29,6 +32,8 @@ packages = ["src/langatlas_research"]
 langatlas-validate = { path = "../validate", editable = true }
 langatlas-commit = { path = "../commit", editable = true }
 langatlas-pipeline = { path = "../pipeline", editable = true }
+langatlas-ingest = { path = "../ingest", editable = true }
+langatlas-finding-aids = { path = "../finding-aids", editable = true }
 
 [tool.pytest.ini_options]
 markers = ["git: creates throwaway git repositories and runs the real commit protocol"]

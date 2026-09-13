@@ -1,0 +1,28 @@
+# config/research.yaml — Stage 3 research-phase knobs (context/spec.md §7.4).
+# Aliases and model ids are configuration, never code (§7.1). `model: null` on a Claude role
+# means "whatever the Claude Code session defaults to"; pin an id here to make a run
+# reproducible across a model release.
+survey:
+  pool:
+    # Hybrid-search hits taken per query (theme label, summary, each seed term). Capped at
+    # retrieval.candidates in config/ingest.yaml by SourceSearch itself.
+    k_per_query: 40
+    # Hard ceiling on the frozen pool. The tagging job costs one completion per batch, so
+    # this is the knob that bounds a cycle's university-API volume.
+    max_chunks: 600
+  tagger:
+    alias: deepseek                 # volume lane: university API only (D6)
+    batch_size: 6                   # chunks per completion call
+    min_relevance: 2                # 0-3; below this a chunk never reaches the surveyor packet
+  surveyor:
+    model: null
+    max_turns: 60
+    max_claude_messages: 120
+    max_packet_terms: 150           # term-index rows handed to the surveyor
+    max_candidates: 80              # inventory entries accepted from one run
+  scout:
+    model: null
+    max_turns: 80
+    max_claude_messages: 160
+    max_packet_terms: 40            # unevidenced candidates handed to the scout
+    max_candidates: 30              # source proposals accepted from one run

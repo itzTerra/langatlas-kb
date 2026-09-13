@@ -80,3 +80,15 @@ def ensure_layout(repo_root: Path | None = None) -> list[Path]:
             readme.write_text(body)
             created.append(readme)
     return created
+
+
+def research_config_path(repo_root: Path | None = None) -> Path:
+    return _root(repo_root) / "config" / "research.yaml"
+
+
+def private_research_dir() -> Path:
+    """The private, non-git tier (§2.2) for derived R3 volume state: frozen pools and the
+    tag store. Read through the module attribute so tests can monkeypatch `PRIVATE_DIR`."""
+    from langatlas_pipeline import paths as pipeline_paths
+
+    return pipeline_paths.PRIVATE_DIR / "research"

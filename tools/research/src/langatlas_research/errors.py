@@ -36,3 +36,32 @@ class RaceExhausted(ResearchError):
     on every retry `land_drafts` was given — the file never stopped looking stale long
     enough for `land_record` to even attempt a commit. Never silence this as a
     `(minted, None)` result: a lost race is data loss if nobody is told about it."""
+
+
+class PoolMissing(ResearchError):
+    """The tagging job or the surveyor ran before `survey pool` froze a candidate pool."""
+
+
+class PoolStale(ResearchError):
+    """The frozen pool was built against a different theme digest than the one now
+    signed off — the pool answers a question the developer no longer asked."""
+
+
+class TaggerOutputInvalid(ResearchError):
+    """A tagger response named no chunk from its own batch — nothing is salvageable."""
+
+
+class SurveyOutputInvalid(ResearchError):
+    """A Claude role returned no structured output, or output its schema rejects."""
+
+
+class EvidenceUnresolvable(ResearchError):
+    """A candidate cites a chunk id that `source_chunks` does not hold."""
+
+
+class AmendmentRefused(ResearchError):
+    """A theme amendment would orphan a cycle (slug removal) or is malformed."""
+
+
+class R3Incomplete(ResearchError):
+    """`survey finalize` found open work: an unscouted gap or a stale digest."""

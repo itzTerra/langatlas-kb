@@ -39,9 +39,8 @@ def store_repo(tmp_path):
     (clone / "ontology" / "CHANGELOG.md").write_text("# Ontology changelog\n")
 
     ensure_layout(clone)
-    for name in ("theme-registry", "cycle"):
-        (clone / "research" / "schema" / f"{name}.schema.json").write_text(
-            (REPO_ROOT / "research" / "schema" / f"{name}.schema.json").read_text())
+    for schema in (REPO_ROOT / "research" / "schema").glob("*.schema.json"):
+        (clone / "research" / "schema" / schema.name).write_text(schema.read_text())
     (clone / "research" / "themes.yaml").write_text(
         (REPO_ROOT / "research" / "themes.yaml").read_text())
 
@@ -49,3 +48,59 @@ def store_repo(tmp_path):
     _git(["commit", "-q", "-m", "seed"], clone)
     _git(["push", "-q", "origin", "HEAD:main"], clone)
     return clone
+
+
+from langatlas_pipeline.injection import delimit_untrusted
+
+
+class _Writer:
+    def __init__(self, events):
+        self._events = events
+
+    def append(self, **event):
+        self._events.append(event)
+
+
+class FakeCtx:
+    """Stands in for `RunContext` without a provider, a transcript repo or a cost log.
+
+    `tool_result` really delimits, so a test can assert D31 held; `complete` and
+    `claude_run` pop scripted responders so a test states exactly what the model said."""
+
+    def __init__(self, run_id="2026-09-20-r3-test-unit-01"):
+        self.run_id = run_id
+        self.events: list[dict] = []
+        self.writer = _Writer(self.events)
+        self.completions: list = []      # callables (alias, messages, schema) -> Completion-like
+        self.complete_calls: list[dict] = []
+        self.claude_results: list = []   # AgentRunResult instances, popped in order
+        self.claude_calls: list = []
+        self.tool_results: list[dict] = []
+
+    def tool_result(self, *, tool, text, source_id=None, kind="source-chunk"):
+        self.tool_results.append({"tool": tool, "text": text, "source_id": source_id,
+                                  "kind": kind})
+        return delimit_untrusted(text, source_id=source_id, kind=kind)
+
+    def complete(self, alias, messages, *, prompt, schema=None, sampling=None):
+        self.complete_calls.append({"alias": alias, "messages": messages,
+                                    "prompt": prompt.ref(), "schema": schema})
+        return self.completions.pop(0)(alias, messages, schema)
+
+    def claude_run(self, prompt, *, options):
+        self.claude_calls.append((prompt, options))
+        return self.claude_results.pop(0)
+
+
+@pytest.fixture
+def fake_ctx():
+    return FakeCtx()
+
+
+@pytest.fixture
+def private_dir(tmp_path, monkeypatch):
+    """Every test writes pools and tags into a throwaway private tier."""
+    root = tmp_path / "private"
+    root.mkdir()
+    monkeypatch.setattr("langatlas_pipeline.paths.PRIVATE_DIR", root)
+    return root
