@@ -175,3 +175,25 @@ def save_survey(data: dict, *, repo_root: Path | None = None) -> Path:
 def load_survey(cycle_slug: str, *, repo_root: Path | None = None) -> dict:
     """@raises FileNotFoundError: no survey for this cycle yet."""
     return _yaml.load(survey_path(cycle_slug, repo_root).read_text())
+
+
+def drop_gap(survey: dict, key: str, reason: str) -> dict:
+    """Developer-only escape hatch for a gap the scout could never close (every proposal it
+    tried was screened out, or the model never volunteered a `dropped` entry) — the only other
+    way `unevidenced[*].disposition` leaves `open` is `apply_scouting`, which needs a scout run
+    to have actually filed or dropped something. Mirrors `mark_amendment`: a pure function over
+    a copy, no I/O.
+
+    @raises KeyError: no unevidenced entry with this key."""
+    entries = []
+    found = False
+    for gap in survey["unevidenced"]:
+        gap = dict(gap)
+        if gap["key"] == key:
+            found = True
+            gap["disposition"] = "dropped"
+            gap["search_hint"] = f"{gap['search_hint']} [developer drop: {reason}]"
+        entries.append(gap)
+    if not found:
+        raise KeyError(f"no unevidenced candidate {key!r} in this survey")
+    return {**survey, "unevidenced": entries}

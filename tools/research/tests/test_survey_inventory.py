@@ -3,7 +3,8 @@ import pytest
 from langatlas_research.errors import SurveyOutputInvalid
 from langatlas_research.survey.chunks import ChunkRef
 from langatlas_research.survey.inventory import (
-    SurveyOut, bind_inventory, build_survey_record, load_survey, save_survey, survey_path,
+    SurveyOut, bind_inventory, build_survey_record, drop_gap, load_survey, save_survey,
+    survey_path,
 )
 
 REAL = {"tapl#c00012": ChunkRef(chunk_id="tapl#c00012", source_id="tapl", locator="p. 317",
@@ -99,3 +100,24 @@ def test_a_survey_record_round_trips_through_its_schema(research_repo, signed_cy
 def test_saving_an_invalid_survey_is_refused(research_repo):
     with pytest.raises(SurveyOutputInvalid):
         save_survey({"cycle": 1, "theme": "typing"}, repo_root=research_repo)
+
+
+def test_drop_gap_marks_the_named_gap_dropped_and_notes_the_reason():
+    survey = {"unevidenced": [
+        {"key": "gradual-typing", "name": "Gradual typing", "gloss": "g", "origin": "prior",
+         "search_hint": "Siek & Taha 2006", "disposition": "open"},
+        {"key": "soft-typing", "name": "Soft typing", "gloss": "s", "origin": "prior",
+         "search_hint": "h", "disposition": "open"}]}
+
+    updated = drop_gap(survey, "gradual-typing", "no tier-A/B source found after two scout runs")
+
+    assert updated["unevidenced"][0]["disposition"] == "dropped"
+    assert "no tier-A/B source found" in updated["unevidenced"][0]["search_hint"]
+    assert updated["unevidenced"][1]["disposition"] == "open"
+    # pure function: the original is untouched
+    assert survey["unevidenced"][0]["disposition"] == "open"
+
+
+def test_drop_gap_refuses_an_unknown_key():
+    with pytest.raises(KeyError):
+        drop_gap({"unevidenced": []}, "no-such-key", "reason")

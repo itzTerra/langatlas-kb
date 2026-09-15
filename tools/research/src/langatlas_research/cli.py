@@ -60,6 +60,12 @@ def main(argv: list[str] | None = None) -> int:
                             ("scout", "scout sources for unevidenced candidates"),
                             ("finalize", "land the survey and mark the cycle r3-done")):
         p_survey.add_parser(name, help=help_text).add_argument("number", type=int)
+    p_drop_gap = p_survey.add_parser(
+        "drop-gap", help="developer escape hatch: mark an unevidenced gap dropped by hand")
+    p_drop_gap.add_argument("number", type=int)
+    p_drop_gap.add_argument("key", help="the unevidenced candidate's key")
+    p_drop_gap.add_argument("--reason", required=True,
+                            help="why this gap is being dropped without a source")
 
     args = parser.parse_args(argv)
     root = args.repo_root
@@ -158,6 +164,25 @@ def _amend(args, root: Path | None) -> int:
     return 0
 
 
+def _drop_gap(args, cycle, repo: Path) -> int:
+    """Developer-only escape hatch for a gap the scout could never close — see `survey.rst` /
+    README's "R3: the survey" section. Never called by an agent."""
+    from langatlas_research.survey.inventory import drop_gap, load_survey, save_survey
+
+    survey = load_survey(cycle.slug, repo_root=repo)
+    gap = next((g for g in survey["unevidenced"] if g["key"] == args.key), None)
+    if gap is None:
+        print(f"error: no unevidenced candidate {args.key!r} in {cycle.slug}'s survey",
+              file=sys.stderr)
+        return 1
+    if gap["disposition"] != "open":
+        print(f"error: {args.key} is already {gap['disposition']}", file=sys.stderr)
+        return 1
+    save_survey(drop_gap(survey, args.key, args.reason), repo_root=repo)
+    print(f"dropped {args.key} ({cycle.slug}): {args.reason}")
+    return 0
+
+
 def _dispatch_survey(args, root: Path | None) -> int:
     """The provider- and database-touching R3 steps. Each opens its own RunContext (D18)."""
     from langatlas_ingest.config import IngestConfig
@@ -171,6 +196,9 @@ def _dispatch_survey(args, root: Path | None) -> int:
     repo = root or REPO_ROOT
     config = ResearchConfig.load(research_config_path(repo))
     cycle = load_cycle(args.number, repo_root=repo)
+
+    if args.survey_command == "drop-gap":
+        return _drop_gap(args, cycle, repo)
 
     with connect(IngestConfig.load().dsn) as conn:
         lookup = db_chunk_lookup(conn)

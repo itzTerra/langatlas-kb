@@ -37,6 +37,7 @@ langatlas-orchestrator run config/jobs/r3-corpus-tagging.yaml --set cycle=1   # 
 langatlas-research survey run 1               # checklist + surveyor -> research/surveys/01-typing.yaml
 langatlas-research themes amend 1 0 [--reject]   # decide each proposed theme amendment
 langatlas-research survey scout 1             # file unevidenced gaps into sourcing_queue
+langatlas-research survey drop-gap 1 KEY --reason "..."  # developer escape hatch, see below
 langatlas-research survey finalize 1          # land survey + cycle, status r3-done
 ```
 
@@ -53,7 +54,18 @@ surveyor evidence what used to be a gap. Re-running `survey run` replaces the su
 `survey scout` after it.
 
 Applying a theme amendment edits `research/themes.yaml`, which re-opens the sign-off gate for any
-cycle signed against the old text (`cycle status` shows `STALE`).
+cycle signed against the old text (`cycle status` shows `STALE`). **Amending the cycle's own
+theme is expensive**: the pool, the tags, and the survey all answer the old theme text, so `survey
+scout`/`survey finalize` refuse (`PoolStale`/`R3Incomplete`) until you rebuild the pool, re-run
+the tagging job, and re-run `survey run` — which also rebuilds `theme_amendments` from scratch, so
+the applied amendment's status is only recoverable from git history, not the working survey file.
+Prefer amending a *different* theme (or waiting until the next cycle) over editing the one you are
+mid-survey on, unless the theme text is actually wrong.
+
+`survey drop-gap` is a **developer-only** escape hatch for a gap the scout could never close (its
+proposals kept getting screened out, or the model never volunteered a `dropped` entry) — it marks
+that one `unevidenced` entry `dropped` by hand so `survey finalize` can proceed. It is never called
+by an agent.
 
 ## Tests
 
