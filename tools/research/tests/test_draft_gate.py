@@ -113,7 +113,8 @@ def test_verify_plan_stamps_every_debated_entry_and_leaves_the_rest_alone(
                                     contested=["single-source"])]
 
     updated, results = verify_plan(
-        fake_ctx, None, plan, repo_root=research_repo, config=config, lookup=fake_lookup,
+        fake_ctx, None, plan, cycle=signed_cycle, repo_root=research_repo, config=config,
+        lookup=fake_lookup,
         deps=deps, verifier=_verifier({("scott-plp", "§7.2"): "supported",
                                        ("pierce-tapl-2002", "§1.1"): "supported"}))
 
@@ -123,12 +124,31 @@ def test_verify_plan_stamps_every_debated_entry_and_leaves_the_rest_alone(
     assert find_entry(updated, "other")[1]["status"] == "proposed"
 
 
+def test_a_stale_sign_off_stops_the_gate_before_any_verifier_call(
+        fake_ctx, research_repo, signed_cycle, config, deps, fake_lookup):
+    from langatlas_research.errors import SignOffStale
+    from langatlas_research.paths import themes_path
+
+    plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="r", generated_at="t")
+    plan["nodes"] = [_node()]
+    themes_path(research_repo).write_text(
+        themes_path(research_repo).read_text().replace("Typing", "Typing and effects"))
+
+    def _never(*args, **kwargs):
+        raise AssertionError("the verifier ran against a stale sign-off")
+
+    with pytest.raises(SignOffStale):
+        verify_plan(fake_ctx, None, plan, cycle=signed_cycle, repo_root=research_repo,
+                    config=config, lookup=fake_lookup, deps=deps, verifier=_never)
+
+
 def test_a_refused_entry_keeps_its_verdict_and_is_not_verified(
         fake_ctx, research_repo, signed_cycle, config, deps, fake_lookup):
     plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="r", generated_at="t")
     plan["nodes"] = [_node()]
     updated, _results = verify_plan(
-        fake_ctx, None, plan, repo_root=research_repo, config=config, lookup=fake_lookup,
+        fake_ctx, None, plan, cycle=signed_cycle, repo_root=research_repo, config=config,
+        lookup=fake_lookup,
         deps=deps, verifier=_verifier({("scott-plp", "§7.2"): "unsupported",
                                        ("pierce-tapl-2002", "§1.1"): "unsupported"}))
     entry = find_entry(updated, "static-typing")[1]

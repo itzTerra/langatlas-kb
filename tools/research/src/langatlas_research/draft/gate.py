@@ -20,6 +20,7 @@ from langatlas_ingest.verify.admissibility import decide_fact
 from langatlas_ingest.verify.job_support import work_for_fact
 from langatlas_ingest.verify.pipeline import VerifyDeps, verify_pair
 from langatlas_research.config import ResearchConfig
+from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.plan import entries, set_entry
 from langatlas_research.mint import MintedRecord, render_draft
 from langatlas_validate.compile import derive_facts
@@ -100,16 +101,22 @@ def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
                       run_id=getattr(ctx, "run_id", None))
 
 
-def verify_plan(ctx, conn, plan: dict, *, repo_root: Path | None, config: ResearchConfig,
-                lookup=None, deps: VerifyDeps | None = None, queue=None,
-                verifier=verify_pair) -> tuple[dict, list[GateResult]]:
+def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,
+                config: ResearchConfig, lookup=None, deps: VerifyDeps | None = None,
+                queue=None, verifier=verify_pair) -> tuple[dict, list[GateResult]]:
     """Gate every entry that is ready for it — `status: debated`, or `proposed` with no
     contested triggers. An entry that is still waiting on a debate is not a gate failure; it
     is simply not ready, and stamping a verdict on it would hide that.
 
-    @returns: `(updated plan, results in plan order)`."""
+    Sign-off is checked first, like every other R4 entry point: verification spends
+    university-API calls, and spending them against a plan whose sign-off has gone stale is
+    exactly what D27 exists to stop. `finalize_r4` catching it at cycle-close is too late.
+
+    @returns: `(updated plan, results in plan order)`.
+    @raises SignOffMissing / SignOffStale: before any verifier call."""
     from langatlas_research.draft.minting import RECORD_KINDS_BY_LIST, entry_draft
 
+    require_sign_off(cycle, repo_root=repo_root)
     deps = deps or VerifyDeps.build(conn, ctx, config=IngestConfig.load())
     updated, results = plan, []
     for name, entry in entries(plan):

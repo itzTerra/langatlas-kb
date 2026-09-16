@@ -2,7 +2,7 @@ import pytest
 from ruamel.yaml import YAML
 
 from langatlas_research.draft.contradictions import (
-    contradictions_mint, mint_debate_contradiction,
+    EMPTY_LEDGER, contradictions_mint, contradictions_pending, mint_debate_contradiction,
 )
 from langatlas_research.draft.debate_record import load_debate, save_debate
 from langatlas_validate.ids import contradiction_key
@@ -101,3 +101,13 @@ def test_the_ledger_renders_as_a_landable_shared_file_mint(repo):
     assert minted.path == "contradictions.yaml"
     assert minted.base_digest is not None
     assert minted.text == (repo / "contradictions.yaml").read_text()
+
+
+def test_a_repo_with_no_ledger_yet_mints_the_committed_empty_state(research_repo):
+    assert contradictions_mint(research_repo).text == EMPTY_LEDGER
+
+
+def test_nothing_is_pending_without_a_ledger_or_a_work_tree(research_repo):
+    assert contradictions_pending(research_repo) is False
+    (research_repo / "contradictions.yaml").write_text(EMPTY_LEDGER)
+    assert contradictions_pending(research_repo) is False

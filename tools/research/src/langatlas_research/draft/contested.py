@@ -16,6 +16,12 @@ TRIGGERS = ("merged-candidates", "split-candidate", "new-dimension", "new-qualit
 
 _ORDER = {trigger: index for index, trigger in enumerate(TRIGGERS)}
 
+# An entry in one of these states is settled: it is in git, or it will never be. Recomputing
+# its triggers against the store it has just joined would fire `id-collision` on every node
+# this cycle minted — and every later `mark_contested` (the edge drafter runs one) would then
+# hand `finalize` a carve that is "contested with no debate" forever.
+_TERMINAL = ("minted", "dropped")
+
 
 def _sources(entry: dict) -> set[str]:
     """Every distinct source id an entry leans on, across whichever evidence shape it has."""
@@ -29,7 +35,8 @@ def contested_triggers(plan: dict, *, repo_root: Path | None = None,
                        store=None) -> dict[str, tuple[str, ...]]:
     """@param store: a `StoreView`; None reads the store at `repo_root`.
     @returns: `{entry key: triggers}` for every contested entry, triggers in `TRIGGERS` order.
-        An entry with no triggers is absent from the mapping."""
+        An entry with no triggers is absent from the mapping, and so is every entry whose
+        status is terminal — a minted or dropped carve's trigger history is settled."""
     if store is None:
         from langatlas_research.draft.ontologist import read_store
 
@@ -51,6 +58,8 @@ def contested_triggers(plan: dict, *, repo_root: Path | None = None,
 
     for name, entry in entries(plan):
         key = entry["key"]
+        if entry.get("status") in _TERMINAL:
+            continue
         if "ontologist-flagged" in (entry.get("contested") or []):
             flag(key, "ontologist-flagged")
         if len(entry.get("from_candidates") or []) > 1:
@@ -76,21 +85,26 @@ def contested_triggers(plan: dict, *, repo_root: Path | None = None,
 
 def mark_contested(plan: dict, *, repo_root: Path | None = None, store=None) -> dict:
     """Returns a copy of `plan` with every entry's `contested` list recomputed. Idempotent —
-    it is re-run after every step that adds entries (the edge drafter, a debate's split)."""
+    it is re-run after every step that adds entries (the edge drafter, a debate's split).
+
+    A terminal entry keeps the triggers it was debated over: its `contested` list is debate
+    history by then, not a question still open."""
     triggers = contested_triggers(plan, repo_root=repo_root, store=store)
     updated = dict(plan)
     for name in ENTRY_LISTS:
-        updated[name] = [{**entry, "contested": list(triggers.get(entry["key"], ()))}
+        updated[name] = [dict(entry) if entry.get("status") in _TERMINAL
+                         else {**entry, "contested": list(triggers.get(entry["key"], ()))}
                          for entry in plan.get(name) or []]
     return updated
 
 
 def open_carves(plan: dict) -> list[str]:
     """Contested entries that have neither been debated nor waived — what `draft debate`
-    works through and what `draft finalize` refuses to close over."""
+    works through and what `draft finalize` refuses to close over. A minted entry is not
+    open: git already holds it, so there is nothing left to debate."""
     return [entry["key"] for _name, entry in entries(plan)
             if entry.get("contested") and entry.get("debate_id") is None
-            and entry.get("status") not in ("waived", "dropped")]
+            and entry.get("status") not in ("waived", *_TERMINAL)]
 
 
 def waive(plan: dict, key: str, reason: str) -> dict:

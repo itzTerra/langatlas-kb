@@ -13,6 +13,7 @@ rules first; if the ruling is that the sources disagree, the debate is re-run to
 `type: verification` rather than `cross-fact`: §6.5's `cross-fact` type is for two independently
 verified *facts* disagreeing, which needs the fact-embedding index that arrives in Stage 5. What
 R4 finds is a claim at odds with a citation, which is exactly the verification type."""
+import subprocess
 from datetime import date as _date
 from pathlib import Path
 
@@ -22,6 +23,11 @@ from langatlas_research.mint import MintedRecord, content_digest
 from langatlas_validate.ids import contradiction_key
 
 CONTRADICTIONS_REL = "contradictions.yaml"
+
+# What a repo that has never minted a contradiction holds — `validate_contradictions` calls
+# it the committed empty state, and rendering it is what keeps an absent ledger from turning
+# a mint into a `FileNotFoundError`.
+EMPTY_LEDGER = "contradictions: []\n"
 
 
 def _path(repo_root: Path | None) -> Path:
@@ -67,8 +73,30 @@ def mint_debate_contradiction(debate: dict, *, repo_root: Path | None = None,
 def contradictions_mint(repo_root: Path | None = None) -> MintedRecord:
     """The ledger as a shared-file `MintedRecord`, so `land_drafts` lands it in the same batch
     as the records that caused it — and re-renders it if someone else's contradiction lands
-    first, which is exactly what `base_digest` is for."""
+    first, which is exactly what `base_digest` is for.
+
+    An absent ledger renders as the empty state rather than raising, matching
+    `mint_dimension`/`mint_quality`'s habit of reading whatever the shared file currently
+    says and adding to it."""
     path = _path(repo_root)
-    text = path.read_text()
+    text = path.read_text() if path.exists() else EMPTY_LEDGER
     return MintedRecord(path=CONTRADICTIONS_REL, text=text, kind="contradictions",
                         node_ids=(), base_digest=content_digest(text))
+
+
+def contradictions_pending(repo_root: Path | None = None) -> bool:
+    """True when the ledger on disk is not what git holds — i.e. `mint_debate_contradiction`
+    wrote a record this cycle that has not been landed yet.
+
+    This is what tells `mint_plan` to hand the ledger to the lander, and it is not a nicety:
+    `contradictions.yaml` is a *tracked* file, so an unlanded change to it makes
+    `land_record`'s rebase refuse and nothing else in the batch can land either.
+
+    @returns: False outside a git work tree, and for an absent ledger — in both cases there
+        is nothing for this batch to land."""
+    root = Path(repo_root) if repo_root else Path(".")
+    if not _path(repo_root).exists():
+        return False
+    status = subprocess.run(["git", "status", "--porcelain", "--", CONTRADICTIONS_REL],
+                            cwd=root, capture_output=True, text=True, check=False)
+    return status.returncode == 0 and bool(status.stdout.strip())

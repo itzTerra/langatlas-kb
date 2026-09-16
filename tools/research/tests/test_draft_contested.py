@@ -93,6 +93,30 @@ def test_mark_contested_writes_the_triggers_onto_the_entries(signed_cycle):
     assert find_entry(plan, "n")[1]["contested"] == ["merged-candidates"]
 
 
+def test_a_minted_carve_keeps_its_triggers_and_never_reopens(signed_cycle):
+    """The store now holds what this plan minted, so `id-collision` would fire on every
+    minted node — and the edge drafter re-marks the whole plan after the first mint."""
+    store = StoreView(concepts=frozenset(), features=frozenset({"static-typing"}),
+                      dimensions=frozenset())
+    plan = _plan(signed_cycle, nodes=[_node("static-typing", status="minted",
+                                            contested=["merged-candidates"],
+                                            debate_id="d-01-typing-001")])
+    assert contested_triggers(plan, store=store) == {}
+
+    marked = mark_contested(plan, store=store)
+    entry = find_entry(marked, "static-typing")[1]
+    assert entry["contested"] == ["merged-candidates"]
+    assert entry["status"] == "minted"
+    assert open_carves(marked) == []
+
+
+def test_a_minted_carve_with_no_debate_is_not_an_open_carve(signed_cycle):
+    store = StoreView(concepts=frozenset(), features=frozenset({"static-typing"}),
+                      dimensions=frozenset())
+    plan = _plan(signed_cycle, nodes=[_node("static-typing", status="minted")])
+    assert open_carves(mark_contested(plan, store=store)) == []
+
+
 def test_open_carves_lists_only_undebated_unwaived_contested_entries(signed_cycle):
     plan = _plan(signed_cycle, nodes=[
         _node("a", contested=["merged-candidates"]),

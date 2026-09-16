@@ -2,7 +2,7 @@ import pytest
 
 from langatlas_commit.land import Landed
 from langatlas_research.draft.minting import (
-    RECORD_KINDS_BY_LIST, entry_draft, mint_items, mint_plan,
+    RECORD_KINDS_BY_LIST, entry_draft, mint_items, mint_plan, plan_prompt_versions,
 )
 from langatlas_research.draft.plan import build_plan_record, find_entry
 from langatlas_research.drafts import ConceptDraft, EdgeDraft, FeatureDraft, QualityEdgeDraft
@@ -158,6 +158,51 @@ def test_mint_plan_marks_every_landed_entry_minted(signed_cycle, research_repo):
     assert find_entry(updated, "type-system")[1]["status"] == "minted"
     assert find_entry(updated, "type-checking-discipline")[1]["status"] == "minted"
     assert len(results) == 3
+
+
+def test_each_list_carries_the_prompt_version_of_the_agent_that_drafted_it(signed_cycle,
+                                                                           research_repo):
+    edge = {"key": "e", "type": "requires", "from": "static-typing", "to": "type-system",
+            "polarity": None, "statement": "s",
+            "evidence": [{"source": "scott-plp", "locator": "§7.2"}], **_tail()}
+    plan = _plan(signed_cycle, nodes=[_concept()], edges=[edge])
+    items = mint_items(plan, repo_root=research_repo, ctx_run_id="r",
+                       prompt_version="v-fallback",
+                       prompt_versions={"nodes": "v-onto", "edges": "v-edge"})
+    assert [item.proposer.prompt_version for item in items] == ["v-onto", "v-edge"]
+
+
+def test_plan_prompt_versions_resolves_one_prompt_per_role():
+    versions = plan_prompt_versions(
+        loader=lambda prompt_id: type("P", (), {"version": f"v-{prompt_id}"})())
+    assert versions == {"nodes": "v-r4-ontologist", "edges": "v-r4-edge-drafter",
+                        "quality_edges": "v-r4-edge-drafter"}
+
+
+def test_an_unlanded_contradiction_ledger_leads_the_batch(signed_cycle, research_repo,
+                                                          monkeypatch):
+    """D45's ledger is a tracked file: left unlanded it makes every later rebase refuse, so
+    it goes into the same batch as the records that caused it — without shifting the plan
+    entries the results are zipped back onto."""
+    (research_repo / "contradictions.yaml").write_text("contradictions: []\n")
+    monkeypatch.setattr("langatlas_research.draft.minting.contradictions_pending",
+                        lambda repo_root=None: True)
+    landed = []
+
+    def _lander(items, *, repo_root, chat_run_id, cycle=None, status_checker=None,
+                attempts=3):
+        results = []
+        for item in items:
+            minted = item() if callable(item) else render_draft(item)
+            landed.append(minted.path)
+            results.append((minted, Landed(commit_sha="abc1234")))
+        return results
+
+    plan = _plan(signed_cycle, nodes=[_concept()])
+    updated, _results = mint_plan(plan, repo_root=research_repo, cycle=signed_cycle,
+                                  chat_run_id="r", prompt_version="v", lander=_lander)
+    assert landed == ["contradictions.yaml", "concepts/type-system.yaml"]
+    assert find_entry(updated, "type-system")[1]["status"] == "minted"
 
 
 def test_an_unlanded_entry_keeps_its_previous_status(signed_cycle, research_repo):

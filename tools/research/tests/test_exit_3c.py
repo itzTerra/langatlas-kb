@@ -9,13 +9,16 @@ import subprocess
 import pytest
 from ruamel.yaml import YAML
 
+from langatlas_commit.land import Landed
 from langatlas_ingest.verify.pipeline import VerifyDeps
 from langatlas_ingest.verify.verdicts import PairVerdict
 from langatlas_research.config import ResearchConfig
 from langatlas_research.cycle import advance, load_cycle, new_cycle, save_cycle, sign_off
 from langatlas_research.draft.contested import mark_contested, open_carves
+from langatlas_research.draft.contradictions import mint_debate_contradiction
 from langatlas_research.draft.debate import DebatePrompts, run_debate
 from langatlas_research.draft.debate_record import load_debate
+from langatlas_research.draft.edges import run_edge_drafter
 from langatlas_research.draft.finalize import finalize_r4
 from langatlas_research.draft.gate import verify_plan
 from langatlas_research.draft.minting import mint_plan
@@ -158,8 +161,8 @@ def test_a_signed_cycle_carries_a_plan_through_debate_gate_and_mint(
     assert open_carves(plan) == []
 
     # --- the gate ------------------------------------------------------------------
-    plan, results = verify_plan(fake_ctx, None, plan, repo_root=repo, config=config,
-                                lookup=fake_lookup,
+    plan, results = verify_plan(fake_ctx, None, plan, cycle=cycle, repo_root=repo,
+                                config=config, lookup=fake_lookup,
                                 deps=VerifyDeps(source_facts=TIER_A), verifier=_supported)
     save_plan(plan, repo_root=repo)
     assert {r.key for r in results} == {"type-system", "static-typing"}
@@ -185,14 +188,105 @@ def test_a_signed_cycle_carries_a_plan_through_debate_gate_and_mint(
                             "land concepts/type-system.yaml",
                             "land ontology/taxonomy/dimensions.yaml"]
 
+    # --- the edge drafter, over the committed nodes ---------------------------------
+    # Everything from here down is the "edge half": the second debate/verify/mint loop, over
+    # entries the edge drafter proposed against nodes this cycle has already minted. It is
+    # the acceptance path for the two defects the final whole-branch review found — a minted
+    # node re-flagged as `id-collision`, and a minted contradiction nothing ever lands.
+    # Every CLI step reloads the cycle; the mint appended this batch's node ids to the file.
+    cycle = load_cycle(1, repo_root=repo)
+
+    edge_prompt = mint_prompt_version(
+        "exit-edge-drafter",
+        "---\nprompt_id: exit-edge-drafter\nvariables: [theme_label, nodes, qualities,"
+        " edge_types, max_edges]\n---\n# system\n{{theme_label}}{{edge_types}}{{max_edges}}"
+        "\n\n# user\n{{nodes}}{{qualities}}\n", root=tmp_path)
+
+    fake_ctx.claude_results.append(_result({
+        "edges": [],
+        "qualities": [{"key": "type-safety", "slug": "type-safety", "label": "Type safety",
+                       "summary": "A program cannot reach a state its types rule out.",
+                       "note": "the quality the discipline is argued over"}],
+        "quality_edges": [{
+            "from": "static-typing", "to": "type-safety",
+            "assessments": [{"key": "pre-run-checking", "polarity": "improves",
+                             "strength": "moderate",
+                             "statement": "Checking types before the run rules out a class"
+                                          " of type errors.",
+                             "evidence": [{"chunk_id": "scott-plp#c00310"},
+                                          {"chunk_id": "pierce-tapl-2002#c00022"}]}],
+            "note": ""}],
+        "findings": []}))
+
+    plan, _ = run_edge_drafter(fake_ctx, cycle, plan, repo_root=repo, lookup=fake_lookup,
+                               config=config, prompt=edge_prompt)
+    save_plan(plan, repo_root=repo)
+
+    quality_edge_key = "static-typing--affects-quality--type-safety"
+    # The edge drafter re-marks the whole plan against a store that now holds this cycle's
+    # nodes: a minted carve must not come back as an open one.
+    assert set(open_carves(plan)) == {"type-safety", quality_edge_key}
+    assert find_entry(plan, "static-typing")[1]["status"] == "minted"
+    assert find_entry(plan, "static-typing")[1]["contested"] == ["merged-candidates",
+                                                                 "new-dimension"]
+
+    # --- the second round of debates, one of them recording a contradiction ---------
+    contradiction_id = None
+    for key, contradiction in (
+            ("type-safety", None),
+            (quality_edge_key,
+             {"participants": ["citation:pierce-tapl-2002:§1.1", "citation:scott-plp:§7.2"],
+              "detail": "the two texts disagree about what pre-run checking buys"})):
+        verdict = {"disposition": "keep", "standing_dissent": False,
+                   "upheld_challenges": [], "rationale": "the cited passages support it"}
+        if contradiction:
+            verdict["contradiction"] = contradiction
+        moderator_ctx = type(fake_ctx)(run_id=f"mod-{key}")
+        moderator_ctx.claude_results.append(_result(verdict))
+        fake_ctx.claude_results.extend([
+            _result({"text": "my case"}), _result({"text": "no objection"}),
+            _result({"text": "no objection"}), _result({"text": "nothing to add"})])
+        plan, debate = run_debate(fake_ctx, cycle, plan, key, repo_root=repo, config=config,
+                                  lookup=fake_lookup, moderator_ctx=moderator_ctx,
+                                  prompts=prompts, today="2026-09-20")
+        # Mirrors the CLI's `draft debate` branch, which mints the register entry itself.
+        contradiction_id = mint_debate_contradiction(debate, repo_root=repo) \
+            or contradiction_id
+    save_plan(plan, repo_root=repo)
+
+    assert contradiction_id is not None
+    assert contradiction_id in (repo / "contradictions.yaml").read_text()
+
+    # --- the gate and the mint, over the edge half ----------------------------------
+    plan, results = verify_plan(fake_ctx, None, plan, cycle=cycle, repo_root=repo,
+                                config=config, lookup=fake_lookup,
+                                deps=VerifyDeps(source_facts=TIER_A), verifier=_supported)
+    save_plan(plan, repo_root=repo)
+    assert [r.key for r in results] == [quality_edge_key]
+
+    plan, landed = mint_plan(plan, repo_root=repo, cycle=cycle, chat_run_id="run-mint-2",
+                             prompt_version="v-test")
+    save_plan(plan, repo_root=repo)
+
+    # The ledger leads the batch — an unlanded change to a tracked file makes every
+    # following `land_record` rebase refuse.
+    paths = [minted.path for minted, _ in landed]
+    assert paths[:2] == ["contradictions.yaml", "ontology/taxonomy/qualities.yaml"]
+    assert all(isinstance(outcome, Landed) for _minted, outcome in landed)
+    assert contradiction_id in _git(["show", "HEAD:contradictions.yaml"], repo)
+
     # --- finalize ------------------------------------------------------------------
     updated, _results = finalize_r4(1, repo_root=repo)
     assert updated.status == "r4-done"
-    assert set(updated.nodes_minted) == {"type-system", "static-typing",
-                                         "type-checking-discipline"}
+    assert {"type-system", "static-typing", "type-checking-discipline",
+            "type-safety"} <= set(updated.nodes_minted)
     assert load_cycle(1, repo_root=repo).artifacts["draft"] == \
         "research/drafts/01-typing.yaml"
-    assert len(load_cycle(1, repo_root=repo).artifacts["debates"]) == 2
+    assert len(load_cycle(1, repo_root=repo).artifacts["debates"]) == 4
+    # A debate record is 3C's hand-off to 3D, so git holds every one it points at.
+    tracked = _git(["ls-files", "research/debates"], repo).splitlines()
+    for artifact in load_cycle(1, repo_root=repo).artifacts["debates"]:
+        assert artifact in tracked
 
 
 def test_a_carve_the_gate_refuses_never_reaches_git(store_repo, fake_ctx, fake_lookup):
@@ -218,9 +312,9 @@ def test_a_carve_the_gate_refuses_never_reaches_git(store_repo, fake_ctx, fake_l
                            locator=citation.locator, verdict="unsupported",
                            date="2026-09-20")
 
-    plan, _ = verify_plan(fake_ctx, None, plan, repo_root=store_repo, config=config,
-                          lookup=fake_lookup, deps=VerifyDeps(source_facts=TIER_A),
-                          verifier=_unsupported)
+    plan, _ = verify_plan(fake_ctx, None, plan, cycle=cycle, repo_root=store_repo,
+                          config=config, lookup=fake_lookup,
+                          deps=VerifyDeps(source_facts=TIER_A), verifier=_unsupported)
     assert find_entry(plan, "type-system")[1]["verification"]["admissible"] is False
     with pytest.raises(NotAdmissible):
         mint_plan(plan, repo_root=store_repo, cycle=cycle, chat_run_id="x",

@@ -476,7 +476,7 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
 
             plan = load_plan(cycle.slug, repo_root=repo)
             with RunContext.start(kind="r4-verify", slug=cycle.slug) as ctx:
-                updated, results = verify_plan(ctx, conn, plan, repo_root=repo,
+                updated, results = verify_plan(ctx, conn, plan, cycle=cycle, repo_root=repo,
                                                config=config, lookup=lookup,
                                                queue=SourcingQueue(conn))
             save_plan(updated, repo_root=repo)
@@ -486,12 +486,17 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
                       f" {result.pairs} pair(s) {result.detail}")
             return 0
 
-        from langatlas_research.draft.minting import mint_plan
+        from langatlas_research.draft.minting import mint_plan, plan_prompt_versions
 
         plan = load_plan(cycle.slug, repo_root=repo)
+        # Which prompt version produced each list, resolved from the registry rather than
+        # left blank: a record whose `proposer.prompt_version` is empty cannot be traced
+        # back to the prompt that wrote it, which is the whole point of versioning them.
+        versions = plan_prompt_versions()
         with RunContext.start(kind="r4-mint", slug=cycle.slug) as ctx:
             updated, results = mint_plan(plan, repo_root=repo, cycle=cycle,
-                                         chat_run_id=ctx.run_id, prompt_version="")
+                                         chat_run_id=ctx.run_id, prompt_version="",
+                                         prompt_versions=versions)
         save_plan(updated, repo_root=repo)
         for minted, outcome in results:
             print(f"{minted.path}: {outcome!r}")

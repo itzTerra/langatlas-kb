@@ -1,4 +1,4 @@
-"""R4's exit: the carve plan is committed, and the cycle says so.
+"""R4's exit: the debate records and the carve plan are committed, and the cycle says so.
 
 Every blocker is reported at once rather than one per invocation, because each one is a
 developer decision — debate it, waive it, fix the claim, re-run the mint — and a one-at-a-time
@@ -70,11 +70,25 @@ def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
         raise R4Incomplete(f"{cycle.slug} cannot close R4: " + "; ".join(blockers))
 
     run_id = plan["runs"]["ontologist"]
+    # The debate records go first: a debate record is 3C's hand-off to 3D, and the cycle is
+    # about to point at these paths as its artifacts. `draft debate` writes them but does not
+    # land them — a debate can still be re-run or superseded while the plan is open, so they
+    # are committed here, with the plan that reached its conclusions.
+    results = []
+    for debate_rel in _debate_artifacts(plan):
+        debate_result = lander(repo_root, debate_rel, (repo_root / debate_rel).read_text(),
+                               chat_run_id=run_id, validator=store_validator,
+                               status_checker=status_checker)
+        results.append(debate_result)
+        if not isinstance(debate_result, Landed):
+            return cycle, results
+
     plan_rel = f"research/drafts/{cycle.slug}.yaml"
     plan_result = lander(repo_root, plan_rel, render_plan(plan), chat_run_id=run_id,
                          validator=store_validator, status_checker=status_checker)
+    results.append(plan_result)
     if not isinstance(plan_result, Landed):
-        return cycle, [plan_result]
+        return cycle, results
 
     updated = cycle if cycle.status == "r4-done" else advance(cycle, "r4-done")
     artifacts = {**(cycle.artifacts or {}), "draft": plan_rel}
@@ -86,7 +100,8 @@ def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
     cycle_result = lander(repo_root, str(cycle_file.relative_to(repo_root)),
                           cycle_file.read_text(), chat_run_id=run_id,
                           validator=store_validator, status_checker=status_checker)
+    results.append(cycle_result)
     if not isinstance(cycle_result, Landed):
         save_cycle(cycle, repo_root=repo_root)
-        return cycle, [plan_result, cycle_result]
-    return updated, [plan_result, cycle_result]
+        return cycle, results
+    return updated, results

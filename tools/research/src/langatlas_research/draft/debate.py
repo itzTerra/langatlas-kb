@@ -183,8 +183,8 @@ def _check_revision(revision: dict, entry: dict) -> None:
 def apply_resolution(plan: dict, debate: dict, *, lookup: ChunkLookup | None = None) -> dict:
     """The one place a resolution changes the plan. Pure.
 
-    @raises DebateIncomplete: a revision that touches identity, or a disposition whose
-        required payload is missing."""
+    @raises DebateIncomplete: a revision that touches identity, a split of anything but a
+        node, or a disposition whose required payload is missing."""
     target = debate["target"]["key"]
     resolution = debate["resolution"]
     disposition = resolution["disposition"]
@@ -214,6 +214,11 @@ def apply_resolution(plan: dict, debate: dict, *, lookup: ChunkLookup | None = N
         return set_entry(plan, target, status="debated", **common, **revision)
 
     replacements = resolution.get("split_into") or []
+    if debate["target"]["list"] != "nodes":
+        raise DebateIncomplete(
+            f"{target}: a split may only replace a node carve — a replacement is node-shaped"
+            f" (`kind: concept|feature`) and this debate targets"
+            f" {debate['target']['list']}. To change an edge, revise or drop it.")
     if len(replacements) < 2:
         raise DebateIncomplete(f"{target}: a split needs at least two replacement carves")
     updated = set_entry(plan, target, status="dropped", **common,

@@ -223,6 +223,31 @@ def test_debating_an_uncontested_carve_is_refused(
                    prompts=prompts)
 
 
+def test_splitting_anything_but_a_node_is_refused(signed_cycle, plan):
+    """`split_into` is node-shaped, so applying one to an edge would drop the edge and
+    inject concept/feature entries into `nodes`."""
+    edge = {"key": "static-typing--requires--type-system", "type": "requires",
+            "from": "static-typing", "to": "type-system", "polarity": None,
+            "statement": "Static typing presupposes a type system.",
+            "evidence": [{"source": "scott-plp", "locator": "§7.2"}],
+            "contested": ["single-source"], "debate_id": None, "status": "proposed",
+            "verification": None, "note": ""}
+    record = {**plan, "edges": [edge]}
+    debate = {"id": "d-01-typing-002",
+              "target": {"list": "edges", "key": edge["key"]},
+              "resolution": {"outcome": "converged-after-revision", "disposition": "split",
+                             "standing_dissent": False, "rounds": 1,
+                             "upheld_challenges": [], "rationale": "two claims",
+                             "split_into": [
+                                 {"key": "a", "id": "a", "kind": "feature", "name": "A",
+                                  "summary": "s", "evidence": []},
+                                 {"key": "b", "id": "b", "kind": "feature", "name": "B",
+                                  "summary": "s", "evidence": []}]}}
+    with pytest.raises(DebateIncomplete):
+        apply_resolution(record, debate)
+    assert [entry["key"] for entry in record["nodes"]] == ["static-typing"]
+
+
 def test_apply_resolution_is_pure(signed_cycle, plan):
     debate = {"id": "d-01-typing-001", "target": {"list": "nodes", "key": "static-typing"},
               "resolution": {"outcome": "resolved", "disposition": "keep",

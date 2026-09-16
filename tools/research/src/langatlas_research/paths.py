@@ -26,7 +26,9 @@ _READMES = {
               "A carve plan is a proposal — only `status: minted` entries exist in the store.\n",
     "debates": "R4 debate records (`<debate-id>.yaml`): proposer, two challengers, moderator\n"
                "resolution, typed challenges. Written by the debate machinery (Stage 3C); read by\n"
-               "the controversy assessor (Stage 3D) and the D30 instrumentation scripts.\n",
+               "the controversy assessor (Stage 3D) and the D30 instrumentation scripts.\n"
+               "`draft debate` writes a record but does not commit it: the records are landed by\n"
+               "`draft finalize`, together with the carve plan whose conclusions they are.\n",
     "reality-checks": "R5 structured findings (`<cycle>-<theme>.yaml`): unmappable features,\n"
                       "uninhabited dimension values, unfittable languages, exclusivity violations.\n"
                       "Written by the reality-check runner (Stage 3E); read by\n"
