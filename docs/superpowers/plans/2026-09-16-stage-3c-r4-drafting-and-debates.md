@@ -4301,7 +4301,7 @@ committed ids, and draws the five feature↔feature edge types plus signed `affe
   - `run_edge_drafter(ctx, cycle, plan, *, repo_root, lookup, config, mcp_servers=None,
     allowed_tools=(), prompt=None) -> tuple[dict, list[str]]` — `(updated plan, warnings)`.
 
-- [ ] **Step 1: Mint the prompt**
+- [x] **Step 1: Mint the prompt**
 
 Run:
 ```bash
@@ -4363,7 +4363,7 @@ rm "$PROMPT"
 
 Expected: prints `r4-edge-drafter@v-<8hex>`.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_edges.py
@@ -4537,12 +4537,12 @@ def test_findings_are_appended_not_replaced(fake_ctx, research_repo, signed_cycl
                                                         "rule-candidate"]
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_edges.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.edges`.
 
-- [ ] **Step 4: Write the edge drafter**
+- [x] **Step 4: Write the edge drafter**
 
 ```python
 # tools/research/src/langatlas_research/draft/edges.py
@@ -4779,12 +4779,12 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
     return mark_contested(updated, repo_root=repo_root, store=store), warnings
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_edges.py -v`
 Expected: PASS (9 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
