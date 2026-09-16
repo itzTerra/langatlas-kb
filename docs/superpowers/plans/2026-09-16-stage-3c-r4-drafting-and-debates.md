@@ -4813,7 +4813,7 @@ git commit -m "feat(#stage-3c): draft feature edges and signed quality edges as 
     -> tuple[Cycle, list]`.
   - CLI: `draft atomize|contested|debate|waive|verify|mint|edges|finalize`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_draft_finalize.py
@@ -5002,13 +5002,13 @@ def test_draft_status_summarizes_the_plan(research_repo, signed_cycle, capsys):
     assert "proposed" in out and "minted" in out
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_finalize.py tests/test_draft_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.finalize`, and
 `argparse` rejecting `draft`.
 
-- [ ] **Step 3: Write finalize**
+- [x] **Step 3: Write finalize**
 
 ```python
 # tools/research/src/langatlas_research/draft/finalize.py
@@ -5106,7 +5106,7 @@ def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
     return updated, [plan_result, cycle_result]
 ```
 
-- [ ] **Step 4: Wire the CLI**
+- [x] **Step 4: Wire the CLI**
 
 In `main`, after the `survey` subparser block:
 
@@ -5338,12 +5338,12 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
         return 0
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_finalize.py tests/test_draft_cli.py -v`
 Expected: PASS (11 + 4 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \

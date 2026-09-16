@@ -67,6 +67,34 @@ def main(argv: list[str] | None = None) -> int:
     p_drop_gap.add_argument("--reason", required=True,
                             help="why this gap is being dropped without a source")
 
+    p_draft = sub.add_parser("draft").add_subparsers(dest="draft_command", required=True)
+    for name, help_text in (
+            ("atomize", "run the ontologist over the cycle's candidate inventory"),
+            ("contested", "list contested entries and their triggers"),
+            ("status", "summarize the carve plan"),
+            ("verify", "run the D24 gate over every ready entry"),
+            ("mint", "land every admitted entry, one commit per record"),
+            ("edges", "run the edge drafter over the committed nodes"),
+            ("finalize", "land the carve plan and mark the cycle r4-done")):
+        p_draft.add_parser(name, help=help_text).add_argument("number", type=int)
+    p_debate = p_draft.add_parser("debate", help="debate contested entries (§7.2)")
+    p_debate.add_argument("number", type=int)
+    p_debate.add_argument("--key", action="append", default=[],
+                          help="entry key; repeatable. Omit with --all for every open carve")
+    p_debate.add_argument("--all", action="store_true")
+    p_waive = p_draft.add_parser(
+        "waive", help="developer escape hatch: accept a contested entry without a debate")
+    p_waive.add_argument("number", type=int)
+    p_waive.add_argument("key")
+    p_waive.add_argument("--reason", required=True)
+
+    p_instrument = sub.add_parser("instrument").add_subparsers(
+        dest="instrument_command", required=True)
+    for name, help_text in (("replay", "D30(a): the verifier-replay counterfactual"),
+                            ("cost", "D30(b): Claude messages per accepted node by debate")):
+        p_instrument.add_parser(name, help=help_text).add_argument(
+            "number", type=int, nargs="?", help="cycle number; omit for every cycle")
+
     args = parser.parse_args(argv)
     root = args.repo_root
     try:
@@ -98,6 +126,12 @@ def _dispatch(args, root: Path | None) -> int:
 
     if args.command == "survey":
         return _dispatch_survey(args, root)
+
+    if args.command == "draft":
+        return _dispatch_draft(args, root)
+
+    if args.command == "instrument":
+        return _dispatch_instrument(args, root)      # Task 13 writes this
 
     if args.cycle_command == "new":
         cycle = new_cycle(args.number, args.theme, repo_root=root,
@@ -281,3 +315,184 @@ def _dispatch_survey(args, root: Path | None) -> int:
             print(repr(result))
         print(f"cycle {updated.slug} -> {updated.status}")
         return 0 if updated.status == "r3-done" else 1
+
+
+def _dispatch_draft(args, root: Path | None) -> int:
+    """R4's steps. The four offline ones (`contested`, `status`, `waive`, `finalize`) never
+    open a connection or a provider; the rest open their own `RunContext` (D18)."""
+    from langatlas_research.draft.contested import contested_triggers, open_carves, waive
+    from langatlas_research.draft.plan import entries, load_plan, save_plan
+
+    repo = root or REPO_ROOT
+    cycle = load_cycle(args.number, repo_root=repo)
+
+    if args.draft_command == "contested":
+        plan = load_plan(cycle.slug, repo_root=repo)
+        open_keys = set(open_carves(plan))
+        for key, triggers in contested_triggers(plan, repo_root=repo).items():
+            state = "OPEN" if key in open_keys else "closed"
+            print(f"{key:44} {state:7} {', '.join(triggers)}")
+        return 0
+
+    if args.draft_command == "status":
+        plan = load_plan(cycle.slug, repo_root=repo)
+        for name, entry in entries(plan):
+            verdict = (entry.get("verification") or {}).get("verdict", "-")
+            print(f"{name:14} {entry['key']:44} {entry['status']:9} {verdict:12}"
+                  f" {entry.get('debate_id') or ''}")
+        return 0
+
+    if args.draft_command == "waive":
+        plan = load_plan(cycle.slug, repo_root=repo)
+        try:
+            save_plan(waive(plan, args.key, args.reason), repo_root=repo)
+        except (KeyError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+        print(f"waived {args.key} ({cycle.slug}): {args.reason}")
+        return 0
+
+    if args.draft_command == "finalize":
+        from langatlas_research.draft.finalize import finalize_r4
+
+        updated, results = finalize_r4(cycle.number, repo_root=repo)
+        for result in results:
+            print(repr(result))
+        print(f"cycle {updated.slug} -> {updated.status}")
+        return 0 if updated.status == "r4-done" else 1
+
+    return _dispatch_draft_online(args, cycle, repo)
+
+
+def _dispatch_draft_online(args, cycle, repo: Path) -> int:
+    from langatlas_ingest.config import IngestConfig
+    from langatlas_ingest.db import connect
+    from langatlas_ingest.store import SourcingQueue
+    from langatlas_pipeline.providers.core import RunContext
+
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.draft.plan import load_plan, save_plan
+    from langatlas_research.paths import research_config_path
+    from langatlas_research.survey.chunks import db_chunk_lookup
+    from langatlas_research.survey.claude import role_budget
+
+    config = ResearchConfig.load(research_config_path(repo))
+    with connect(IngestConfig.load().dsn) as conn:
+        lookup = db_chunk_lookup(conn)
+
+        if args.draft_command == "atomize":
+            from langatlas_research.draft.contested import mark_contested
+            from langatlas_research.draft.ontologist import ontologist_tools, run_ontologist
+            from langatlas_research.survey.inventory import load_survey
+
+            survey = load_survey(cycle.slug, repo_root=repo)
+            with RunContext.start(kind="r4-atomize", slug=cycle.slug,
+                                  budget=role_budget(config.draft.ontologist),
+                                  agents=[{"role": "ontologist"}]) as ctx:
+                servers, tools = ontologist_tools(ctx, conn)
+                plan, warnings = run_ontologist(ctx, cycle, repo_root=repo, survey=survey,
+                                                lookup=lookup, config=config,
+                                                mcp_servers=servers, allowed_tools=tools)
+            path = save_plan(mark_contested(plan, repo_root=repo), repo_root=repo)
+            print(f"wrote {path}: {len(plan['nodes'])} nodes,"
+                  f" {len(plan['dimensions'])} dimension(s),"
+                  f" {len(plan['findings'])} finding(s)")
+            for warning in warnings:
+                print(f"warning: {warning}")
+            print("next: langatlas-research draft contested"
+                  f" {cycle.number}")
+            return 0
+
+        if args.draft_command == "edges":
+            from langatlas_research.draft.edges import run_edge_drafter
+            from langatlas_research.draft.ontologist import ontologist_tools
+
+            plan = load_plan(cycle.slug, repo_root=repo)
+            with RunContext.start(kind="r4-edges", slug=cycle.slug,
+                                  budget=role_budget(config.draft.edge_drafter),
+                                  agents=[{"role": "edge-drafter"}]) as ctx:
+                servers, tools = ontologist_tools(ctx, conn)
+                updated, warnings = run_edge_drafter(ctx, cycle, plan, repo_root=repo,
+                                                     lookup=lookup, config=config,
+                                                     mcp_servers=servers,
+                                                     allowed_tools=tools)
+            save_plan(updated, repo_root=repo)
+            print(f"{len(updated['edges'])} edge(s),"
+                  f" {len(updated['quality_edges'])} quality edge(s),"
+                  f" {len(updated['qualities'])} proposed quality/qualities")
+            for warning in warnings:
+                print(f"warning: {warning}")
+            return 0
+
+        if args.draft_command == "debate":
+            from langatlas_research.draft.contradictions import mint_debate_contradiction
+            from langatlas_research.draft.contested import open_carves
+            from langatlas_research.draft.debate import run_debate
+            from langatlas_research.draft.ontologist import ontologist_tools
+
+            plan = load_plan(cycle.slug, repo_root=repo)
+            keys = args.key or (open_carves(plan) if args.all else [])
+            if not keys:
+                print("error: name at least one --key, or pass --all", file=sys.stderr)
+                return 1
+            cap = config.draft.debate.max_debates_per_cycle
+            if len(keys) > cap:
+                print(f"error: {len(keys)} debates exceeds the configured cap of {cap};"
+                      f" debate the most contested carves and waive the rest",
+                      file=sys.stderr)
+                return 1
+            for key in keys:
+                debate_id = None
+                with RunContext.start(kind="r4-debate", slug=f"{cycle.slug}-{key}",
+                                      budget=role_budget(config.draft.debate.proposer),
+                                      agents=[{"role": "proposer"},
+                                              {"role": "challenger-a"},
+                                              {"role": "challenger-b"}]) as ctx:
+                    servers, tools = ontologist_tools(ctx, conn)
+                    with RunContext.start(kind="r4-moderator",
+                                          slug=f"{cycle.slug}-{key}",
+                                          budget=role_budget(
+                                              config.draft.debate.moderator),
+                                          agents=[{"role": "moderator"}]) as moderator_ctx:
+                        plan, debate = run_debate(ctx, cycle, plan, key, repo_root=repo,
+                                                  config=config, lookup=lookup,
+                                                  moderator_ctx=moderator_ctx,
+                                                  mcp_servers=servers, allowed_tools=tools)
+                        debate_id = debate["id"]
+                        # Both contexts carry the debate id so the transcripts join up.
+                        ctx.manifest.debate_id = debate_id
+                        moderator_ctx.manifest.debate_id = debate_id
+                contradiction = mint_debate_contradiction(debate, repo_root=repo)
+                save_plan(plan, repo_root=repo)
+                resolution = debate["resolution"]
+                print(f"{debate_id}  {key}: {resolution['disposition']} ->"
+                      f" {resolution['outcome']}"
+                      f"{' (standing dissent)' if resolution['standing_dissent'] else ''}"
+                      f"{' contradiction ' + contradiction if contradiction else ''}")
+            return 0
+
+        if args.draft_command == "verify":
+            from langatlas_research.draft.gate import verify_plan
+
+            plan = load_plan(cycle.slug, repo_root=repo)
+            with RunContext.start(kind="r4-verify", slug=cycle.slug) as ctx:
+                updated, results = verify_plan(ctx, conn, plan, repo_root=repo,
+                                               config=config, lookup=lookup,
+                                               queue=SourcingQueue(conn))
+            save_plan(updated, repo_root=repo)
+            for result in results:
+                mark = "admitted" if result.admissible else "REFUSED "
+                print(f"{mark} {result.key:44} {result.verdict:12}"
+                      f" {result.pairs} pair(s) {result.detail}")
+            return 0
+
+        from langatlas_research.draft.minting import mint_plan
+
+        plan = load_plan(cycle.slug, repo_root=repo)
+        with RunContext.start(kind="r4-mint", slug=cycle.slug) as ctx:
+            updated, results = mint_plan(plan, repo_root=repo, cycle=cycle,
+                                         chat_run_id=ctx.run_id, prompt_version="")
+        save_plan(updated, repo_root=repo)
+        for minted, outcome in results:
+            print(f"{minted.path}: {outcome!r}")
+        return 0

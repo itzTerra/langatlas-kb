@@ -29,6 +29,7 @@
       "additionalProperties": false,
       "properties": {
         "survey": { "type": "string" },
+        "draft": { "type": "string" },
         "reality_check": { "type": "string" },
         "debates": { "type": "array", "items": { "type": "string" } }
       }
