@@ -3568,7 +3568,7 @@ be a second thing that can drift from §6.2.
   - `verify_plan(ctx, conn, plan, *, repo_root, config, lookup, deps=None, queue=None,
     verifier=verify_pair) -> tuple[dict, list[GateResult]]`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_gate.py
@@ -3708,12 +3708,12 @@ def test_a_refused_entry_keeps_its_verdict_and_is_not_verified(
     assert entry["verification"]["admissible"] is False
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_gate.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.gate`.
 
-- [ ] **Step 3: Write the gate**
+- [x] **Step 3: Write the gate**
 
 ```python
 # tools/research/src/langatlas_research/draft/gate.py
@@ -3849,13 +3849,13 @@ def verify_plan(ctx, conn, plan: dict, *, repo_root: Path | None, config: Resear
     return updated, results
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_gate.py -v`
 Expected: PASS (6 tests) — after Task 10 supplies `entry_draft` and `RECORD_KINDS_BY_LIST`.
 If Task 10 has not landed yet, run this task's tests again at the end of Task 10.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
