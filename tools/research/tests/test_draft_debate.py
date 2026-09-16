@@ -135,6 +135,26 @@ def test_a_revision_may_not_change_a_carves_identity(
                    prompts=prompts)
 
 
+def test_a_revision_may_not_smuggle_in_model_typed_evidence(
+        fake_ctx, research_repo, signed_cycle, plan, config, prompts, fake_lookup):
+    """Evidence must always be bound from a `chunk_id` via `bind_evidence` (source/locator
+    copied verbatim from `source_chunks`), never typed directly by a model. A moderator's
+    `revision` dict could otherwise carry a raw `evidence: [{source, locator}]` list that
+    schema validation would accept (chunk_id is optional there) but that never touched a
+    chunk id at all."""
+    moderator_ctx = type(fake_ctx)(run_id="mod-1")
+    moderator_ctx.claude_results.append(_result(
+        {"disposition": "revise", "standing_dissent": False, "upheld_challenges": [],
+         "rationale": "r",
+         "revision": {"summary": "Narrower.",
+                      "evidence": [{"source": "made-up-source", "locator": "p. 1"}]}}))
+    _script(fake_ctx, challenges_a=[], challenges_b=[], moderator=None)
+    with pytest.raises(DebateIncomplete):
+        run_debate(fake_ctx, signed_cycle, plan, "static-typing", repo_root=research_repo,
+                   config=config, lookup=fake_lookup, moderator_ctx=moderator_ctx,
+                   prompts=prompts)
+
+
 def test_a_drop_disposition_drops_the_carve(
         fake_ctx, research_repo, signed_cycle, plan, config, prompts, fake_lookup):
     moderator_ctx = type(fake_ctx)(run_id="mod-1")

@@ -14,6 +14,7 @@ from langatlas_commit.land import Landed, land_record
 
 from langatlas_research.cycle import Cycle, advance, load_cycle, require_sign_off, save_cycle
 from langatlas_research.draft.contested import open_carves
+from langatlas_research.draft.contradictions import contradictions_pending
 from langatlas_research.draft.plan import entries, load_plan, render_plan
 from langatlas_research.errors import R4Incomplete
 from langatlas_research.land import store_validator
@@ -30,6 +31,9 @@ def r4_blockers(cycle: Cycle, plan: dict, *, repo_root: Path | None) -> list[str
                         " `draft atomize`")
     if not any(True for _name, _entry in entries(plan)):
         blockers.append("the carve plan has no entries at all")
+    if contradictions_pending(repo_root):
+        blockers.append("the debate-outcome contradiction ledger hasn't been landed — run"
+                        " `draft mint`")
 
     for key in open_carves(plan):
         blockers.append(f"{key}: contested with no debate and no waiver — run"
@@ -37,6 +41,14 @@ def r4_blockers(cycle: Cycle, plan: dict, *, repo_root: Path | None) -> list[str
 
     for name, entry in entries(plan):
         if entry["status"] in _TERMINAL:
+            continue
+        if entry.get("debate_id") and entry["status"] == "proposed":
+            # The only way this combination arises (see `draft.contested.waive`'s
+            # docstring): the debate escalated and nobody has ruled on it yet. Reporting
+            # this as "never reached the verifier" would send the developer to re-run
+            # `draft verify`, which does nothing for an escalated entry.
+            blockers.append(f"{entry['key']}: escalated — the developer must rule (see"
+                            f" draft debate record {entry['debate_id']})")
             continue
         verification = entry.get("verification")
         if name in ("nodes", "edges", "quality_edges"):

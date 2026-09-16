@@ -32,10 +32,15 @@ PROPOSER_PROMPT_ID = "r4-proposer"
 CHALLENGER_PROMPT_ID = "r4-challenger"
 MODERATOR_PROMPT_ID = "r4-moderator"
 
-# The fields a revision may never touch: identity is minted once (§5.1), and the plan's own
-# bookkeeping belongs to the pipeline, not to a participant.
-_IMMUTABLE = frozenset({"key", "id", "kind", "status", "debate_id", "verification",
-                        "contested", "from_candidates", "waiver"})
+# The only fields a revision may touch. Everything else is either identity (minted once,
+# §5.1), pipeline bookkeeping the moderator has no business editing, or `evidence` — which
+# must always be bound from a `chunk_id` via `bind_evidence` (source/locator copied verbatim
+# from `source_chunks`), never typed directly by a model. `draft.schema.json`'s evidence
+# shape only requires `source`+`locator`, so a blacklist here would let a moderator's
+# structured `revision` smuggle in a model-typed citation that never touched a chunk id; a
+# whitelist keeps that structurally impossible instead of relying on downstream re-checks.
+_REVISABLE = frozenset({"name", "summary", "layer", "dimension", "cross_cutting", "aliases",
+                        "realizes", "statement", "polarity", "note"})
 
 _DISPOSITION_HELP = {
     "keep": "the carve stands as drafted",
@@ -169,15 +174,17 @@ def _bind_challenges(out: ChallengerOut, *, lookup: ChunkLookup, key: str) -> li
 
 
 def _check_revision(revision: dict, entry: dict) -> None:
-    bad = sorted(set(revision) & _IMMUTABLE)
-    if bad:
-        raise DebateIncomplete(
-            f"{entry['key']}: a revision may not change {', '.join(bad)} — an id is minted"
-            f" once (§5.1). To replace the carve, split it into one replacement instead.")
     unknown = sorted(set(revision) - set(entry))
     if unknown:
         raise DebateIncomplete(f"{entry['key']}: revision names fields the carve does not"
                                f" have: {', '.join(unknown)}")
+    bad = sorted(set(revision) - _REVISABLE)
+    if bad:
+        raise DebateIncomplete(
+            f"{entry['key']}: a revision may not change {', '.join(bad)} — only"
+            f" {', '.join(sorted(_REVISABLE))} may be revised. An id is minted once (§5.1;"
+            f" split the carve instead of renaming it), and evidence is always bound from a"
+            f" chunk id, never typed directly in a revision.")
 
 
 def apply_resolution(plan: dict, debate: dict, *, lookup: ChunkLookup | None = None) -> dict:

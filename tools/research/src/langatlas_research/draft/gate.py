@@ -104,9 +104,10 @@ def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
 def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,
                 config: ResearchConfig, lookup=None, deps: VerifyDeps | None = None,
                 queue=None, verifier=verify_pair) -> tuple[dict, list[GateResult]]:
-    """Gate every entry that is ready for it — `status: debated`, or `proposed` with no
-    contested triggers. An entry that is still waiting on a debate is not a gate failure; it
-    is simply not ready, and stamping a verdict on it would hide that.
+    """Gate every entry that is ready for it — `status: debated`, `status: waived` (the
+    developer's §7.2 escape hatch still needs a verdict before it can mint), or `proposed`
+    with no contested triggers. An entry that is still waiting on a debate is not a gate
+    failure; it is simply not ready, and stamping a verdict on it would hide that.
 
     Sign-off is checked first, like every other R4 entry point: verification spends
     university-API calls, and spending them against a plan whose sign-off has gone stale is
@@ -122,8 +123,8 @@ def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,
     for name, entry in entries(plan):
         if name not in GATED_LISTS:
             continue
-        ready = entry["status"] == "debated" or (entry["status"] == "proposed"
-                                                 and not entry.get("contested"))
+        ready = entry["status"] in ("debated", "waived") or (
+            entry["status"] == "proposed" and not entry.get("contested"))
         if not ready:
             continue
         minted = render_draft(entry_draft(entry, plan=plan, ctx_run_id=ctx.run_id,

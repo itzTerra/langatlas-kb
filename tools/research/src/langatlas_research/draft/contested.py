@@ -111,11 +111,19 @@ def waive(plan: dict, key: str, reason: str) -> dict:
     """The developer's escape hatch: this carve is contested, and the developer says it does
     not need a debate. Never called by an agent.
 
+    An `escalate` disposition (see `debate.apply_resolution`) is the one case where a debate
+    and a waiver can coexist: `escalate` sets `status: proposed` and leaves `debate_id` set,
+    because the debate could not settle the question and handed it back to the developer. That
+    exact shape — a debate id with `status: proposed` — is otherwise unreachable (every other
+    disposition moves the entry to `debated`, `dropped`, or a fresh `debated` split), so it is
+    safe to read as "the developer is manually ruling on an escalation" and let the waiver
+    through rather than treating it as a second, competing debate.
+
     @raises KeyError: no entry with this key.
-    @raises ValueError: the entry is not contested, or already has a debate."""
+    @raises ValueError: the entry is not contested, or already has a settled debate."""
     _name, entry = find_entry(plan, key)
     if not entry.get("contested"):
         raise ValueError(f"{key} is not contested; there is nothing to waive")
-    if entry.get("debate_id"):
+    if entry.get("debate_id") and entry["status"] != "proposed":
         raise ValueError(f"{key} already has debate {entry['debate_id']}")
     return set_entry(plan, key, status="waived", waiver=reason)

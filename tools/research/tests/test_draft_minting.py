@@ -131,7 +131,11 @@ def test_a_contested_undebated_carve_stops_the_mint(signed_cycle, research_repo)
 
 
 def test_a_waived_carve_does_not_stop_the_mint(signed_cycle, research_repo):
-    carve = _concept(contested=["single-source"], status="verified", waiver="developer call")
+    # `status: waived` — not `verified` — is the state the real `waive()` function
+    # produces; `gate.verify_plan` then re-stamps it `verified` once it clears the D24
+    # gate. A carve `_mintable` sees as still `waived` (verified but not yet re-gated
+    # in this unit test) must still mint as long as it carries a waiver and a verdict.
+    carve = _concept(contested=["single-source"], status="waived", waiver="developer call")
     items = mint_items(_plan(signed_cycle, nodes=[carve]), repo_root=research_repo,
                        ctx_run_id="r", prompt_version="v")
     assert [item.id for item in items] == ["type-system"]

@@ -4,8 +4,10 @@ import pytest
 
 from langatlas_ingest.verify.verdicts import PairVerdict
 from langatlas_research.config import ResearchConfig
+from langatlas_research.draft.contested import waive
+from langatlas_research.draft.finalize import r4_blockers
 from langatlas_research.draft.gate import verify_entry, verify_plan
-from langatlas_research.draft.minting import entry_draft
+from langatlas_research.draft.minting import entry_draft, mint_items
 from langatlas_research.draft.plan import build_plan_record, find_entry
 from langatlas_research.mint import render_draft
 from langatlas_research.paths import research_config_path
@@ -154,3 +156,37 @@ def test_a_refused_entry_keeps_its_verdict_and_is_not_verified(
     entry = find_entry(updated, "static-typing")[1]
     assert entry["status"] == "debated"
     assert entry["verification"]["admissible"] is False
+
+
+def test_a_waived_carve_reaches_the_gate_through_the_real_waive_verify_mint_sequence(
+        fake_ctx, research_repo, signed_cycle, config, deps, fake_lookup):
+    """§7.2's waiver escape hatch (`draft waive`) is only real if a carve it touches can
+    still reach `verify_plan` and then `mint_items`. This drives the actual `waive()`
+    function — not a hand-built `status: verified, waiver: ...` state, which `waive()`
+    itself can never produce (it always sets `status: waived`)."""
+    entry = _node(evidence=[{"source": "scott-plp", "locator": "§7.2",
+                             "chunk_id": "scott-plp#c00310"}],
+                  contested=["single-source"], status="proposed")
+    plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="r", generated_at="t")
+    plan["nodes"] = [entry]
+
+    waived = waive(plan, "static-typing", "Scott is authoritative enough for this carve")
+    assert find_entry(waived, "static-typing")[1]["status"] == "waived"
+
+    updated, results = verify_plan(
+        fake_ctx, None, waived, cycle=signed_cycle, repo_root=research_repo, config=config,
+        lookup=fake_lookup, deps=deps,
+        verifier=_verifier({("scott-plp", "§7.2"): "supported"}))
+
+    verified = find_entry(updated, "static-typing")[1]
+    assert [r.key for r in results] == ["static-typing"]
+    assert verified["verification"]["admissible"] is True
+    assert verified["status"] == "verified"
+
+    items = mint_items(updated, repo_root=research_repo, ctx_run_id="r", prompt_version="v")
+    assert [item.id for item in items] == ["static-typing"]
+
+    # The stale "never reached the verifier" blocker (finding 1's symptom) is gone now
+    # that `verify_plan` actually gates a waived entry.
+    blockers = r4_blockers(signed_cycle, updated, repo_root=research_repo)
+    assert not any("never reached the verifier" in b for b in blockers)
