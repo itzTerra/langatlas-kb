@@ -496,3 +496,31 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
         for minted, outcome in results:
             print(f"{minted.path}: {outcome!r}")
         return 0
+
+
+def _dispatch_instrument(args, root: Path | None) -> int:
+    """D30's two scripts. The cost join is pure log reading; the replay counterfactual runs
+    the verifier again, so it opens a connection and a `RunContext` like any other verified
+    step (D18)."""
+    repo = root or REPO_ROOT
+
+    if args.instrument_command == "cost":
+        from langatlas_research.instrument.costjoin import cost_join, render_cost
+
+        print(render_cost(cost_join(repo, cycle=args.number)), end="")
+        return 0
+
+    from langatlas_ingest.config import IngestConfig
+    from langatlas_ingest.db import connect
+    from langatlas_pipeline.providers.core import RunContext
+
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.instrument.replay import render_replay, replay_counterfactual
+    from langatlas_research.paths import research_config_path
+
+    config = ResearchConfig.load(research_config_path(repo))
+    with connect(IngestConfig.load().dsn) as conn:
+        with RunContext.start(kind="r4-replay", slug=f"cycle-{args.number or 'all'}") as ctx:
+            rows = replay_counterfactual(ctx, conn, repo, cycle=args.number, config=config)
+    print(render_replay(rows), end="")
+    return 0

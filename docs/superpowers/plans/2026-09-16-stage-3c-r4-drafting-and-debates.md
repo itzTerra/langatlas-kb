@@ -5382,7 +5382,7 @@ committed audit trail.
     messages_per_accepted)`; `cost_join(repo_root, *, cycle=None, cost_log=None)
     -> list[DebateCost]`; `render_cost(rows) -> str`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_instrument_replay.py
@@ -5584,7 +5584,7 @@ def test_the_report_renders_a_markdown_table_with_a_total(scenario):
     assert "**total**" in report
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run:
 ```bash
@@ -5593,7 +5593,7 @@ uv --directory tools/research run pytest tests/test_instrument_replay.py \
 ```
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.instrument`.
 
-- [ ] **Step 3: Write the replay counterfactual**
+- [x] **Step 3: Write the replay counterfactual**
 
 ```python
 # tools/research/src/langatlas_research/instrument/replay.py
@@ -5698,7 +5698,7 @@ def render_replay(rows: list[ReplayRow]) -> str:
     return "\n".join(lines) + "\n"
 ```
 
-- [ ] **Step 4: Write the cost join**
+- [x] **Step 4: Write the cost join**
 
 ```python
 # tools/research/src/langatlas_research/instrument/costjoin.py
@@ -5787,7 +5787,7 @@ def render_cost(rows: list[DebateCost]) -> str:
     return "\n".join(lines) + "\n"
 ```
 
-- [ ] **Step 5: Wire the CLI dispatcher**
+- [x] **Step 5: Wire the CLI dispatcher**
 
 ```python
 # tools/research/src/langatlas_research/cli.py  (append)
@@ -5819,7 +5819,7 @@ def _dispatch_instrument(args, root: Path | None) -> int:
     return 0
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run:
 ```bash
@@ -5828,7 +5828,7 @@ uv --directory tools/research run pytest tests/test_instrument_replay.py \
 ```
 Expected: PASS (4 + 6 tests).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
