@@ -3334,7 +3334,7 @@ file (3D's assessor never mints).
     shared-file `MintedRecord` so `land_drafts` can land it in the same batch as the records
     that caused it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_contradictions.py
@@ -3443,12 +3443,12 @@ def test_the_ledger_renders_as_a_landable_shared_file_mint(repo):
     assert minted.text == (repo / "contradictions.yaml").read_text()
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_contradictions.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.contradictions`.
 
-- [ ] **Step 3: Write the module**
+- [x] **Step 3: Write the module**
 
 ```python
 # tools/research/src/langatlas_research/draft/contradictions.py
@@ -3528,12 +3528,12 @@ def contradictions_mint(repo_root: Path | None = None) -> MintedRecord:
                         node_ids=(), base_digest=content_digest(text))
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_contradictions.py -v`
 Expected: PASS (7 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
