@@ -128,3 +128,38 @@ def research_repo(tmp_path):
 def signed_cycle(research_repo):
     cycle = new_cycle(1, "typing", repo_root=research_repo, languages=("python", "haskell"))
     return sign_off(cycle, by="Michal Dolezel", date="2026-09-20", repo_root=research_repo)
+
+
+from langatlas_research.draft.plan import build_plan_record, save_plan
+from langatlas_research.survey.chunks import ChunkRef
+
+
+@pytest.fixture
+def fake_lookup():
+    """A `ChunkLookup` over a handful of fixed chunks, so evidence binding is testable
+    without Postgres. Unknown chunk ids resolve to None, exactly like the real adapter."""
+    chunks = {
+        "pierce-tapl-2002#c00022": ChunkRef(
+            chunk_id="pierce-tapl-2002#c00022", source_id="pierce-tapl-2002",
+            locator="§1.1", breadcrumb="1 Introduction", content_hash="h1",
+            text="A type system is a tractable syntactic method for proving the absence"
+                 " of certain program behaviors."),
+        "scott-plp#c00310": ChunkRef(
+            chunk_id="scott-plp#c00310", source_id="scott-plp", locator="§7.2",
+            breadcrumb="7 Data Types", content_hash="h2",
+            text="Static typing checks types before the program runs."),
+        "kaijanaho-2015#c00071": ChunkRef(
+            chunk_id="kaijanaho-2015#c00071", source_id="kaijanaho-2015",
+            locator="§2.4", breadcrumb="2 Background", content_hash="h3",
+            text="Empirical evidence on typing discipline and defect density is mixed."),
+    }
+    return lambda chunk_id: chunks.get(chunk_id)
+
+
+@pytest.fixture
+def plan_repo(research_repo, signed_cycle):
+    """`research_repo` plus an empty, saved carve plan for the signed cycle."""
+    plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="run-ontologist-1",
+                             generated_at="2026-09-20T10:00:00Z")
+    save_plan(plan, repo_root=research_repo)
+    return research_repo

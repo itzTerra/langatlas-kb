@@ -19,6 +19,11 @@ _READMES = {
     "surveys": "R3 candidate inventories (`<cycle>-<theme>.yaml`), one entry per candidate with\n"
                "1-3 evidence chunk ids and cross-book aliases. Written by the surveyor (Stage 3B);\n"
                "read by the ontologist (Stage 3C). Candidates are leads, never facts.\n",
+    "drafts": "R4 carve plans (`<cycle>-<theme>.yaml`): the nodes, edges and quality edges one\n"
+              "cycle proposes, with their evidence, contested triggers, debate ids, verification\n"
+              "verdicts and mint status. Written by the ontologist and edge drafter (Stage 3C);\n"
+              "read by every later R4 step and by `coverage report.py dossier` (Stage 3F).\n"
+              "A carve plan is a proposal — only `status: minted` entries exist in the store.\n",
     "debates": "R4 debate records (`<debate-id>.yaml`): proposer, two challengers, moderator\n"
                "resolution, typed challenges. Written by the debate machinery (Stage 3C); read by\n"
                "the controversy assessor (Stage 3D) and the D30 instrumentation scripts.\n",
@@ -84,6 +89,10 @@ def ensure_layout(repo_root: Path | None = None) -> list[Path]:
 
 def research_config_path(repo_root: Path | None = None) -> Path:
     return _root(repo_root) / "config" / "research.yaml"
+
+
+def drafts_dir(repo_root: Path | None = None) -> Path:
+    return research_root(repo_root) / "drafts"
 
 
 def private_research_dir() -> Path:

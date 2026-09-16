@@ -1,0 +1,213 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/research-schema/draft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cycle", "theme", "theme_digest", "generated_at", "runs", "survey",
+               "dimensions", "qualities", "nodes", "edges", "quality_edges", "findings"],
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", "maxLength": 48 },
+    "status": { "enum": ["proposed", "waived", "debated", "verified", "minted", "dropped"] },
+    "trigger": { "enum": ["merged-candidates", "split-candidate", "new-dimension",
+                          "new-quality", "single-source", "id-collision",
+                          "ontologist-flagged"] },
+    "evidence": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["source", "locator"],
+        "properties": {
+          "source": { "type": "string" },
+          "locator": { "type": "string" },
+          "quote": { "type": "string" },
+          "chunk_id": { "type": "string" }
+        }
+      }
+    },
+    "verification": {
+      "type": ["object", "null"], "additionalProperties": false,
+      "required": ["fact_id", "verdict", "admissible"],
+      "properties": {
+        "fact_id": { "type": "string" },
+        "verdict": { "type": "string" },
+        "admissible": { "type": "boolean" },
+        "pairs": { "type": "integer", "minimum": 0 },
+        "detail": { "type": "string" },
+        "contradiction_ids": { "type": "array", "items": { "type": "string" } },
+        "run_id": { "type": "string" }
+      }
+    },
+    "tail": {
+      "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+      "waiver": { "type": "string" },
+      "debate_id": { "type": ["string", "null"] },
+      "status": { "$ref": "#/$defs/status" },
+      "verification": { "$ref": "#/$defs/verification" },
+      "note": { "type": "string" },
+      "drop_reason": { "type": "string" }
+    }
+  },
+  "properties": {
+    "cycle": { "type": "integer", "minimum": 1 },
+    "theme": { "$ref": "#/$defs/slug" },
+    "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "generated_at": { "type": "string" },
+    "survey": { "type": "string" },
+    "runs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["ontologist"],
+      "properties": {
+        "ontologist": { "type": "string" },
+        "edge_drafter": { "type": "string" }
+      }
+    },
+    "dimensions": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "slug", "label", "values", "exclusivity", "applies_to",
+                     "contested", "debate_id", "status", "verification", "note"],
+        "properties": {
+          "key": { "$ref": "#/$defs/slug" },
+          "slug": { "$ref": "#/$defs/slug" },
+          "label": { "type": "string", "minLength": 1 },
+          "values": { "type": "array", "minItems": 2,
+                      "items": { "$ref": "#/$defs/slug" } },
+          "exclusivity": { "enum": ["exclusive", "multi"] },
+          "applies_to": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+          "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+          "waiver": { "type": "string" },
+          "debate_id": { "type": ["string", "null"] },
+          "status": { "$ref": "#/$defs/status" },
+          "verification": { "$ref": "#/$defs/verification" },
+          "note": { "type": "string" },
+          "drop_reason": { "type": "string" }
+        }
+      }
+    },
+    "qualities": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "slug", "label", "summary", "contested", "debate_id",
+                     "status", "verification", "note"],
+        "properties": {
+          "key": { "$ref": "#/$defs/slug" },
+          "slug": { "$ref": "#/$defs/slug" },
+          "label": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+          "waiver": { "type": "string" },
+          "debate_id": { "type": ["string", "null"] },
+          "status": { "$ref": "#/$defs/status" },
+          "verification": { "$ref": "#/$defs/verification" },
+          "note": { "type": "string" },
+          "drop_reason": { "type": "string" }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "from_candidates", "kind", "id", "name", "summary",
+                     "evidence", "contested", "debate_id", "status", "verification",
+                     "note"],
+        "properties": {
+          "key": { "$ref": "#/$defs/slug" },
+          "from_candidates": { "type": "array", "items": { "$ref": "#/$defs/slug" } },
+          "kind": { "enum": ["concept", "feature"] },
+          "id": { "$ref": "#/$defs/slug" },
+          "name": { "type": "string", "minLength": 1 },
+          "summary": { "type": "string", "minLength": 1 },
+          "layer": { "enum": [1, 2, 3] },
+          "dimension": { "type": ["string", "null"] },
+          "cross_cutting": { "type": "boolean" },
+          "aliases": { "type": "array", "items": { "type": "string" } },
+          "realizes": { "type": "array", "items": { "$ref": "#/$defs/slug" } },
+          "excluded_rationale": { "type": "string" },
+          "evidence": { "$ref": "#/$defs/evidence" },
+          "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+          "waiver": { "type": "string" },
+          "debate_id": { "type": ["string", "null"] },
+          "status": { "$ref": "#/$defs/status" },
+          "verification": { "$ref": "#/$defs/verification" },
+          "note": { "type": "string" },
+          "drop_reason": { "type": "string" }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "type", "from", "to", "statement", "evidence", "contested",
+                     "debate_id", "status", "verification", "note"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "type": { "enum": ["requires", "enables", "influences", "conflicts-with",
+                             "alternative-to"] },
+          "from": { "$ref": "#/$defs/slug" },
+          "to": { "$ref": "#/$defs/slug" },
+          "polarity": { "enum": ["+", "-", null] },
+          "statement": { "type": "string", "minLength": 1 },
+          "evidence": { "$ref": "#/$defs/evidence" },
+          "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+          "waiver": { "type": "string" },
+          "debate_id": { "type": ["string", "null"] },
+          "status": { "$ref": "#/$defs/status" },
+          "verification": { "$ref": "#/$defs/verification" },
+          "note": { "type": "string" },
+          "drop_reason": { "type": "string" }
+        }
+      }
+    },
+    "quality_edges": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "from", "to", "assessments", "contested", "debate_id",
+                     "status", "verification", "note"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "from": { "$ref": "#/$defs/slug" },
+          "to": { "$ref": "#/$defs/slug" },
+          "assessments": {
+            "type": "array", "minItems": 1,
+            "items": {
+              "type": "object", "additionalProperties": false,
+              "required": ["key", "polarity", "strength", "statement", "evidence"],
+              "properties": {
+                "key": { "$ref": "#/$defs/slug" },
+                "polarity": { "enum": ["improves", "hurts"] },
+                "strength": { "enum": ["weak", "moderate", "strong"] },
+                "statement": { "type": "string", "minLength": 1 },
+                "evidence": { "$ref": "#/$defs/evidence" }
+              }
+            }
+          },
+          "contested": { "type": "array", "items": { "$ref": "#/$defs/trigger" } },
+          "waiver": { "type": "string" },
+          "debate_id": { "type": ["string", "null"] },
+          "status": { "$ref": "#/$defs/status" },
+          "verification": { "$ref": "#/$defs/verification" },
+          "note": { "type": "string" },
+          "drop_reason": { "type": "string" }
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["kind", "detail"],
+        "properties": {
+          "kind": { "enum": ["rule-candidate", "cross-theme-edge", "unmappable-candidate",
+                             "missing-locator-backend"] },
+          "detail": { "type": "string", "minLength": 1 },
+          "keys": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

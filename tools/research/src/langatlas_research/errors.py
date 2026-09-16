@@ -65,3 +65,31 @@ class AmendmentRefused(ResearchError):
 
 class R3Incomplete(ResearchError):
     """`survey finalize` found open work: an unscouted gap or a stale digest."""
+
+
+class DraftMissing(ResearchError):
+    """R4 ran before `draft atomize` wrote a carve plan for this cycle."""
+
+
+class DraftOutputInvalid(ResearchError):
+    """An R4 Claude role returned output its schema or this package's binding rejects."""
+
+
+class UndebatedCarve(ResearchError):
+    """A contested carve reached the mint step without a debate or a developer waiver.
+    D5's rule is that contested carves are debated, not that debates are optional."""
+
+
+class NotAdmissible(ResearchError):
+    """Minting was attempted on an entry the D24 gate did not admit. The gate is the
+    admissibility authority (D1/D4); there is no override."""
+
+
+class DebateIncomplete(ResearchError):
+    """A debate ran out of messages, or the moderator returned no resolution — the record
+    is kept, and nothing it touched is mintable until the developer re-runs it."""
+
+
+class R4Incomplete(ResearchError):
+    """`draft finalize` found open work: an undebated contested carve, an unverified
+    entry, or an entry the gate refused."""

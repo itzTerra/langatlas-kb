@@ -26,3 +26,47 @@ survey:
     max_claude_messages: 160
     max_packet_terms: 40            # unevidenced candidates handed to the scout
     max_candidates: 30              # source proposals accepted from one run
+draft:
+  # R4 (Stage 3C). Every role here is Claude-channel: atomization, edge drafting, debate and
+  # moderation are judgment work, and D6 keeps judgment off the university API.
+  ontologist:
+    model: null
+    max_turns: 80
+    max_claude_messages: 200
+    max_packet_terms: 80            # survey candidates handed to the ontologist at once
+    max_candidates: 60              # nodes accepted from one run
+  edge_drafter:
+    model: null
+    max_turns: 60
+    max_claude_messages: 160
+    max_packet_terms: 120           # committed nodes shown to the edge drafter
+    max_candidates: 60              # edges accepted from one run
+  debate:
+    max_messages: 6                 # §7.2's hard cap on a debate's message list
+    max_debates_per_cycle: 12       # cost bound; a waiver is the developer's, never an agent's
+    personas:
+      # Mild and real (§7.2) — no engineered biases. Configuration, so a theme can field
+      # challengers who know its literature.
+      challenger_a: the type theorist
+      challenger_b: the working language implementer
+    proposer:
+      model: null
+      max_turns: 20
+      max_claude_messages: 40
+      max_packet_terms: 20
+      max_candidates: 1
+    challenger:
+      model: null
+      max_turns: 20
+      max_claude_messages: 40
+      max_packet_terms: 20
+      max_candidates: 3             # challenges raised in one message
+    moderator:
+      model: null
+      max_turns: 20
+      max_claude_messages: 40
+      max_packet_terms: 20
+      max_candidates: 1
+  verification:
+    # Section 6.2's claim-narrowing budget, passed straight to `decide_fact`.
+    bounce_budget: 2

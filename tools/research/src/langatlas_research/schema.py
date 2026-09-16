@@ -13,8 +13,8 @@ from ruamel.yaml import YAML
 
 from langatlas_research.paths import research_root, research_schema_dir
 
-DIR_KINDS = {"cycles": "cycle", "surveys": "survey", "debates": "debate",
-             "reality-checks": "reality-check"}
+DIR_KINDS = {"cycles": "cycle", "surveys": "survey", "drafts": "draft",
+             "debates": "debate", "reality-checks": "reality-check"}
 
 _yaml = YAML(typ="safe")
 
