@@ -283,7 +283,7 @@ def assess_record(ctx, record_path: str, *, repo_root: Path, config, deps) -> Re
   `ControversyInputRefused`, `AssessorOutputInvalid`, `private_controversy_dir`,
   `ControversyConfig`, `ResearchConfig.controversy`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_inputs.py
@@ -357,12 +357,12 @@ def test_digest_is_stable_across_key_order_and_changes_with_content():
     assert len(inputs_digest(a)) == 16
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_inputs.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.controversy'`
 
-- [ ] **Step 3: Add the two errors**
+- [x] **Step 3: Add the two errors**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -380,7 +380,7 @@ class AssessorOutputInvalid(ResearchError):
     repair turn: the fact keeps whatever level it already had and the run says so."""
 ```
 
-- [ ] **Step 4: Write `inputs.py`**
+- [x] **Step 4: Write `inputs.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/inputs.py
@@ -489,12 +489,12 @@ def inputs_digest(inputs: ControversyInputs) -> str:
 
 Create `tools/research/src/langatlas_research/controversy/__init__.py` as an empty file.
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_inputs.py -m '' -v`
 Expected: PASS (7 tests)
 
-- [ ] **Step 6: Add the private-tier path**
+- [x] **Step 6: Add the private-tier path**
 
 Append to `tools/research/src/langatlas_research/paths.py`:
 
@@ -509,7 +509,7 @@ def private_controversy_dir() -> Path:
     return pipeline_paths.PRIVATE_DIR / "research" / "controversy"
 ```
 
-- [ ] **Step 7: Add the config section**
+- [x] **Step 7: Add the config section**
 
 Append to `config/research.yaml`:
 
@@ -554,17 +554,17 @@ and in `ResearchConfig`, add the field `controversy: ControversyConfig` plus, in
                        escalation=ClaudeRoleConfig(**controversy["escalation"])),
 ```
 
-- [ ] **Step 8: Verify the config loads**
+- [x] **Step 8: Verify the config loads**
 
 Run: `uv --directory tools/research run python -c "from langatlas_research.config import ResearchConfig; from langatlas_research.paths import research_config_path; c = ResearchConfig.load(research_config_path()); print(c.controversy)"`
 Expected: `ControversyConfig(alias='thinker', max_facts_per_run=200, spread_min_assessments=2, escalation=ClaudeRoleConfig(model=None, max_turns=20, max_claude_messages=40, max_packet_terms=0, max_candidates=1))`
 
-- [ ] **Step 9: Run the whole research suite**
+- [x] **Step 9: Run the whole research suite**
 
 Run: `uv --directory tools/research run pytest -m '' -q`
 Expected: PASS — the existing suite is untouched; `test_survey_config.py` still loads the config.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/controversy tools/research/src/langatlas_research/errors.py \
