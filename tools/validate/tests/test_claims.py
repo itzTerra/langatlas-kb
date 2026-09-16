@@ -52,3 +52,30 @@ def test_template_pattern_matches_grammar():
 def test_unknown_kind_raises():
     with pytest.raises(ValueError):
         build_claim("nope")
+
+
+from langatlas_validate.claims import FREETEXT_KINDS, build_claim, fact_id
+
+
+def test_node_definition_is_a_freetext_claim_kind():
+    assert "node-definition" in FREETEXT_KINDS
+
+
+def test_node_definition_renders_id_and_a_hash_of_the_summary():
+    claim = build_claim("node-definition", node_id="static-typing",
+                        text="Type checking happens before the program runs.")
+    assert claim.startswith("node-definition(static-typing, sha256-16=")
+    assert claim.endswith(")")
+    assert len(claim.split("sha256-16=")[1].rstrip(")")) == 16
+
+
+def test_node_definition_is_insensitive_to_case_whitespace_and_final_period():
+    a = build_claim("node-definition", node_id="x", text="Type checking  happens early.")
+    b = build_claim("node-definition", node_id="x", text="type checking happens early")
+    assert a == b and fact_id(a) == fact_id(b)
+
+
+def test_a_different_node_with_the_same_summary_is_a_different_fact():
+    text = "Type checking happens before the program runs."
+    assert (build_claim("node-definition", node_id="a", text=text)
+            != build_claim("node-definition", node_id="b", text=text))

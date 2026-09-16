@@ -11,7 +11,7 @@ TEMPLATED_KINDS = (
     "instance-exists", "instance-field", "edge-exists",
     "edge-polarity", "rule-exists", "quality-assessment",
 )
-FREETEXT_KINDS = ("characteristic", "syntax-valid")
+FREETEXT_KINDS = ("characteristic", "syntax-valid", "node-definition")
 
 
 def _sha256_16(text: str) -> str:
@@ -39,6 +39,9 @@ def build_claim(kind: str, **params: str) -> str:
     if kind == "syntax-valid":
         h = _sha256_16(normalize_value(params["code"], freetext=False))
         return f"syntax-valid({params['syntax_id']}, sha256-16={h})"
+    if kind == "node-definition":
+        h = _sha256_16(normalize_value(params["text"], freetext=True))
+        return f"node-definition({params['node_id']}, sha256-16={h})"
     raise ValueError(f"unknown claim kind: {kind!r}")
 
 

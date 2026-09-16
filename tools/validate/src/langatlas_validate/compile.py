@@ -16,7 +16,15 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
                      "record_path": str(record_path), "sources": sources or []})
 
     for path, kind, _text, data in records:
-        if kind == "feature-instance":
+        if kind in ("concept", "feature"):
+            # Stage 3C: the first stage with nodes to verify. A node's `summary` is its
+            # existence/definition fact (§7.4's dossier item), and it is the only field on
+            # these records that carries citations.
+            summary = data.get("summary")
+            if summary:
+                _add(build_claim("node-definition", node_id=data["id"],
+                                 text=summary["text"]), path, summary.get("sources"))
+        elif kind == "feature-instance":
             instance_id = compose_instance_id(data["language"], data["feature"])
             _add(build_claim("instance-exists", instance_id=instance_id, status=data["status"]),
                 path)
@@ -29,9 +37,13 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
                     path, s.get("sources"))
         elif kind == "edge":
             edge_id = data["id"]
-            _add(build_claim("edge-exists", edge_id=edge_id), path)
+            # The edge's own citations, so the pair is verifiable at all — without them
+            # `edge-exists` yields zero (claim, citation) pairs and can never be verified.
+            _add(build_claim("edge-exists", edge_id=edge_id), path,
+                 (data.get("statement") or {}).get("sources"))
             if data.get("type") == "influences" and "polarity" in data:
-                _add(build_claim("edge-polarity", edge_id=edge_id, polarity=data["polarity"]), path)
+                _add(build_claim("edge-polarity", edge_id=edge_id,
+                                 polarity=data["polarity"]), path)
         elif kind == "affects-quality-edge":
             for a in data.get("assessments", []):
                 _add(build_claim("quality-assessment", edge_id=data["id"],

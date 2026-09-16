@@ -61,3 +61,58 @@ def test_compile_bundle_shape(tmp_path):
     bundle = compile_bundle(tmp_path)
     assert bundle["schema_version"] == "0.1.0"
     assert isinstance(bundle["facts"], list) and len(bundle["facts"]) > 0
+
+
+from pathlib import Path
+
+from langatlas_validate.compile import derive_facts
+
+
+def _concept(**over):
+    return {"id": "type-system", "slug": "type-system", "name": "Type system",
+            "summary": {"text": "What types exist and what counts as a type error.",
+                        "sources": [{"source": "pierce-tapl-2002", "locator": "§1.1"}]},
+            "provenance": {}, **over}
+
+
+def _edge(**over):
+    return {"id": "edge.requires.static-typing.type-system", "type": "requires",
+            "from": "static-typing", "to": "type-system",
+            "statement": {"text": "Static typing requires a type system.",
+                          "sources": [{"source": "scott-plp", "locator": "§7.2"}]},
+            "provenance": {}, **over}
+
+
+def test_a_concept_summary_derives_one_node_definition_fact():
+    facts = derive_facts([(Path("concepts/type-system.yaml"), "concept", "", _concept())])
+    assert len(facts) == 1
+    assert facts[0]["claim"].startswith("node-definition(type-system, sha256-16=")
+    assert facts[0]["sources"] == [{"source": "pierce-tapl-2002", "locator": "§1.1"}]
+
+
+def test_a_feature_summary_derives_a_node_definition_fact_too():
+    feature = {**_concept(), "id": "static-typing", "slug": "static-typing", "layer": 3,
+               "dimension": "type-checking-discipline"}
+    facts = derive_facts([(Path("features/static-typing.yaml"), "feature", "", feature)])
+    assert [f["claim"].split("(")[0] for f in facts] == ["node-definition"]
+
+
+def test_a_node_without_a_summary_derives_no_fact():
+    data = {"id": "x", "slug": "x", "name": "X", "provenance": {}}
+    assert derive_facts([(Path("concepts/x.yaml"), "concept", "", data)]) == []
+
+
+def test_edge_exists_carries_the_edges_own_citations():
+    facts = derive_facts([(Path("edges/static-typing/requires--type-system.yaml"),
+                           "edge", "", _edge())])
+    exists = next(f for f in facts if f["claim"].startswith("edge-exists("))
+    assert exists["sources"] == [{"source": "scott-plp", "locator": "§7.2"}]
+
+
+def test_edge_polarity_still_derives_without_its_own_citations():
+    influences = _edge(id="edge.influences.static-typing.type-system", type="influences",
+                       polarity="+")
+    kinds = [f["claim"].split("(")[0] for f in
+             derive_facts([(Path("edges/static-typing/influences--type-system.yaml"),
+                            "edge", "", influences)])]
+    assert kinds == ["edge-exists", "edge-polarity"]
