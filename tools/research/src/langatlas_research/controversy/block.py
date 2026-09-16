@@ -33,14 +33,16 @@ def merge_block(data: dict, assessments: dict, *, date: str) -> dict:
         if assessment.level == 0:
             entries.pop(key, None)
             continue
+        assessed = {"date": date, "model": assessment.model,
+                    "prompt": assessment.prompt, "run_id": assessment.run_id}
+        if assessment.escalated_to is not None:
+            assessed["escalated_to"] = assessment.escalated_to
         entries[key] = {
             "key": key,
             "fact_id": assessment.fact_id,
             "level": int(assessment.level),
             "signals": list(assessment.signals),
-            "assessed": {"date": date, "model": assessment.model,
-                         "prompt": assessment.prompt, "run_id": assessment.run_id,
-                         "escalated_to": assessment.escalated_to},
+            "assessed": assessed,
         }
     merged = {k: v for k, v in data.items() if k != "controversy"}
     if entries:
