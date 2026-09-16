@@ -610,7 +610,7 @@ This is what makes 2B's `c-bootstrap-0006` legible to a real fact: a `partial` o
 row is a live dispute (level 2) — §6.4's "partials on load-bearing fields" distinction,
 mechanically derived rather than judged.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_assemble.py
@@ -753,12 +753,12 @@ def test_assembly_never_produces_a_forbidden_key():
                                      "source_strength", "assessment_spread"}
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_assemble.py -m '' -v`
 Expected: FAIL — `ImportError: cannot import name 'assemble_inputs'`
 
-- [ ] **Step 3: Write `assemble.py`**
+- [x] **Step 3: Write `assemble.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/assemble.py
@@ -948,12 +948,12 @@ def record_facts(path: Path, kind: str, text: str, data: dict) -> list[dict]:
     return derive_facts([(path, kind, text, data)])
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_assemble.py -m '' -v`
 Expected: PASS (10 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/controversy/assemble.py \
