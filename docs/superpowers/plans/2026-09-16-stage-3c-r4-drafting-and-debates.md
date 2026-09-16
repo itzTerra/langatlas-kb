@@ -2170,7 +2170,7 @@ and the three outcome values are fixed with it. This task builds the record and 
   - `as_controversy_input(debate) -> dict` — `{id, outcome, standing_dissent, rounds}`.
   - `debate_signals(debate) -> list[str]` — `["debate:<id>:<outcome|standing-dissent>"]`.
 
-- [ ] **Step 1: Write `research/schema/debate.schema.json`**
+- [x] **Step 1: Write `research/schema/debate.schema.json`**
 
 ```json
 {
@@ -2282,7 +2282,7 @@ and the three outcome values are fixed with it. This task builds the record and 
 }
 ```
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_debate_record.py
@@ -2393,12 +2393,12 @@ def test_standing_dissent_outranks_the_outcome_in_the_signal():
     assert debate_signals(record) == ["debate:d-01-typing-001:standing-dissent"]
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_debate_record.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.debate_record`.
 
-- [ ] **Step 4: Write the module**
+- [x] **Step 4: Write the module**
 
 ```python
 # tools/research/src/langatlas_research/draft/debate_record.py
@@ -2517,12 +2517,12 @@ def debate_signals(debate: dict) -> list[str]:
     return [f"debate:{debate['id']}:{resolution['outcome']}"]
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_debate_record.py -v`
 Expected: PASS (10 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
