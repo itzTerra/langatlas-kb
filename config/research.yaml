@@ -70,3 +70,18 @@ draft:
   verification:
     # Section 6.2's claim-narrowing budget, passed straight to `decide_fact`.
     bounce_budget: 2
+controversy:
+  # D21/D25 (Stage 3D). The volume lane is the university API's thinker; Claude is only the
+  # escalation target and the golden-set calibrator (§6.4/§7.1).
+  alias: thinker                    # deepseek-v4-pro-thinking, per config/providers.yaml
+  # A record's facts are assessed together and landed in one commit, so this bounds how much
+  # of the store one nightly invocation walks. D25's nightly budget is ~200 facts.
+  max_facts_per_run: 200
+  # Assessment spread only counts as a signal once there is something to disagree about.
+  spread_min_assessments: 2
+  escalation:
+    model: null
+    max_turns: 20
+    max_claude_messages: 40
+    max_packet_terms: 0             # the escalation packet is structured inputs, not terms
+    max_candidates: 1
