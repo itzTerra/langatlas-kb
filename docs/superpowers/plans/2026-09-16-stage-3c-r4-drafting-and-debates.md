@@ -3886,7 +3886,7 @@ git commit -m "feat(#stage-3c): gate every R4 record on the D24 verifier before 
   - `mint_plan(plan, *, repo_root, cycle, chat_run_id, prompt_version, status_checker=None,
     lander=land_drafts) -> tuple[dict, list]`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_minting.py
@@ -4066,12 +4066,12 @@ def test_an_unlanded_entry_keeps_its_previous_status(signed_cycle, research_repo
     assert find_entry(updated, "type-system")[1]["status"] == "verified"
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_minting.py -v`
 Expected: FAIL — `ImportError: cannot import name 'entry_draft'`.
 
-- [ ] **Step 3: Write the module**
+- [x] **Step 3: Write the module**
 
 Replace the stub created in Task 4 with:
 
@@ -4260,7 +4260,7 @@ def mint_plan(plan: dict, *, repo_root: Path, cycle, chat_run_id: str, prompt_ve
     return updated, results
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run:
 ```bash
@@ -4268,7 +4268,7 @@ uv --directory tools/research run pytest tests/test_draft_minting.py tests/test_
 ```
 Expected: PASS (13 + 6 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \

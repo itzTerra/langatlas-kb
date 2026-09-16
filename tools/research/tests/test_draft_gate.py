@@ -10,9 +10,10 @@ from langatlas_research.draft.plan import build_plan_record, find_entry
 from langatlas_research.mint import render_draft
 from langatlas_research.paths import research_config_path
 
-SOURCE_FACTS = {"scott-plp": type("S", (), {"tier": "A", "grounding": "third-party-reference",
+SOURCE_FACTS = {"scott-plp": type("S", (), {"id": "scott-plp", "tier": "A",
+                                            "grounding": "third-party-reference",
                                             "locator_kinds": (), "csl": {}})(),
-                "pierce-tapl-2002": type("S", (), {"tier": "B",
+                "pierce-tapl-2002": type("S", (), {"id": "pierce-tapl-2002", "tier": "B",
                                                    "grounding": "third-party-reference",
                                                    "locator_kinds": (), "csl": {}})()}
 
@@ -108,7 +109,8 @@ def test_an_edge_is_gated_on_its_statements_own_citations(fake_ctx, research_rep
 def test_verify_plan_stamps_every_debated_entry_and_leaves_the_rest_alone(
         fake_ctx, research_repo, signed_cycle, config, deps, fake_lookup):
     plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="r", generated_at="t")
-    plan["nodes"] = [_node(), _node(key="other", id="other", status="proposed")]
+    plan["nodes"] = [_node(), _node(key="other", id="other", status="proposed",
+                                    contested=["single-source"])]
 
     updated, results = verify_plan(
         fake_ctx, None, plan, repo_root=research_repo, config=config, lookup=fake_lookup,

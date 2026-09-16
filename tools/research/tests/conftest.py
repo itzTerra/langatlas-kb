@@ -121,6 +121,9 @@ def research_repo(tmp_path):
     (repo / "config").mkdir()
     (repo / "config" / "research.yaml").write_text(
         (REPO_ROOT / "config" / "research.yaml").read_text())
+    (repo / "ontology" / "taxonomy").mkdir(parents=True)
+    for rel in ("ontology/taxonomy/dimensions.yaml", "ontology/taxonomy/qualities.yaml"):
+        (repo / rel).write_text((REPO_ROOT / rel).read_text())
     return repo
 
 
