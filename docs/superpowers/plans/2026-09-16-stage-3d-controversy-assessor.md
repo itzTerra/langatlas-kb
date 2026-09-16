@@ -1168,7 +1168,7 @@ survives a claim edit that changes the `fact_id`. There is **no free-prose field
 block** — §6.4 is explicit that the `signals` list *is* the justification — and there is **no
 level-0 entry**, because an absent entry already means level 0.
 
-- [ ] **Step 1: Write the failing validator tests**
+- [x] **Step 1: Write the failing validator tests**
 
 ```python
 # tools/validate/tests/test_controversy_block.py
@@ -1249,12 +1249,12 @@ def test_a_real_edit_alongside_a_block_is_still_classified():
     assert classify_change(before, after) == "restructuring"
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_controversy_block.py -v`
 Expected: FAIL — `ImportError: cannot import name 'validate_controversy_blocks'`
 
-- [ ] **Step 3: Add the `controversyBlock` `$def`**
+- [x] **Step 3: Add the `controversyBlock` `$def`**
 
 In `ontology/schema/defs.schema.json`, add to `$defs`:
 
@@ -1294,7 +1294,7 @@ In `ontology/schema/defs.schema.json`, add to `$defs`:
 Note `"level": { "enum": [1, 2, 3] }` — the schema itself refuses a stored level 0, and the
 store-gate check in step 5 gives the developer the readable message.
 
-- [ ] **Step 4: Add `controversy` to the six record schemas**
+- [x] **Step 4: Add `controversy` to the six record schemas**
 
 In each of `concept`, `feature`, `edge`, `affects-quality-edge`, `rule` and `feature-instance`,
 add as the **last** entry of `properties` (order matters — `normalize_record` orders record keys
@@ -1304,7 +1304,7 @@ by schema property order, so the block lands at the tail of every file):
     "controversy": { "$ref": "defs.schema.json#/$defs/controversyBlock" }
 ```
 
-- [ ] **Step 5: Add the store-gate check**
+- [x] **Step 5: Add the store-gate check**
 
 In `tools/validate/src/langatlas_validate/store.py`:
 
@@ -1364,7 +1364,7 @@ and call it from `validate_store`, gathering the derived facts once:
 (Replace the existing `for path, kind, text, data in iter_store_records(repo_root):` loop header
 with `for path, kind, text, data in store_records:` so the store is walked once.)
 
-- [ ] **Step 6: Exempt machine fields from the version classifier**
+- [x] **Step 6: Exempt machine fields from the version classifier**
 
 In `tools/validate/src/langatlas_validate/version.py`:
 
@@ -1390,12 +1390,12 @@ def _diff_class(before: dict, after: dict) -> str:
     ...
 ```
 
-- [ ] **Step 7: Run the validator tests**
+- [x] **Step 7: Run the validator tests**
 
 Run: `uv --directory tools/validate run pytest tests/test_controversy_block.py tests/test_version.py tests/test_store.py -v`
 Expected: PASS — including the two `classify_change` tests and the existing version suite.
 
-- [ ] **Step 8: Write the failing block-writer tests**
+- [x] **Step 8: Write the failing block-writer tests**
 
 ```python
 # tools/research/tests/test_controversy_block.py
@@ -1469,12 +1469,12 @@ def test_the_mint_renders_normalized_yaml_with_the_block_at_the_tail(tmp_path):
     assert list(_yaml.load(minted.text)) [-1] == "controversy"
 ```
 
-- [ ] **Step 9: Run them to verify they fail**
+- [x] **Step 9: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_block.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.controversy.block`
 
-- [ ] **Step 10: Write `block.py`**
+- [x] **Step 10: Write `block.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/block.py
@@ -1546,19 +1546,19 @@ def unchanged(minted: MintedRecord, base_text: str) -> bool:
     return minted.text == base_text
 ```
 
-- [ ] **Step 11: Run the block tests**
+- [x] **Step 11: Run the block tests**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_block.py -m '' -v`
 Expected: PASS (5 tests) — note this needs `Assessment` from Task 5; if executing tasks strictly
 in order, land Task 5's `assessor.py` dataclass first and re-run. (Task 5 is written to define
 `Assessment` before its own first test.)
 
-- [ ] **Step 12: Run the full store gate against the real repo**
+- [x] **Step 12: Run the full store gate against the real repo**
 
 Run: `uv --directory tools/validate run langatlas-validate ci`
 Expected: exit 0 — no record carries a block yet, so the new check is a no-op on today's store.
 
-- [ ] **Step 13: Commit**
+- [x] **Step 13: Commit**
 
 ```bash
 git add ontology/schema tools/validate/src/langatlas_validate/store.py \

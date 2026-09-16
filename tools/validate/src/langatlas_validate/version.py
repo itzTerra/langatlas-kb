@@ -23,6 +23,15 @@ _COSMETIC_SUBFIELDS = {("summary", "text"), ("statement", "text")}
 _STRUCTURAL_FIELDS = {"id", "layer", "dimension", "type", "from", "to", "when_all",
                       "language", "feature", "effect", "polarity"}
 
+# Machine-written annotations. They are measurements about the corpus, not ontology content, so
+# an edit that only touches one is not a version event at all — otherwise the nightly
+# controversy batch would bump MINOR every time it found its first contested fact.
+_MACHINE_FIELDS = {"controversy"}
+
+
+def _without_machine_fields(record: dict) -> dict:
+    return {k: v for k, v in record.items() if k not in _MACHINE_FIELDS}
+
 STORE_DIRS = ("concepts", "features", "edges", "rules", "languages", "sources")
 
 
@@ -72,6 +81,7 @@ def snapshot_at(repo_root: Path, ref: str) -> dict[str, dict]:
 
 def _diff_class(before: dict, after: dict) -> str:
     """The strongest class of change between two versions of one record."""
+    before, after = _without_machine_fields(before), _without_machine_fields(after)
     if before == after:
         return "none"
     for field in _STRUCTURAL_FIELDS:
