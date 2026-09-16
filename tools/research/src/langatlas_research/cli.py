@@ -95,6 +95,18 @@ def main(argv: list[str] | None = None) -> int:
         p_instrument.add_parser(name, help=help_text).add_argument(
             "number", type=int, nargs="?", help="cycle number; omit for every cycle")
 
+    p_contro = sub.add_parser("controversy").add_subparsers(dest="controversy_command",
+                                                            required=True)
+    p_assess = p_contro.add_parser("assess", help="assess controversy levels (D21/D25)")
+    p_assess.add_argument("records", nargs="*",
+                          help="record paths; default: every record in the store")
+    p_assess.add_argument("--limit", type=int, default=None,
+                          help="stop after this many facts (default: config's max_facts_per_run)")
+    p_assess.add_argument("--no-escalate", action="store_true",
+                          help="skip the Claude review; level-3 and ambiguous facts are"
+                               " assessed by the thinker alone and reported, not landed")
+    p_contro.add_parser("status", help="levels recorded by the last assessment runs")
+
     args = parser.parse_args(argv)
     root = args.repo_root
     try:
@@ -132,6 +144,9 @@ def _dispatch(args, root: Path | None) -> int:
 
     if args.command == "instrument":
         return _dispatch_instrument(args, root)      # Task 13 writes this
+
+    if args.command == "controversy":
+        return _dispatch_controversy(args, root)
 
     if args.cycle_command == "new":
         cycle = new_cycle(args.number, args.theme, repo_root=root,
@@ -528,4 +543,73 @@ def _dispatch_instrument(args, root: Path | None) -> int:
         with RunContext.start(kind="r4-replay", slug=f"cycle-{args.number or 'all'}") as ctx:
             rows = replay_counterfactual(ctx, conn, repo, cycle=args.number, config=config)
     print(render_replay(rows), end="")
+    return 0
+
+
+def _dispatch_controversy(args, root: Path | None) -> int:
+    """D21/D25's assessor. Sources, contradictions and debates are read once for the whole
+    run; the verdict ledger and the assessment ledger are opened once each."""
+    from langatlas_ingest.verify.ledger import VerdictLedger
+    from langatlas_pipeline.providers.core import RunContext
+
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.controversy.assemble import load_deps
+    from langatlas_research.controversy.assessor import assess_inputs
+    from langatlas_research.controversy.escalate import capture_candidate, escalate
+    from langatlas_research.controversy.ledger import AssessmentLedger
+    from langatlas_research.controversy.run import Deps, assess_record, default_land, store_record_paths
+    from langatlas_research.paths import research_config_path
+
+    repo = root or REPO_ROOT
+    config = ResearchConfig.load(research_config_path(repo)).controversy
+
+    if args.controversy_command == "status":
+        with AssessmentLedger() as ledger:
+            levels = ledger.levels()
+        counts = {level: sum(1 for v in levels.values() if v == level) for level in (0, 1, 2, 3)}
+        print(f"{len(levels)} assessed fact(s): "
+              + ", ".join(f"level {k}: {v}" for k, v in counts.items()))
+        return 0
+
+    today = _dt.date.today().isoformat()
+    paths = list(args.records) or store_record_paths(repo)
+    budget = args.limit if args.limit is not None else config.max_facts_per_run
+    totals = {"assessed": 0, "skipped": 0, "escalated": 0, "changed": 0}
+
+    with VerdictLedger() as verdicts, AssessmentLedger() as ledger, \
+            RunContext.start(kind="controversy", slug=today) as ctx:
+        shared = load_deps(repo, verdicts)
+
+        def _escalate(assessment, inputs):
+            # Its own RunContext (D18): the review is a different conversation with a
+            # different model, and a shared transcript would make the volume pass unreadable.
+            with RunContext.start(kind="controversy-escalation",
+                                  slug=assessment.fact_id) as review_ctx:
+                final = escalate(review_ctx, assessment, inputs,
+                                 role_config=config.escalation)
+            capture_candidate(assessment, final, inputs, repo_root=repo, today=today)
+            return final
+
+        deps = Deps(assess=assess_inputs,
+                    escalate=None if args.no_escalate else _escalate,
+                    ledger=ledger, land=default_land(repo, ctx.run_id), alias=config.alias,
+                    today=today, source_facts=shared.source_facts,
+                    contradictions=shared.contradictions, debates=shared.debates,
+                    verdict_ledger=verdicts,
+                    spread_min_assessments=config.spread_min_assessments)
+        for record_path in paths:
+            if totals["assessed"] >= budget:
+                print(f"budget reached ({budget} facts); re-run to continue")
+                break
+            outcome = assess_record(ctx, record_path, repo_root=repo, deps=deps)
+            totals["assessed"] += outcome.assessed
+            totals["skipped"] += outcome.skipped
+            totals["escalated"] += outcome.escalated
+            totals["changed"] += int(outcome.changed)
+            if outcome.assessed or outcome.changed:
+                print(f"{record_path}: assessed {outcome.assessed}, skipped {outcome.skipped},"
+                      f" escalated {outcome.escalated},"
+                      f" {'landed' if outcome.changed else 'unchanged'}")
+    print(f"total: {totals['assessed']} assessed, {totals['skipped']} unchanged,"
+          f" {totals['escalated']} escalated, {totals['changed']} record(s) landed")
     return 0

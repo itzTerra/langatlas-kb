@@ -2205,7 +2205,7 @@ an anchor, so `anchor_key(fact)` recovers the suffix from the claim kind and its
 §3.2's anchor suffixes exactly, so the block's `key` is the same string the site's `data-fact-id`
 pair will carry.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_run.py
@@ -2324,12 +2324,12 @@ def test_a_level_3_assessment_is_escalated(feature_repo, fake_ctx, monkeypatch):
     assert set(outcome.levels.values()) == {2}
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_run.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.controversy.run`
 
-- [ ] **Step 3: Write `run.py`**
+- [x] **Step 3: Write `run.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/run.py
@@ -2492,12 +2492,12 @@ def default_land(repo_root: Path, chat_run_id: str):
     return _land
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_run.py -m '' -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 5: Wire the CLI**
+- [x] **Step 5: Wire the CLI**
 
 In `tools/research/src/langatlas_research/cli.py`, register the subcommand in `main`:
 
@@ -2590,7 +2590,7 @@ def _dispatch_controversy(args, root: Path | None) -> int:
 and dispatch it alongside the existing commands (`if args.command == "controversy": return
 _dispatch_controversy(args, args.repo_root)`).
 
-- [ ] **Step 6: Check the CLI parses**
+- [x] **Step 6: Check the CLI parses**
 
 Run: `uv --directory tools/research run langatlas-research controversy --help`
 Expected: usage text listing `assess` and `status`.
@@ -2598,7 +2598,7 @@ Expected: usage text listing `assess` and `status`.
 Run: `uv --directory tools/research run langatlas-research controversy status`
 Expected: `0 assessed fact(s): level 0: 0, level 1: 0, level 2: 0, level 3: 0`
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/controversy/run.py \
