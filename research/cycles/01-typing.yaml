@@ -1,0 +1,17 @@
+cycle: 1
+theme: typing
+theme_digest: a04b8d252d28be19
+status: r3-done
+languages:
+  - c
+  - java
+  - python
+  - haskell
+  - erlang
+nodes_minted: []
+artifacts:
+  survey: research/surveys/01-typing.yaml
+signed_off:
+  by: Michal Doležel
+  date: '2026-09-15'
+  theme_digest: a04b8d252d28be19
