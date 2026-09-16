@@ -438,7 +438,7 @@ git commit -m "feat(#stage-3c): make a node's summary and an edge's statement ve
   - Errors: `DraftMissing`, `DraftOutputInvalid`, `UndebatedCarve`, `NotAdmissible`,
     `DebateIncomplete`, `R4Incomplete`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_plan.py
@@ -527,12 +527,12 @@ def test_the_draft_config_section_loads(research_repo):
     assert config.draft.ontologist.max_candidates > 0
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_plan.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft`.
 
-- [ ] **Step 3: Add the `draft:` section to `config/research.yaml`**
+- [x] **Step 3: Add the `draft:` section to `config/research.yaml`**
 
 Append to `config/research.yaml`:
 
@@ -583,7 +583,7 @@ draft:
     bounce_budget: 2
 ```
 
-- [ ] **Step 4: Extend the config loader**
+- [x] **Step 4: Extend the config loader**
 
 ```python
 # tools/research/src/langatlas_research/config.py — add above ResearchConfig
@@ -639,7 +639,7 @@ class ResearchConfig:
                        bounce_budget=draft["verification"]["bounce_budget"]))
 ```
 
-- [ ] **Step 5: Add 3C's typed errors**
+- [x] **Step 5: Add 3C's typed errors**
 
 ```python
 # tools/research/src/langatlas_research/errors.py  (append)
@@ -671,7 +671,7 @@ class R4Incomplete(ResearchError):
     entry, or an entry the gate refused."""
 ```
 
-- [ ] **Step 6: Add the drafts directory and its schema hook**
+- [x] **Step 6: Add the drafts directory and its schema hook**
 
 ```python
 # tools/research/src/langatlas_research/paths.py — inside _READMES
@@ -694,7 +694,7 @@ DIR_KINDS = {"cycles": "cycle", "surveys": "survey", "drafts": "draft",
              "debates": "debate", "reality-checks": "reality-check"}
 ```
 
-- [ ] **Step 7: Write `research/schema/draft.schema.json`**
+- [x] **Step 7: Write `research/schema/draft.schema.json`**
 
 ```json
 {
@@ -912,7 +912,7 @@ DIR_KINDS = {"cycles": "cycle", "surveys": "survey", "drafts": "draft",
 }
 ```
 
-- [ ] **Step 8: Write the plan module**
+- [x] **Step 8: Write the plan module**
 
 ```python
 # tools/research/src/langatlas_research/draft/plan.py
@@ -1022,7 +1022,7 @@ def set_entry(plan: dict, key: str, **fields) -> dict:
     return updated
 ```
 
-- [ ] **Step 9: Extend the test fixtures**
+- [x] **Step 9: Extend the test fixtures**
 
 ```python
 # tools/research/tests/conftest.py  (append)
@@ -1061,12 +1061,12 @@ def plan_repo(research_repo, signed_cycle):
     return research_repo
 ```
 
-- [ ] **Step 10: Run the tests to verify they pass**
+- [x] **Step 10: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_plan.py -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 11: Create the real `research/drafts/` directory**
+- [x] **Step 11: Create the real `research/drafts/` directory**
 
 Run: `uv --directory tools/research run langatlas-research init`
 Expected: prints `created …/research/drafts` and `…/research/drafts/README.md`.
@@ -1074,7 +1074,7 @@ Expected: prints `created …/research/drafts` and `…/research/drafts/README.m
 Run: `uv --directory tools/research run langatlas-research validate`
 Expected: `0 error(s)` — an empty `drafts/` holds no files, so `validate_research_tree` skips it.
 
-- [ ] **Step 12: Commit**
+- [x] **Step 12: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
