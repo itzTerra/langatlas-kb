@@ -1897,7 +1897,7 @@ git commit -m "feat(#stage-3d): score a fact's structured inputs against the D21
 - Produces: `ESCALATION_PROMPT_ID`, `EscalationOut`, `escalate`, `capture_candidate`,
   `candidates_path`.
 
-- [ ] **Step 1: Mint the escalation prompt**
+- [x] **Step 1: Mint the escalation prompt**
 
 ```bash
 uv --directory tools/pipeline run python - <<'PY'
@@ -1952,7 +1952,7 @@ print(ref.ref())
 PY
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_escalate.py
@@ -2029,12 +2029,12 @@ def test_capturing_twice_in_a_month_appends_rather_than_overwrites(tmp_path):
     assert len(_yaml.load(path.read_text())["cases"]) == 2
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_escalate.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.controversy.escalate`
 
-- [ ] **Step 4: Write `escalate.py`**
+- [x] **Step 4: Write `escalate.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/escalate.py
@@ -2141,7 +2141,7 @@ def capture_candidate(proposed: Assessment, final: Assessment, inputs: Controver
     return path
 ```
 
-- [ ] **Step 5: Write the candidates README**
+- [x] **Step 5: Write the candidates README**
 
 `tests/golden/controversy/candidates/README.md`:
 
@@ -2162,17 +2162,17 @@ label, set `curated: true`, give it a stable id (`c-escalated-NNNN`), and move i
 is ~50.
 ```
 
-- [ ] **Step 6: Run the tests**
+- [x] **Step 6: Run the tests**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_escalate.py -m '' -v`
 Expected: PASS (5 tests)
 
-- [ ] **Step 7: Confirm the candidates directory is invisible to the loader**
+- [x] **Step 7: Confirm the candidates directory is invisible to the loader**
 
 Run: `uv --directory tools/ingest run langatlas-sources golden-validate`
 Expected: exit 0 — the README and any candidate file are not picked up.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add prompts/controversy-escalation tools/research/src/langatlas_research/controversy/escalate.py \
