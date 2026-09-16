@@ -1,0 +1,942 @@
+cycle: 1
+theme: typing
+theme_digest: a04b8d252d28be19
+generated_at: '2026-09-16T02:00:34Z'
+runs:
+  surveyor: 2026-09-16-r3-survey-01-typing-01
+  scout: 2026-09-16-r3-scout-01-typing-01
+tagging:
+  prompt: r3-tagger@v-f1961f62
+  models:
+    - deepseek
+  chunks_tagged: 292
+  chunks_relevant: 221
+pool:
+  digest: 818fc784c6463e67
+  chunk_count: 292
+  queries:
+    - Typing
+    - Type systems, checking discipline, inference, polymorphism and the design choices that 
+      distinguish them.
+    - type system
+    - static typing
+    - dynamic typing
+    - type inference
+    - generics
+    - subtyping
+    - algebraic data types
+checklist:
+  mirror_versions:
+    pldb: 00522ea57a40a0bca9f56b424556af6734634831
+    hyperpolyglot: 83a34e1ec620
+  gap_terms:
+    - algebraic data types
+    - dynamic typing
+    - generics
+    - static typing
+    - subtyping
+    - type inference
+    - type system
+candidates:
+  - key: type-system
+    name: Type System
+    gloss: The part of a language defining what types exist, what counts as a type error, and what 
+      type checking is mandatory.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: kaijanaho-2015#c00071
+        source_id: kaijanaho-2015
+        locator: §2.4
+      - chunk_id: cardelli-wegner-1985#c00046
+        source_id: cardelli-wegner-1985
+        locator: §2
+      - chunk_id: pierce-tapl-2002#c00022
+        source_id: pierce-tapl-2002
+        locator: §1.1
+    aliases:
+      - label: type systems
+        chunk_id: turbak-gifford-dcpl#c00965
+  - key: static-typing
+    name: Static Typing
+    gloss: A discipline where types and type errors are determined and checked before the program 
+      runs, typically at compile time.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00009
+        source_id: cardelli-wegner-1985
+        locator: §1
+      - chunk_id: kaijanaho-2015#c00071
+        source_id: kaijanaho-2015
+        locator: §2.4
+      - chunk_id: harper-pfpl#c00355
+        source_id: harper-pfpl
+        locator: §23.3
+    aliases:
+      - label: statically typed
+        chunk_id: pierce-attapl-2004#c00469
+      - label: static type system
+        chunk_id: kaijanaho-2015#c00071
+  - key: dynamic-typing
+    name: Dynamic Typing
+    gloss: A discipline where types are runtime notions and type errors are checked only when an 
+      operation is actually about to occur.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00355
+        source_id: harper-pfpl
+        locator: §23.3
+      - chunk_id: kaijanaho-2015#c00071
+        source_id: kaijanaho-2015
+        locator: §2.4
+      - chunk_id: turbak-gifford-dcpl#c00958
+        source_id: turbak-gifford-dcpl
+        locator: §11.3.1
+    aliases:
+      - label: dynamically typed
+        chunk_id: scott-plp#c00398
+      - label: dynamic type system
+        chunk_id: kaijanaho-2015#c00071
+  - key: type-checking
+    name: Type Checking
+    gloss: Language-mandated checking that operations are applied only to values for which they are 
+      meaningful, whether statically or dynamically.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: kaijanaho-2015#c00071
+        source_id: kaijanaho-2015
+        locator: §2.4
+      - chunk_id: sebesta-copl#c00456
+        source_id: sebesta-copl
+        locator: §6.1
+      - chunk_id: turbak-gifford-dcpl#c00958
+        source_id: turbak-gifford-dcpl
+        locator: §11.3.1
+    aliases: []
+  - key: type-error
+    name: Type Error
+    gloss: A violation of an interface where an operation is applied to a value for which it is not 
+      meaningful or allowed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: kaijanaho-2015#c00071
+        source_id: kaijanaho-2015
+        locator: §2.4
+      - chunk_id: cardelli-wegner-1985#c00009
+        source_id: cardelli-wegner-1985
+        locator: §1
+    aliases: []
+  - key: type-inference
+    name: Type Inference
+    gloss: Automatically determining the type of an expression from context, without requiring the 
+      programmer to write explicit type annotations.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00022
+        source_id: pierce-tapl-2002
+        locator: §1.1
+      - chunk_id: cardelli-wegner-1985#c00094
+        source_id: cardelli-wegner-1985
+        locator: pp. 33–34
+      - chunk_id: rust-fls#c00084
+        source_id: rust-fls
+        locator: § 4.12.7. Type Inference¶
+    aliases:
+      - label: type reconstruction
+        chunk_id: pierce-tapl-2002#c00022
+  - key: unification-based-inference
+    name: Unification-Based Type Inference
+    gloss: An inference algorithm, exemplified by Hindley-Milner and Algorithm W, that solves type 
+      equations by unifying type variables with constraints.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00022
+        source_id: pierce-tapl-2002
+        locator: §1.1
+      - chunk_id: rust-fls#c00074
+        source_id: rust-fls
+        locator: § 4.12.2. Type Unification¶
+      - chunk_id: haskell-2010-report#c00097
+        source_id: haskell-2010-report
+        locator: §4.2.1
+    aliases:
+      - label: algorithm W
+        chunk_id: pierce-tapl-2002#c00022
+      - label: Hindley-Milner
+        chunk_id: haskell-2010-report#c00097
+      - label: type unification
+        chunk_id: rust-fls#c00074
+  - key: principal-type
+    name: Principal Type
+    gloss: The most general type an inference algorithm can assign to a term, from which every other
+      valid typing can be obtained by substitution.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00022
+        source_id: pierce-tapl-2002
+        locator: §1.1
+    aliases: []
+  - key: subtyping
+    name: Subtyping
+    gloss: A relation where one type can safely be used wherever another was expected, letting 
+      values of the subtype substitute for the supertype.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00238
+        source_id: krishnamurthi-plai
+        locator: p. 172
+      - chunk_id: pierce-tapl-2002#c00983
+        source_id: pierce-tapl-2002
+        locator: §31.1
+      - chunk_id: harper-pfpl#c00375
+        source_id: harper-pfpl
+        locator: p. 245
+    aliases:
+      - label: subtype relation
+        chunk_id: pierce-tapl-2002#c00386
+  - key: structural-vs-nominal-typing
+    name: Structural vs. Nominal Typing
+    gloss: 'A design axis for subtyping/type equivalence: structural systems compare type shape while
+      nominal systems require explicit name-based declarations.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+      - chunk_id: krishnamurthi-plai#c00238
+        source_id: krishnamurthi-plai
+        locator: p. 172
+      - chunk_id: pierce-attapl-2004#c00590
+        source_id: pierce-attapl-2004
+        locator: §10.1
+    aliases:
+      - label: structural subtyping
+        chunk_id: harper-pfpl#c00375
+      - label: nominal type systems
+        chunk_id: pierce-tapl-2002#c00910
+  - key: duck-typing
+    name: Duck Typing
+    gloss: An informal, colloquial name for runtime structural checking of an object's available 
+      operations, loosely tied to but not formally equivalent to structural typing theory.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00238
+        source_id: krishnamurthi-plai
+        locator: p. 172
+    aliases: []
+  - key: variance
+    name: Variance
+    gloss: "How the subtyping of a generic type's argument affects the subtyping of the whole generic
+      type: covariant, contravariant, or invariant."
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00384
+        source_id: harper-pfpl
+        locator: §25.3
+      - chunk_id: rust-reference#c00595
+        source_id: rust-reference
+        locator: pp. 455–456
+      - chunk_id: rust-fls#c00100
+        source_id: rust-fls
+        locator: § 4.14.2. Subtyping and Variance¶
+    aliases:
+      - label: covariant
+        chunk_id: harper-pfpl#c00384
+      - label: contravariant
+        chunk_id: harper-pfpl#c00384
+      - label: invariant
+        chunk_id: harper-pfpl#c00384
+  - key: array-covariance-unsoundness
+    name: Unsound Array Covariance With Dynamic Check
+    gloss: A specific design choice, notably in Java, that makes arrays covariant despite 
+      unsoundness, compensated by a runtime store-type check on every array write.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+      - chunk_id: turbak-gifford-dcpl#c01081
+        source_id: turbak-gifford-dcpl
+        locator: §12.1.1
+    aliases:
+      - label: ArrayStoreException check
+        chunk_id: turbak-gifford-dcpl#c01081
+  - key: polymorphism
+    name: Polymorphism
+    gloss: The property of a type system that lets a single piece of code, or a single value, be 
+      used at more than one type.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00002
+        source_id: cardelli-wegner-1985
+        locator: p. 1
+      - chunk_id: pierce-attapl-2004#c00115
+        source_id: pierce-attapl-2004
+        locator: §2.7
+      - chunk_id: pierce-tapl-2002#c00382
+        source_id: pierce-tapl-2002
+        locator: p. 175
+    aliases: []
+  - key: parametric-polymorphism
+    name: Parametric Polymorphism (Generics)
+    gloss: Polymorphism where code is written generically using type variables and later 
+      instantiated at particular types, with all instances behaving uniformly.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00032
+        source_id: cardelli-wegner-1985
+        locator: p. 9
+      - chunk_id: sebesta-copl#c00762
+        source_id: sebesta-copl
+        locator: §9.10.2
+      - chunk_id: pierce-tapl-2002#c00382
+        source_id: pierce-tapl-2002
+        locator: p. 175
+    aliases:
+      - label: generics
+        chunk_id: scott-plp#c00581
+      - label: generic functions
+        chunk_id: cardelli-wegner-1985#c00032
+  - key: let-polymorphism
+    name: Let-Polymorphism (ML-Style)
+    gloss: A restricted form of parametric polymorphism confined to top-level let-bindings, giving 
+      convenient automatic type reconstruction at the cost of first-class polymorphism.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00382
+        source_id: pierce-tapl-2002
+        locator: p. 175
+      - chunk_id: pierce-attapl-2004#c00590
+        source_id: pierce-attapl-2004
+        locator: §10.1
+    aliases:
+      - label: ML-style polymorphism
+        chunk_id: pierce-tapl-2002#c00382
+  - key: ad-hoc-polymorphism
+    name: Ad Hoc Polymorphism (Overloading)
+    gloss: Polymorphism where a function symbol has multiple, potentially different implementations 
+      chosen per call based on argument number or type.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00032
+        source_id: cardelli-wegner-1985
+        locator: p. 9
+      - chunk_id: pierce-attapl-2004#c00115
+        source_id: pierce-attapl-2004
+        locator: §2.7
+      - chunk_id: haskell-2010-report#c00097
+        source_id: haskell-2010-report
+        locator: §4.2.1
+    aliases:
+      - label: overloading
+        chunk_id: cardelli-wegner-1985#c00032
+  - key: subtype-polymorphism
+    name: Subtype Polymorphism (Inclusion Polymorphism)
+    gloss: Polymorphism where an object belonging to a subtype can be used wherever an object of a 
+      non-disjoint supertype is expected.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00046
+        source_id: cardelli-wegner-1985
+        locator: §2
+      - chunk_id: pierce-tapl-2002#c00382
+        source_id: pierce-tapl-2002
+        locator: p. 175
+    aliases:
+      - label: inclusion polymorphism
+        chunk_id: cardelli-wegner-1985#c00046
+  - key: bounded-quantification
+    name: Bounded Quantification
+    gloss: A form of parametric polymorphism where a type variable is constrained to range only over
+      subtypes of some given bound.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00002
+        source_id: cardelli-wegner-1985
+        locator: p. 1
+      - chunk_id: pierce-tapl-2002#c00983
+        source_id: pierce-tapl-2002
+        locator: §31.1
+    aliases:
+      - label: bounded polymorphism
+        chunk_id: pierce-tapl-2002#c00983
+  - key: type-classes
+    name: Type Classes
+    gloss: A structured mechanism, as in Haskell, for introducing named groups of overloaded 
+      operations that types can be declared instances of.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00097
+        source_id: haskell-2010-report
+        locator: §4.2.1
+      - chunk_id: vanroy-haridi-2003#c00238
+        source_id: vanroy-haridi-2003
+        locator: §2.7.3
+    aliases: []
+  - key: existential-types
+    name: Existential Types
+    gloss: A type formed by hiding a concrete representation type behind an abstract name, giving 
+      formal grounding to data abstraction and information hiding.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00965
+        source_id: turbak-gifford-dcpl
+        locator: §11.3.3
+      - chunk_id: ghc-users-guide#c00683
+        source_id: ghc-users-guide
+        locator: §6.4.8
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+    aliases:
+      - label: existential quantification
+        chunk_id: cardelli-wegner-1985#c00002
+      - label: packages
+        chunk_id: cardelli-wegner-1985#c00002
+  - key: abstract-data-type-via-existentials
+    name: Abstract Data Type Encoding via Existentials
+    gloss: Using an existential package to formally encode an abstract data type, hiding its 
+      representation while exposing only its operations to clients.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+      - chunk_id: cardelli-wegner-1985#c00002
+        source_id: cardelli-wegner-1985
+        locator: p. 1
+    aliases: []
+  - key: type-soundness
+    name: Type Soundness
+    gloss: The property that a well-typed program cannot go wrong, proved by combining preservation 
+      (types are stable under evaluation) with progress (typed terms are never stuck).
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c01017
+        source_id: turbak-gifford-dcpl
+        locator: §11.6.1
+      - chunk_id: harper-pfpl#c00396
+        source_id: harper-pfpl
+        locator: §25.5
+      - chunk_id: pierce-attapl-2004#c00716
+        source_id: pierce-attapl-2004
+        locator: §10.7
+    aliases:
+      - label: preservation
+        chunk_id: turbak-gifford-dcpl#c01017
+      - label: progress
+        chunk_id: turbak-gifford-dcpl#c01017
+      - label: well-typed programs do not go wrong
+        chunk_id: pierce-attapl-2004#c00716
+  - key: subsumption
+    name: Subsumption
+    gloss: The typing rule that lets a term of a subtype be used wherever a term of one of its 
+      supertypes is expected, without changing its identity.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: bruce-longo-1990#c00038
+        source_id: bruce-longo-1990
+        locator: pp. 22–23
+      - chunk_id: harper-pfpl#c00396
+        source_id: harper-pfpl
+        locator: §25.5
+    aliases:
+      - label: subsumption rule
+        chunk_id: bruce-longo-1990#c00038
+  - key: algebraic-data-types
+    name: Algebraic Data Types
+    gloss: A type defined as a sum of variants, each a product of fields, typically supporting 
+      recursive definitions and pattern-matching-based deconstruction.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00817
+        source_id: ghc-users-guide
+        locator: §6.4.22
+      - chunk_id: pierce-attapl-2004#c00590
+        source_id: pierce-attapl-2004
+        locator: §10.1
+      - chunk_id: haskell-2010-report#c00097
+        source_id: haskell-2010-report
+        locator: §4.2.1
+    aliases:
+      - label: sum of products
+        chunk_id: ghc-users-guide#c00817
+      - label: tagged union
+        chunk_id: ghc-users-guide#c00817
+      - label: variant type
+        chunk_id: pierce-attapl-2004#c00714
+  - key: gadt
+    name: Generalized Algebraic Data Types (GADTs)
+    gloss: An extension of algebraic data types letting constructors return more specific, 
+      non-uniform instantiations of the type, enabling type refinement upon pattern match.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00694
+        source_id: ghc-users-guide
+        locator: §6.4.9
+      - chunk_id: ghc-users-guide#c00695
+        source_id: ghc-users-guide
+        locator: §6.4.9
+      - chunk_id: ghc-users-guide#c00696
+        source_id: ghc-users-guide
+        locator: §6.4.9
+    aliases:
+      - label: GADT-style syntax
+        chunk_id: ghc-users-guide#c00683
+  - key: type-refinement
+    name: Type Refinement
+    gloss: Narrowing a type variable to a more specific type within a branch of code, driven either 
+      by pattern matching on a GADT or by explicit runtime checks.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00693
+        source_id: ghc-users-guide
+        locator: §6.4.9
+      - chunk_id: harper-pfpl#c00399
+        source_id: harper-pfpl
+        locator: p. 257
+    aliases: []
+  - key: union-types
+    name: Union Types
+    gloss: A type formed as a collection of pre-existing types, more flexible than algebraic 
+      datatypes since any type may join several unions, but harder to infer.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00215
+        source_id: krishnamurthi-plai
+        locator: p. 156
+      - chunk_id: krishnamurthi-plai#c00222
+        source_id: krishnamurthi-plai
+        locator: p. 161
+    aliases: []
+  - key: recursive-types
+    name: Recursive Types
+    gloss: Types defined self-referentially, formalized either as isorecursive (unfolding requires 
+      explicit conversion) or equirecursive (a type equals its own unfolding).
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00712
+        source_id: pierce-attapl-2004
+        locator: §10.7
+      - chunk_id: harper-pfpl#c00387
+        source_id: harper-pfpl
+        locator: p. 250
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+    aliases:
+      - label: isorecursive types
+        chunk_id: pierce-attapl-2004#c00712
+      - label: equirecursive types
+        chunk_id: pierce-tapl-2002#c00910
+  - key: dependent-types
+    name: Dependent Types
+    gloss: A type system in which types can be indexed by, and depend on, ordinary program values, 
+      generalizing the arrow type to a dependent product.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00008
+        source_id: pierce-attapl-2004
+        locator: p. 11
+      - chunk_id: pierce-attapl-2004#c00115
+        source_id: pierce-attapl-2004
+        locator: §2.7
+      - chunk_id: turbak-gifford-dcpl#c00965
+        source_id: turbak-gifford-dcpl
+        locator: §11.3.3
+    aliases: []
+  - key: pure-type-systems
+    name: Pure Type Systems / Lambda Cube
+    gloss: A general uniform framework, exemplified by the Barendregt cube, classifying calculi by 
+      whether they add polymorphism, type operators, and/or dependent types.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00115
+        source_id: pierce-attapl-2004
+        locator: §2.7
+      - chunk_id: pierce-tapl-2002#c00910
+        source_id: pierce-tapl-2002
+        locator: §28.5.5
+    aliases:
+      - label: Barendregt cube
+        chunk_id: pierce-attapl-2004#c00115
+      - label: lambda cube
+        chunk_id: pierce-attapl-2004#c00115
+  - key: kind
+    name: Kind
+    gloss: A classifier one level above types, describing the arity and shape of type constructors 
+      so higher-order type operators can themselves be well-formed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00097
+        source_id: haskell-2010-report
+        locator: §4.2.1
+      - chunk_id: ghc-users-guide#c00694
+        source_id: ghc-users-guide
+        locator: §6.4.9
+      - chunk_id: ghc-users-guide#c00720
+        source_id: ghc-users-guide
+        locator: §6.4.10
+    aliases:
+      - label: kind signature
+        chunk_id: ghc-users-guide#c00689
+  - key: kind-polymorphism
+    name: Kind Polymorphism / Higher-Kinded Types
+    gloss: Generalizing polymorphism one level up so type constructors can themselves be abstracted 
+      over kinds, not just types over values.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00720
+        source_id: ghc-users-guide
+        locator: §6.4.10
+      - chunk_id: ghc-users-guide#c00730
+        source_id: ghc-users-guide
+        locator: §6.4.11
+    aliases:
+      - label: higher-kinded types
+        chunk_id: ghc-users-guide#c00694
+  - key: gradual-typing
+    name: Gradual Typing
+    gloss: Adding type annotations incrementally to a program so it becomes progressively more 
+      statically typed, mixing typed and untyped code by design.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00224
+        source_id: krishnamurthi-plai
+        locator: p. 162
+      - chunk_id: krishnamurthi-plai#c00238
+        source_id: krishnamurthi-plai
+        locator: p. 172
+      - chunk_id: krishnamurthi-plai#c00215
+        source_id: krishnamurthi-plai
+        locator: p. 156
+    aliases: []
+  - key: retrofitted-type-system
+    name: Retrofitted Type System
+    gloss: A static type system added after the fact onto a previously dynamic language, designed to
+      accommodate that language's existing idiomatic code patterns.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00215
+        source_id: krishnamurthi-plai
+        locator: p. 156
+      - chunk_id: krishnamurthi-plai#c00224
+        source_id: krishnamurthi-plai
+        locator: p. 162
+    aliases:
+      - label: Typed Racket
+        chunk_id: krishnamurthi-plai#c00215
+  - key: type-coercion
+    name: Type Coercion
+    gloss: An implicit operation converting a value from one type to another at specific, restricted
+      program locations, distinct from an explicit type cast.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00078
+        source_id: rust-fls
+        locator: § 4.12.3. Type Coercion¶
+      - chunk_id: scott-plp#c00418
+        source_id: scott-plp
+        locator: pp. 441–442
+      - chunk_id: sebesta-copl#c00456
+        source_id: sebesta-copl
+        locator: §6.1
+    aliases:
+      - label: type conversion
+        chunk_id: scott-plp#c00418
+      - label: implicit conversion
+        chunk_id: rust-fls#c00078
+  - key: type-equivalence
+    name: Type Equivalence (Name vs. Structure)
+    gloss: 'The rule deciding when two type expressions denote the same type: by declared name identity,
+      or by comparing their structural definitions.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00418
+        source_id: scott-plp
+        locator: pp. 441–442
+      - chunk_id: cardelli-wegner-1985#c00032
+        source_id: cardelli-wegner-1985
+        locator: p. 9
+    aliases:
+      - label: name type equivalence
+        chunk_id: scott-plp#c00418
+      - label: structure type equivalence
+        chunk_id: scott-plp#c00418
+  - key: strong-weak-typing
+    name: Strong vs. Weak Typing
+    gloss: An informally defined axis judging a language by how reliably it detects all misuses of 
+      values that would constitute type errors, at compile or run time.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: cardelli-wegner-1985#c00009
+        source_id: cardelli-wegner-1985
+        locator: §1
+      - chunk_id: vanroy-haridi-2003#c00236
+        source_id: vanroy-haridi-2003
+        locator: §2.7.3
+      - chunk_id: scott-plp#c00398
+        source_id: scott-plp
+        locator: pp. 425–426
+    aliases:
+      - label: strong typing
+        chunk_id: cardelli-wegner-1985#c00009
+      - label: strongly typed
+        chunk_id: scott-plp#c00398
+  - key: runtime-type-tag
+    name: Runtime Type Tag / Class
+    gloss: A run-time marker attached to a dynamically-typed value recording which class it belongs 
+      to, checked before an operation is permitted to proceed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00382
+        source_id: harper-pfpl
+        locator: p. 248
+      - chunk_id: harper-pfpl#c00370
+        source_id: harper-pfpl
+        locator: §24.3
+    aliases:
+      - label: class tags
+        chunk_id: harper-pfpl#c00370
+      - label: dyn
+        chunk_id: harper-pfpl#c00361
+  - key: hybrid-typing
+    name: Hybrid Typing
+    gloss: A language design combining statically typed and dynamically typed fragments within one 
+      type system, mediated by a designated dynamic type.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00361
+        source_id: harper-pfpl
+        locator: p. 235
+      - chunk_id: harper-pfpl#c00366
+        source_id: harper-pfpl
+        locator: §24.3
+    aliases:
+      - label: hybrid language
+        chunk_id: harper-pfpl#c00361
+  - key: value-restriction
+    name: Value Restriction
+    gloss: A restriction in ML-style type inference denying polymorphic generalization to non-value 
+      expressions, preserving type soundness in the presence of mutable references.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00716
+        source_id: pierce-attapl-2004
+        locator: §10.7
+    aliases: []
+  - key: generic-parameters
+    name: Generic Parameters (Type, Const, Lifetime)
+    gloss: The formal parameters of a generic declaration, which may range over types, compile-time 
+      constants, or (in some languages) lifetimes, bound by a scope.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00273
+        source_id: rust-fls
+        locator: § 12.1. Generic Parameters¶
+      - chunk_id: rust-fls#c00274
+        source_id: rust-fls
+        locator: § 12.1. Generic Parameters¶
+      - chunk_id: rust-fls#c00276
+        source_id: rust-fls
+        locator: § 12.1. Generic Parameters¶
+    aliases:
+      - label: type parameter
+        chunk_id: rust-fls#c00276
+      - label: generic argument
+        chunk_id: rust-fls#c00280
+  - key: inferred-type-placeholder
+    name: Inferred Type Placeholder
+    gloss: A syntactic placeholder in a type position instructing the compiler to infer the concrete
+      type from surrounding context rather than requiring it be written out.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00061
+        source_id: rust-fls
+        locator: § 4.9.1. Inferred Types¶
+      - chunk_id: rust-reference#c00566
+        source_id: rust-reference
+        locator: p. 436
+    aliases:
+      - label: inferred type
+        chunk_id: rust-fls#c00061
+unevidenced:
+  - key: type-erasure
+    name: Type Erasure
+    gloss: Implementing generics by discarding type-parameter information after compile-time 
+      checking, so a single runtime representation serves all instantiations.
+    origin: prior
+    search_hint: Java Language Specification generics chapter or Gosling et al. JLS §4.6/erasure 
+      discussion; Bracha et al. 'Making the Future Safe for the Past' (GJ paper)
+    disposition: scouted
+  - key: row-polymorphism
+    name: Row Polymorphism
+    gloss: A polymorphism mechanism abstracting over the remaining, unspecified fields of a record 
+      or variant type, common in OCaml objects and some functional languages.
+    origin: prior
+    search_hint: Rémy 1989 'Type checking records and variants in a natural extension of ML'; OCaml 
+      manual chapter on polymorphic variants/objects
+    disposition: scouted
+  - key: refinement-types
+    name: Refinement Types
+    gloss: Types annotated with logical predicates that further constrain the set of values a base 
+      type may take, checked via an SMT solver or similar.
+    origin: prior
+    search_hint: Freeman & Pfenning 1991 'Refinement types for ML'; Liquid Haskell / Rondon, 
+      Kawaguchi, Jhala 2008 PLDI paper
+    disposition: scouted
+  - key: type-classes-erlang-dialyzer
+    name: Success Typing (Dialyzer)
+    gloss: A gradual, unsound-by-design static analysis for dynamically typed Erlang code that 
+      infers types only well enough to certainly flag definite type errors.
+    origin: finding-aid-gap
+    search_hint: Lindahl & Sagonas 2006 'Detecting Erlang Defects... Success Typings'; Erlang/OTP 
+      Dialyzer documentation
+    disposition: scouted
+theme_amendments: []
+scouting:
+  - source_id: bracha-odersky-stoutamire-wadler-1998
+    title: 'Making the Future Safe for the Past: Adding Genericity to the Java Programming Language'
+    csl_type: paper-conference
+    url: https://homepages.inf.ed.ac.uk/wadler/gj/Documents/gj-oopsla.pdf
+    doi: 10.1145/286936.286957
+    issued_year: 1998
+    authors:
+      - Bracha, Gilad
+      - Odersky, Martin
+      - Stoutamire, David
+      - Wadler, Philip
+    tier: A
+    grounding: design-doc
+    access: open
+    candidate_keys:
+      - type-erasure
+    rationale: This is the original GJ paper that introduced and designed the type-erasure 
+      translation for adding generics to Java by discarding type-parameter information after 
+      compile-time checking, and is cited by the JLS itself as the historical source of erasure/raw 
+      types; the corpus has the current JLS spec text but not this originating design paper 
+      explaining the erasure rationale and mechanism.
+    status: filed
+    queue_entry_id: 17
+  - source_id: remy-1989
+    title: Type checking records and variants in a natural extension of ML
+    csl_type: paper-conference
+    url: https://www.cs.tufts.edu/~nr/cs257/archive/didier-remy/type-checking-records.pdf
+    doi: 10.1145/75277.75284
+    issued_year: 1989
+    authors:
+      - Rémy, Didier
+    tier: A
+    grounding: formal-spec
+    access: open
+    candidate_keys:
+      - row-polymorphism
+    rationale: The founding POPL '89 paper that introduces row-typed polymorphism over 
+      record/variant fields with presence information, the direct theoretical origin of row 
+      polymorphism as later used in OCaml's polymorphic variants and objects; the corpus's ATTAPL 
+      chapter on rows discusses the mechanism generically but does not include this originating 
+      paper.
+    status: filed
+    queue_entry_id: 18
+  - source_id: freeman-pfenning-1991
+    title: Refinement Types for ML
+    csl_type: paper-conference
+    url: https://www.cs.cmu.edu/~fp/papers/pldi91.pdf
+    doi: 10.1145/113445.113468
+    issued_year: 1991
+    authors:
+      - Freeman, Tim
+      - Pfenning, Frank
+    tier: A
+    grounding: formal-spec
+    access: open
+    candidate_keys:
+      - refinement-types
+    rationale: The seminal PLDI '91 paper that originated refinement types as decidable 
+      sub-datatypes obtained by restricting constructors, the direct ancestor of the modern 
+      refinement-type concept; not present in the existing corpus, which only touches related 
+      dependent/intersection type material.
+    status: filed
+    queue_entry_id: 19
+  - source_id: rondon-kawaguchi-jhala-2008
+    title: Liquid Types
+    csl_type: paper-conference
+    url: https://goto.ucsd.edu/~rjhala/liquid/liquid_types.pdf
+    doi: 10.1145/1375581.1375602
+    issued_year: 2008
+    authors:
+      - Rondon, Patrick M.
+      - Kawaguchi, Ming
+      - Jhala, Ranjit
+    tier: A
+    grounding: formal-spec
+    access: open
+    candidate_keys:
+      - refinement-types
+    rationale: PLDI '08 paper defining Liquid Types, the SMT/predicate-abstraction-checked form of 
+      refinement types (basis of LiquidHaskell) that matches the survey's specific description of 
+      predicate-annotated types checked via an SMT solver, complementing the earlier 
+      Freeman-Pfenning inference-based variant.
+    status: filed
+    queue_entry_id: 20
+  - source_id: lindahl-sagonas-2006
+    title: Practical Type Inference Based on Success Typings
+    csl_type: paper-conference
+    url: https://user.it.uu.se/~kostis/Papers/ppdp06.pdf
+    doi: 10.1145/1140335.1140356
+    issued_year: 2006
+    authors:
+      - Lindahl, Tobias
+      - Sagonas, Konstantinos
+    tier: A
+    grounding: formal-spec
+    access: open
+    candidate_keys:
+      - type-classes-erlang-dialyzer
+    rationale: The PPDP '06 paper by Dialyzer's creators that defines success typings, the 
+      unsound-by-design, gradual static analysis that only flags definite type errors in untyped 
+      Erlang code, exactly the mechanism named in the gap; not present in the existing corpus.
+    status: filed
+    queue_entry_id: 21
