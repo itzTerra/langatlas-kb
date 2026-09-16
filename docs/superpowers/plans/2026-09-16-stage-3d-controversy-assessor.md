@@ -976,7 +976,7 @@ git commit -m "feat(#stage-3d): project the store and ledgers into the assessor'
 - Produces: `AssessmentLedger` with `previous(fact_id)`, `record(assessment, digest=...)`,
   `levels()`, `close()`, context-manager support.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_ledger.py
@@ -1021,12 +1021,12 @@ def test_the_ledger_survives_reopening(tmp_path):
         assert reopened.previous("f-a")[1] == 2
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_ledger.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.controversy.ledger`
 
-- [ ] **Step 3: Write `ledger.py`**
+- [x] **Step 3: Write `ledger.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/ledger.py
@@ -1109,12 +1109,12 @@ class AssessmentLedger:
         self.close()
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_ledger.py -m '' -v`
 Expected: PASS (4 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/controversy/ledger.py \
