@@ -67,6 +67,43 @@ proposals kept getting screened out, or the model never volunteered a `dropped` 
 that one `unevidenced` entry `dropped` by hand so `survey finalize` can proceed. It is never called
 by an agent.
 
+## R4: drafting, debates and minting
+
+```bash
+# R4 — after `survey finalize` put the cycle at r3-done. Each step refuses an unsigned or
+# stale cycle, and every provider step opens its own logged run.
+uv run --package langatlas-research langatlas-research draft atomize 1    # the ontologist
+uv run --package langatlas-research langatlas-research draft contested 1  # what must be debated
+uv run --package langatlas-research langatlas-research draft debate 1 --all
+uv run --package langatlas-research langatlas-research draft verify 1     # the D24 gate
+uv run --package langatlas-research langatlas-research draft mint 1       # one commit per record
+uv run --package langatlas-research langatlas-research draft edges 1      # the edge drafter
+uv run --package langatlas-research langatlas-research draft debate 1 --all
+uv run --package langatlas-research langatlas-research draft verify 1
+uv run --package langatlas-research langatlas-research draft mint 1
+uv run --package langatlas-research langatlas-research draft finalize 1   # -> r4-done
+```
+
+The carve plan (`research/drafts/<cycle>-<theme>.yaml`) is the spine: every step reads it and
+writes it back, so any step can be re-run without re-running the ones before it. `draft status`
+prints it.
+
+**Nothing reaches the store except through the gate.** `draft mint` refuses an entry the D24
+verifier did not admit, and refuses a contested carve that has neither a debate nor a waiver.
+The developer's escape hatch is `draft waive <n> <key> --reason "…"` — never an agent's.
+
+**Debates are for contested carves only** (§7.2). `draft contested` lists the triggers;
+`draft debate` runs proposer + two challengers + a **fresh-context** moderator in its own run.
+A moderator that asks for a revision or a split has it applied mechanically — its prose changes
+nothing.
+
+**Instrumentation** (D30, ephemeral, reads existing logs):
+
+```bash
+uv run --package langatlas-research langatlas-research instrument replay 1  # did debates matter?
+uv run --package langatlas-research langatlas-research instrument cost 1    # what did they cost?
+```
+
 ## Tests
 
 ```

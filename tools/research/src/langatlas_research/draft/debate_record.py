@@ -111,3 +111,16 @@ def debate_signals(debate: dict) -> list[str]:
     if resolution["standing_dissent"]:
         return [f"debate:{debate['id']}:standing-dissent"]
     return [f"debate:{debate['id']}:{resolution['outcome']}"]
+
+
+def load_debate_goldens(path: Path | None = None) -> list[dict]:
+    """The committed R4 debate golden set (`tests/golden/debates/cases-r4.yaml`).
+
+    @returns: the `cases` list; empty when the file is absent, which is a normal repo state
+        before 3C lands."""
+    from langatlas_research.paths import REPO_ROOT
+
+    path = Path(path) if path else REPO_ROOT / "tests" / "golden" / "debates" / "cases-r4.yaml"
+    if not path.exists():
+        return []
+    return (_yaml.load(path.read_text()) or {}).get("cases") or []

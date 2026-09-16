@@ -1,0 +1,161 @@
+version: 1
+# R4 schema-dispute debates, hand-labelled. Each case is a full debate record plus the
+# outcome and controversy projection it MUST produce. These guard the boundary 3D depends
+# on: a change to the disposition->outcome mapping, the rounds count or the signal format
+# breaks a committed golden here rather than silently re-scoring the controversy set.
+#
+# These three are synthetic, covering the three outcomes. Real cycle-1 records are added
+# to this file as they are produced (see README).
+cases:
+  - id: dg-0001
+    notes: an evidenced wrong-atomization challenge the moderator upholds by narrowing
+    debate:
+      id: d-01-typing-001
+      cycle: 1
+      theme: typing
+      target: {list: nodes, key: static-typing}
+      opened: '2026-09-20'
+      runs: {debate: 2026-09-20-r4-debate-01-typing-static-typing-01,
+             moderator: 2026-09-20-r4-moderator-01-typing-static-typing-01}
+      triggers: [merged-candidates]
+      personas: {proposer: the ontologist, challenger_a: the type theorist,
+                 challenger_b: the working language implementer, moderator: the moderator}
+      pre_challenge: {key: static-typing, id: static-typing, kind: feature,
+                      summary: Static typing checks types before the program runs and
+                        rules out type errors.}
+      messages:
+        - {seq: 1, role: proposer, persona: the ontologist,
+           text: One node per checking discipline; the discipline is the design choice.}
+        - seq: 2
+          role: challenger-a
+          persona: the type theorist
+          text: The summary overclaims soundness.
+          challenges:
+            - type: scope
+              text: '"rules out type errors" is soundness, which not every statically
+                typed language has.'
+              evidence: [{source: pierce-tapl-2002, locator: '§1.1'}]
+        - {seq: 3, role: challenger-b, persona: the working language implementer,
+           text: Agreed; Java's array covariance is the standard counterexample.}
+        - {seq: 4, role: proposer, persona: the ontologist,
+           text: Conceded — narrow the summary to the checking time only.}
+        - {seq: 5, role: moderator, persona: the moderator,
+           text: The cited passage supports the narrowing.}
+      resolution:
+        outcome: converged-after-revision
+        disposition: revise
+        standing_dissent: false
+        rounds: 1
+        upheld_challenges: [scope]
+        rationale: the cited passage distinguishes checking time from soundness
+        revision: {summary: Type checking happens before the program runs.}
+    expect:
+      outcome: converged-after-revision
+      rounds: 1
+      controversy_input: {id: d-01-typing-001, outcome: converged-after-revision,
+                          standing_dissent: false, rounds: 1}
+      signals: ['debate:d-01-typing-001:converged-after-revision']
+
+  - id: dg-0002
+    notes: the carve stands, but a challenger's objection is still live — standing dissent
+      outranks the outcome in the signal
+    debate:
+      id: d-01-typing-002
+      cycle: 1
+      theme: typing
+      target: {list: nodes, key: duck-typing}
+      opened: '2026-09-20'
+      runs: {debate: 2026-09-20-r4-debate-01-typing-duck-typing-01,
+             moderator: 2026-09-20-r4-moderator-01-typing-duck-typing-01}
+      triggers: [single-source]
+      personas: {proposer: the ontologist, challenger_a: the type theorist,
+                 challenger_b: the working language implementer, moderator: the moderator}
+      pre_challenge: {key: duck-typing, id: duck-typing, kind: feature,
+                      summary: Compatibility is decided by the operations a value supports.}
+      messages:
+        - {seq: 1, role: proposer, persona: the ontologist,
+           text: 'Duck typing is a distinct compatibility rule, not a flavour of dynamic
+             typing.'}
+        - seq: 2
+          role: challenger-a
+          persona: the type theorist
+          text: This is structural typing checked late; the literature does not separate
+            them.
+          challenges:
+            - type: redundant-with
+              text: Structural typing already covers this, differing only in check time.
+              evidence: [{source: pierce-tapl-2002, locator: '§19.3'}]
+        - {seq: 3, role: challenger-b, persona: the working language implementer,
+           text: Practitioners do treat them as different things.}
+        - {seq: 4, role: proposer, persona: the ontologist,
+           text: 'The cited section is about structural subtyping, not about this rule.'}
+        - {seq: 5, role: moderator, persona: the moderator,
+           text: The cited passage does not establish the identity claimed.}
+      resolution:
+        outcome: resolved
+        disposition: keep
+        standing_dissent: true
+        rounds: 1
+        upheld_challenges: []
+        rationale: the redundancy challenge cites a passage about structural subtyping,
+          which does not establish that these are one node; the objection remains live
+    expect:
+      outcome: resolved
+      rounds: 1
+      controversy_input: {id: d-01-typing-002, outcome: resolved, standing_dissent: true,
+                          rounds: 1}
+      signals: ['debate:d-01-typing-002:standing-dissent']
+
+  - id: dg-0003
+    notes: two challengers, two evidenced challenges the evidence on the table cannot
+      settle — the developer rules, and nothing mints
+    debate:
+      id: d-01-typing-003
+      cycle: 1
+      theme: typing
+      target: {list: dimensions, key: type-checking-discipline}
+      opened: '2026-09-20'
+      runs: {debate: 2026-09-20-r4-debate-01-typing-type-checking-discipline-01,
+             moderator: 2026-09-20-r4-moderator-01-typing-type-checking-discipline-01}
+      triggers: [new-dimension]
+      personas: {proposer: the ontologist, challenger_a: the type theorist,
+                 challenger_b: the working language implementer, moderator: the moderator}
+      pre_challenge: {key: type-checking-discipline, slug: type-checking-discipline,
+                      values: [static, dynamic, gradual], exclusivity: exclusive}
+      messages:
+        - {seq: 1, role: proposer, persona: the ontologist,
+           text: Three mutually exclusive values on one axis.}
+        - seq: 2
+          role: challenger-a
+          persona: the type theorist
+          text: Gradual typing is a relation between the other two, not a third value.
+          challenges:
+            - type: wrong-atomization
+              text: Siek & Taha present gradual typing as a spectrum, not a point.
+              evidence: [{source: pierce-tapl-2002, locator: '§1.1'}]
+        - seq: 3
+          role: challenger-b
+          persona: the working language implementer
+          text: Real languages mix disciplines per region of the program.
+          challenges:
+            - type: wrong-layer
+              text: If a language can be both, the axis is `multi`, not `exclusive`.
+              evidence: [{source: scott-plp, locator: '§7.2'}]
+        - {seq: 4, role: proposer, persona: the ontologist,
+           text: Both challenges are evidenced and they point different ways.}
+        - {seq: 5, role: moderator, persona: the moderator,
+           text: The two cited passages support incompatible axes; this needs a ruling.}
+      resolution:
+        outcome: escalated
+        disposition: escalate
+        standing_dissent: true
+        rounds: 2
+        upheld_challenges: [wrong-atomization, wrong-layer]
+        rationale: the sources support two different shapes for this axis and nothing on
+          the table chooses between them
+    expect:
+      outcome: escalated
+      rounds: 2
+      controversy_input: {id: d-01-typing-003, outcome: escalated, standing_dissent: true,
+                          rounds: 2}
+      signals: ['debate:d-01-typing-003:standing-dissent']

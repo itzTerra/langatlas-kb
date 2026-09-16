@@ -5856,7 +5856,7 @@ git commit -m "feat(#stage-3c): measure whether debates changed anything and wha
 - Produces: `load_debate_goldens(path=None) -> list[dict]` in
   `langatlas_research.draft.debate_record`; the committed golden items; the end-to-end exit test.
 
-- [ ] **Step 1: Write the golden items**
+- [x] **Step 1: Write the golden items**
 
 ```yaml
 # tests/golden/debates/cases-r4.yaml
@@ -6023,7 +6023,7 @@ cases:
       signals: ['debate:d-01-typing-003:standing-dissent']
 ```
 
-- [ ] **Step 2: Replace the golden-set README**
+- [x] **Step 2: Replace the golden-set README**
 
 ```markdown
 <!-- tests/golden/debates/README.md -->
@@ -6047,7 +6047,7 @@ fill in `expect` by hand, and keep the `notes` line saying what the case is *for
 that duplicates an existing one's shape adds nothing.
 ```
 
-- [ ] **Step 3: Write the golden runner test**
+- [x] **Step 3: Write the golden runner test**
 
 ```python
 # tools/research/tests/test_debate_goldens.py
@@ -6117,7 +6117,7 @@ def load_debate_goldens(path: Path | None = None) -> list[dict]:
     return (_yaml.load(path.read_text()) or {}).get("cases") or []
 ```
 
-- [ ] **Step 4: Write the 3C exit test**
+- [x] **Step 4: Write the 3C exit test**
 
 ```python
 # tools/research/tests/test_exit_3c.py
@@ -6343,7 +6343,7 @@ def test_a_carve_the_gate_refuses_never_reaches_git(store_repo, fake_ctx, fake_l
     assert not (store_repo / "concepts" / "type-system.yaml").exists()
 ```
 
-- [ ] **Step 5: Verify CI already covers the new tests**
+- [x] **Step 5: Verify CI already covers the new tests**
 
 Run: `grep -n "research" .github/workflows/ci.yml`
 Expected: the research job runs `uv --directory tools/research run pytest -m ''` — the empty
@@ -6353,7 +6353,7 @@ If that line has changed, restore the `-m ''`; do not add a second test invocati
 Run: `uv --directory tools/validate run pytest -q` and confirm the validate job in
 `.github/workflows/ci.yml` runs it — Task 1 changed that package.
 
-- [ ] **Step 6: Extend the package README**
+- [x] **Step 6: Extend the package README**
 
 Append to `tools/research/README.md`, after the R3 section:
 
@@ -6396,7 +6396,7 @@ uv run --package langatlas-research langatlas-research instrument cost 1    # wh
 ```
 ````
 
-- [ ] **Step 7: Run everything**
+- [x] **Step 7: Run everything**
 
 Run:
 ```bash
@@ -6408,7 +6408,7 @@ uv --directory tools/validate run langatlas-validate ci
 ```
 Expected: all green; `validate` reports `0 error(s)` against the real `research/` tree.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
