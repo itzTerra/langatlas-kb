@@ -1318,7 +1318,7 @@ candidate inventory, atomizes it into Concept and Feature carves, assigns `layer
   - `run_ontologist(ctx, cycle, *, repo_root, survey, lookup, config, mcp_servers=None,
     allowed_tools=(), prompt=None, now=None) -> tuple[dict, list[str]]` — `(plan, warnings)`.
 
-- [ ] **Step 1: Mint the prompt**
+- [x] **Step 1: Mint the prompt**
 
 Run:
 ```bash
@@ -1400,7 +1400,7 @@ rm "$PROMPT"
 
 Expected: prints `r4-ontologist@v-<8hex>`.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_ontologist.py
@@ -1560,12 +1560,12 @@ def test_a_stale_sign_off_stops_the_run_before_any_claude_message(
     assert fake_ctx.claude_calls == []
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_ontologist.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.ontologist`.
 
-- [ ] **Step 4: Write the ontologist**
+- [x] **Step 4: Write the ontologist**
 
 ```python
 # tools/research/src/langatlas_research/draft/ontologist.py
@@ -1815,7 +1815,7 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
     return plan, warnings
 ```
 
-- [ ] **Step 5: Add `committed_dimensions` as a stub so the import resolves**
+- [x] **Step 5: Add `committed_dimensions` as a stub so the import resolves**
 
 `read_store` imports it from Task 10's module, which does not exist yet. Create the module now
 with only this function; Task 10 fills in the rest.
@@ -1849,12 +1849,12 @@ def committed_qualities(repo_root: Path | None = None) -> set[str]:
     return _slugs(repo_root, QUALITIES_PATH, "qualities")
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_ontologist.py -v`
 Expected: PASS (7 tests).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
