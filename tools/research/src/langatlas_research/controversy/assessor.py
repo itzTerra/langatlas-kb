@@ -88,3 +88,94 @@ def needs_escalation(assessment: Assessment) -> bool:
     Level 3 is unconditional because it is the level the site renders as an AI-judged dispute
     and the one a false positive is most expensive on."""
     return assessment.level == 3 or assessment.alternative is not None
+
+
+class GoldenAssessor:
+    """§6.4's calibration adapter: `ControversyCase -> int`, the `Assessor` protocol 2B froze.
+
+    Deliberately thin. A golden case supplies its structured inputs directly, so this skips
+    assembly entirely and exercises what a model can actually get wrong: the rubric, the signal
+    filter and the escalation policy.
+
+    It opens a `RunContext` lazily on first use and closes it in `close()`, which step 6 teaches
+    `golden-score` to call — a calibration number whose transcript was never finalized is a
+    number nobody can trace back to a model and a prompt version."""
+
+    def __init__(self, *, assess=assess_inputs, escalate=None, ctx=None, alias: str = "thinker",
+                 prompt: PromptRef | None = None):
+        self._assess, self._escalate = assess, escalate
+        self._ctx, self._alias, self._prompt = ctx, alias, prompt
+        self._owns_ctx = False
+
+    def _context(self):
+        if self._ctx is None:
+            from langatlas_pipeline.providers.core import RunContext
+
+            self._ctx = RunContext.start(kind="controversy-goldens", slug="scored")
+            self._owns_ctx = True
+        return self._ctx
+
+    def __call__(self, case) -> int:
+        """@raises ControversyInputRefused: a case carrying a forbidden or unknown input —
+            surfaced, never scored as a level, because a case the assessor may not legally see
+            is a broken case, not a hard one."""
+        inputs = ControversyInputs.from_mapping(case.inputs or {})
+        assessment = self._assess(self._context(), case.id, inputs, alias=self._alias,
+                                  prompt=self._prompt)
+        if self._escalate is not None and needs_escalation(assessment):
+            assessment = self._escalate(assessment, inputs)
+        return int(assessment.level)
+
+    def close(self) -> None:
+        if self._owns_ctx and self._ctx is not None:
+            self._ctx.close()
+            self._ctx, self._owns_ctx = None, False
+
+
+def _claude_escalator():
+    from langatlas_pipeline.providers.core import RunContext
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.controversy.escalate import escalate as _escalate
+    from langatlas_research.paths import research_config_path
+
+    config = ResearchConfig.load(research_config_path()).controversy
+
+    def _run(assessment, inputs):
+        with RunContext.start(kind="controversy-escalation", slug=assessment.fact_id) as ctx:
+            return _escalate(ctx, assessment, inputs, role_config=config.escalation)
+
+    return _run
+
+
+def _default_alias() -> str:
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.paths import research_config_path
+
+    return ResearchConfig.load(research_config_path()).controversy.alias
+
+
+class _LazyGoldenAssessor(GoldenAssessor):
+    """The module-level entry point `config/ingest.yaml` names.
+
+    Config is read on first call rather than at import, so merely importing this module — which
+    `load_entry_point` does — never touches the filesystem or a provider."""
+
+    def __init__(self, *, escalate_factory=None):
+        super().__init__(escalate=None, alias="")
+        self._escalate_factory = escalate_factory
+        self._configured = False
+
+    def __call__(self, case) -> int:
+        if not self._configured:
+            self._alias = _default_alias()
+            if self._escalate_factory is not None:
+                self._escalate = self._escalate_factory()
+            self._configured = True
+        return super().__call__(case)
+
+
+#: What production does, escalation included — the entry point `config/ingest.yaml` names.
+golden_assessor = _LazyGoldenAssessor(escalate_factory=_claude_escalator)
+#: The university-API pass alone. Useful for measuring how much of level-3 recall the
+#: escalation step is carrying.
+golden_assessor_thinker_only = _LazyGoldenAssessor()

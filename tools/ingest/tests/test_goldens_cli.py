@@ -57,7 +57,19 @@ def test_golden_score_exits_three_when_no_verifier_is_registered(tmp_path, capsy
     assert "no verifier registered" in capsys.readouterr().out.lower()
 
 
-def test_golden_score_runs_an_explicit_entry_point_and_gates_on_thresholds(tmp_path, capsys):
+def test_golden_score_runs_an_explicit_entry_point_and_gates_on_thresholds(tmp_path, capsys,
+                                                                            monkeypatch):
+    # Stage 3D's `controversy_assessor_entry_point` now names a real callable that lives in
+    # `langatlas_research`, which is not importable from this package's own environment (it is
+    # the other way around — `langatlas_ingest` is a path dependency of `langatlas_research`).
+    # These tests exercise the verifier path only, so the ambient config default is cleared the
+    # same way `test_golden_score_exits_three_when_no_verifier_is_registered` clears it.
+    from dataclasses import replace
+    from langatlas_ingest import cli as cli_module
+    from langatlas_ingest.config import IngestConfig
+
+    unset = replace(IngestConfig.load(), controversy_assessor_entry_point=None)
+    monkeypatch.setattr(cli_module.IngestConfig, "load", staticmethod(lambda *a, **k: unset))
     (tmp_path / "items-cli.yaml").write_text(ITEMS)
     good = "tests.test_goldens_cli:always_supported"
     assert main(["golden-score", "--verifier-dir", str(tmp_path),
@@ -68,8 +80,15 @@ def test_golden_score_runs_an_explicit_entry_point_and_gates_on_thresholds(tmp_p
     assert "false reject" in capsys.readouterr().out.lower()
 
 
-def test_golden_score_writes_the_machine_readable_error_rates(tmp_path):
+def test_golden_score_writes_the_machine_readable_error_rates(tmp_path, monkeypatch):
     import json
+    from dataclasses import replace
+    from langatlas_ingest import cli as cli_module
+    from langatlas_ingest.config import IngestConfig
+
+    # Same reasoning as above: this test only exercises the verifier path.
+    unset = replace(IngestConfig.load(), controversy_assessor_entry_point=None)
+    monkeypatch.setattr(cli_module.IngestConfig, "load", staticmethod(lambda *a, **k: unset))
     (tmp_path / "items-cli.yaml").write_text(ITEMS)
     out = tmp_path / "error-rates.json"
     main(["golden-score", "--verifier-dir", str(tmp_path),

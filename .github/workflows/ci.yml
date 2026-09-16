@@ -13,7 +13,7 @@ jobs:
       - uses: astral-sh/setup-uv@v3
       - name: Install packages
         run: |
-          uv --directory tools/validate sync
+          uv --directory tools/validate sync --extra dev
           uv --directory tools/pipeline sync
           uv --directory tools/ingest sync
           uv --directory tools/finding-aids sync --extra dev
@@ -26,12 +26,16 @@ jobs:
       - name: Test the research package
         # No database, no provider; the `git`-marked tests build throwaway local repos.
         run: uv --directory tools/research run pytest -m ''
+      - name: Test the validate package
+        # No database, no provider. Stage 3D added the controversy-block gate and the
+        # machine-field exemption in `version-bump`, both of which are pure-Python checks.
+        run: uv --directory tools/validate run pytest
       - name: Test the R3 tagging job kind
         # Only the Stage 3B orchestrator tests: no database (the job's DB call is replaced),
         # no provider. The rest of the orchestrator suite keeps its existing local-only status.
         run: >-
           uv --directory tools/orchestrator run pytest
-          tests/test_r3_tagging_job.py tests/test_driver_overrides.py
+          tests/test_r3_tagging_job.py tests/test_controversy_job.py tests/test_driver_overrides.py
       - name: Run the store-validating gate
         run: uv --directory tools/validate run langatlas-validate ci
       - name: Shape-check the committed golden sets

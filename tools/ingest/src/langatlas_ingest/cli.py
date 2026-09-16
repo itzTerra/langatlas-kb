@@ -250,8 +250,15 @@ def _cmd_golden_score(args) -> int:
     if assessor_dotted:
         cases = load_controversy_cases(Path(args.controversy_dir
                                             or GOLDEN_CONTROVERSY_DIR))
-        print(run_controversy_goldens(cases,
-                                      load_entry_point(assessor_dotted)).to_markdown())
+        assessor = load_entry_point(assessor_dotted)
+        try:
+            print(run_controversy_goldens(cases, assessor).to_markdown())
+        finally:
+            # Same duck-typed hook as the verifier branch above: 3D's `GoldenAssessor` opens a
+            # `RunContext` lazily, and `close()` is what finalizes its transcript and manifest.
+            close = getattr(assessor, "close", None)
+            if callable(close):
+                close()
     return code
 
 

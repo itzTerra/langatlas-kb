@@ -2862,7 +2862,7 @@ assembly. That is the correct split: assembly is deterministic and has its own u
 not "improve" the goldens by making them re-derive inputs from a store; they would stop being a
 calibration set and start being an integration test.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_goldens.py
@@ -2947,12 +2947,12 @@ def test_the_runner_scores_a_perfect_assessor_at_one():
     assert score.level3_recall == 1.0
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_goldens.py -m '' -v`
 Expected: FAIL — `ImportError: cannot import name 'GoldenAssessor'`
 
-- [ ] **Step 3: Add the golden entry points to `assessor.py`**
+- [x] **Step 3: Add the golden entry points to `assessor.py`**
 
 ```python
 class GoldenAssessor:
@@ -3035,12 +3035,12 @@ def golden_assessor_thinker_only():
 Add the missing import at the top of `assessor.py`: `from langatlas_research.controversy.inputs
 import ControversyInputs, derivable_signals` already covers `ControversyInputs`.
 
-- [ ] **Step 4: Run the golden tests**
+- [x] **Step 4: Run the golden tests**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_goldens.py -m '' -v`
 Expected: PASS (6 tests)
 
-- [ ] **Step 5: Make the entry point a case-callable, not a factory**
+- [x] **Step 5: Make the entry point a case-callable, not a factory**
 
 `_cmd_golden_score` hands `load_entry_point(assessor_dotted)` **straight to
 `run_controversy_goldens` as the assessor** (`tools/ingest/src/langatlas_ingest/cli.py:250-255`),
@@ -3099,7 +3099,7 @@ def test_the_configured_entry_point_resolves_to_a_case_callable():
     assert callable(assessor) and not isinstance(assessor, type)
 ```
 
-- [ ] **Step 6: Give the controversy branch the same `close()` hook the verifier branch has, and point the config**
+- [x] **Step 6: Give the controversy branch the same `close()` hook the verifier branch has, and point the config**
 
 The verifier branch of `_cmd_golden_score` calls a duck-typed `close()` in a `finally` so a
 verifier that opened a `RunContext` gets its transcript and `manifest.yaml` written. The
@@ -3139,7 +3139,7 @@ Expected: PASS (7 tests)
 Run: `uv --directory tools/ingest run pytest tests/test_goldens_cli.py -v`
 Expected: PASS — the existing CLI tests still pass with the new `finally`.
 
-- [ ] **Step 7: Update the golden README**
+- [x] **Step 7: Update the golden README**
 
 Append to `tests/golden/controversy/README.md`:
 
@@ -3162,7 +3162,7 @@ The run is a **measurement, not a CI gate** (§8.6): CI shape-checks these cases
 them. New cases arrive from `candidates/` — see that directory's README.
 ```
 
-- [ ] **Step 8: Write the Stage 3D exit test**
+- [x] **Step 8: Write the Stage 3D exit test**
 
 ```python
 # tools/research/tests/test_exit_3d.py
@@ -3304,12 +3304,12 @@ def test_a_second_run_over_unchanged_inputs_is_free_and_silent(store_repo, fake_
     assert _git(["rev-parse", "HEAD"], repo).strip() == head
 ```
 
-- [ ] **Step 9: Run the exit test**
+- [x] **Step 9: Run the exit test**
 
 Run: `uv --directory tools/research run pytest tests/test_exit_3d.py -m '' -v`
 Expected: PASS (2 tests)
 
-- [ ] **Step 10: Wire CI**
+- [x] **Step 10: Wire CI**
 
 In `.github/workflows/ci.yml`, add a step after "Test the research package":
 
@@ -3322,7 +3322,7 @@ In `.github/workflows/ci.yml`, add a step after "Test the research package":
 
 and extend the orchestrator step's file list with `tests/test_controversy_job.py`.
 
-- [ ] **Step 11: Run everything**
+- [x] **Step 11: Run everything**
 
 ```bash
 uv --directory tools/research run pytest -m '' -q
@@ -3333,7 +3333,7 @@ uv --directory tools/ingest run langatlas-sources golden-validate
 ```
 Expected: all green.
 
-- [ ] **Step 12: Score the assessor against the controversy golden set**
+- [x] **Step 12: Score the assessor against the controversy golden set**
 
 This one costs real provider calls and is run by hand, not in CI (§8.6):
 
@@ -3349,7 +3349,7 @@ assessor, and the ordinal metrics are a measurement the developer reads. What *i
 reacting to: a level-3 recall below 1.0 (a missed level 3 is a dispute the site never shows) and
 any confusion cell two levels off the diagonal.
 
-- [ ] **Step 13: Commit**
+- [x] **Step 13: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/controversy/assessor.py config/ingest.yaml \

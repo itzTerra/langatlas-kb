@@ -49,7 +49,12 @@ goldens:
   # Dotted `module:attr` path to the D24 verifier factory. `golden-score` resolves this
   # to score 2D's pipeline against the golden set (Section 6.4).
   verifier_entry_point: langatlas_ingest.verify.calibration:verify_golden_item
-  controversy_assessor_entry_point:
+  # Dotted `module:attr` path to the D21/D25 assessor (Stage 3D). `golden-score` resolves it and
+  # calls it once per case, so it is the assessor itself, not a factory. The module lives in
+  # `langatlas_research`, so score it from that package's environment:
+  #   uv --directory tools/research run langatlas-sources golden-score \
+  #     --controversy-assessor langatlas_research.controversy.assessor:golden_assessor
+  controversy_assessor_entry_point: langatlas_research.controversy.assessor:golden_assessor
 verification:
   # D24's model ladder (§6.2/§7.1). Aliases, never model ids: the resolved model is
   # `config/provider_capabilities.yaml`'s business, and RunContext pins it per run.
