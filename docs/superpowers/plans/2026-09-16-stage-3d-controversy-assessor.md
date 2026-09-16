@@ -2625,7 +2625,7 @@ git commit -m "feat(#stage-3d): assess a record's facts together and land the bl
   `Deps`.
 - Produces: job kind `nightly-controversy` (enumerator + item runner).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/orchestrator/tests/test_controversy_job.py
@@ -2678,12 +2678,12 @@ def test_a_record_that_vanished_is_done_not_blocked(tmp_path, monkeypatch):
     assert "no longer in the store" in outcome.detail
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_controversy_job.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_orchestrator.jobs.controversy`
 
-- [ ] **Step 3: Write the job kind**
+- [x] **Step 3: Write the job kind**
 
 ```python
 # tools/orchestrator/src/langatlas_orchestrator/jobs/controversy.py
@@ -2781,7 +2781,7 @@ def _run_item(ctx, item_key: str, extra: dict, repo_root: Path) -> ItemOutcome:
 register_job_kind(KIND, _enumerate, _run_item)
 ```
 
-- [ ] **Step 4: Write the batch spec**
+- [x] **Step 4: Write the batch spec**
 
 `config/jobs/nightly-controversy.yaml`:
 
@@ -2801,7 +2801,7 @@ budget:
   max_wall_seconds: 21600
 ```
 
-- [ ] **Step 5: Add the cron line**
+- [x] **Step 5: Add the cron line**
 
 In `config/jobs/crontab.example`, directly under the nightly-verification entry:
 
@@ -2814,17 +2814,17 @@ In `config/jobs/crontab.example`, directly under the nightly-verification entry:
 and amend the existing verification comment so the pair reads as §7.11's "nightly
 verification/controversy batch" — two job kinds, one nightly slot, verification first.
 
-- [ ] **Step 6: Run the job tests**
+- [x] **Step 6: Run the job tests**
 
 Run: `uv --directory tools/orchestrator run pytest tests/test_controversy_job.py tests/test_registry.py -v`
 Expected: PASS (6 new + the existing registry tests)
 
-- [ ] **Step 7: Check the spec loads and the kind resolves**
+- [x] **Step 7: Check the spec loads and the kind resolves**
 
 Run: `uv --directory tools/orchestrator run python -c "import langatlas_orchestrator.jobs.controversy; from langatlas_orchestrator.registry import registered_kinds; print(registered_kinds())"`
 Expected: a list containing `nightly-controversy` alongside the existing nine kinds.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/orchestrator/src/langatlas_orchestrator/jobs/controversy.py \

@@ -7,8 +7,14 @@
 # always developer-initiated by hand, never run unattended via cron (D43 ratified
 # follow-up).
 
-# nightly ~200-fact controversy assessment + re-verification backstop candidates (D25)
+# nightly verification/controversy batch (§7.11): ~200-fact re-verification backstop
+# candidates first, then the controversy assessment, because a fact's verdicts are one
+# of the assessor's structured inputs and a stale verdict is a stale level (D25)
 0 2 * * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/nightly-verification.yaml
+
+# nightly controversy assessment (D21/D25) — runs after verification, because a fact's
+# verdicts are one of the assessor's structured inputs and a stale verdict is a stale level
+30 2 * * *        cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/nightly-controversy.yaml
 
 # monthly link-checker (D37)
 0 3 1 * *         cd <repo> && uv run --package langatlas-orchestrator langatlas-orchestrator run config/jobs/monthly-link-checker.yaml
