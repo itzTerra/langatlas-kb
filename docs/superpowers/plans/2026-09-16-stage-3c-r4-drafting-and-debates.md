@@ -1111,7 +1111,7 @@ hand-type a locator (§4.3) and no over-cap or invented quote can reach a record
     output embeds.
   - `as_drafts(entries) -> tuple[Evidence, ...]` — plan entries → 3A's `Evidence` tuples.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_evidence.py
@@ -1191,12 +1191,12 @@ def test_plan_entries_convert_to_3as_evidence_tuples():
                                                                 ("t", "§2", "q")]
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_evidence.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.evidence`.
 
-- [ ] **Step 3: Write the module**
+- [x] **Step 3: Write the module**
 
 ```python
 # tools/research/src/langatlas_research/draft/evidence.py
@@ -1277,17 +1277,18 @@ def as_drafts(entries) -> tuple[Evidence, ...]:
                           quote=entry.get("quote")) for entry in entries)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_evidence.py -v`
 Expected: PASS (9 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
         tools/research/src/langatlas_research/draft/evidence.py \
-        tools/research/tests/test_draft_evidence.py
+        tools/research/tests/test_draft_evidence.py \
+        tools/research/src/langatlas_research/errors.py
 git commit -m "feat(#stage-3c): bind R4 evidence from chunk ids with quote cap and verbatim checks"
 ```
 

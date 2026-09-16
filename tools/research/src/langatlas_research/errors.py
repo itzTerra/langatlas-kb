@@ -56,7 +56,8 @@ class SurveyOutputInvalid(ResearchError):
 
 
 class EvidenceUnresolvable(ResearchError):
-    """A candidate cites a chunk id that `source_chunks` does not hold."""
+    """Every evidence chunk id an R4 role named for one entry failed to resolve, so the entry
+    has no source at all — unmintable per D4/§6.1."""
 
 
 class AmendmentRefused(ResearchError):
