@@ -3,6 +3,7 @@ import pytest
 
 import langatlas_orchestrator.jobs  # noqa: F401 — registers every built-in kind
 from langatlas_orchestrator.registry import get_job_kind, registered_kinds
+from langatlas_pipeline.errors import CircuitOpen, ProviderTransportError
 from langatlas_research.cycle import new_cycle, sign_off
 from langatlas_research.errors import SignOffMissing
 from langatlas_research.paths import REPO_ROOT, ensure_layout, themes_path
@@ -106,6 +107,25 @@ def test_an_unreachable_database_blocks(repo, monkeypatch):
         raise psycopg.OperationalError("connection refused")
 
     monkeypatch.setattr(job, "_tag", _down)
+    outcome = job._run_item(object(), f"01-typing:batch-0000@{pool.digest}", {"cycle": 1},
+                            repo)
+    assert outcome.status == "blocked"
+
+
+@pytest.mark.parametrize("exc", [
+    ProviderTransportError("provider call exceeded the 900s hard wall-clock timeout"),
+    CircuitOpen("N consecutive transport failures"),
+])
+def test_an_unavailable_provider_blocks_instead_of_crashing(repo, monkeypatch, exc):
+    import langatlas_orchestrator.jobs.r3_tagging as job
+
+    pool = _pool(_signed(repo), 2)
+    save_pool(pool)
+
+    def _unavailable(*args):
+        raise exc
+
+    monkeypatch.setattr(job, "_tag", _unavailable)
     outcome = job._run_item(object(), f"01-typing:batch-0000@{pool.digest}", {"cycle": 1},
                             repo)
     assert outcome.status == "blocked"

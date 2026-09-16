@@ -10,7 +10,7 @@ import psycopg
 
 from langatlas_ingest.config import IngestConfig
 from langatlas_ingest.db import connect
-from langatlas_pipeline.errors import StructuredOutputError
+from langatlas_pipeline.errors import CircuitOpen, ProviderTransportError, StructuredOutputError
 from langatlas_research.config import ResearchConfig
 from langatlas_research.cycle import load_cycle
 from langatlas_research.errors import TaggerOutputInvalid
@@ -72,6 +72,11 @@ def _run_item(ctx, item_key: str, extra: dict, repo_root: Path) -> ItemOutcome:
         result = _tag(ctx, theme, cycle_slug, batch, alias)
     except psycopg.OperationalError as exc:
         return ItemOutcome(status="blocked", detail=f"database unavailable: {exc}")
+    except (ProviderTransportError, CircuitOpen) as exc:
+        # A timed-out or down completion channel is exactly as transient as a down database
+        # (D43 §2.1): pause this item rather than let an unhandled exception crash the whole
+        # batch — resume retries it, same as every other `blocked` item.
+        return ItemOutcome(status="blocked", detail=f"provider unavailable: {exc}")
     except (TaggerOutputInvalid, StructuredOutputError) as exc:
         # Deterministic at temperature 0 and cached: a retry returns the same answer. The
         # batch completes with no tag rows, and the survey header's counts show the loss.
