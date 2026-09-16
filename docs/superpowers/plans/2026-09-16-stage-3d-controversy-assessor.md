@@ -1595,7 +1595,7 @@ record metadata. No source text, no agent prose, no fetched page ever enters the
 is nothing to delimit. Task 2's projections are what make that true, which is why
 `contradiction_projection` drops `detail` rather than truncating it.
 
-- [ ] **Step 1: Mint the rubric prompt**
+- [x] **Step 1: Mint the rubric prompt**
 
 Run from the repo root:
 
@@ -1673,7 +1673,7 @@ PY
 Expected: prints `controversy-assessor@v-<8 hex>`. Record that version — it is what
 `test_controversy_assessor.py` and the block's `assessed.prompt` will show.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 ```python
 # tools/research/tests/test_controversy_assessor.py
@@ -1766,12 +1766,12 @@ def test_the_prompt_lists_only_derivable_signals(fake_ctx):
     assert "d-99" not in rendered
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_assessor.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.controversy.assessor`
 
-- [ ] **Step 4: Write `assessor.py`**
+- [x] **Step 4: Write `assessor.py`**
 
 ```python
 # tools/research/src/langatlas_research/controversy/assessor.py
@@ -1867,12 +1867,12 @@ def needs_escalation(assessment: Assessment) -> bool:
     return assessment.level == 3 or assessment.alternative is not None
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_controversy_assessor.py -m '' -v`
 Expected: PASS (9 tests)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add prompts/controversy-assessor tools/research/src/langatlas_research/controversy/assessor.py \
