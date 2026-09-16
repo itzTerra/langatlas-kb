@@ -2554,7 +2554,7 @@ git commit -m "feat(#stage-3c): add debate records and the controversy projectio
   - `apply_resolution(plan, debate) -> dict` — the pure plan updater a resolution implies.
   - `render_entry(entry) -> str` — the plain-text rendering every debate role sees.
 
-- [ ] **Step 1: Mint the three prompts**
+- [x] **Step 1: Mint the three prompts**
 
 Run:
 ```bash
@@ -2684,7 +2684,7 @@ rm "$PROMPT"
 
 Expected: three lines, `r4-proposer@v-<8hex>`, `r4-challenger@v-<8hex>`, `r4-moderator@v-<8hex>`.
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_debate.py
@@ -2923,12 +2923,12 @@ def test_apply_resolution_is_pure(signed_cycle, plan):
     assert find_entry(plan, "static-typing")[1]["status"] == "proposed"
 ```
 
-- [ ] **Step 3: Run the test to verify it fails**
+- [x] **Step 3: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_debate.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.debate`.
 
-- [ ] **Step 4: Write the machinery**
+- [x] **Step 4: Write the machinery**
 
 ```python
 # tools/research/src/langatlas_research/draft/debate.py
@@ -3294,12 +3294,12 @@ def _split_entry(item: SplitOut, *, lookup: ChunkLookup, debate_id: str) -> dict
     return entry
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_debate.py -v`
 Expected: PASS (9 tests).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
