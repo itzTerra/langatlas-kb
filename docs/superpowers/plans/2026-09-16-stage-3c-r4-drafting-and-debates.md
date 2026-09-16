@@ -1888,7 +1888,7 @@ must therefore be a **deterministic function of the plan and the store**, not a 
   - `open_carves(plan) -> list[str]` — contested keys that are neither debated nor waived.
   - `waive(plan, key, reason) -> dict` — the developer's escape hatch.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_draft_contested.py
@@ -2010,12 +2010,12 @@ def test_waiving_an_uncontested_carve_is_refused(signed_cycle):
         waive(plan, "a", "no reason to")
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_contested.py -v`
 Expected: FAIL — `ModuleNotFoundError: langatlas_research.draft.contested`.
 
-- [ ] **Step 3: Write the module**
+- [x] **Step 3: Write the module**
 
 ```python
 # tools/research/src/langatlas_research/draft/contested.py
@@ -2128,12 +2128,12 @@ def waive(plan: dict, key: str, reason: str) -> dict:
     return set_entry(plan, key, status="waived", waiver=reason)
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_draft_contested.py -v`
 Expected: PASS (13 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-16-stage-3c-r4-drafting-and-debates.md \
