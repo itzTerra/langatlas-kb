@@ -133,6 +133,7 @@ def _verify_fact(ctx, item_key: str, repo_root: Path, config: IngestConfig,
         # time for this one fact.
         outcome = decide_fact(fact["fact_id"], result.verdicts, deps.source_facts,
                               has_since=bool(fact.get("since")),
+                              since=fact.get("since"),
                               absent=fact.get("status") == "absent", queue=queue,
                               bounce_budget=config.bounce_budget,
                               contradictions_path=repo_root / CONTRADICTIONS_RECORD,

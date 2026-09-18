@@ -12,3 +12,4 @@ custom:
   tier: A
   grounding: formal-spec
   canonical_source: true
+  language_version: Haskell 2010

@@ -7,3 +7,4 @@ custom:
   grounding: reference-implementation-docs
   canonical_source: true
   edition: 9.14.1
+  language_version: 9.14.1

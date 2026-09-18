@@ -742,7 +742,7 @@ as-of-supporting sources. The comparison uses `normalize_value` and is case-inse
 with no `language_version` cannot anchor an as-of `since`. The per-pair verdicts, the golden set
 and the calibration are untouched: the rule only changes what `decide_fact` does with them.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tools/ingest/tests/test_verify_admissibility.py`:
 
@@ -801,13 +801,13 @@ def test_a_fact_without_a_since_is_untouched_by_the_bound():
     assert got.admissible is True
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/ingest run pytest tests/test_verify_admissibility.py -v`
 Expected: FAIL — `TypeError: SourceFacts.__init__() got an unexpected keyword argument
 'language_version'`
 
-- [ ] **Step 3: Add `language_version` to source records**
+- [x] **Step 3: Add `language_version` to source records**
 
 In `ontology/schema/source.schema.json`, add to `custom.properties` (after `edition_check_url`):
 
@@ -835,7 +835,7 @@ cannot bound anything, so a Rust as-of `since` must cite the FLS.
 Run: `uv --directory tools/validate run langatlas-validate ci`
 Expected: exit 0 (the source records stay schema-valid and normalized).
 
-- [ ] **Step 4: Load it into `SourceFacts`**
+- [x] **Step 4: Load it into `SourceFacts`**
 
 In `tools/ingest/src/langatlas_ingest/verify/sources.py`, add a defaulted field last (the existing
 tests construct `SourceFacts` positionally):
@@ -854,7 +854,7 @@ and pass it in `load_source_facts`:
             language_version=str(custom.get("language_version") or ""))
 ```
 
-- [ ] **Step 5: Enforce the bound in `decide_fact`**
+- [x] **Step 5: Enforce the bound in `decide_fact`**
 
 In `tools/ingest/src/langatlas_ingest/verify/admissibility.py`, add
 `from langatlas_validate.normalize import normalize_value` to the imports and these helpers above
@@ -930,7 +930,7 @@ Then change `decide_fact`:
 
 (The `return FactOutcome(…)` line is unchanged.)
 
-- [ ] **Step 6: Pass `since` from the nightly job**
+- [x] **Step 6: Pass `since` from the nightly job**
 
 In `tools/orchestrator/src/langatlas_orchestrator/jobs/verification.py`, in `_verify_fact`'s
 `decide_fact(…)` call, add directly after `has_since=bool(fact.get("since")),`:
@@ -939,7 +939,7 @@ In `tools/orchestrator/src/langatlas_orchestrator/jobs/verification.py`, in `_ve
                               since=fact.get("since"),
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv --directory tools/ingest run pytest tests/test_verify_admissibility.py tests/test_verify_verdicts.py tests/test_verify_confidence.py -v`
 Expected: PASS
@@ -947,7 +947,7 @@ Expected: PASS
 Run: `uv --directory tools/ingest run langatlas-verify canaries --check && uv --directory tools/ingest run langatlas-sources golden-validate`
 Expected: exit 0 — the golden set and canaries are untouched.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add ontology/schema/source.schema.json sources/c23-n3220.yaml sources/jls-se25.yaml \

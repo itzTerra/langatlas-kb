@@ -4,6 +4,7 @@ from langatlas_ingest.verify.confidence import derive_confidence
 from langatlas_ingest.verify.contradictions import mint_verification_record
 from langatlas_ingest.verify.verdicts import (ADMISSIBLE_TIERS, ADMITTING_VERDICTS,
                                               fold_verification)
+from langatlas_validate.normalize import normalize_value
 
 # Which verdicts are worth a retry with a narrowed claim, and what to tell the proposer.
 _BOUNCE_REASONS = {
@@ -19,6 +20,32 @@ _BOUNCE_REASONS = {
 # whichever pair happened to be last.
 _BOUNCE_PRIORITY = ("contradicted", "unsupported", "partial", "locator-not-found",
                     "source-unavailable")
+
+
+def _eligible_since(pairs, source_facts: dict) -> list:
+    return [pair for pair in pairs
+            if pair.verdict in ("supported", "partial")
+            and source_facts.get(pair.source_id) is not None
+            and source_facts[pair.source_id].tier in ADMISSIBLE_TIERS]
+
+
+def _best_since_status(pairs, source_facts: dict) -> str | None:
+    statuses = {pair.since_status for pair in _eligible_since(pairs, source_facts)}
+    for status in ("since-supported", "as-of-supported"):
+        if status in statuses:
+            return status
+    return None
+
+
+def _as_of_bound(since: str, pairs, source_facts: dict) -> tuple[bool, list[str]]:
+    """D66: an as-of `since` must be the version an as-of-supporting citation documents.
+    @returns (bound satisfied, the documented versions — for the bounce message)"""
+    wanted = normalize_value(since).lower()
+    versions = [source_facts[pair.source_id].language_version
+                for pair in _eligible_since(pairs, source_facts)
+                if pair.since_status == "as-of-supported"
+                and source_facts[pair.source_id].language_version]
+    return any(normalize_value(v).lower() == wanted for v in versions), versions
 
 
 @dataclass(frozen=True)
@@ -62,6 +89,7 @@ def _bounce(queue, fact_id: str, pairs, budget: int) -> tuple[bool, str, bool]:
 
 
 def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = False,
+                since: str | None = None,
                 absent: bool = False, queue=None, bounce_budget: int = 2,
                 contradictions_path: Path | None = None,
                 chat_run_id: str | None = None) -> FactOutcome:
@@ -72,6 +100,8 @@ def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = Fa
     `unsupported`/`contradicted` never enter and bounce with a rationale.
 
     @param pairs - every `PairVerdict` for this fact (the latest per citation)
+    @param since - the fact's `since` value; D66 bounds an as-of-supported one by the version
+        its citation documents
     @param queue - a `SourcingQueue`; None skips queue side effects (tests, dry runs)
     @param contradictions_path - None uses the repo's `contradictions.yaml`
 
@@ -85,6 +115,17 @@ def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = Fa
                      and source_facts.get(p.source_id)
                      and source_facts[p.source_id].tier in ADMISSIBLE_TIERS
                      for p in pairs)
+    bound_reason = ""
+    if (admissible and has_since and since
+            and _best_since_status(pairs, source_facts) == "as-of-supported"):
+        bounded, versions = _as_of_bound(since, pairs, source_facts)
+        if not bounded:
+            admissible, verification = False, "failed"
+            bound_reason = (f"the source only shows the feature as of"
+                            f" {', '.join(versions) or 'an unversioned edition'}; an as-of"
+                            f" `since` must be the version its citation documents (D66) — cite"
+                            f" a passage stating when the feature appeared, or claim that"
+                            f" version")
     confidence = derive_confidence(verification, pairs, source_facts, absent=absent)
 
     contradiction_ids = tuple(mint_verification_record(
@@ -95,6 +136,7 @@ def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = Fa
     reason = ""
     if pairs and not admissible:
         bounced, reason, exhausted = _bounce(queue, fact_id, pairs, bounce_budget)
+    reason = reason or bound_reason
 
     return FactOutcome(fact_id=fact_id, admissible=admissible, verification=verification,
                        confidence=confidence, bounced=bounced, bounce_reason=reason,

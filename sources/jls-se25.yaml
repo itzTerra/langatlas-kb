@@ -21,3 +21,4 @@ custom:
   grounding: formal-spec
   canonical_source: true
   edition: Java SE 25 Edition
+  language_version: '25'

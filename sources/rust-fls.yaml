@@ -10,3 +10,4 @@ custom:
     rust-lang/fls@680fbc75ec03130b8616a0ebf9dd732b989d4460 (spec version 1.98.0 per the repo's 
     version.rst); no official single-file export is published upstream.
   edition: 1.98.0
+  language_version: 1.98.0

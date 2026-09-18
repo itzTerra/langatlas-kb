@@ -141,3 +141,57 @@ def test_no_pairs_at_all_is_unverified_and_does_not_bounce():
     assert got.verification == "unverified"
     assert got.bounced is False
     assert queue.filed == []
+
+
+VERSIONED = {
+    "jls": SourceFacts("jls", "A", "formal-spec", (), {"author": [{"family": "Gosling"}]},
+                       language_version="25"),
+    "c23": SourceFacts("c23", "A", "formal-spec", (), {"author": [{"family": "WG14"}]},
+                       language_version="C23"),
+    "book": SourceFacts("book", "B", "third-party-reference", (),
+                        {"author": [{"family": "Scott"}]}),
+}
+
+
+def _as_of(source_id):
+    return pair(source_id, since_status="as-of-supported")
+
+
+def test_an_as_of_since_equal_to_the_documented_version_is_admitted():
+    got = decide_fact("f-000000000001", [_as_of("jls")], VERSIONED, has_since=True,
+                      since="25")
+    assert got.admissible is True
+    assert got.verification == "partially-verified"
+
+
+def test_an_as_of_since_earlier_than_anything_the_citation_shows_is_refused():
+    """D66: the golden set's Java `var` claimed `since: '8'` is as-of-supported by a JLS 25
+    citation — back-dating only moves earlier, so admitting it could never be corrected."""
+    got = decide_fact("f-000000000001", [_as_of("jls")], VERSIONED, has_since=True, since="8")
+    assert got.admissible is False
+    assert got.verification == "failed"
+    assert "documents" in got.bounce_reason
+
+
+def test_a_since_the_source_states_is_not_bounded():
+    got = decide_fact("f-000000000001", [pair("jls", since_status="since-supported")],
+                      VERSIONED, has_since=True, since="10")
+    assert got.admissible is True
+    assert got.verification == "verified"
+
+
+def test_a_source_without_a_language_version_cannot_anchor_an_as_of_since():
+    got = decide_fact("f-000000000001", [_as_of("book")], VERSIONED, has_since=True,
+                      since="3.14")
+    assert got.admissible is False
+
+
+def test_the_bound_is_case_and_whitespace_tolerant():
+    got = decide_fact("f-000000000001", [_as_of("c23")], VERSIONED, has_since=True,
+                      since=" c23 ")
+    assert got.admissible is True
+
+
+def test_a_fact_without_a_since_is_untouched_by_the_bound():
+    got = decide_fact("f-000000000001", [pair("book")], VERSIONED)
+    assert got.admissible is True

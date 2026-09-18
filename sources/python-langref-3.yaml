@@ -12,3 +12,4 @@ custom:
     docs no longer publish a single-file PDF/HTML export of just the Language Reference manual.
   edition: 3.14.7
   edition_check_url: https://docs.python.org/3/reference/index.html
+  language_version: '3.14'

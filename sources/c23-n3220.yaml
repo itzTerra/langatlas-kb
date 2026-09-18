@@ -10,3 +10,4 @@ custom:
   grounding: formal-spec
   canonical_source: true
   edition: N3220
+  language_version: C23

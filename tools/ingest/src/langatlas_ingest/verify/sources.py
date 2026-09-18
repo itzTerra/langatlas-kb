@@ -21,6 +21,9 @@ class SourceFacts:
     grounding: str
     locator_kinds: tuple[str, ...]
     csl: dict
+    # D66: the language version this source documents, normalized free text. What an as-of
+    # `since` citing it must equal. Empty for a source that documents no single version.
+    language_version: str = ""
 
 
 def load_source_facts(sources_dir: Path | None = None) -> dict[str, SourceFacts]:
@@ -43,7 +46,8 @@ def load_source_facts(sources_dir: Path | None = None) -> dict[str, SourceFacts]
         loaded[data.get("id", path.stem)] = SourceFacts(
             id=data.get("id", path.stem), tier=custom.get("tier", ""),
             grounding=custom.get("grounding", ""),
-            locator_kinds=tuple(custom.get("locator_kinds") or ()), csl=data)
+            locator_kinds=tuple(custom.get("locator_kinds") or ()), csl=data,
+            language_version=str(custom.get("language_version") or ""))
     return loaded
 
 

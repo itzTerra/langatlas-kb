@@ -27,6 +27,7 @@
         "locator_kinds": { "type": "array", "items": { "type": "string" } },
         "edition": { "type": "string" },
         "edition_check_url": { "type": "string" },
+        "language_version": { "type": "string" },
         "canonical_source": { "type": "boolean" },
         "acquisition_note": { "type": "string" },
         "superseded_by": { "type": "string" }
