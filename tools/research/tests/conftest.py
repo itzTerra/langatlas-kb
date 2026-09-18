@@ -166,3 +166,69 @@ def plan_repo(research_repo, signed_cycle):
                              generated_at="2026-09-20T10:00:00Z")
     save_plan(plan, repo_root=research_repo)
     return research_repo
+
+
+# --- Stage 3E ------------------------------------------------------------------------------
+
+def _spec_item(feature, name, layer, aliases=()):
+    return {"feature": feature, "name": name, "layer": layer,
+            "summary": f"{name} is a typing discipline.", "aliases": list(aliases),
+            "anchor_prefix": f"fi.<lang>.{feature}",
+            "fields": ["exists", "since", "characteristics", "syntax"]}
+
+
+@pytest.fixture
+def r5_spec():
+    """A compiled questionnaire shaped exactly like `compile_spec`'s output: one exclusive
+    dimension whose two members are its values (D67), and one standalone layer-2 feature."""
+    return {"ontology_version": "0.4.0", "compiler_version": "0.1.0",
+            "fields": {"exists": ["status", "sources", "absence_scope", "notes"],
+                       "since": ["since"], "characteristics": ["characteristics"],
+                       "syntax": ["syntax"]},
+            "groups": [
+                {"kind": "dimension", "dimension": "type-checking-discipline",
+                 "label": "Type checking discipline", "exclusivity": "exclusive",
+                 "applies_to": ["general-purpose"],
+                 "items": [_spec_item("dynamic-typing", "Dynamic typing", 3,
+                                      ("dynamic type checking",)),
+                           _spec_item("static-typing", "Static typing", 3)]},
+                {"kind": "standalone", **_spec_item("type-inference", "Type inference", 2)}],
+            "constraints": [], "diagnostics": []}
+
+
+@pytest.fixture
+def r5_record(signed_cycle, r5_spec):
+    from langatlas_research.reality.record import build_record
+
+    return build_record(cycle=signed_cycle, spec_rel="questionnaire/spec-0.4.0.yaml",
+                        spec=r5_spec,
+                        scope_features=("dynamic-typing", "static-typing", "type-inference"),
+                        generated_at="2026-09-20T10:00:00Z")
+
+
+@pytest.fixture
+def r5_run():
+    return {"run_id": "2026-09-20-r5-classify-01-typing-python-01",
+            "prompt_version": "v-test", "model": "claude"}
+
+
+@pytest.fixture
+def r5_cell():
+    """Builds one reality-check cell. A mappable cell's proposal starts from one Python-reference
+    citation and — present or partial — `since: "3.14"` (D65); keyword arguments override or add
+    proposal fields (`since=None` produces a cell the renderer refuses)."""
+    def _cell(language, feature, *, answer="present", status="proposed", mappable=True,
+              **proposal):
+        if not mappable:
+            return {"key": f"{language}--{feature}", "language": language, "feature": feature,
+                    "mappable": False, "answer": None, "note": "does not apply",
+                    "proposal": None, "status": "unmappable", "verification": None}
+        body = {"sources": [{"source": "python-langref-3", "locator": "§3.1",
+                             "chunk_id": "python-langref-3#c00012"}]}
+        if answer != "absent":
+            body["since"] = "3.14"
+        body.update(proposal)
+        return {"key": f"{language}--{feature}", "language": language, "feature": feature,
+                "mappable": True, "answer": answer, "note": "", "proposal": body,
+                "status": status, "verification": None}
+    return _cell

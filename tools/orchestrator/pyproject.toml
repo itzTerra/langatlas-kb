@@ -11,6 +11,7 @@ dependencies = [
   "langatlas-pipeline",
   "langatlas-ingest",
   "langatlas-finding-aids",
+  "langatlas-questionnaire",
   "langatlas-research",
 ]
 
@@ -33,6 +34,7 @@ langatlas-commit = { path = "../commit", editable = true }
 langatlas-pipeline = { path = "../pipeline", editable = true }
 langatlas-ingest = { path = "../ingest", editable = true }
 langatlas-finding-aids = { path = "../finding-aids", editable = true }
+langatlas-questionnaire = { path = "../questionnaire", editable = true }
 langatlas-research = { path = "../research", editable = true }
 
 [tool.pytest.ini_options]

@@ -107,3 +107,23 @@ class ControversyInputRefused(ResearchError):
 class AssessorOutputInvalid(ResearchError):
     """The assessor returned a level outside 0-3, or output its schema rejects. There is no
     repair turn: the fact keeps whatever level it already had and the run says so."""
+
+
+class R5NotReady(ResearchError):
+    """R5 was started on a cycle that has not finished R4, has no features to check, or already
+    holds classifier runs that starting over would silently discard."""
+
+
+class RealityCheckMissing(ResearchError):
+    """An R5 step ran before `reality compile` opened the cycle's reality check."""
+
+
+class RealityOutputInvalid(ResearchError):
+    """The reality checker returned output its schema or this package's shape rules reject, or a
+    reality-check file failed its own schema. There is no repair turn: the transcript is logged
+    (D18), and the developer reads it and re-runs the language."""
+
+
+class R5Incomplete(ResearchError):
+    """`reality finalize` found open work: an unclassified language, or a cell that never
+    reached the gate."""

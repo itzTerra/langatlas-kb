@@ -13,6 +13,7 @@ dependencies = [
   "langatlas-pipeline",
   "langatlas-ingest",
   "langatlas-finding-aids",
+  "langatlas-questionnaire",
 ]
 
 [project.optional-dependencies]
@@ -34,6 +35,7 @@ langatlas-commit = { path = "../commit", editable = true }
 langatlas-pipeline = { path = "../pipeline", editable = true }
 langatlas-ingest = { path = "../ingest", editable = true }
 langatlas-finding-aids = { path = "../finding-aids", editable = true }
+langatlas-questionnaire = { path = "../questionnaire", editable = true }
 
 [tool.pytest.ini_options]
 markers = ["git: creates throwaway git repositories and runs the real commit protocol"]

@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/research-schema/reality-check",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cycle", "theme", "theme_digest", "ontology_version", "questionnaire",
+               "generated_at", "runs", "scope", "cells", "uncovered", "findings", "summary",
+               "shakedown"],
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", "maxLength": 48 },
+    "pairKey": { "type": "string",
+                 "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*--[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["source", "locator"],
+        "properties": {
+          "source": { "type": "string" },
+          "locator": { "type": "string" },
+          "chunk_id": { "type": "string" },
+          "quote": { "type": "string" }
+        }
+      }
+    },
+    "cited": { "$ref": "#/$defs/evidence", "minItems": 1 },
+    "run": {
+      "type": "object", "additionalProperties": false,
+      "required": ["run_id", "prompt_version", "model"],
+      "properties": {
+        "run_id": { "type": "string" },
+        "prompt_version": { "type": "string" },
+        "model": { "type": "string" }
+      }
+    },
+    "proposal": {
+      "type": "object", "additionalProperties": false,
+      "required": ["sources"],
+      "properties": {
+        "sources": { "$ref": "#/$defs/cited" },
+        "since": { "type": "string", "minLength": 1 },
+        "absence_scope": { "type": "string", "minLength": 1 },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["key", "type", "text", "sources"],
+            "properties": {
+              "key": { "type": "string", "pattern": "^n-[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$" },
+              "type": { "enum": ["limitation", "extra", "alternative"] },
+              "text": { "type": "string" },
+              "sources": { "$ref": "#/$defs/cited" }
+            }
+          }
+        },
+        "characteristics": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["key", "text", "sources"],
+            "properties": {
+              "key": { "type": "string", "pattern": "^c-[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$" },
+              "text": { "type": "string" },
+              "sources": { "$ref": "#/$defs/cited" }
+            }
+          }
+        },
+        "syntax": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["key", "title", "code", "sources"],
+            "properties": {
+              "key": { "$ref": "#/$defs/slug" },
+              "title": { "type": "string" },
+              "code": { "type": "string" },
+              "sources": { "$ref": "#/$defs/cited" }
+            }
+          }
+        }
+      }
+    },
+    "verification": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exists", "facts", "pairs"],
+      "properties": {
+        "exists": {
+          "type": "object", "additionalProperties": false,
+          "required": ["fact_id", "verdict", "admissible"],
+          "properties": {
+            "fact_id": { "type": "string" },
+            "verdict": { "type": "string" },
+            "admissible": { "type": "boolean" }
+          }
+        },
+        "facts": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["anchor", "admissible", "verification"],
+            "properties": {
+              "anchor": { "type": "string" },
+              "admissible": { "type": "boolean" },
+              "verification": { "type": "string" }
+            }
+          }
+        },
+        "pairs": { "type": "integer", "minimum": 0 },
+        "detail": { "type": "string" },
+        "run_id": { "type": ["string", "null"] }
+      }
+    },
+    "cell": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "language", "feature", "mappable", "answer", "note", "proposal",
+                   "status", "verification"],
+      "properties": {
+        "key": { "$ref": "#/$defs/pairKey" },
+        "language": { "$ref": "#/$defs/slug" },
+        "feature": { "$ref": "#/$defs/slug" },
+        "mappable": { "type": "boolean" },
+        "answer": { "enum": ["present", "absent", "partial", null] },
+        "note": { "type": "string" },
+        "proposal": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/proposal" }] },
+        "status": { "enum": ["proposed", "admitted", "refused", "unmappable", "unsourced"] },
+        "verification": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/verification" }] }
+      }
+    },
+    "uncovered": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "language", "name", "note", "evidence"],
+      "properties": {
+        "key": { "$ref": "#/$defs/pairKey" },
+        "language": { "$ref": "#/$defs/slug" },
+        "name": { "type": "string", "minLength": 1 },
+        "note": { "type": "string" },
+        "evidence": { "$ref": "#/$defs/cited" }
+      }
+    },
+    "shakedownEntry": {
+      "type": "object", "additionalProperties": false,
+      "required": ["key", "component", "status", "detail"],
+      "properties": {
+        "key": { "type": "string", "pattern": "^s-[a-z]+-[0-9a-f]{8}$" },
+        "component": { "enum": ["compiler", "questionnaire", "classifier", "verifier",
+                                "commit", "sources"] },
+        "status": { "enum": ["open", "closed"] },
+        "detail": { "type": "string", "minLength": 1 },
+        "resolution": { "type": "string", "minLength": 1 }
+      }
+    }
+  },
+  "properties": {
+    "cycle": { "type": "integer", "minimum": 1 },
+    "theme": { "$ref": "#/$defs/slug" },
+    "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "ontology_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "questionnaire": { "type": "string",
+                       "pattern": "^questionnaire/spec-[0-9]+\\.[0-9]+\\.[0-9]+\\.yaml$" },
+    "generated_at": { "type": "string" },
+    "runs": {
+      "type": "object", "additionalProperties": false,
+      "required": ["classify", "verify"],
+      "properties": {
+        "classify": { "type": "object", "additionalProperties": { "$ref": "#/$defs/run" } },
+        "verify": { "type": ["string", "null"] }
+      }
+    },
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["features", "dimensions"],
+      "properties": {
+        "features": { "type": "array", "items": { "$ref": "#/$defs/slug" } },
+        "dimensions": { "type": "array", "items": { "$ref": "#/$defs/slug" } }
+      }
+    },
+    "cells": { "type": "array", "items": { "$ref": "#/$defs/cell" } },
+    "uncovered": { "type": "array", "items": { "$ref": "#/$defs/uncovered" } },
+    "findings": {
+      "type": "object", "additionalProperties": false,
+      "required": ["unmappable", "uninhabited_values", "unfittable", "exclusivity_violations"],
+      "properties": {
+        "unmappable": { "type": "array", "items": { "type": "string" } },
+        "uninhabited_values": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["dimension", "value"],
+            "properties": { "dimension": { "$ref": "#/$defs/slug" },
+                            "value": { "$ref": "#/$defs/slug" } }
+          }
+        },
+        "unfittable": { "type": "array", "items": { "$ref": "#/$defs/pairKey" } },
+        "exclusivity_violations": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false,
+            "required": ["language", "dimension", "members"],
+            "properties": {
+              "language": { "$ref": "#/$defs/slug" },
+              "dimension": { "$ref": "#/$defs/slug" },
+              "members": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/slug" } }
+            }
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["languages", "cells", "mappable", "unmappable", "admitted", "refused",
+                   "unsourced", "uncovered"],
+      "properties": {
+        "languages": { "type": "integer", "minimum": 0 },
+        "cells": { "type": "integer", "minimum": 0 },
+        "mappable": { "type": "integer", "minimum": 0 },
+        "unmappable": { "type": "integer", "minimum": 0 },
+        "admitted": { "type": "integer", "minimum": 0 },
+        "refused": { "type": "integer", "minimum": 0 },
+        "unsourced": { "type": "integer", "minimum": 0 },
+        "uncovered": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "shakedown": { "type": "array", "items": { "$ref": "#/$defs/shakedownEntry" } }
+  }
+}

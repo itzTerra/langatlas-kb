@@ -59,6 +59,14 @@ class ControversyConfig:
 
 
 @dataclass(frozen=True)
+class RealityConfig:
+    classifier: ClaudeRoleConfig
+    max_characteristics: int
+    max_syntax: int
+    language_sources: dict          # language id -> tuple of source ids
+
+
+@dataclass(frozen=True)
 class ResearchConfig:
     pool: PoolConfig
     tagger: TaggerConfig
@@ -66,6 +74,7 @@ class ResearchConfig:
     scout: ClaudeRoleConfig
     draft: DraftConfig
     controversy: ControversyConfig
+    reality: RealityConfig
 
     @classmethod
     def load(cls, path: Path | None = None) -> "ResearchConfig":
@@ -74,6 +83,7 @@ class ResearchConfig:
         survey, draft = data["survey"], data["draft"]
         debate = draft["debate"]
         controversy = data["controversy"]
+        reality = data["reality_check"]
         return cls(pool=PoolConfig(**survey["pool"]),
                    tagger=TaggerConfig(**survey["tagger"]),
                    surveyor=ClaudeRoleConfig(**survey["surveyor"]),
@@ -93,4 +103,10 @@ class ResearchConfig:
                        alias=controversy["alias"],
                        max_facts_per_run=controversy["max_facts_per_run"],
                        spread_min_assessments=controversy["spread_min_assessments"],
-                       escalation=ClaudeRoleConfig(**controversy["escalation"])))
+                       escalation=ClaudeRoleConfig(**controversy["escalation"])),
+                   reality=RealityConfig(
+                       classifier=ClaudeRoleConfig(**reality["classifier"]),
+                       max_characteristics=reality["max_characteristics"],
+                       max_syntax=reality["max_syntax"],
+                       language_sources={language: tuple(ids) for language, ids
+                                         in (reality["language_sources"] or {}).items()}))

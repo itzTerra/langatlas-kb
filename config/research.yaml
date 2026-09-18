@@ -85,3 +85,27 @@ controversy:
     max_claude_messages: 40
     max_packet_terms: 0             # the escalation packet is structured inputs, not terms
     max_candidates: 1
+reality_check:
+  # R5 (Stage 3E). One Claude session per sampled language: answering a theme's questionnaire
+  # for a real language is judgment work (§7.1); verification stays on the university API.
+  # R5 mints nothing (D68) — the answers are verified and recorded in the reality check.
+  classifier:
+    model: null
+    max_turns: 80
+    max_claude_messages: 160
+    max_packet_terms: 60            # questionnaire items one session may be handed
+    max_candidates: 10              # uncovered constructs accepted from one session
+  # R5 is a shakedown, not a sweep: enough of each field to exercise the pipeline.
+  max_characteristics: 1            # per present/partial cell
+  max_syntax: 1                     # per present/partial cell
+  # Each sampled language's own reference sources, searched first and shown to the checker with
+  # their `custom.language_version` — the version an as-of `since` must be (D66). Source records
+  # carry no language field, so this is configuration. A sampled language missing here is
+  # classified against the general corpus and logged as a `sources` shakedown entry.
+  language_sources:
+    c: [c23-n3220]
+    java: [jls-se25]
+    python: [python-langref-3]
+    haskell: [haskell-2010-report, ghc-users-guide]
+    prolog: [deransart-prolog-1996]
+    rust: [rust-fls, rust-reference]

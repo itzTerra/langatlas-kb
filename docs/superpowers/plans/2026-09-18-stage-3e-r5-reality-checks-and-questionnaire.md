@@ -2722,7 +2722,7 @@ git commit -m "feat(#stage-3e): render FeatureInstance drafts per D65"
   `RealityCheckMissing`, `RealityOutputInvalid`, `R5Incomplete`; `RealityConfig`,
   `ResearchConfig.reality`; the fixtures `r5_spec`, `r5_record`, `r5_run`, `r5_cell`.
 
-- [ ] **Step 1: Add the package dependency**
+- [x] **Step 1: Add the package dependency**
 
 In `tools/research/pyproject.toml`, add `"langatlas-questionnaire",` to `dependencies` (after
 `"langatlas-finding-aids",`) and add to `[tool.uv.sources]`:
@@ -2742,7 +2742,7 @@ uv --directory tools/orchestrator lock && uv --directory tools/orchestrator sync
 ```
 Expected: both resolve `langatlas-questionnaire` from `../questionnaire`.
 
-- [ ] **Step 2: Add the R5 fixtures to the research conftest**
+- [x] **Step 2: Add the R5 fixtures to the research conftest**
 
 Append to `tools/research/tests/conftest.py`:
 
@@ -2813,7 +2813,7 @@ def r5_cell():
     return _cell
 ```
 
-- [ ] **Step 3: Write the failing tests**
+- [x] **Step 3: Write the failing tests**
 
 `tools/research/tests/test_reality_record.py`:
 
@@ -2934,12 +2934,12 @@ def test_the_reality_config_loads(research_repo):
     assert "erlang" not in config.reality.language_sources
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_record.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.reality'`
 
-- [ ] **Step 5: Add the errors**
+- [x] **Step 5: Add the errors**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -2964,7 +2964,7 @@ class R5Incomplete(ResearchError):
     reached the gate."""
 ```
 
-- [ ] **Step 6: Write the reality-check schema**
+- [x] **Step 6: Write the reality-check schema**
 
 `research/schema/reality-check.schema.json`:
 
@@ -3196,7 +3196,7 @@ class R5Incomplete(ResearchError):
 }
 ```
 
-- [ ] **Step 7: Write `record.py`**
+- [x] **Step 7: Write `record.py`**
 
 Create `tools/research/src/langatlas_research/reality/__init__.py` as an empty file, and
 `tools/research/src/langatlas_research/reality/record.py`:
@@ -3370,7 +3370,7 @@ def open_shakedown(record: dict) -> list[dict]:
     return [entry for entry in record["shakedown"] if entry["status"] == "open"]
 ```
 
-- [ ] **Step 8: Add the config section**
+- [x] **Step 8: Add the config section**
 
 Append to `config/research.yaml`:
 
@@ -3430,12 +3430,12 @@ and pass it to the constructor:
                                          in (reality["language_sources"] or {}).items()}),
 ```
 
-- [ ] **Step 9: Run the tests to verify they pass**
+- [x] **Step 9: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_record.py tests/test_survey_config.py tests/test_schema.py -m '' -v`
 Expected: PASS
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add research/schema/reality-check.schema.json tools/research/src/langatlas_research/reality \
