@@ -94,3 +94,16 @@ class DebateIncomplete(ResearchError):
 class R4Incomplete(ResearchError):
     """`draft finalize` found open work: an undebated contested carve, an unverified
     entry, or an entry the gate refused."""
+
+
+class ControversyInputRefused(ResearchError):
+    """§6.4's allow-list: the assessor sees exactly `debates`, `contradiction_records`,
+    `verdicts`, `source_strength` and `assessment_spread`. Everything human-challenge-derived
+    — GitHub activity, challenge counts, and (2026-07-20) a contradiction record's
+    `closure_attempt.outcome` — is refused here rather than filtered later, because a filter
+    that is ever forgotten silently calibrates the assessor against a fiction."""
+
+
+class AssessorOutputInvalid(ResearchError):
+    """The assessor returned a level outside 0-3, or output its schema rejects. There is no
+    repair turn: the fact keeps whatever level it already had and the run says so."""

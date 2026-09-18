@@ -1,0 +1,13 @@
+# D21/D25's nightly controversy batch (§6.4). Real as of Stage 3D; Stage 5 gives it volume.
+# `records` narrows a manual run to specific files; omit it for the whole store.
+#
+#   uv run --package langatlas-orchestrator langatlas-orchestrator run \
+#     config/jobs/nightly-controversy.yaml
+#
+# Optional per-run extra: `--set alias=<alias>` (default comes from config/research.yaml).
+kind: nightly-controversy
+checkpoint_path: .private/orchestrator/nightly-controversy.sqlite
+budget:
+  max_calls: 250            # D25's ~200 facts/night, plus headroom for escalation reviews
+  max_claude_messages: 120  # escalation only; the volume pass never touches the Claude channel
+  max_wall_seconds: 21600

@@ -39,6 +39,36 @@
         "text": { "type": "string" },
         "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" }
       }
+    },
+    "controversyBlock": {
+      "description": "D21/D25 (§6.4). Machine-written; absent means level 0. The `signals` list of machine references IS the justification — there is deliberately no prose field.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "fact_id", "level", "signals", "assessed"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "fact_id": { "type": "string", "pattern": "^f-[0-9a-f]{12}$" },
+          "level": { "enum": [1, 2, 3] },
+          "signals": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^(debate|verdict|contradiction|assessment-spread):" }
+          },
+          "assessed": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["date", "model", "prompt", "run_id"],
+            "properties": {
+              "date": { "type": "string" },
+              "model": { "type": "string" },
+              "prompt": { "type": "string" },
+              "run_id": { "type": "string" },
+              "escalated_to": { "type": ["string", "null"], "enum": ["claude", null] }
+            }
+          }
+        }
+      }
     }
   }
 }

@@ -103,3 +103,13 @@ def private_research_dir() -> Path:
     from langatlas_pipeline import paths as pipeline_paths
 
     return pipeline_paths.PRIVATE_DIR / "research"
+
+
+def private_controversy_dir() -> Path:
+    """The private, non-git tier for the assessment ledger (§2.2). Same reasoning as
+    `VerdictLedger`: a level is a measurement about the corpus made by whichever model ran
+    last night, and putting its bookkeeping in git would make the canonical store depend on
+    that. Read through the module attribute so tests can monkeypatch `PRIVATE_DIR`."""
+    from langatlas_pipeline import paths as pipeline_paths
+
+    return pipeline_paths.PRIVATE_DIR / "research" / "controversy"

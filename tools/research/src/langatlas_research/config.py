@@ -51,12 +51,21 @@ class DraftConfig:
 
 
 @dataclass(frozen=True)
+class ControversyConfig:
+    alias: str
+    max_facts_per_run: int
+    spread_min_assessments: int
+    escalation: ClaudeRoleConfig
+
+
+@dataclass(frozen=True)
 class ResearchConfig:
     pool: PoolConfig
     tagger: TaggerConfig
     surveyor: ClaudeRoleConfig
     scout: ClaudeRoleConfig
     draft: DraftConfig
+    controversy: ControversyConfig
 
     @classmethod
     def load(cls, path: Path | None = None) -> "ResearchConfig":
@@ -64,6 +73,7 @@ class ResearchConfig:
         data = _yaml.load((path or research_config_path()).read_text()) or {}
         survey, draft = data["survey"], data["draft"]
         debate = draft["debate"]
+        controversy = data["controversy"]
         return cls(pool=PoolConfig(**survey["pool"]),
                    tagger=TaggerConfig(**survey["tagger"]),
                    surveyor=ClaudeRoleConfig(**survey["surveyor"]),
@@ -78,4 +88,9 @@ class ResearchConfig:
                            max_messages=debate["max_messages"],
                            max_debates_per_cycle=debate["max_debates_per_cycle"],
                            personas=dict(debate["personas"])),
-                       bounce_budget=draft["verification"]["bounce_budget"]))
+                       bounce_budget=draft["verification"]["bounce_budget"]),
+                   controversy=ControversyConfig(
+                       alias=controversy["alias"],
+                       max_facts_per_run=controversy["max_facts_per_run"],
+                       spread_min_assessments=controversy["spread_min_assessments"],
+                       escalation=ClaudeRoleConfig(**controversy["escalation"])))

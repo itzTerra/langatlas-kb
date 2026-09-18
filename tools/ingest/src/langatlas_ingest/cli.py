@@ -215,8 +215,17 @@ def _cmd_golden_score(args) -> int:
     from langatlas_ingest.paths import GOLDEN_CONTROVERSY_DIR, GOLDEN_VERIFIER_DIR
 
     config = IngestConfig.load()
-    dotted = args.verifier or config.verifier_entry_point
-    assessor_dotted = args.controversy_assessor or config.controversy_assessor_entry_point
+    if args.verifier or args.controversy_assessor:
+        # An explicit flag opts that lane in on its own — passing only
+        # `--controversy-assessor` must not also trigger the (expensive, live-provider-calling)
+        # verifier score just because a config default happens to be populated. Only when
+        # NEITHER flag is passed do both lanes fall back to config, matching the historical
+        # "score everything configured" default.
+        dotted = args.verifier
+        assessor_dotted = args.controversy_assessor
+    else:
+        dotted = config.verifier_entry_point
+        assessor_dotted = config.controversy_assessor_entry_point
     if not dotted and not assessor_dotted:
         print("no verifier registered — set `goldens.verifier_entry_point` in"
               " config/ingest.yaml (2D ships it) or pass --verifier")
@@ -250,8 +259,15 @@ def _cmd_golden_score(args) -> int:
     if assessor_dotted:
         cases = load_controversy_cases(Path(args.controversy_dir
                                             or GOLDEN_CONTROVERSY_DIR))
-        print(run_controversy_goldens(cases,
-                                      load_entry_point(assessor_dotted)).to_markdown())
+        assessor = load_entry_point(assessor_dotted)
+        try:
+            print(run_controversy_goldens(cases, assessor).to_markdown())
+        finally:
+            # Same duck-typed hook as the verifier branch above: 3D's `GoldenAssessor` opens a
+            # `RunContext` lazily, and `close()` is what finalizes its transcript and manifest.
+            close = getattr(assessor, "close", None)
+            if callable(close):
+                close()
     return code
 
 

@@ -25,6 +25,7 @@
         }
       }
     },
-    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" }
+    "provenance": { "$ref": "defs.schema.json#/$defs/provenance" },
+    "controversy": { "$ref": "defs.schema.json#/$defs/controversyBlock" }
   }
 }
