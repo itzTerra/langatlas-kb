@@ -3463,7 +3463,7 @@ git commit -m "feat(#stage-3e): add the R5 reality-check record and its shakedow
 - Produces: `CLASSIFIER_PROMPT_ID`, `CLASSIFIER_VARIABLES`, `RealityOut`, `render_items`,
   `render_dimensions`, `render_references`, `run_classifier`.
 
-- [ ] **Step 1: Mint the reality checker's prompt**
+- [x] **Step 1: Mint the reality checker's prompt**
 
 ```bash
 uv --directory tools/research run python - <<'PY'
@@ -3547,7 +3547,7 @@ PY
 Expected: prints `r5-reality-checker@v-<8 hex>`; `prompts/r5-reality-checker/` holds the version
 file and a `CHANGELOG.md` with a `v1` line.
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 `tools/research/tests/test_reality_classifier.py`:
 
@@ -3744,12 +3744,12 @@ def test_the_registered_prompt_declares_exactly_the_variables_the_role_supplies(
     assert [message["role"] for message in messages] == ["system", "user"]
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_classifier.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.reality.classifier'`
 
-- [ ] **Step 4: Write `classifier.py`**
+- [x] **Step 4: Write `classifier.py`**
 
 `tools/research/src/langatlas_research/reality/classifier.py`:
 
@@ -4065,12 +4065,12 @@ def run_classifier(ctx, cycle: Cycle, record: dict, spec: dict, *, language: str
     return updated, warnings
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_classifier.py -m '' -v`
 Expected: PASS (15 tests)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add prompts/r5-reality-checker tools/research/src/langatlas_research/reality/classifier.py \
