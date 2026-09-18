@@ -59,7 +59,6 @@ class DimensionOut(BaseModel):
     key: str
     slug: str
     label: str
-    values: list[str] = Field(min_length=2)
     exclusivity: Literal["exclusive", "multi"] = "exclusive"
     applies_to: list[str] = Field(default_factory=lambda: ["general-purpose"])
     note: str = ""
@@ -144,7 +143,7 @@ def _check_shape(out: OntologistOut, store: StoreView, max_nodes: int) -> None:
     keys: set[str] = set()
 
     for dimension in out.dimensions:
-        for slug in (dimension.key, dimension.slug, *dimension.values):
+        for slug in (dimension.key, dimension.slug):
             if not is_valid_slug(slug):
                 errors.append(f"dimension {dimension.slug}: {slug!r} is not a valid slug")
         if dimension.slug in store.dimensions:
@@ -220,7 +219,7 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
     for dimension in out.dimensions:
         plan["dimensions"].append({
             "key": dimension.key, "slug": dimension.slug, "label": dimension.label,
-            "values": list(dimension.values), "exclusivity": dimension.exclusivity,
+            "exclusivity": dimension.exclusivity,
             "applies_to": list(dimension.applies_to),
             **_tail(dimension.contested_note, dimension.note)})
     for node in out.nodes:

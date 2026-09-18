@@ -17,26 +17,25 @@ def repo(tmp_path):
     return tmp_path
 
 
-def test_a_dimension_carries_the_pre_emptive_defaults(repo):
-    minted = mint_dimension("typing-discipline", label="Typing discipline",
-                            values=("static", "dynamic", "gradual"), repo_root=repo)
+def test_a_dimension_carries_the_pre_emptive_defaults_and_no_values_list(repo):
+    """D67: a dimension's values are the layer-3 features that name it, so the taxonomy entry
+    has no separate list to drift from them."""
+    minted = mint_dimension("typing-discipline", label="Typing discipline", repo_root=repo)
 
     assert minted.path == "ontology/taxonomy/dimensions.yaml"
     entry = yaml.load(minted.text)["dimensions"][0]
-    assert entry["exclusivity"] == "exclusive"
-    assert entry["applies_to"] == ["general-purpose"]
-    assert entry["values"] == ["static", "dynamic", "gradual"]
+    assert entry == {"slug": "typing-discipline", "label": "Typing discipline",
+                     "exclusivity": "exclusive", "applies_to": ["general-purpose"]}
     assert minted.base_digest is not None
 
 
 def test_minting_a_second_dimension_keeps_the_first(repo):
     (repo / "ontology" / "taxonomy" / "dimensions.yaml").write_text(
         mint_dimension("typing-discipline", label="Typing discipline",
-                       values=("static",), repo_root=repo).text)
+                       repo_root=repo).text)
 
     minted = mint_dimension("memory-reclamation", label="Memory reclamation",
-                            values=("manual", "traced-gc"), exclusivity="multi-valued",
-                            repo_root=repo)
+                            exclusivity="multi-valued", repo_root=repo)
 
     slugs = [d["slug"] for d in yaml.load(minted.text)["dimensions"]]
     assert slugs == ["memory-reclamation", "typing-discipline"]
@@ -45,11 +44,11 @@ def test_minting_a_second_dimension_keeps_the_first(repo):
 def test_re_minting_an_existing_dimension_is_refused(repo):
     (repo / "ontology" / "taxonomy" / "dimensions.yaml").write_text(
         mint_dimension("typing-discipline", label="Typing discipline",
-                       values=("static",), repo_root=repo).text)
+                       repo_root=repo).text)
 
     with pytest.raises(ValueError, match="already exists"):
         mint_dimension("typing-discipline", label="Typing discipline",
-                       values=("static", "dynamic"), repo_root=repo)
+                       repo_root=repo)
 
 
 def test_a_quality_lands_in_the_quality_vocabulary(repo):
@@ -121,7 +120,7 @@ def test_a_header_comment_survives_a_dimension_mint(repo):
         "dimensions: []\n")
 
     minted = mint_dimension("typing-discipline", label="Typing discipline",
-                            values=("static",), repo_root=repo)
+                            repo_root=repo)
 
     assert minted.text.startswith(
         "# Each dimension carries `exclusivity` (default exclusive, D39) and\n"

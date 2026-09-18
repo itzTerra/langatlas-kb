@@ -51,7 +51,7 @@ OUT = {
     ],
     "dimensions": [
         {"key": "type-checking-discipline", "slug": "type-checking-discipline",
-         "label": "Type checking discipline", "values": ["static", "dynamic", "gradual"],
+         "label": "Type checking discipline",
          "exclusivity": "exclusive", "applies_to": ["general-purpose"],
          "note": "the axis TAPL and PLP both organise the chapter around"},
     ],

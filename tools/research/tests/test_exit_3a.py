@@ -28,7 +28,7 @@ def test_a_signed_off_cycle_mints_a_theme_subtree_and_bumps_the_version(store_re
 
     items = [
         partial(mint_dimension, "typing-discipline", label="Typing discipline",
-                values=("static", "dynamic"), repo_root=store_repo),
+                repo_root=store_repo),
         ConceptDraft(id="type", name="Type", summary="A classification of values.",
                      evidence=EVIDENCE, proposer=PROPOSER, chat_run_id="r4-typing-0001"),
         FeatureDraft(id="static-typing", name="Static typing", layer=3,

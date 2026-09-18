@@ -48,11 +48,11 @@ def test_landing_is_idempotent(store_repo):
 
 def test_a_shared_file_mint_re_renders_against_whatever_is_on_disk(store_repo):
     land_drafts([partial(mint_dimension, "typing-discipline", label="Typing discipline",
-                         values=("static", "dynamic"), repo_root=store_repo)],
+                         repo_root=store_repo)],
                 repo_root=store_repo, chat_run_id="r")
 
     land_drafts([partial(mint_dimension, "memory-reclamation", label="Memory reclamation",
-                         values=("manual", "traced-gc"), repo_root=store_repo)],
+                         repo_root=store_repo)],
                 repo_root=store_repo, chat_run_id="r")
 
     text = (store_repo / "ontology" / "taxonomy" / "dimensions.yaml").read_text()
@@ -79,6 +79,6 @@ def test_losing_every_race_raises_instead_of_returning_a_silent_none_outcome(
 
     with pytest.raises(land.RaceExhausted):
         land_drafts([partial(mint_dimension, "typing-discipline",
-                             label="Typing discipline", values=("static",),
+                             label="Typing discipline",
                              repo_root=store_repo)],
                     repo_root=store_repo, chat_run_id="r", attempts=3)

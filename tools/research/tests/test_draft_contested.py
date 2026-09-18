@@ -51,7 +51,7 @@ def test_splitting_one_candidate_across_two_carves_contests_both(signed_cycle):
 
 def test_a_node_leaning_on_a_dimension_this_plan_invents_is_contested(signed_cycle):
     plan = _plan(signed_cycle,
-                 dimensions=[{"key": "d", "slug": "d", "label": "D", "values": ["x", "y"],
+                 dimensions=[{"key": "d", "slug": "d", "label": "D",
                               "exclusivity": "exclusive", "applies_to": ["general-purpose"],
                               "contested": [], "debate_id": None, "status": "proposed",
                               "verification": None, "note": ""}],

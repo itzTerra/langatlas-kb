@@ -163,9 +163,8 @@ def mint_items(plan: dict, *, repo_root: Path | None, ctx_run_id: str, prompt_ve
                 continue
             if name == "dimensions":
                 items.append(lambda entry=entry: mint_dimension(
-                    entry["slug"], label=entry["label"], values=entry["values"],
-                    exclusivity=entry["exclusivity"], applies_to=entry["applies_to"],
-                    repo_root=repo_root))
+                    entry["slug"], label=entry["label"], exclusivity=entry["exclusivity"],
+                    applies_to=entry["applies_to"], repo_root=repo_root))
             elif name == "qualities":
                 items.append(lambda entry=entry: mint_quality(
                     entry["slug"], label=entry["label"], summary=entry["summary"],

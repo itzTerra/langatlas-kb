@@ -42,11 +42,13 @@ def _require_slug(value: str) -> str:
     return value
 
 
-def mint_dimension(slug: str, *, label: str, values, exclusivity: str = "exclusive",
+def mint_dimension(slug: str, *, label: str, exclusivity: str = "exclusive",
                    applies_to=("general-purpose",),
                    repo_root: Path | None = None) -> MintedRecord:
     """Adds one layer-3 dimension. `exclusivity` (D39) and `applies_to` (D50) are written
-    pre-emptively on every dimension — they are not fields a later feature turns on.
+    pre-emptively on every dimension — they are not fields a later feature turns on. A
+    dimension's values are the layer-3 features that name it (D67): there is no separate
+    list here to drift from them.
 
     @raises InvalidDraft: for an invalid slug.
     @raises ValueError: the dimension already exists (changing an existing dimension is
@@ -56,9 +58,8 @@ def mint_dimension(slug: str, *, label: str, values, exclusivity: str = "exclusi
     entries = list(data.get("dimensions") or [])
     if any(entry["slug"] == slug for entry in entries):
         raise ValueError(f"dimension {slug!r} already exists")
-    entries.append({"slug": slug, "label": label,
-                    "values": [_require_slug(v) for v in values],
-                    "exclusivity": exclusivity, "applies_to": list(applies_to)})
+    entries.append({"slug": slug, "label": label, "exclusivity": exclusivity,
+                    "applies_to": list(applies_to)})
     entries.sort(key=lambda entry: entry["slug"])
     text = _leading_comment(original_text) + dump_yaml({"dimensions": entries})
     return MintedRecord(path=DIMENSIONS_PATH, text=text,

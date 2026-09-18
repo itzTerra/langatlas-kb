@@ -981,7 +981,7 @@ git commit -m "feat(#stage-3e): bound an as-of since by the version its citation
 Nothing committed carries a `values:` list yet (the store has no dimensions and no carve plan), so
 this is a pure code change with no data migration.
 
-- [ ] **Step 1: Change the taxonomy test to the new contract**
+- [x] **Step 1: Change the taxonomy test to the new contract**
 
 In `tools/research/tests/test_taxonomy.py`, replace
 `test_a_dimension_carries_the_pre_emptive_defaults` with:
@@ -1002,7 +1002,7 @@ def test_a_dimension_carries_the_pre_emptive_defaults_and_no_values_list(repo):
 Run: `uv --directory tools/research run pytest tests/test_taxonomy.py -m '' -v`
 Expected: FAIL — `TypeError: mint_dimension() missing 1 required keyword-only argument: 'values'`
 
-- [ ] **Step 2: Drop `values` from `mint_dimension`**
+- [x] **Step 2: Drop `values` from `mint_dimension`**
 
 In `tools/research/src/langatlas_research/taxonomy.py`, replace `mint_dimension` with:
 
@@ -1031,7 +1031,7 @@ def mint_dimension(slug: str, *, label: str, exclusivity: str = "exclusive",
                         kind="taxonomy", node_ids=(slug,), base_digest=digest)
 ```
 
-- [ ] **Step 3: Drop `values` from the carve plan and the ontologist**
+- [x] **Step 3: Drop `values` from the carve plan and the ontologist**
 
 In `research/schema/draft.schema.json`, in the `dimensions` item: remove `"values"` from
 `required`, and delete the `"values": { … }` property.
@@ -1061,7 +1061,7 @@ In `tools/research/src/langatlas_research/draft/minting.py`, change the dimensio
                     applies_to=entry["applies_to"], repo_root=repo_root))
 ```
 
-- [ ] **Step 4: Mint the new ontologist prompt version**
+- [x] **Step 4: Mint the new ontologist prompt version**
 
 ```bash
 uv --directory tools/research run python - <<'PY'
@@ -1087,7 +1087,7 @@ PY
 
 Expected: prints `r4-ontologist@v-<8 hex>`; `prompts/r4-ontologist/CHANGELOG.md` gains a `v2` line.
 
-- [ ] **Step 5: Remove `values` from the 3A/3C test literals**
+- [x] **Step 5: Remove `values` from the 3A/3C test literals**
 
 Delete every `values=(…)` keyword argument to `mint_dimension`, and every `"values": […]` key in a
 dimension dict, at these sites (line numbers as of this plan):
@@ -1107,12 +1107,12 @@ Then confirm none remain:
 Run: `grep -rn 'values=\|"values"' tools/research/tests tools/research/src research/schema`
 Expected: no output.
 
-- [ ] **Step 6: Run the research suite**
+- [x] **Step 6: Run the research suite**
 
 Run: `uv --directory tools/research run pytest -m '' -q`
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/taxonomy.py \

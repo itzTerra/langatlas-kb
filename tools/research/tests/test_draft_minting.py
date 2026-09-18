@@ -35,7 +35,7 @@ def _feature(key="static-typing", **over):
 
 def _dimension(**over):
     return {"key": "type-checking-discipline", "slug": "type-checking-discipline",
-            "label": "Type checking discipline", "values": ["static", "dynamic", "gradual"],
+            "label": "Type checking discipline",
             "exclusivity": "exclusive", "applies_to": ["general-purpose"],
             "contested": [], "debate_id": None, "status": "debated", "verification": None,
             "note": "", **over}

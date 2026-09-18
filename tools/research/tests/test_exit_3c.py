@@ -110,7 +110,6 @@ def test_a_signed_cycle_carries_a_plan_through_debate_gate_and_mint(
              "note": "one node per discipline"}],
         "dimensions": [{"key": "type-checking-discipline", "slug": "type-checking-discipline",
                         "label": "Type checking discipline",
-                        "values": ["static", "dynamic", "gradual"],
                         "exclusivity": "exclusive", "applies_to": ["general-purpose"],
                         "note": "the axis"}],
         "findings": []}))
