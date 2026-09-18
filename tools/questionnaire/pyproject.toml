@@ -1,0 +1,24 @@
+[project]
+name = "langatlas-questionnaire"
+version = "0.1.0"
+description = "LangAtlas questionnaire compiler (D46) — the ontology tree in, the sweep questionnaire out"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+  "ruamel.yaml>=0.18",
+  "jsonschema>=4.21",
+  "langatlas-validate",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/langatlas_questionnaire"]
+
+[tool.uv.sources]
+langatlas-validate = { path = "../validate", editable = true }

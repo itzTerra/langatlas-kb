@@ -1139,7 +1139,7 @@ git commit -m "fix(#stage-3e): derive a dimension's values from its member featu
 - Produces: `FACT_FIELDS`, `LANG_PLACEHOLDER`, `CompileError`, `compiler_version`,
   `compile_spec`.
 
-- [ ] **Step 1: Create the package skeleton**
+- [x] **Step 1: Create the package skeleton**
 
 `tools/questionnaire/pyproject.toml`:
 
@@ -1185,7 +1185,7 @@ REPO_ROOT = Path(os.environ.get("LANGATLAS_ROOT", Path(__file__).resolve().paren
 Run: `uv --directory tools/questionnaire lock && uv --directory tools/questionnaire sync --extra dev`
 Expected: a new `tools/questionnaire/uv.lock`; `langatlas-validate` resolves from the path.
 
-- [ ] **Step 2: Write the test store builder**
+- [x] **Step 2: Write the test store builder**
 
 `tools/questionnaire/tests/conftest.py`:
 
@@ -1291,7 +1291,7 @@ def typing_store(store: MiniStore) -> MiniStore:
     return store
 ```
 
-- [ ] **Step 3: Write the failing compiler tests**
+- [x] **Step 3: Write the failing compiler tests**
 
 `tools/questionnaire/tests/test_compiler.py`:
 
@@ -1413,12 +1413,12 @@ def test_an_invalid_store_refuses_to_compile(mini_store):
         compile_spec(mini_store.root)
 ```
 
-- [ ] **Step 4: Run the tests to verify they fail**
+- [x] **Step 4: Run the tests to verify they fail**
 
 Run: `uv --directory tools/questionnaire run pytest tests/test_compiler.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_questionnaire.compiler'`
 
-- [ ] **Step 5: Write `fields.py`**
+- [x] **Step 5: Write `fields.py`**
 
 `tools/questionnaire/src/langatlas_questionnaire/fields.py`:
 
@@ -1442,7 +1442,7 @@ FACT_FIELDS: dict[str, tuple[str, ...]] = {
 }
 ```
 
-- [ ] **Step 6: Write `compiler.py`**
+- [x] **Step 6: Write `compiler.py`**
 
 `tools/questionnaire/src/langatlas_questionnaire/compiler.py`:
 
@@ -1564,12 +1564,12 @@ def compile_spec(repo_root: Path) -> dict:
             "groups": groups, "constraints": constraints, "diagnostics": diagnostics}
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv --directory tools/questionnaire run pytest tests/test_compiler.py -v`
 Expected: PASS (10 tests)
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/questionnaire/pyproject.toml tools/questionnaire/uv.lock \
