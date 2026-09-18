@@ -4598,7 +4598,7 @@ is unsourced, or never reached the gate is *unknown* and never counts either way
 A language whose kind D50's `applies_to` mask excluded has no cells for that dimension, and is
 skipped rather than counted.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tools/research/tests/test_reality_findings.py`:
 
@@ -4717,12 +4717,12 @@ def test_a_refreshed_record_still_validates(answered, r5_spec, research_repo):
     save_record(refreshed, repo_root=research_repo)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_findings.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.reality.findings'`
 
-- [ ] **Step 3: Write `findings.py`**
+- [x] **Step 3: Write `findings.py`**
 
 `tools/research/src/langatlas_research/reality/findings.py`:
 
@@ -4800,12 +4800,12 @@ def refresh(record: dict, spec: dict) -> dict:
     return {**record, "findings": findings, "summary": summary}
 ```
 
-- [ ] **Step 4: Run the tests to verify they pass**
+- [x] **Step 4: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_findings.py -m '' -v`
 Expected: PASS (10 tests)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/reality/findings.py \
