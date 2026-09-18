@@ -1,7 +1,9 @@
+import json
 from dataclasses import dataclass, field
 from pathlib import Path
 from ruamel.yaml import YAML
 from langatlas_validate.schema import validate_record
+from langatlas_validate.paths import SCHEMA_DIR as _SCHEMA_DIR
 
 _yaml = YAML(typ="safe")
 
@@ -26,13 +28,34 @@ def _schema_shape_checker(fixture: dict) -> str | None:
     return None
 
 
-def _questionnaire_shape_stub(fixture: dict) -> str | None:
-    return None   # owned by 1C; a bare stub never fails the suite
+def _carries_sources(name: str, subschema: dict) -> bool:
+    """A property is fact-bearing iff it holds citations: `sources` itself, or anything whose
+    schema reaches a `sourcesList` (directly, or through its list items)."""
+    return name == "sources" or "sourcesList" in json.dumps(subschema)
+
+
+def _questionnaire_shape_checker(fixture: dict) -> str | None:
+    """D46/D48: does the questionnaire compiler's fact-bearing field map still cover the record
+    schema it compiles questions for? Two drifts, both silent otherwise: the schema grows a
+    sourced property no questionnaire field asks for (sweeps would never produce it), or a field
+    names a property the schema no longer has (sweeps would answer into nothing)."""
+    schema = json.loads((_SCHEMA_DIR / f"{fixture['record_kind']}.schema.json").read_text())
+    properties = schema.get("properties", {})
+    named = {member for members in fixture["fields"].values() for member in members}
+    problems = []
+    unknown = sorted(named - set(properties))
+    if unknown:
+        problems.append(f"fields name properties the schema no longer has: {unknown}")
+    unasked = sorted(name for name, sub in properties.items()
+                     if _carries_sources(name, sub) and name not in named)
+    if unasked:
+        problems.append(f"sourced properties no questionnaire field asks for: {unasked}")
+    return f"{fixture['fixture_id']}: " + "; ".join(problems) if problems else None
 
 
 CHECKERS = {
     "schema-shape": _schema_shape_checker,
-    "questionnaire-shape": _questionnaire_shape_stub,
+    "questionnaire-shape": _questionnaire_shape_checker,
 }
 
 

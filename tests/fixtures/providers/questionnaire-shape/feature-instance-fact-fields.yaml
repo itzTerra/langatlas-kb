@@ -1,0 +1,13 @@
+# D46/D48: the questionnaire compiler's fact-bearing field map, pinned. The regression runner
+# checks it against ontology/schema/feature-instance.schema.json (every sourced property must be
+# asked by some field, and every named property must exist); the questionnaire test suite checks
+# it against langatlas_questionnaire.fields.FACT_FIELDS. Starts soft (D48).
+fixture_id: questionnaire-fact-fields
+kind: questionnaire-shape
+mode: soft
+record_kind: feature-instance
+fields:
+  exists: [status, sources, absence_scope, notes]
+  since: [since]
+  characteristics: [characteristics]
+  syntax: [syntax]

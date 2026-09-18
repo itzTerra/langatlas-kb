@@ -67,3 +67,30 @@ def test_pipeline_checkers_are_discovered_when_installed(tmp_path):
     from langatlas_validate.regression import available_checkers
 
     assert "provider-record-replay" in available_checkers()
+
+
+def test_the_committed_questionnaire_shape_fixture_is_clean():
+    report = run_regression(FIXTURES / "questionnaire-shape")
+    assert (report.ran, report.passed, report.warnings) == (1, 1, [])
+
+
+def test_a_sourced_field_no_questionnaire_field_asks_for_is_reported(tmp_path):
+    _write(tmp_path, "drift.yaml",
+           "fixture_id: drift\nkind: questionnaire-shape\nmode: soft\n"
+           "record_kind: feature-instance\nfields:\n"
+           "  exists: [status, sources, absence_scope, notes]\n  since: [since]\n"
+           "  characteristics: [characteristics]\n")
+    report = run_regression(tmp_path)
+    assert len(report.warnings) == 1
+    assert "syntax" in report.warnings[0]
+
+
+def test_a_field_the_schema_no_longer_has_is_reported(tmp_path):
+    _write(tmp_path, "gone.yaml",
+           "fixture_id: gone\nkind: questionnaire-shape\nmode: hard\n"
+           "record_kind: feature-instance\nfields:\n"
+           "  exists: [status, sources, absence_scope, notes]\n  since: [since]\n"
+           "  characteristics: [characteristics]\n  syntax: [syntax, examples]\n")
+    report = run_regression(tmp_path)
+    assert len(report.failures) == 1
+    assert "examples" in report.failures[0]

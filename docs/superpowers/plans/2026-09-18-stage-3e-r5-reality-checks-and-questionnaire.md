@@ -2204,7 +2204,7 @@ dependency runs the other way. So the fixture pins the field map. The regression
 fixture against the **record schema**, and the questionnaire suite checks the fixture against
 **`FACT_FIELDS`**. A drift on either side fails one of the two checks.
 
-- [ ] **Step 1: Write the fixture**
+- [x] **Step 1: Write the fixture**
 
 `tests/fixtures/providers/questionnaire-shape/feature-instance-fact-fields.yaml`:
 
@@ -2224,7 +2224,7 @@ fields:
   syntax: [syntax]
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Append to `tools/validate/tests/test_regression.py`:
 
@@ -2275,7 +2275,7 @@ def test_the_compilers_field_map_is_the_one_the_drift_fixture_pins():
     assert {name: list(members) for name, members in FACT_FIELDS.items()} == fixture["fields"]
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_regression.py -v`
 Expected: FAIL. The two synthetic-fixture tests report zero warnings and zero failures, because
@@ -2284,7 +2284,7 @@ the stub checker always returns `None`.
 Run: `uv --directory tools/questionnaire run pytest tests/test_fields.py -v`
 Expected: PASS already. It is committed now so that drift on the compiler side fails from here on.
 
-- [ ] **Step 4: Replace the stub with the real checker**
+- [x] **Step 4: Replace the stub with the real checker**
 
 In `tools/validate/src/langatlas_validate/regression.py`, add `import json` and
 `from langatlas_validate.paths import SCHEMA_DIR as _SCHEMA_DIR`. Then replace
@@ -2322,12 +2322,12 @@ CHECKERS = {
 }
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest tests/test_regression.py -v && uv --directory tools/validate run langatlas-validate regression run`
 Expected: PASS; the regression run exits 0 with `warned=0`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tests/fixtures/providers/questionnaire-shape \
