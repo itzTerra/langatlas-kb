@@ -93,6 +93,19 @@ def test_contradiction_projection_drops_everything_human_derived():
         "id": "ctr-0123456789ab", "type": "verification", "status": "open", "participants": 2}
 
 
+def test_contradiction_projection_maps_confirmed_open_down_to_open():
+    """Finding 5: `status: confirmed-open` is set only via human-challenge resolution
+    (`mechanism: challenge-resolution`, `closure.method: human-adjudication`) — the same
+    human-derived signal `closure` is dropped for, just carried on `status` instead. The
+    assessor must see an ordinary open contradiction, never a hint that a human specifically
+    re-confirmed it."""
+    record = {"id": "ctr-0123456789ab", "type": "verification", "status": "confirmed-open",
+              "participants": ["f-aaaaaaaaaaaa"], "mechanism": "challenge-resolution",
+              "closure": {"method": "human-adjudication", "detail": "confirmed open"}}
+    assert contradiction_projection(record) == {
+        "id": "ctr-0123456789ab", "type": "verification", "status": "open", "participants": 1}
+
+
 def test_only_contradictions_naming_this_fact_are_included():
     mine = {"id": "ctr-111111111111", "type": "verification", "status": "open",
             "participants": ["citation:scott-plp:§7.2.4", "f-aaaaaaaaaaaa"]}

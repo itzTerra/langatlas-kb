@@ -102,8 +102,15 @@ def contradiction_projection(record: dict) -> dict:
     who minted it — none is a disagreement measurement. `closure` is dropped outright: per the
     2026-07-20 withdrawal an open record's `closure_attempt.outcome: confirmed-open` is
     human-challenge-derived and the assessor must not see it, and dropping the whole closure
-    block is the version of that rule nobody can forget half of."""
-    return {"id": record["id"], "type": record["type"], "status": record["status"],
+    block is the version of that rule nobody can forget half of.
+
+    `status: confirmed-open` is the same signal wearing the record's own `status` field instead
+    of `closure` — it is set only via human-challenge resolution (`mechanism:
+    challenge-resolution`, `closure.method: human-adjudication`) — so it is mapped down to a
+    plain `open` here too. The assessor must never see that a human specifically re-confirmed a
+    contradiction; an ordinary open contradiction is all the signal it is allowed."""
+    status = "open" if record["status"] == "confirmed-open" else record["status"]
+    return {"id": record["id"], "type": record["type"], "status": status,
             "participants": len(record.get("participants") or [])}
 
 

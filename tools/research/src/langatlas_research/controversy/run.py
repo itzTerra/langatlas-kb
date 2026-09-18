@@ -106,6 +106,14 @@ def assess_record(ctx, record_path: str, *, repo_root: Path, deps: Deps) -> Reco
     facts = record_facts(Path(record_path), kind, text, data)
 
     assessments, levels = {}, {}
+    # Buffered rather than written straight to the ledger: a row must not outlive the git
+    # commit it describes. `land` can come back falsy (red main, a validator error, push
+    # contention, a rebase conflict — `default_land` collapses all of those to `False`), and a
+    # later fact in this same loop can raise `BudgetExceeded` before the record ever reaches
+    # `deps.land`. Either way, nothing here may reach the ledger — a written-but-unlanded row
+    # would look like "already assessed" forever and the assessment would be lost from the
+    # canonical record while still reading as done.
+    pending_ledger_rows = []
     assessed = skipped = escalated = 0
     for fact in facts:
         inputs = assemble_inputs(fact, record=data, ledger=deps.verdict_ledger,
@@ -128,7 +136,11 @@ def assess_record(ctx, record_path: str, *, repo_root: Path, deps: Deps) -> Reco
             escalated += 1
         assessments[anchor_key(fact["claim"])] = assessment
         levels[fact["fact_id"]] = assessment.level
-        deps.ledger.record(assessment, digest=digest)
+        pending_ledger_rows.append((assessment, digest))
+
+    def _flush():
+        for assessment, digest in pending_ledger_rows:
+            deps.ledger.record(assessment, digest=digest)
 
     if not assessments:
         return RecordOutcome(record_path=record_path, assessed=assessed, skipped=skipped,
@@ -137,9 +149,14 @@ def assess_record(ctx, record_path: str, *, repo_root: Path, deps: Deps) -> Reco
     merged = merge_block(data, assessments, date=deps.today)
     minted = controversy_mint(record_path, merged, kind=kind, base_text=text)
     if unchanged(minted, text):
+        # Nothing changed, but the record was already correctly landed — a legitimate no-op,
+        # so the buffered rows are as good as landed and may flush.
+        _flush()
         return RecordOutcome(record_path=record_path, assessed=assessed, skipped=skipped,
                              escalated=escalated, levels=levels)
     changed = bool(deps.land(minted))
+    if changed:
+        _flush()
     return RecordOutcome(record_path=record_path, assessed=assessed, skipped=skipped,
                          escalated=escalated, changed=changed, levels=levels)
 

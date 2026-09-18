@@ -92,6 +92,49 @@ def test_an_unchanged_digest_skips_the_model_entirely(feature_repo, fake_ctx, mo
     assert second.changed is False
 
 
+def test_a_failed_land_leaves_no_ledger_row(feature_repo, fake_ctx, monkeypatch):
+    """Finding 1: a row must not outlive the commit it describes. `land` returning falsy (red
+    main, a validator error, push contention, a rebase conflict — `default_land` collapses all
+    of those to `False`) must not leave the fact looking already-assessed, or the next run
+    would skip it forever while the record itself never picked up the assessment."""
+    ledger = AssessmentLedger(feature_repo / "l.sqlite")
+    outcome = assess_record(
+        fake_ctx, "features/structural-typing.yaml", repo_root=feature_repo,
+        deps=Deps(assess=_deps(monkeypatch), escalate=None, ledger=ledger,
+                  land=lambda minted: False,
+                  alias="thinker", today="2026-09-17",
+                  source_facts={}, contradictions=[], debates={},
+                  verdict_ledger=type("L", (), {"latest_for": lambda self, f: []})()))
+    assert outcome.changed is False
+    assert ledger.levels() == {}
+
+
+def test_a_budget_stop_mid_record_leaves_no_ledger_row(feature_repo, fake_ctx, monkeypatch):
+    """A `BudgetExceeded` raised for a later fact in the same record must not leave earlier
+    facts in this record recorded — the record's block never landed, so nothing about it may
+    look done."""
+    from langatlas_pipeline.errors import BudgetExceeded
+
+    calls = []
+
+    def _assess(ctx, fact_id, inputs, *, alias, prompt=None):
+        calls.append(fact_id)
+        raise BudgetExceeded("completions", used=200, limit=200)
+
+    ledger = AssessmentLedger(feature_repo / "l.sqlite")
+    with pytest.raises(BudgetExceeded):
+        assess_record(
+            fake_ctx, "features/structural-typing.yaml", repo_root=feature_repo,
+            deps=Deps(assess=_assess, escalate=None, ledger=ledger,
+                      land=lambda minted: (_ for _ in ()).throw(
+                          AssertionError("land must not be reached")),
+                      alias="thinker", today="2026-09-17",
+                      source_facts={}, contradictions=[], debates={},
+                      verdict_ledger=type("L", (), {"latest_for": lambda self, f: []})()))
+    assert len(calls) == 1
+    assert ledger.levels() == {}
+
+
 def test_a_level_3_assessment_is_escalated(feature_repo, fake_ctx, monkeypatch):
     escalated = []
 

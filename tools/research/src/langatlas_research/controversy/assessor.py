@@ -54,7 +54,8 @@ def assess_inputs(ctx, fact_id: str, inputs: ControversyInputs, *, alias: str,
     """Assess one fact.
 
     @param ctx: a `RunContext` (or a test double exposing `complete`).
-    @param alias: the completion alias, from `config/research.yaml` — `thinker` in production.
+    @param alias: the completion alias, from `config/research.yaml` — `deepseek-thinking` in
+        production.
     @raises AssessorOutputInvalid: a level outside 0-3.
     @raises BudgetExceeded / StructuredOutputError: unchanged from `ctx.complete`; the
         orchestrator turns the first into a clean pause."""
@@ -101,8 +102,8 @@ class GoldenAssessor:
     `golden-score` to call — a calibration number whose transcript was never finalized is a
     number nobody can trace back to a model and a prompt version."""
 
-    def __init__(self, *, assess=assess_inputs, escalate=None, ctx=None, alias: str = "thinker",
-                 prompt: PromptRef | None = None):
+    def __init__(self, *, assess=assess_inputs, escalate=None, ctx=None,
+                 alias: str = "deepseek-thinking", prompt: PromptRef | None = None):
         self._assess, self._escalate = assess, escalate
         self._ctx, self._alias, self._prompt = ctx, alias, prompt
         self._owns_ctx = False
