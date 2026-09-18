@@ -19,6 +19,7 @@ jobs:
           uv --directory tools/finding-aids sync --extra dev
           uv --directory tools/research sync --extra dev
           uv --directory tools/orchestrator sync --extra dev
+          uv --directory tools/questionnaire sync --extra dev
       - name: Test the finding-aids package
         # No database and no network: every adapter takes an injected client, and the
         # `live` marker is deselected by default.
@@ -26,6 +27,11 @@ jobs:
       - name: Test the research package
         # No database, no provider; the `git`-marked tests build throwaway local repos.
         run: uv --directory tools/research run pytest -m ''
+      - name: Test the questionnaire compiler
+        # No database, no provider: the compiler is a pure function of the store tree.
+        run: uv --directory tools/questionnaire run pytest
+      - name: Schema-check the committed questionnaire specs
+        run: uv --directory tools/questionnaire run langatlas-questionnaire validate
       - name: Test the validate package
         # No database, no provider. Stage 3D added the controversy-block gate and the
         # machine-field exemption in `version-bump`, both of which are pure-Python checks.

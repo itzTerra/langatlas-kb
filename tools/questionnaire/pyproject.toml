@@ -13,6 +13,9 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
 
+[project.scripts]
+langatlas-questionnaire = "langatlas_questionnaire.cli:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

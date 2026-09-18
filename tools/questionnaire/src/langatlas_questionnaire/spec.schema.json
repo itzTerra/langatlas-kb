@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/questionnaire-schema/spec",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ontology_version", "compiler_version", "fields", "groups", "constraints",
+               "diagnostics"],
+  "$defs": {
+    "slug": { "type": "string", "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$", "maxLength": 48 },
+    "field": { "enum": ["exists", "since", "characteristics", "syntax"] },
+    "itemCore": {
+      "type": "object",
+      "required": ["feature", "name", "layer", "summary", "aliases", "anchor_prefix", "fields"],
+      "properties": {
+        "feature": { "$ref": "#/$defs/slug" },
+        "name": { "type": "string", "minLength": 1 },
+        "layer": { "enum": [1, 2, 3] },
+        "summary": { "type": "string" },
+        "aliases": { "type": "array", "items": { "type": "string" } },
+        "anchor_prefix": { "type": "string",
+                           "pattern": "^fi\\.<lang>\\.[a-z][a-z0-9]*(-[a-z0-9]+)*$" },
+        "fields": { "type": "array", "items": { "$ref": "#/$defs/field" },
+                    "minItems": 4, "maxItems": 4, "uniqueItems": true }
+      }
+    },
+    "item": { "$ref": "#/$defs/itemCore", "unevaluatedProperties": false },
+    "dimensionGroup": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "dimension", "label", "exclusivity", "applies_to", "items"],
+      "properties": {
+        "kind": { "const": "dimension" },
+        "dimension": { "$ref": "#/$defs/slug" },
+        "label": { "type": "string" },
+        "exclusivity": { "enum": ["exclusive", "multi"] },
+        "applies_to": { "type": "array", "minItems": 1,
+                        "items": { "enum": ["general-purpose", "domain-specific"] } },
+        "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/item" } }
+      }
+    },
+    "standaloneGroup": {
+      "$ref": "#/$defs/itemCore",
+      "required": ["kind"],
+      "properties": { "kind": { "const": "standalone" } },
+      "unevaluatedProperties": false
+    },
+    "requiresConstraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "if_present", "then_present"],
+      "properties": {
+        "kind": { "const": "requires" },
+        "id": { "type": "string", "pattern": "^edge\\.requires\\." },
+        "if_present": { "$ref": "#/$defs/slug" },
+        "then_present": { "$ref": "#/$defs/slug" }
+      }
+    },
+    "conflictsConstraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "features"],
+      "properties": {
+        "kind": { "const": "conflicts-with" },
+        "id": { "type": "string", "pattern": "^edge\\.conflicts-with\\." },
+        "features": { "type": "array", "minItems": 2, "maxItems": 2,
+                      "items": { "$ref": "#/$defs/slug" } }
+      }
+    },
+    "ruleConstraint": {
+      "type": "object", "additionalProperties": false,
+      "required": ["kind", "id", "when_all", "effect", "then"],
+      "properties": {
+        "kind": { "const": "rule" },
+        "id": { "type": "string", "pattern": "^rule-" },
+        "when_all": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/slug" } },
+        "effect": { "enum": ["requires", "forbids", "warn"] },
+        "then": { "type": "array", "items": { "$ref": "#/$defs/slug" } }
+      }
+    }
+  },
+  "properties": {
+    "ontology_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "compiler_version": { "type": "string", "minLength": 1 },
+    "fields": {
+      "type": "object", "additionalProperties": false,
+      "required": ["exists", "since", "characteristics", "syntax"],
+      "properties": {
+        "exists": { "type": "array", "items": { "type": "string" } },
+        "since": { "type": "array", "items": { "type": "string" } },
+        "characteristics": { "type": "array", "items": { "type": "string" } },
+        "syntax": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "groups": {
+      "type": "array",
+      "items": { "oneOf": [{ "$ref": "#/$defs/dimensionGroup" },
+                           { "$ref": "#/$defs/standaloneGroup" }] }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "oneOf": [{ "$ref": "#/$defs/requiresConstraint" },
+                           { "$ref": "#/$defs/conflictsConstraint" },
+                           { "$ref": "#/$defs/ruleConstraint" }] }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["kind", "dimension"],
+        "properties": {
+          "kind": { "enum": ["dimension-without-features", "dimension-with-one-feature"] },
+          "dimension": { "$ref": "#/$defs/slug" }
+        }
+      }
+    }
+  }
+}

@@ -1595,7 +1595,7 @@ git commit -m "feat(#stage-3e): compile the ontology into the sweep questionnair
 - Produces: `spec_rel`, `render_spec`, `write_spec`, `load_spec`, `validate_spec`, `iter_items`,
   `select`, `instantiate`, `diff_specs`; the `langatlas-questionnaire` CLI.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tools/questionnaire/tests/test_spec.py`:
 
@@ -1723,12 +1723,12 @@ def test_diff_prints_the_requeue_set(mini_store, capsys):
     assert "fi.<lang>.gradual-typing" in out
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/questionnaire run pytest tests/test_spec.py tests/test_cli.py -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_questionnaire.spec'`
 
-- [ ] **Step 3: Write the spec schema**
+- [x] **Step 3: Write the spec schema**
 
 `tools/questionnaire/src/langatlas_questionnaire/spec.schema.json`:
 
@@ -1850,7 +1850,7 @@ Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_questionnair
 }
 ```
 
-- [ ] **Step 4: Write `spec.py`**
+- [x] **Step 4: Write `spec.py`**
 
 `tools/questionnaire/src/langatlas_questionnaire/spec.py`:
 
@@ -1999,7 +1999,7 @@ def diff_specs(old: dict, new: dict) -> dict:
     }
 ```
 
-- [ ] **Step 5: Write the CLI and the spec-path shim**
+- [x] **Step 5: Write the CLI and the spec-path shim**
 
 `tools/questionnaire/src/langatlas_questionnaire/cli.py`:
 
@@ -2108,12 +2108,12 @@ langatlas-questionnaire = "langatlas_questionnaire.cli:main"
 
 Run: `uv --directory tools/questionnaire sync --extra dev`
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/questionnaire run pytest -v`
 Expected: PASS
 
-- [ ] **Step 7: Document the package and the committed-spec directory**
+- [x] **Step 7: Document the package and the committed-spec directory**
 
 `tools/questionnaire/README.md`:
 
@@ -2155,7 +2155,7 @@ at R6/first-sweep-launch and each D28 onboarding phase. Read by the R5 reality c
 store at its ontology version.
 ```
 
-- [ ] **Step 8: Wire CI**
+- [x] **Step 8: Wire CI**
 
 In `.github/workflows/ci.yml`, add to the `Install packages` step (after the `tools/finding-aids`
 line):
@@ -2177,7 +2177,7 @@ and add these two steps directly after `Test the research package`:
 Run: `uv --directory tools/questionnaire run langatlas-questionnaire validate`
 Expected: `0 spec(s), 0 invalid`, exit 0.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add tools/questionnaire questionnaire/README.md .github/workflows/ci.yml \
