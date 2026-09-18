@@ -4108,7 +4108,7 @@ backwards-compatible ways:
 Nodes and edges carry no `since` or `status`, so R4's behaviour is unchanged. `#since` has no
 citations of its own (D65), so it is never a separate verifier call.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tools/research/tests/test_reality_gate.py`:
 
@@ -4319,12 +4319,12 @@ def test_cell_draft_carries_the_classifier_run_as_provenance(with_cells, r5_cell
     assert draft.evidence[0].source == "python-langref-3"
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_gate.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.reality.cells'`
 
-- [ ] **Step 3: Extend 3C's `verify_entry`**
+- [x] **Step 3: Extend 3C's `verify_entry`**
 
 In `tools/research/src/langatlas_research/draft/gate.py`, add the field to `GateResult` (after
 `run_id`):
@@ -4393,7 +4393,7 @@ def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
                       run_id=getattr(ctx, "run_id", None), per_fact=tuple(per_fact))
 ```
 
-- [ ] **Step 4: Write `cells.py`**
+- [x] **Step 4: Write `cells.py`**
 
 `tools/research/src/langatlas_research/reality/cells.py`:
 
@@ -4434,7 +4434,7 @@ def cell_draft(cell: dict, *, record: dict) -> InstanceDraft:
                      for s in proposal.get("syntax") or []))
 ```
 
-- [ ] **Step 5: Write `gate.py`**
+- [x] **Step 5: Write `gate.py`**
 
 `tools/research/src/langatlas_research/reality/gate.py`:
 
@@ -4534,7 +4534,7 @@ def verify_cells(ctx, conn, record: dict, *, cycle: Cycle, repo_root, config, de
     return updated, results
 ```
 
-- [ ] **Step 6: Align 3C's `draft verify` with the verdict ledger (D68)**
+- [x] **Step 6: Align 3C's `draft verify` with the verdict ledger (D68)**
 
 In `tools/research/src/langatlas_research/cli.py`, in `_dispatch_draft_online`, replace the
 `if args.draft_command == "verify":` branch's `RunContext` block with:
@@ -4556,12 +4556,12 @@ In `tools/research/src/langatlas_research/cli.py`, in `_dispatch_draft_online`, 
 
 (The `save_plan(…)` and the result-printing lines after it are unchanged.)
 
-- [ ] **Step 7: Run the tests to verify they pass, and that R4's gate is unchanged**
+- [x] **Step 7: Run the tests to verify they pass, and that R4's gate is unchanged**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_gate.py tests/test_draft_gate.py tests/test_draft_cli.py tests/test_exit_3c.py -m '' -v`
 Expected: PASS
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/draft/gate.py \

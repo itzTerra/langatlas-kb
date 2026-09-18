@@ -44,6 +44,9 @@ class GateResult:
     detail: str = ""
     contradiction_ids: tuple[str, ...] = ()
     run_id: str | None = None
+    # Per-fact outcomes, for a caller that treats a record's facts separately (R5 records every
+    # anchor's result). `as_block` deliberately ignores it: the carve plan has no room for it.
+    per_fact: tuple[dict, ...] = ()
 
     def as_block(self) -> dict:
         """The plan's `verification:` block."""
@@ -61,35 +64,47 @@ class GateResult:
 def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
                  repo_root: Path | None, config: ResearchConfig,
                  deps: VerifyDeps | None = None, queue=None,
-                 verifier=verify_pair) -> GateResult:
+                 verifier=verify_pair, context_records=()) -> GateResult:
     """Run §6.2 over one rendered record.
 
     @param minted: the record as it would be committed — rendered, normalized, schema-valid.
     @param kind: its `RECORD_KINDS` value (`concept` | `feature` | `edge` |
-        `affects-quality-edge`).
+        `affects-quality-edge` | `feature-instance`).
     @param verifier: injected for tests; production passes `verify_pair` unchanged.
+    @param context_records: extra `(path, kind, text, data)` records `derive_facts` reads but
+        whose own facts are not verified here — an instance's feature record, so an absence
+        claim carries D49's grep vocabulary (Stage 3E).
     @returns: one `GateResult` folding every verifiable fact on the record."""
     deps = deps or VerifyDeps.build(conn, ctx, config=IngestConfig.load())
     data = _yaml.load(minted.text)
-    facts = [fact for fact in derive_facts([(Path(minted.path), kind, minted.text, data)])
-             if fact.get("sources")]
+    records = [(Path(minted.path), kind, minted.text, data), *context_records]
+    facts = [fact for fact in derive_facts(records)
+             if fact["record_path"] == str(Path(minted.path)) and fact.get("sources")]
     if not facts:
         return GateResult(key=key, fact_id="", verdict="unverified", admissible=False,
                           pairs=0, detail="the record carries no citations at all (D4)",
                           run_id=getattr(ctx, "run_id", None))
 
-    outcomes, total_pairs, details, contradictions = [], 0, [], []
+    outcomes, total_pairs, details, contradictions, per_fact = [], 0, [], [], []
     for fact in facts:
         pairs = [verifier(ctx, conn, claim=claim, citation=citation, deps=deps, queue=queue)
                  for claim, citation in work_for_fact(fact)]
         total_pairs += len(pairs)
         outcome = decide_fact(fact["fact_id"], pairs, deps.source_facts,
+                              has_since=bool(fact.get("since")), since=fact.get("since"),
+                              absent=fact.get("status") == "absent",
                               queue=queue, bounce_budget=config.draft.bounce_budget,
                               contradictions_path=(Path(repo_root) / "contradictions.yaml")
                               if repo_root else None,
                               chat_run_id=getattr(ctx, "run_id", None))
         outcomes.append(outcome)
         contradictions.extend(outcome.contradiction_ids)
+        per_fact.append({"fact_id": fact["fact_id"],
+                         "anchor": fact.get("anchor") or fact["claim"].split("(")[0],
+                         "admissible": outcome.admissible,
+                         "verification": outcome.verification,
+                         "verdicts": sorted({pair.verdict for pair in pairs}),
+                         "reason": outcome.bounce_reason})
         if outcome.bounce_reason:
             details.append(f"{fact['claim'].split('(')[0]}: {outcome.bounce_reason}")
 
@@ -98,7 +113,7 @@ def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
                       admissible=all(outcome.admissible for outcome in outcomes),
                       pairs=total_pairs, detail="; ".join(details),
                       contradiction_ids=tuple(dict.fromkeys(contradictions)),
-                      run_id=getattr(ctx, "run_id", None))
+                      run_id=getattr(ctx, "run_id", None), per_fact=tuple(per_fact))
 
 
 def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,

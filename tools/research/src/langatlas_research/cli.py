@@ -489,10 +489,17 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
         if args.draft_command == "verify":
             from langatlas_research.draft.gate import verify_plan
 
+            from langatlas_ingest.verify.ledger import VerdictLedger
+            from langatlas_ingest.verify.pipeline import VerifyDeps
+
             plan = load_plan(cycle.slug, repo_root=repo)
-            with RunContext.start(kind="r4-verify", slug=cycle.slug) as ctx:
+            # D68: record R4's verdicts in the private ledger, as R5 and the nightly batch do,
+            # so 3F's sourcing-integrity item never waits on a nightly re-verification.
+            with VerdictLedger() as ledger, RunContext.start(kind="r4-verify",
+                                                              slug=cycle.slug) as ctx:
+                deps = VerifyDeps.build(conn, ctx, config=IngestConfig.load(), ledger=ledger)
                 updated, results = verify_plan(ctx, conn, plan, cycle=cycle, repo_root=repo,
-                                               config=config, lookup=lookup,
+                                               config=config, lookup=lookup, deps=deps,
                                                queue=SourcingQueue(conn))
             save_plan(updated, repo_root=repo)
             for result in results:
