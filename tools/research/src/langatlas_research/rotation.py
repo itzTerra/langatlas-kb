@@ -33,3 +33,15 @@ def plan_languages(cycle_number: int, *, size: int = 5) -> tuple[str, ...]:
         raise ValueError(f"sample size out of range: {size}")
     start = ((cycle_number - 1) * size) % len(SPREAD_ORDER)
     return tuple(SPREAD_ORDER[(start + offset) % len(SPREAD_ORDER)] for offset in range(size))
+
+
+# Display names for the D28 set — how the R5 reality checker names the language it is
+# classifying. Names only: R5 registers no languages (D68).
+LANGUAGE_NAMES = {
+    "c": "C", "cpp": "C++", "rust": "Rust", "go": "Go",
+    "java": "Java", "csharp": "C#", "swift": "Swift",
+    "python": "Python", "javascript": "JavaScript", "r": "R",
+    "haskell": "Haskell", "ocaml": "OCaml",
+    "erlang": "Erlang", "elixir": "Elixir",
+    "prolog": "Prolog",
+}

@@ -112,3 +112,56 @@ class RuleDraft:
     debate_id: str | None = None
     claim_origin: str = "source-derived"
     candidate_source: str = "internal-survey"
+
+
+@dataclass(frozen=True)
+class Characteristic:
+    """One `characteristics[c-…]` entry (§3.4): an observable property of the feature in one
+    language. `key` is minted once and immutable (§3.3)."""
+    key: str
+    text: str
+    evidence: tuple[Evidence, ...]
+
+
+@dataclass(frozen=True)
+class InstanceNote:
+    """One typed note on a `partial` instance (§3.4): what is missing (`limitation`), added
+    (`extra`), or done another way (`alternative`)."""
+    key: str
+    type: str
+    text: str
+    evidence: tuple[Evidence, ...]
+
+
+@dataclass(frozen=True)
+class SyntaxExample:
+    """One `syntax[…]` entry. `origin` is `original` for anything an agent writes — D14 bars
+    copying examples from SA-licensed comparison sites."""
+    key: str
+    title: str
+    code: str
+    evidence: tuple[Evidence, ...]
+    origin: str = "original"
+
+
+@dataclass(frozen=True)
+class InstanceDraft:
+    """A FeatureInstance (§3.4): one language x one feature, D20's authoring unit.
+
+    `evidence` is the existence citations (D65): rendered as `since.sources` for a present or
+    partial instance — which therefore requires `since` — and as status-level `sources` for an
+    absent one, which has no `since`."""
+    language: str
+    feature: str
+    status: str
+    evidence: tuple[Evidence, ...]
+    proposer: Proposer
+    chat_run_id: str
+    absence_scope: str | None = None
+    since: str | None = None
+    notes: tuple[InstanceNote, ...] = ()
+    characteristics: tuple[Characteristic, ...] = ()
+    syntax: tuple[SyntaxExample, ...] = ()
+    debate_id: str | None = None
+    claim_origin: str = "source-derived"
+    candidate_source: str = "sweep-questionnaire"

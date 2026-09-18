@@ -10,7 +10,7 @@ from pathlib import Path
 
 from ruamel.yaml import YAML
 
-from langatlas_research.drafts import ConceptDraft, FeatureDraft
+from langatlas_research.drafts import ConceptDraft, FeatureDraft, InstanceDraft
 from langatlas_research.errors import InvalidDraft, UnsourcedNode
 from langatlas_validate.ids import is_valid_slug
 from langatlas_validate.normalize import normalize_record
@@ -93,6 +93,10 @@ def render_draft(draft, *, repo_root: Path | None = None) -> MintedRecord:
         return _render_feature(draft)
     if isinstance(draft, ConceptDraft):
         return _render_concept(draft)
+    if isinstance(draft, InstanceDraft):
+        from langatlas_research.mint_instances import render_instance  # Stage 3E
+
+        return render_instance(draft)
     from langatlas_research.mint_edges import render_edge_like  # Task 7
 
     return render_edge_like(draft)

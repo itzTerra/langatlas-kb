@@ -30,3 +30,11 @@ def test_a_four_language_sample_is_supported():
 
     assert len(plan) == 4
     assert len({PARADIGM_FAMILIES[lang] for lang in plan}) >= 3
+
+
+def test_every_d28_language_has_a_display_name_and_a_valid_id():
+    from langatlas_research.rotation import LANGUAGE_NAMES, PARADIGM_FAMILIES, SPREAD_ORDER
+    from langatlas_validate.ids import is_valid_slug
+
+    assert set(LANGUAGE_NAMES) == set(PARADIGM_FAMILIES) == set(SPREAD_ORDER)
+    assert all(is_valid_slug(language) for language in LANGUAGE_NAMES)

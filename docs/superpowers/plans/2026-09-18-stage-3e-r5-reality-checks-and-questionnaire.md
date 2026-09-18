@@ -2358,7 +2358,7 @@ R5 renders an instance **only** so the gate verifies exactly the record a sweep 
 (3C's "no second claim-assembly path"). The renderer is the same one Stage 5's sweep will land
 through. That is why it lives beside `mint.py` rather than inside `reality/`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 `tools/research/tests/test_mint_instances.py`:
 
@@ -2481,12 +2481,12 @@ def test_every_d28_language_has_a_display_name_and_a_valid_id():
     assert all(is_valid_slug(language) for language in LANGUAGE_NAMES)
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_mint_instances.py tests/test_rotation.py -m '' -v`
 Expected: FAIL — `ImportError: cannot import name 'Characteristic' from 'langatlas_research.drafts'`
 
-- [ ] **Step 3: Add the instance drafts**
+- [x] **Step 3: Add the instance drafts**
 
 Append to `tools/research/src/langatlas_research/drafts.py`:
 
@@ -2544,7 +2544,7 @@ class InstanceDraft:
     candidate_source: str = "sweep-questionnaire"
 ```
 
-- [ ] **Step 4: Write the renderer**
+- [x] **Step 4: Write the renderer**
 
 `tools/research/src/langatlas_research/mint_instances.py`:
 
@@ -2670,7 +2670,7 @@ branch to `render_draft` directly after the `ConceptDraft` branch:
         return render_instance(draft)
 ```
 
-- [ ] **Step 5: Add the display names**
+- [x] **Step 5: Add the display names**
 
 Append to `tools/research/src/langatlas_research/rotation.py`:
 
@@ -2687,12 +2687,12 @@ LANGUAGE_NAMES = {
 }
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_mint_instances.py tests/test_rotation.py tests/test_mint_nodes.py tests/test_mint_edges.py -m '' -v`
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/drafts.py \
