@@ -4837,7 +4837,7 @@ gate rewrite `contradictions.yaml`, a tracked file. An unlanded change to a trac
 every later rebase, so `finalize_r5` lands the ledger first, before the reality check and the
 cycle, exactly as 3C's `mint_plan` does.
 
-- [ ] **Step 1: Add the `ontology_repo` fixture**
+- [x] **Step 1: Add the `ontology_repo` fixture**
 
 Append to `tools/research/tests/conftest.py`:
 
@@ -4881,7 +4881,7 @@ def ontology_repo(store_repo):
     return repo
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 `tools/research/tests/test_reality_lifecycle.py`:
 
@@ -5040,12 +5040,12 @@ def test_finalize_reports_its_blockers_and_exits_nonzero(opened, capsys):
     assert "never classified" in capsys.readouterr().err
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_lifecycle.py tests/test_reality_cli.py -m '' -v`
 Expected: FAIL — `ModuleNotFoundError: No module named 'langatlas_research.reality.lifecycle'`
 
-- [ ] **Step 4: Write `lifecycle.py`**
+- [x] **Step 4: Write `lifecycle.py`**
 
 `tools/research/src/langatlas_research/reality/lifecycle.py`:
 
@@ -5186,7 +5186,7 @@ def finalize_r5(cycle_number: int, *, repo_root: Path, status_checker=None,
     return updated, results
 ```
 
-- [ ] **Step 5: Write the `reality` CLI**
+- [x] **Step 5: Write the `reality` CLI**
 
 `tools/research/src/langatlas_research/reality/cli.py`:
 
@@ -5446,12 +5446,12 @@ and route it in `_dispatch`, directly after the `controversy` branch:
         return dispatch_reality(args, root)
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_reality_lifecycle.py tests/test_reality_cli.py tests/test_cli.py -m '' -v`
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/reality/lifecycle.py \

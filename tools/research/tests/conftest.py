@@ -232,3 +232,42 @@ def r5_cell():
                 "mappable": True, "answer": answer, "note": "", "proposal": body,
                 "status": status, "verification": None}
     return _cell
+
+
+@pytest.fixture
+def ontology_repo(store_repo):
+    """`store_repo` plus a committed typing mini-ontology and a cycle that finished R4 — the
+    state R5 starts from. Same shape as `r5_spec`: two layer-3 members of one exclusive
+    dimension (its values, D67), and one layer-2 feature."""
+    from dataclasses import replace
+
+    from langatlas_research.cycle import advance, save_cycle
+    from langatlas_research.drafts import Evidence, FeatureDraft, Proposer
+    from langatlas_research.mint import render_draft
+    from langatlas_research.taxonomy import mint_dimension
+
+    repo = store_repo
+    dimension = mint_dimension("type-checking-discipline", label="Type checking discipline",
+                               repo_root=repo)
+    (repo / dimension.path).write_text(dimension.text)
+    proposer = Proposer(agent="r4-ontologist", model="claude", prompt_version="v-test")
+    for fid, name, layer, dimension_slug, aliases in (
+            ("dynamic-typing", "Dynamic typing", 3, "type-checking-discipline",
+             ("dynamic type checking",)),
+            ("static-typing", "Static typing", 3, "type-checking-discipline", ()),
+            ("type-inference", "Type inference", 2, None, ())):
+        minted = render_draft(FeatureDraft(
+            id=fid, name=name, summary=f"{name} is a typing discipline.",
+            evidence=(Evidence(source="pierce-tapl-2002", locator="§1.1"),),
+            proposer=proposer, chat_run_id="2026-09-18-r4-mint-01-typing-01", layer=layer,
+            dimension=dimension_slug, aliases=aliases))
+        (repo / minted.path).write_text(minted.text)
+    cycle = sign_off(new_cycle(1, "typing", repo_root=repo, languages=("python", "haskell")),
+                     by="dev", date="2026-09-20", repo_root=repo)
+    cycle = advance(advance(cycle, "r3-done"), "r4-done")
+    save_cycle(replace(cycle, nodes_minted=("dynamic-typing", "static-typing",
+                                            "type-inference")), repo_root=repo)
+    _git(["add", "-A"], repo)
+    _git(["commit", "-q", "-m", "seed the typing mini-ontology"], repo)
+    _git(["push", "-q", "origin", "HEAD:main"], repo)
+    return repo

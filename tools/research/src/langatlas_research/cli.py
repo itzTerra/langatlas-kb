@@ -107,6 +107,10 @@ def main(argv: list[str] | None = None) -> int:
                                " assessed by the thinker alone and reported, not landed")
     p_contro.add_parser("status", help="levels recorded by the last assessment runs")
 
+    from langatlas_research.reality.cli import add_parser as add_reality_parser
+
+    add_reality_parser(sub)
+
     args = parser.parse_args(argv)
     root = args.repo_root
     try:
@@ -147,6 +151,11 @@ def _dispatch(args, root: Path | None) -> int:
 
     if args.command == "controversy":
         return _dispatch_controversy(args, root)
+
+    if args.command == "reality":
+        from langatlas_research.reality.cli import dispatch as dispatch_reality
+
+        return dispatch_reality(args, root)
 
     if args.cycle_command == "new":
         cycle = new_cycle(args.number, args.theme, repo_root=root,
