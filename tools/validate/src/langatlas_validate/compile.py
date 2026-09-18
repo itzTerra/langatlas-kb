@@ -4,16 +4,34 @@ from langatlas_validate.claims import build_claim, fact_id
 from langatlas_validate.ids import compose_instance_id, compose_syntax_id
 
 
+def _grep_vocabulary(feature: dict | None) -> list[str]:
+    """D49's negative-grep vocabulary for an absence claim: the feature's own name first, then
+    its `aliases:`, deduplicated. Empty when the feature record is not among the derived
+    records — the verifier then has no names to search for, rather than invented ones."""
+    if not feature:
+        return []
+    return list(dict.fromkeys([feature["name"], *(feature.get("aliases") or [])]))
+
+
 def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
     """D20/D23: facts are never authored directly — they're derived once, here, from
     whole records. Intentionally scoped to the fields with a direct claim-template
     mapping (§ontology/claim-templates/); extending coverage to every schema field is
-    later work, not a Stage-1D gap."""
-    facts: list[dict] = []
+    later work, not a Stage-1D gap.
 
-    def _add(claim: str, record_path: Path, sources: list[dict] | None = None) -> None:
+    Stage 3E (D65): every fact-bearing FeatureInstance field derives a fact carrying its §3.2
+    anchor. `#exists` carries `since` as a load-bearing field and is verified against
+    `since.sources` (D25's fold table); an absence cites at status level and carries D49's
+    extra verifier inputs. `#since` is derived for identity only — its own fact id, never a
+    second verification of the same citations.
+    """
+    facts: list[dict] = []
+    features = {data["id"]: data for _p, kind, _t, data in records if kind == "feature"}
+
+    def _add(claim: str, record_path: Path, sources: list[dict] | None = None,
+             **extra) -> None:
         facts.append({"fact_id": fact_id(claim), "claim": claim,
-                     "record_path": str(record_path), "sources": sources or []})
+                      "record_path": str(record_path), "sources": sources or [], **extra})
 
     for path, kind, _text, data in records:
         if kind in ("concept", "feature"):
@@ -26,15 +44,35 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
                                  text=summary["text"]), path, summary.get("sources"))
         elif kind == "feature-instance":
             instance_id = compose_instance_id(data["language"], data["feature"])
+            since = data.get("since")
+            exists = {"anchor": f"{instance_id}#exists", "status": data["status"]}
+            if data["status"] == "absent":
+                exists_sources = data.get("sources")
+                exists["absence_scope"] = data.get("absence_scope")
+                exists["feature_aliases"] = _grep_vocabulary(features.get(data["feature"]))
+            else:
+                exists_sources = (since or {}).get("sources")
+                if since:
+                    exists["since"] = since["value"]
             _add(build_claim("instance-exists", instance_id=instance_id, status=data["status"]),
-                path)
+                 path, exists_sources, **exists)
+            if since:
+                _add(build_claim("instance-field", instance_id=instance_id, field="since",
+                                 value=since["value"]),
+                     path, anchor=f"{instance_id}#since", since=since["value"],
+                     verified_with=f"{instance_id}#exists")
+            for n in data.get("notes", []):
+                _add(build_claim("instance-note", instance_id=instance_id, key=n["key"],
+                                 note_type=n["type"], text=n["text"]),
+                     path, n.get("sources"), anchor=f"{instance_id}#notes[{n['key']}]")
             for c in data.get("characteristics", []):
                 _add(build_claim("characteristic", instance_id=instance_id,
-                                 key=c["key"], text=c["text"]), path, c.get("sources"))
+                                 key=c["key"], text=c["text"]), path, c.get("sources"),
+                     anchor=f"{instance_id}#characteristics[{c['key']}]")
             for s in data.get("syntax", []):
                 syntax_id = compose_syntax_id(instance_id, s["key"])
                 _add(build_claim("syntax-valid", syntax_id=syntax_id, code=s["code"]),
-                    path, s.get("sources"))
+                     path, s.get("sources"), anchor=f"{instance_id}#syntax[{s['key']}]")
         elif kind == "edge":
             edge_id = data["id"]
             # The edge's own citations, so the pair is verifiable at all — without them

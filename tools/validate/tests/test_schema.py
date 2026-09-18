@@ -10,12 +10,47 @@ def test_record_kinds_complete():
     }
 
 
+REF = [{"source": "rust-fls", "locator": "§6.18"}]
+PROVENANCE = {"claim_origin": "source-derived"}
+
+
 def test_valid_feature_instance():
-    rec = {
-        "feature": "pattern-matching", "language": "rust", "status": "present",
-        "provenance": {"claim_origin": "source-derived"},
-    }
+    rec = {"feature": "pattern-matching", "language": "rust", "status": "present",
+           "since": {"value": "1.0", "sources": REF}, "provenance": PROVENANCE}
     assert validate_record(rec, "feature-instance") == []
+
+
+def test_a_present_or_partial_instance_needs_a_since():
+    """D65: without a `since`, a present instance has no version and no existence citation."""
+    for status in ("present", "partial"):
+        rec = {"feature": "x", "language": "rust", "status": status, "provenance": PROVENANCE}
+        assert any("since" in e for e in validate_record(rec, "feature-instance"))
+
+
+def test_a_present_instance_cites_through_since_not_at_status_level():
+    rec = {"feature": "x", "language": "rust", "status": "present",
+           "since": {"value": "1.0", "sources": REF}, "sources": REF,
+           "provenance": PROVENANCE}
+    assert validate_record(rec, "feature-instance") != []
+
+
+def test_an_absent_instance_cites_at_status_level_and_has_no_since():
+    ok = {"feature": "x", "language": "rust", "status": "absent", "absence_scope": "s",
+          "sources": REF, "provenance": PROVENANCE}
+    assert validate_record(ok, "feature-instance") == []
+    assert validate_record({**ok, "sources": []}, "feature-instance") != []
+    assert any("sources" in e for e in validate_record(
+        {k: v for k, v in ok.items() if k != "sources"}, "feature-instance"))
+    assert validate_record({**ok, "since": {"value": "1.0", "sources": REF}},
+                           "feature-instance") != []
+
+
+def test_as_of_is_never_a_since_status():
+    """D66: as-of is a verdict, held in the private ledger — never written into YAML (D23)."""
+    rec = {"feature": "x", "language": "rust", "status": "present",
+           "since": {"value": "1.0", "sources": REF, "since_status": "as-of"},
+           "provenance": PROVENANCE}
+    assert validate_record(rec, "feature-instance") != []
 
 
 def test_absent_requires_absence_scope():

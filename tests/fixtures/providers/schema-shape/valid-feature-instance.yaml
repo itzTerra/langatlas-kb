@@ -7,5 +7,10 @@ record:
   feature: pattern-matching
   language: rust
   status: present
+  since:
+    value: "1.0"
+    sources:
+      - source: rust-fls
+        locator: "§6.18"
   provenance:
     claim_origin: source-derived

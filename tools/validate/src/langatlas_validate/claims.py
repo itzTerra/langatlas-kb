@@ -11,7 +11,7 @@ TEMPLATED_KINDS = (
     "instance-exists", "instance-field", "edge-exists",
     "edge-polarity", "rule-exists", "quality-assessment",
 )
-FREETEXT_KINDS = ("characteristic", "syntax-valid", "node-definition")
+FREETEXT_KINDS = ("characteristic", "syntax-valid", "node-definition", "instance-note")
 
 
 def _sha256_16(text: str) -> str:
@@ -42,6 +42,12 @@ def build_claim(kind: str, **params: str) -> str:
     if kind == "node-definition":
         h = _sha256_16(normalize_value(params["text"], freetext=True))
         return f"node-definition({params['node_id']}, sha256-16={h})"
+    if kind == "instance-note":
+        # §3.4: a partial instance's typed notes are each an independently challengeable fact.
+        # The type is part of the claim — "limitation" and "extra" say opposite things.
+        h = _sha256_16(normalize_value(params["text"], freetext=True))
+        return (f"instance-note({params['instance_id']}, {params['key']},"
+                f" type={params['note_type']}, sha256-16={h})")
     raise ValueError(f"unknown claim kind: {kind!r}")
 
 

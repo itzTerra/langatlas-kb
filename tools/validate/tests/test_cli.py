@@ -42,6 +42,7 @@ def test_precommit_on_clean_file(tmp_path):
     f = tmp_path / "pattern-matching.yaml"
     f.write_text(
         "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "since:\n  value: '1.0'\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
         "provenance:\n  claim_origin: source-derived\n"
     )
     assert main(["precommit", "--kind", "feature-instance", str(f)]) == 0
@@ -64,6 +65,7 @@ def test_precommit_rejects_bad_locator_shape(tmp_path):
     f = tmp_path / "bad-locator.yaml"
     f.write_text(
         "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
         "characteristics:\n"
         "  - key: c-a\n"
         "    text: some characteristic\n"
@@ -80,6 +82,7 @@ def test_precommit_accepts_well_shaped_locator(tmp_path):
 
     raw = (
         "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
         "characteristics:\n"
         "  - key: c-a\n"
         "    text: some characteristic\n"

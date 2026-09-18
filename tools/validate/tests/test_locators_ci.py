@@ -16,6 +16,7 @@ class _FakeIndex:
 def _write_instance_with_locator(root: Path, locator: str) -> None:
     raw = (
         "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
         "characteristics:\n"
         "  - key: c-a\n    text: some characteristic\n"
         "    sources:\n"

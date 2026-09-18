@@ -365,7 +365,7 @@ def finalize_r5(cycle_number, *, repo_root, status_checker=None,
 - Produces: the D65 record shape and fact derivation (see Shared shapes); the `instance-note`
   free-text claim kind.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Append to `tools/validate/tests/test_compile.py`:
 
@@ -517,14 +517,14 @@ def test_as_of_is_never_a_since_status():
     assert validate_record(rec, "feature-instance") != []
 ```
 
-- [ ] **Step 2: Run the tests to verify they fail**
+- [x] **Step 2: Run the tests to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_compile.py tests/test_schema.py -v`
 Expected: FAIL. The anchored tests fail with `KeyError: 'fi.rust.pattern-matching#exists'`, since
 no fact carries an `anchor` yet. The schema tests fail because the schema has no status-dependent
 requirement.
 
-- [ ] **Step 3: Make `since` and `sources` status-dependent in the schema**
+- [x] **Step 3: Make `since` and `sources` status-dependent in the schema**
 
 In `ontology/schema/feature-instance.schema.json`, add `sources` directly after `absence_scope`
 (normalization orders keys by schema property order):
@@ -555,7 +555,7 @@ and replace the trailing `allOf` with:
 `required` stays `["feature", "language", "status", "provenance"]`, and `since_status` stays
 `["as-cited", "back-dated"]` (D66).
 
-- [ ] **Step 4: Add the `instance-note` claim kind**
+- [x] **Step 4: Add the `instance-note` claim kind**
 
 In `tools/validate/src/langatlas_validate/claims.py`:
 
@@ -574,7 +574,7 @@ and, just before the final `raise` in `build_claim`:
                 f" type={params['note_type']}, sha256-16={h})")
 ```
 
-- [ ] **Step 5: Derive instance facts per D65**
+- [x] **Step 5: Derive instance facts per D65**
 
 In `tools/validate/src/langatlas_validate/compile.py`, add the helper above `derive_facts`:
 
@@ -649,7 +649,7 @@ Then change `derive_facts` in three places.
                      path, s.get("sources"), anchor=f"{instance_id}#syntax[{s['key']}]")
 ```
 
-- [ ] **Step 6: Give the existing present-instance literals a `since`**
+- [x] **Step 6: Give the existing present-instance literals a `since`**
 
 The schema now rejects a present instance without `since`. Fix each literal below by inserting
 
@@ -701,7 +701,7 @@ record:
     claim_origin: source-derived
 ```
 
-- [ ] **Step 7: Run the validate suite and the store gate**
+- [x] **Step 7: Run the validate suite and the store gate**
 
 Run: `uv --directory tools/validate run pytest -v && uv --directory tools/validate run langatlas-validate ci`
 Expected: PASS; `ci` exits 0 (the real store holds no instances yet).
@@ -709,7 +709,7 @@ Expected: PASS; `ci` exits 0 (the real store holds no instances yet).
 Run: `uv --directory tools/research run pytest tests/test_draft_gate.py tests/test_controversy_assemble.py -m '' -q`
 Expected: PASS. New fact keys are additive, and no node or edge fact id changes.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add ontology/schema/feature-instance.schema.json \

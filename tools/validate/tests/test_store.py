@@ -17,6 +17,7 @@ def _write(path: Path, text: str) -> None:
 def _feature_instance_yaml() -> str:
     raw = (
         "feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+        "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
         "provenance:\n  claim_origin: source-derived\n"
     )
     return normalize_record(raw, "feature-instance")
@@ -68,6 +69,7 @@ def test_validate_store_flags_normalization_drift(store):
     bad_path = store / "languages" / "rust" / "instances" / "drifted.yaml"
     # deliberately unnormalized: wrong key order relative to the schema
     bad_path.write_text("language: rust\nfeature: pattern-matching\nstatus: present\n"
+                        "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
                         "provenance:\n  claim_origin: source-derived\n")
     errors = validate_store(store)
     assert any("not normalized" in e for e in errors)

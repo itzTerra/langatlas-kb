@@ -9,13 +9,14 @@
     "language": { "type": "string" },
     "status": { "enum": ["present", "absent", "partial"] },
     "absence_scope": { "type": "string" },
+    "sources": { "$ref": "defs.schema.json#/$defs/sourcesList", "minItems": 1 },
     "since": {
       "type": "object",
       "additionalProperties": false,
       "required": ["value", "sources"],
       "properties": {
         "value": { "type": "string" },
-        "sources": { "$ref": "defs.schema.json#/$defs/sourcesList" },
+        "sources": { "$ref": "defs.schema.json#/$defs/sourcesList", "minItems": 1 },
         "since_status": { "enum": ["as-cited", "back-dated"] }
       }
     },
@@ -68,7 +69,8 @@
   "allOf": [
     {
       "if": { "properties": { "status": { "const": "absent" } } },
-      "then": { "required": ["absence_scope"] }
+      "then": { "required": ["absence_scope", "sources"], "not": { "required": ["since"] } },
+      "else": { "required": ["since"], "not": { "required": ["sources"] } }
     }
   ]
 }

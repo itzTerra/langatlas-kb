@@ -19,6 +19,7 @@ def test_precommit_auto_validates_a_clean_feature_instance(tmp_path):
     f = tmp_path / "languages" / "rust" / "instances" / "pattern-matching.yaml"
     f.parent.mkdir(parents=True)
     raw = ("feature: pattern-matching\nlanguage: rust\nstatus: present\n"
+          "since:\n  value: \"1.0\"\n  sources:\n    - source: rust-reference\n      locator: p. 1\n"
           "provenance:\n  claim_origin: source-derived\n")
     f.write_text(normalize_record(raw, "feature-instance"))
     assert main(["precommit-auto", str(f)]) == 0
