@@ -356,6 +356,11 @@ Derived facts from this one record (build output): `#exists`, `#since`,
 sources, provenance, and status. Correcting `since` changes one fact id, appends one
 tombstone line, and leaves the other facts untouched.
 
+- **`since` carries existence (D65).** A present or partial instance **requires** `since`,
+  and `since.sources` are its existence citations: `#exists` is verified against them with
+  `since` as a load-bearing field (§6.2's fold). `#since` is derived for identity only (its
+  own fact id and tombstone) and never verified separately.
+
 - **`status: partial` is kept** (D23), carrying associated notes typed
   `limitation | extra | alternative` describing the missing or additional aspect: a flat
   keyed list, `notes: [{key: n-<slug>, type: limitation | extra | alternative, text,
@@ -364,7 +369,8 @@ tombstone line, and leaves the other facts untouched.
   fact.
 - **`status: absent` records are first-class sourced facts** with a **required
   `absence_scope`** free-text field (D49) — the sweep agent's argument for why the cited
-  source(s) can be trusted as comprehensive over the feature's category. No file at all
+  source(s) can be trusted as comprehensive over the feature's category — and a required
+  status-level `sources:` list; an absent record has no `since` (D65). No file at all
   means *unknown/not yet swept* — a distinction every surface must preserve (§6.6).
 
 **Edge**: `id`, `type`, `from`, `to`, `polarity` (influences only), fact-bearing
@@ -482,7 +488,8 @@ Combination validation in four levels:
 
 1. **Dimension exclusivity** — reads the `exclusivity: exclusive | multi` field on each
    record in `ontology/taxonomy/dimensions.yaml` (default `exclusive`; D39). `exclusive`
-   enforces at-most-one-feature; `multi` skips the check entirely. Deliberately **no
+   enforces at-most-one-feature; `multi` skips the check entirely. A dimension's values are
+   its member layer-3 features — there is no separate `values:` list (D67). Deliberately **no
    partial/counted mode** ("at most 2 of 4") — permanently; anything more nuanced is a
    Rule entity's job.
 2. **Hard pairwise `requires`/`conflicts-with`** — package-manager-style propagation.
@@ -546,7 +553,9 @@ usually a new, distinct fact, not a back-date).
   academics. LangAtlas extras under the `custom` key: `tier`, `archive_url`, `accessed`,
   `added_by`, `locator_kinds` (which locator grammars are admissible for this source),
   `edition` + optional `edition_check_url` (D37), `canonical_source` flag +
-  `acquisition_note` (D37), `grounding` (D51), `superseded_by` (edition tombstoning).
+  `acquisition_note` (D37), `grounding` (D51), `superseded_by` (edition tombstoning),
+  `language_version` (the language version a spec source documents, normalized free text —
+  what an as-of `since` citing it must equal, D66).
 - **Quality tiers**: **A** peer-reviewed/spec, **B** official docs/textbook, **C**
   talks/known community references, **D** blogs/popularity indexes.
 - **Verbatim quotes are optional.** When present a quote strengthens verification; when
@@ -812,8 +821,12 @@ inspection; `verified-with-partials` stays provenance-only (no extra site marker
 
 **`since` semantics**: entailment distinguishes *since-supported* (source supports the
 exact origin) from *as-of-supported* (source only bounds from above — a legitimate
-`partial`: presence enters, `since` gets `as-of` status and lands in the back-dating
-queue, §3.7). This dissolves the largest class of false rejects.
+`partial`: presence enters as `partially-verified`, and the as-of verdict — held in the
+private verdict ledger, never written into YAML (D23/D66) — queues the fact for back-dating,
+§3.7). This dissolves the largest class of false rejects. **Bound (D66)**: when a fact's best
+tier-A/B `since` support is only as-of, it is admissible only if `since` equals an
+as-of-supporting citation's `custom.language_version` — a `since` earlier than anything the
+citation shows could never be corrected by earlier-only back-dating.
 
 **Models**: primary `deepseek` (reasoning off); escalation to `deepseek-thinking` on
 `partial`/`contradicted`/inconsistent per-assertion output (~5–15% of pairs); `mini`
@@ -1171,8 +1184,10 @@ real version has shipped); sweep-run manifests record the spec version answered.
 Migration disposition for in-flight answers reuses the D38 DSL via a
 **delta-questionnaire diff** (compare two spec versions by `anchor_prefix`; requeue
 scoped to exactly the changed anchors). Compiled output is a **committed artifact**
-(diffable in git). Invoked on demand at R6/first-sweep-launch and at each onboarding
-phase start — never cron.
+(diffable in git) at repo-root `questionnaire/spec-<ontology_version>.yaml` (D68). A
+dimension group's items are its values (D67). Invoked on demand at R5, R6/first-sweep-launch
+and each onboarding phase start — never cron; the `config/jobs/` entry lands with Stage 4
+(D68).
 
 ### 7.4 Frontloaded research phase (D11, D27 — brainstorm 25)
 
@@ -1190,7 +1205,7 @@ not instances — languages appear only as reality checks.
 | R2 | Embedding benchmark (D22) | on a pilot corpus (3–4 sources), §8.6 |
 | R3 | Thematic survey (divergent) | per theme (~12: typing; memory management; concurrency; higher-order programming; ADTs & pattern matching; modules; metaprogramming; evaluation & parameter passing; effects & exceptions; dispatch & inheritance; syntax-layer constructs; qualities vocabulary — the final theme list is itself an early R3 deliverable): university-API bulk passes tag corpus chunks with candidate terms; a Claude surveyor synthesizes a candidate inventory, each entry with 1–3 evidence chunks and cross-book aliases. **Each cycle's theme list requires explicit developer sign-off before the cycle runs.** |
 | R4 | Ontology drafting (convergent) | a Claude ontologist atomizes candidates into nodes, assigns layers/dimensions, drafts edges, every carve annotated with evidence; contested carves go through the D5 debate machinery with schema-dispute challenge types (`wrong-atomization | wrong-layer | missing-source | redundant-with | scope`) |
-| R5 | Language reality checks | a **rotating 4–5-language sample per cycle** (paradigm spread) classified against draft dimensions — surfacing unmappable features, uninhabited dimension values, unfittable languages; also the deliberate shakedown of the sweep pipeline (questionnaire format, verifier, commit protocol) at small scale; each session emits `research/reality-checks/<cycle>-<theme>.yaml` |
+| R5 | Language reality checks | a **rotating 4–5-language sample per cycle** (paradigm spread) classified against draft dimensions — surfacing unmappable features, uninhabited dimension values, unfittable languages; also the deliberate shakedown of the sweep pipeline (questionnaire format, verifier, commit protocol) at small scale; answers go through the real D24 gate but **nothing is minted** — no instances, no language registration (D68); each session emits `research/reality-checks/<cycle>-<theme>.yaml`, which Stage 5 sweep agents never read |
 | R6 | Consolidation & exit dossier | cross-theme edge pass (per-theme work systematically under-collects boundary-crossing edges), dedup/alias audit, slug polish, dossier recompute |
 
 **Agent role loadout**: corpus tagger (university API, embarrassingly parallel);

@@ -1,1 +1,37 @@
-qualities: []
+qualities:
+  - slug: compilation-speed
+    label: Compilation speed
+    summary: How quickly a program written in the language is compiled or otherwise prepared for execution.
+  - slug: ease-of-use
+    label: Ease of use
+    summary: How little effort it takes a developer to accomplish everyday tasks in the language.
+  - slug: expressiveness
+    label: Expressiveness
+    summary: How directly and concisely the language lets a developer state an intended computation or design.
+  - slug: interoperability
+    label: Interoperability
+    summary: How readily programs in the language can call, embed or exchange data with code written in other languages.
+  - slug: learnability
+    label: Learnability
+    summary: How quickly a newcomer can become productive in the language.
+  - slug: memory-efficiency
+    label: Memory efficiency
+    summary: How little memory programs in the language need at run time.
+  - slug: performance
+    label: Performance
+    summary: How fast the code produced or executed for the language runs.
+  - slug: platform-independence
+    label: Hardware and system independence
+    summary: How well programs in the language run unchanged across different hardware and operating systems.
+  - slug: readability
+    label: Readability
+    summary: How clean and easily read the language's syntax makes programs for someone other than their author.
+  - slug: safety
+    label: Safety
+    summary: How strongly the language guarantees that certain classes of error cannot occur.
+  - slug: simplicity
+    label: Simplicity
+    summary: How small and uniform the language is, measured by the number of concepts a developer must hold in mind.
+  - slug: systems-programming-support
+    label: Support for hardware and system programming
+    summary: How well the language supports direct control of hardware and low-level system resources.

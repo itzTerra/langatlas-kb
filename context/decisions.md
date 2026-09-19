@@ -529,6 +529,10 @@ agreement on every pair. **`pending-source` age alarm at 14 days** and **bounce 
 re-files per claim** confirmed. **`verified-with-partials` stays provenance-only** — no
 additional site-visible marker beyond normal provenance.
 
+*[developer 2026-09-18]* **Amended by D66**: the admissibility rule gains one bound — a fact
+whose best tier-A/B `since` support is only as-of is admissible only when `since` equals an
+as-of-supporting citation's `custom.language_version`. Per-pair verdicts are unchanged.
+
 ### D25. Fact confidence, dissent & staleness (12)
 
 Status modeled as **three orthogonal axes** rather than one lifecycle: `verification`
@@ -605,6 +609,12 @@ stating the rule; these two cases are now binding:
   claim's substance — a citation whose evidence was invented is untrustworthy independently of
   whether the claim happens to be right. OCR noise is unaffected: separating the two is exactly
   what D24's ≥0.90 / ≤0.80 adjudication band is for.
+
+*[developer 2026-09-18]* **Amended by D65/D66**: `since` is a required, load-bearing field of a
+present/partial instance's existence claim (D65); as-of stays a ledger verdict and never becomes
+a `since_status` value (the enum stays `as-cited | back-dated`), and an as-of `since` must equal
+the cited edition's `custom.language_version` — the case "cited text is silent on versions" above
+now admits only that version (D66).
 
 
 ### D26. Provider-abstraction layer (13)
@@ -1214,6 +1224,9 @@ the dimension level. **The stated scope boundary is confirmed correct**: this to
 design topic 52's Builder-side consumption of `exclusivity`, nor topic 29's migration tooling for
 the eventual Exceptions restructure — both stay pointers, no sketch needed here.
 
+*[developer 2026-09-18]* **Amended by D67**: a dimension's values are its member layer-3 features;
+`dimensions.yaml` carries no separate `values:` list.
+
 ### D40. Brand identity & launch positioning (31)
 
 **Positioning statement**, three nested lengths for three surfaces, all saying the same two
@@ -1564,6 +1577,11 @@ D35 stubbed in `bundle_schema_version`. **Compiled questionnaire spec output is 
 artifact** (visible in git history, diffable across ontology versions) — the opposite of D41's
 `report.py` ephemeral-output precedent — with no directory-location preference specified beyond
 `tools/questionnaire/`'s existing output path.
+
+*[developer 2026-09-18]* **Amended by D68**: compiled specs are committed at repo-root
+`questionnaire/spec-<ontology_version>.yaml`; the `config/jobs/` compile entry is deferred to
+Stage 4's "first compiled sweep questionnaire" item (Stage 3's R5 calls the compiler library
+directly).
 
 ## Batch 39, 40, 41 decisions (2026-07-19 — from brainstorms 39, 40, 41 — **ratified by the developer**, amendments noted inline)
 
@@ -2281,6 +2299,79 @@ confirmed as a CI-enforced hard requirement, with the redirect-to-edge-type tabl
 guidance; the `then` empty-only-for-`warn` validation rule confirmed; sweep-triggered Rule
 minting confirmed to need no extra human gate beyond the ordinary admissibility rule; `when_all`'s
 lexicographic sort-before-hashing confirmed, matching `alternative-to`'s precedent.
+
+## Stage 3E planning decisions (2026-09-18 — surfaced while planning Stage 3E, validated against D2/D5/D23/D25/D28/D34/D39/D46/D49/D52 — **ratified by the developer**)
+
+### D65. `since` is part of an instance's existence claim
+
+A **present or partial** FeatureInstance **requires** `since` (`value` + `sources`), and
+`since.sources` are its existence citations: the `#exists` fact is verified against them with
+`since` as a load-bearing field. That is how D25's fold table (U6) and its 2026-08-28 per-assertion
+rule already verify `since` ("a single hallucinated `since` on the only citation mints nothing"),
+how the calibrated golden set carries it (`kind: instance-exists … since:`), and how §3.4's worked
+example already cites a present record. An **absent** instance requires status-level `sources`
+plus `absence_scope` (D49), and forbids `since`. `#since` remains its own derived fact for
+**identity only** (its own fact id, anchor and tombstone, so correcting `since` changes exactly one
+fact id, §3.4); it is never verified separately — its verdict is `#exists`'s `since` field.
+Typed notes on a partial instance get a free-text claim kind, `instance-note`.
+
+### D66. As-of `since` stays out of YAML, and is bounded by the cited edition
+
+As-of is a verifier verdict, so D23 keeps it out of authored YAML: `since_status` stays
+`as-cited | back-dated` (D25), an as-of `since` surfaces as `partially-verified` through the fold,
+and the §3.7 back-dating queue reads it from the private verdict ledger. §6.2's "`since` gets
+`as-of` status" wording is corrected to match. **The too-early gap is closed**: under the
+2026-08-28 rule a source silent on versions grades any `since` as-of-supported, including one
+*earlier* than the truth (golden item: Java `var` claimed `since: '8'`), which monotone
+earlier-only back-dating could never correct. So when a fact's best tier-A/B `since` support is
+only as-of, it is admissible only if `since` equals an as-of-supporting citation's
+`custom.language_version` — a new, normalized source-record field (`custom.edition` holds
+document identifiers such as `N3220`); an unversioned source cannot bound an as-of `since`.
+Per-pair verdicts and the golden-set calibration are unchanged; only `decide_fact` applies the
+bound. `since` values stay free text in each language's conventional spelling for now (a
+normalized per-language version vocabulary is backlog topic 64).
+
+### D67. A dimension's values are its member features
+
+§3.6 ("`exclusive` enforces at-most-one-feature"), brainstorm 38's worked example and D52's
+`<dimension, value>` instance counts all assume a dimension value *is* a layer-3 feature; 3C's
+free-label `values:` list (e.g. `[static, dynamic, gradual]` beside features `static-typing` …)
+was the anomaly. `values:` is removed from `ontology/taxonomy/dimensions.yaml`, the R4 carve plan
+and the ontologist's output; a dimension's values are derived from the features that name it —
+one source of truth, and no ordering problem when a dimension lands before its members. The
+ontologist is asked for ≥2 members per dimension; the questionnaire compiler reports
+`dimension-without-features` / `dimension-with-one-feature` as diagnostics rather than refusing.
+
+### D68. R5 runs the gate but mints nothing
+
+R5 reality checks verify every answer through the real D24 gate and record answers, verdicts,
+findings and a shakedown log in `research/reality-checks/<cycle>-<theme>.yaml` — but mint **no**
+FeatureInstance records, register no languages and create no `languages/<lang>/` directory.
+Minting would onboard sampled languages out of D28's strict phase order (cycle 1's sample includes
+phase-3 Erlang), erase D49's `not-yet-onboarded` state, and pre-seed Stage 5's independent sweeps
+(D5/D34's anchoring concern); brainstorm 25 already said R5 is "*not* to mint feature instances at
+sweep quality". The commit protocol is still shaken down: the compiled spec and the reality-check
+file land through `land_record`. Alongside: R5 verdicts go to the private `VerdictLedger`, and
+3C's `draft verify` is aligned to do the same; **Stage 5 sweep agents never read
+`research/reality-checks/`**; the compiled questionnaire is committed at repo-root
+`questionnaire/spec-<ontology_version>.yaml`; D46's `config/jobs/` compile entry is deferred to
+Stage 4's "first compiled sweep questionnaire" item (R5 calls the library directly); and cycle
+samples stay unrestricted — a sampled language without an ingested spec is classified against the
+general corpus and logged as a shakedown finding.
+
+### D69. Seed quality vocabulary (hand-seeded, 12 entries)
+
+*[developer 2026-09-19]* `ontology/taxonomy/qualities.yaml` is seeded by hand with 12 entries
+rather than left empty for 3C's edge drafter to mint (D-3C item 8): `compilation-speed`,
+`ease-of-use`, `expressiveness`, `interoperability`, `learnability`, `memory-efficiency`,
+`performance`, `platform-independence`, `readability`, `safety`, `simplicity`,
+`systems-programming-support`. Compilation speed and memory efficiency are their own qualities, not
+folded into `performance`. Considered and left out: orthogonality, clear and defined semantics,
+paradigm support, library and toolchain support, standardisation and documentation, and usability
+by non-programmers (the last four read as capabilities or ecosystem traits rather than language-design
+qualities). The list is a seed, not a closed set: 3C may still propose entries through `mint_quality`,
+and the `qualities vocabulary` R3 theme (Kaijanaho 2015 as evidence source) consolidates it later.
+Slugs and one-line summaries were written by Claude and are open to edit.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 

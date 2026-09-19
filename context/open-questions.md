@@ -34,6 +34,11 @@ Batch 62 questions (filed 2026-07-24 from brainstorm 62) were answered by the de
 day and promoted to ratified decision D63.
 Batch 63 questions (filed 2026-07-25 from brainstorm 63) were answered by the developer the same
 day and promoted to ratified decision D64.
+Stage 3E planning questions (raised 2026-09-18 while validating the 3E plan against the ratified
+decisions: `since` as part of the existence claim, as-of in YAML and the too-early-`since` gap,
+dimension values vs features, whether R5 mints, spec location, job-entry timing, sweep
+independence from reality checks) were answered by the developer the same day and promoted to
+ratified decisions D65–D68; the one deferred item became backlog topic 64.
 
 ## Open Questions
 
