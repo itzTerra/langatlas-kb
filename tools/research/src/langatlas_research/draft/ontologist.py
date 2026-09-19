@@ -5,11 +5,10 @@ carves will carve to match its own harvest. It gets the corpus as live pipeline-
 and no finding aids: a finding aid is a coverage lead for R3, and it is never a citation
 (D29/D53), so it has no business in a step whose output must be sourced.
 
-Nothing the model types about *identity* is trusted: evidence is bound from chunk ids, layer-3
-nodes must name a dimension that exists or that this same output proposes, and every `realizes`
-target must be a node this output mints or one already committed. A model that gets those wrong
-fails the run — the plan is a store proposal, and a proposal that cannot validate is not worth
-carrying forward."""
+Nothing the model types about *identity* is trusted: evidence is bound from chunk ids. Hygiene
+errors (bad slugs, duplicate keys, re-minting a committed id) fail the run. A structural misfit
+(layer outside 1-3, layer-3 without a dimension, `realizes` not naming a concept) is kept: the
+carve is stored flagged `blocked: structure` with a structure-friction finding (D70)."""
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
@@ -23,6 +22,7 @@ from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
 from langatlas_research.draft.findings import FindingOut
 from langatlas_research.draft.plan import build_plan_record
+from langatlas_research.draft.structure import Misfit, block_entries, synthesize_friction
 from langatlas_research.errors import DraftOutputInvalid
 from langatlas_research.survey.chunks import ChunkLookup
 from langatlas_research.survey.claude import run_structured
@@ -124,16 +124,21 @@ def render_candidates(ctx, survey: dict, *, limit: int) -> str:
     return ctx.tool_result(tool="r3-survey", text="\n".join(lines), kind="survey-inventory")
 
 
-def _check_shape(out: OntologistOut, store: StoreView, max_nodes: int) -> None:
-    """Every structural rule the record schemas would reject later, checked here so the
-    developer reads one message naming all of them instead of one per mint attempt."""
+def _check_shape(out: OntologistOut, store: StoreView, max_nodes: int) -> list[Misfit]:
+    """Hygiene errors raise, all at once, so the developer reads one message. Structural
+    misfits (D70) are returned: the seed structure may be what is wrong, so the carve is kept.
+
+    @raises DraftOutputInvalid: invalid slugs, duplicate keys, a committed id re-minted, or
+        more nodes than the configured cap."""
     errors: list[str] = []
+    misfits: list[Misfit] = []
     if len(out.nodes) > max_nodes:
         errors.append(f"{len(out.nodes)} nodes exceeds the configured cap of {max_nodes}")
 
     proposed_dimensions = {d.slug for d in out.dimensions}
     known_dimensions = proposed_dimensions | store.dimensions
     concept_ids = {n.id for n in out.nodes if n.kind == "concept"} | store.concepts
+    feature_ids = {n.id for n in out.nodes if n.kind == "feature"} | store.features
     keys: set[str] = set()
 
     for dimension in out.dimensions:
@@ -158,20 +163,29 @@ def _check_shape(out: OntologistOut, store: StoreView, max_nodes: int) -> None:
                           f" instead of re-minting it")
         if node.kind == "feature":
             if node.layer not in (1, 2, 3):
-                errors.append(f"node {node.key}: feature layer must be 1, 2 or 3")
-            if node.layer == 3 and not node.dimension:
-                errors.append(f"node {node.key}: a layer-3 feature must name a dimension")
+                misfits.append(Misfit(node.key, "layers",
+                                      f"layer {node.layer!r} is not one of the three layers"))
+            elif node.layer == 3 and not node.dimension:
+                misfits.append(Misfit(node.key, "dimension-model",
+                                      "a layer-3 feature names no dimension"))
             if node.dimension and node.dimension not in known_dimensions:
-                errors.append(f"node {node.key}: dimension {node.dimension!r} is neither"
-                              f" committed nor proposed in this run")
+                misfits.append(Misfit(node.key, "dimension-model",
+                                      f"dimension {node.dimension!r} is neither committed"
+                                      f" nor proposed in this run"))
             for concept_id in node.realizes:
-                if concept_id not in concept_ids:
-                    errors.append(f"node {node.key}: realizes {concept_id!r}, which is"
-                                  f" neither a concept in this run nor a committed one")
+                if not is_valid_slug(concept_id):
+                    errors.append(f"node {node.key}: realizes {concept_id!r}, not a valid slug")
+                elif concept_id not in concept_ids:
+                    what = "a feature" if concept_id in feature_ids else "not a node"
+                    misfits.append(Misfit(node.key, "realizes",
+                                          f"realizes {concept_id!r}, which is {what};"
+                                          f" `realizes` may only name a concept"))
         elif node.layer is not None or node.dimension:
-            errors.append(f"node {node.key}: a concept has no layer or dimension")
+            misfits.append(Misfit(node.key, "concept-feature-split",
+                                  "a concept has no layer or dimension"))
     if errors:
         raise DraftOutputInvalid(f"{ONTOLOGIST_PROMPT_ID}: " + "; ".join(errors))
+    return misfits
 
 
 def _tail(contested_note: str | None, note: str) -> dict:
@@ -205,7 +219,7 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
     out, _ = run_structured(ctx, prompt or load_prompt(ONTOLOGIST_PROMPT_ID), variables,
                             output_model=OntologistOut, role_config=role,
                             mcp_servers=mcp_servers, allowed_tools=allowed_tools)
-    _check_shape(out, store, role.max_candidates)
+    misfits = _check_shape(out, store, role.max_candidates)
 
     plan = build_plan_record(cycle=cycle, ontologist_run_id=ctx.run_id,
                              generated_at=now or utc_now())
@@ -224,13 +238,16 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
                  "summary": node.summary, "evidence": evidence,
                  **_tail(node.contested_note, node.note)}
         if node.kind == "feature":
-            entry.update({"layer": node.layer, "dimension": node.dimension,
-                          "cross_cutting": node.cross_cutting,
+            entry.update({"dimension": node.dimension, "cross_cutting": node.cross_cutting,
                           "aliases": list(node.aliases), "realizes": list(node.realizes)})
+            if node.layer in (1, 2, 3):
+                entry["layer"] = node.layer
         elif node.excluded_rationale:
             entry["excluded_rationale"] = node.excluded_rationale
         plan["nodes"].append(entry)
+    plan["nodes"] = block_entries(plan["nodes"], misfits)
     plan["findings"] = [finding.as_entry() for finding in out.findings]
+    plan["findings"] += synthesize_friction(misfits, plan["findings"])
 
     for warning in warnings:
         ctx.writer.append(role="system", content=warning, flags=["r4:draft-warning"])

@@ -114,26 +114,77 @@ def test_every_entry_starts_proposed_with_no_debate_and_no_verdict(
         assert entry["debate_id"] is None and entry["verification"] is None
 
 
-def test_an_unknown_realizes_target_is_refused(fake_ctx, research_repo, signed_cycle,
-                                               fake_lookup, config, tmp_path):
-    from langatlas_research.errors import DraftOutputInvalid
+def _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path, out):
+    fake_ctx.claude_results.append(_result(out))
+    return run_ontologist(fake_ctx, signed_cycle, repo_root=research_repo, survey=SURVEY,
+                          lookup=fake_lookup, config=config,
+                          prompt=mint_prompt_version("r4-ontologist-test", PROMPT_TEXT,
+                                                     root=tmp_path))
 
+
+def test_realizing_a_feature_blocks_the_carve_instead_of_failing_the_run(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
+    child = {**OUT["nodes"][1], "key": "child", "id": "child", "name": "Child",
+             "from_candidates": [], "realizes": ["static-typing"]}
+    plan, _ = _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path,
+                   {**OUT, "nodes": [*OUT["nodes"], child]})
+    by_key = {node["key"]: node for node in plan["nodes"]}
+    assert by_key["child"]["blocked"] == "structure"
+    assert "a feature" in by_key["child"]["block_reason"]
+    assert "blocked" not in by_key["static-typing"]
+    friction = [f for f in plan["findings"] if f["kind"] == "structure-friction"]
+    assert friction == [{"kind": "structure-friction", "keys": ["child"],
+                         "detail": by_key["child"]["block_reason"],
+                         "area": "ontology", "element": "realizes"}]
+    assert validate_research_record(plan, "draft", repo_root=research_repo) == []
+
+
+def test_an_unknown_realizes_target_blocks_the_carve(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
     bad = {**OUT, "nodes": [{**OUT["nodes"][1], "realizes": ["no-such-concept"]}]}
-    fake_ctx.claude_results.append(_result(bad))
-    with pytest.raises(DraftOutputInvalid):
-        run_ontologist(fake_ctx, signed_cycle, repo_root=research_repo, survey=SURVEY,
-                       lookup=fake_lookup, config=config,
-                       prompt=mint_prompt_version("r4-ontologist-test", PROMPT_TEXT,
-                                                  root=tmp_path))
+    plan, _ = _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path, bad)
+    assert plan["nodes"][0]["blocked"] == "structure"
+    assert "not a node" in plan["nodes"][0]["block_reason"]
 
 
-def test_a_layer_3_node_without_a_dimension_is_refused(fake_ctx, research_repo, signed_cycle,
-                                                       fake_lookup, config, tmp_path):
+def test_a_layer_3_node_without_a_dimension_blocks_the_carve(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
+    bad = {**OUT, "nodes": [{**OUT["nodes"][1], "dimension": None}], "dimensions": []}
+    plan, _ = _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path, bad)
+    node = plan["nodes"][0]
+    assert node["blocked"] == "structure"
+    assert "dimension-model" in [f.get("element") for f in plan["findings"]]
+    assert validate_research_record(plan, "draft", repo_root=research_repo) == []
+
+
+def test_a_layer_outside_the_three_is_stored_without_a_layer_and_blocked(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
+    bad = {**OUT, "nodes": [{**OUT["nodes"][1], "layer": 4}]}
+    plan, _ = _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path, bad)
+    assert "layer" not in plan["nodes"][0] and plan["nodes"][0]["blocked"] == "structure"
+    assert "layers" in [f.get("element") for f in plan["findings"]]
+    assert validate_research_record(plan, "draft", repo_root=research_repo) == []
+
+
+def test_a_model_reported_friction_finding_is_not_duplicated(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
+    child = {**OUT["nodes"][1], "key": "child", "id": "child", "from_candidates": [],
+             "realizes": ["static-typing"]}
+    reported = {"kind": "structure-friction", "detail": "features specialise features",
+                "keys": ["child"], "area": "ontology", "element": "realizes"}
+    plan, _ = _run(fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path,
+                   {**OUT, "nodes": [*OUT["nodes"], child],
+                    "findings": [*OUT["findings"], reported]})
+    assert [f["kind"] for f in plan["findings"]].count("structure-friction") == 1
+
+
+def test_a_hygiene_error_still_fails_the_run(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
     from langatlas_research.errors import DraftOutputInvalid
 
-    bad = {**OUT, "nodes": [{**OUT["nodes"][1], "dimension": None}], "dimensions": []}
-    fake_ctx.claude_results.append(_result(bad))
-    with pytest.raises(DraftOutputInvalid):
+    twice = {**OUT, "nodes": [OUT["nodes"][0], OUT["nodes"][0]]}
+    fake_ctx.claude_results.append(_result(twice))
+    with pytest.raises(DraftOutputInvalid, match="appears twice"):
         run_ontologist(fake_ctx, signed_cycle, repo_root=research_repo, survey=SURVEY,
                        lookup=fake_lookup, config=config,
                        prompt=mint_prompt_version("r4-ontologist-test", PROMPT_TEXT,

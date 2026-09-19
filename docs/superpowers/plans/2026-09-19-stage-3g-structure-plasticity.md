@@ -249,7 +249,7 @@ Stop for review.
 
 The split: hygiene errors are defects (invalid slug, duplicate key, re-minting a committed id, node cap exceeded, a `realizes` id that is not a valid slug). Structural misfits are information: a layer outside 1-3, a layer-3 feature with no dimension, an unknown dimension, a `realizes` target that is not a concept, a concept carrying a layer or dimension.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_draft_structure.py
@@ -363,12 +363,12 @@ def test_a_hygiene_error_still_fails_the_run(
 ```
 (`validate_research_record` is already imported in that file.)
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_structure.py tests/test_draft_ontologist.py`
 Expected: FAIL (`ModuleNotFoundError: …draft.structure`).
 
-- [ ] **Step 3: Write `structure.py`**
+- [x] **Step 3: Write `structure.py`**
 
 ```python
 # tools/research/src/langatlas_research/draft/structure.py
@@ -424,7 +424,7 @@ def synthesize_friction(misfits: list[Misfit], findings: list[dict]) -> list[dic
     return made
 ```
 
-- [ ] **Step 4: Rewrite `_check_shape` in `ontologist.py`**
+- [x] **Step 4: Rewrite `_check_shape` in `ontologist.py`**
 
 Add imports `from langatlas_research.draft.structure import Misfit, block_entries, synthesize_friction`. Replace `_check_shape` (currently lines 133-180) with:
 
@@ -511,7 +511,7 @@ and replace the findings line with:
 ```
 Update the module docstring's "fails the run" sentence to say misfits are kept and blocked (D70).
 
-- [ ] **Step 5: Add `blocked` / `block_reason` to the plan schema**
+- [x] **Step 5: Add `blocked` / `block_reason` to the plan schema**
 
 In `research/schema/draft.schema.json`, in the `properties` of the **`nodes`** items and of the **`edges`** items only (each already has `"waiver"`), add beside `"waiver"`:
 
@@ -521,12 +521,12 @@ In `research/schema/draft.schema.json`, in the `properties` of the **`nodes`** i
 ```
 Run `grep -n '"waiver"' research/schema/draft.schema.json` to find the four `waiver` sites (dimensions, qualities, nodes, edges, quality_edges use `$defs/tail` or their own); edit nodes and edges.
 
-- [ ] **Step 6: Run the tests**
+- [x] **Step 6: Run the tests**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_structure.py tests/test_draft_ontologist.py tests/test_draft_plan.py`
 Expected: PASS.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/research research/schema/draft.schema.json
