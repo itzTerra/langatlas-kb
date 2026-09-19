@@ -4018,7 +4018,7 @@ than a blank one (D38). The defaults per op:
     - `consolidate draft-migration N --op {merge,split,remove,move} …`;
     - `consolidate migrate N MIGRATION_ID`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/research/tests/test_consolidate_migration.py`:
 
@@ -4222,12 +4222,12 @@ def test_an_undrafted_migration_is_refused(seeded):
 `VerifyDeps(source_facts=…)` is the constructor 3C's gate tests use. The `SourceFacts`
 stand-in carries `language_version` because D66's `decide_fact` reads it.
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_migration.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate.migration'`.
 
-- [ ] **Step 3: Add the error**
+- [x] **Step 3: Add the error**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -4238,7 +4238,7 @@ class MigrationRefused(ResearchError):
     record. Nothing was committed."""
 ```
 
-- [ ] **Step 4: Implement drafting, gating and landing**
+- [x] **Step 4: Implement drafting, gating and landing**
 
 Create `tools/research/src/langatlas_research/consolidate/migration.py`:
 
@@ -4400,7 +4400,7 @@ def run_migration(ctx, conn, cycle: Cycle, migration_id: str, *, repo_root: Path
     return plan, results, outcome
 ```
 
-- [ ] **Step 5: Add `draft-migration` and `migrate` to the CLI**
+- [x] **Step 5: Add `draft-migration` and `migrate` to the CLI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -4506,17 +4506,17 @@ _HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migrati
              "migrate": _migrate}
 ```
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_migration.py -m '' -v`
 Expected: PASS (7 tests).
 
-- [ ] **Step 7: Run the research suite**
+- [x] **Step 7: Run the research suite**
 
 Run: `uv --directory tools/research run pytest -m '' -q`
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/consolidate/{migration,cli}.py \

@@ -139,3 +139,15 @@ class R6NotReady(ResearchError):
 class R5Incomplete(ResearchError):
     """`reality finalize` found open work: an unclassified language, or a cell that never
     reached the gate."""
+
+
+class MigrationRefused(ResearchError):
+    """`consolidate migrate` stopped before landing: no drafted manifest, the interpreter
+    refused it, the migrated store would not validate, or the D24 gate refused a rewritten
+    record. Nothing was committed."""
+
+
+class MigrationRecordNotUpdated(ResearchError):
+    """The migration LANDED (its commit stands) but the consolidation record could not record
+    it. This is not a failed migration — do not re-run it; add the id to the record's
+    `migrations` list by hand."""

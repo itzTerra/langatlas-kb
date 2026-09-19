@@ -15,6 +15,25 @@ def add_parser(sub) -> None:
     group.add_parser("open", help="open the cycle's R6 consolidation record").add_argument(
         "number", type=int)
     group.add_parser("status", help="summarize a cycle's R6").add_argument("number", type=int)
+    p_draft = group.add_parser("draft-migration",
+                               help="draft a manifest from the casebook defaults (D38)")
+    p_draft.add_argument("number", type=int, help="the cycle doing the consolidating")
+    p_draft.add_argument("--op", required=True, choices=["merge", "split", "remove", "move"])
+    p_draft.add_argument("--from", dest="frm", action="append", default=[],
+                         help="merge: repeatable; split: the node being split")
+    p_draft.add_argument("--to", action="append", default=[],
+                         help="merge: the survivor; split: repeatable children")
+    p_draft.add_argument("--node", help="remove / move: the node")
+    p_draft.add_argument("--layer", type=int, choices=[1, 2, 3], help="move: the new layer")
+    p_draft.add_argument("--dimension", help="move to layer 3: the dimension")
+    p_draft.add_argument("--old-node", choices=["demote-to-concept", "tombstone"],
+                         help="split: what becomes of the split node (default demote)")
+    p_draft.add_argument("--rationale", required=True)
+    p_draft.add_argument("--slug", help="migration id slug (default: op and node ids)")
+    p_migrate = group.add_parser("migrate",
+                                 help="plan, gate and land a drafted manifest as one commit")
+    p_migrate.add_argument("number", type=int)
+    p_migrate.add_argument("migration_id")
 
 
 def _now() -> str:
@@ -50,7 +69,79 @@ def _status(args, repo: Path) -> int:
     return 0
 
 
-_HANDLERS = {"open": _open, "status": _status}
+def _disposition(args) -> dict:
+    if args.op == "merge":
+        if len(args.to) != 1 or not args.frm:
+            raise SystemExit("merge takes one or more --from and exactly one --to")
+        return {"op": "merge", "from": args.frm, "to": args.to[0]}
+    if args.op == "split":
+        if len(args.frm) != 1 or len(args.to) < 2:
+            raise SystemExit("split takes exactly one --from and two or more --to")
+        disposition = {"op": "split", "from": args.frm[0], "to": args.to}
+        if args.old_node:
+            disposition["old_node"] = args.old_node
+        return disposition
+    if not args.node:
+        raise SystemExit(f"{args.op} takes --node")
+    if args.op == "remove":
+        return {"op": "remove", "node": args.node}
+    if args.layer is None:
+        raise SystemExit("move takes --layer")
+    return {"op": "move", "node": args.node, "to_layer": args.layer,
+            "to_dimension": args.dimension}
+
+
+def _draft_migration(args, repo: Path) -> int:
+    from langatlas_research.consolidate.migration import (
+        default_slug, draft_manifest, write_draft,
+    )
+    from langatlas_research.cycle import load_cycle
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    disposition = _disposition(args)
+    manifest = draft_manifest(repo, disposition, cycle=cycle,
+                              date=_dt.date.today().isoformat(), rationale=args.rationale,
+                              slug=args.slug or default_slug(disposition))
+    path = write_draft(repo, manifest)
+    print(f"drafted {path.relative_to(repo)} — {len(manifest['dispositions'][0]['fact_remap'])}"
+          f" fact_remap entries from the casebook; settled themes touched:"
+          f" {', '.join(manifest['settled_themes']) or 'none'}")
+    print("review and edit it, dry-run with `langatlas-validate migrations plan <path>`, then:")
+    print(f"next: langatlas-research consolidate migrate {cycle.number} {manifest['migration_id']}")
+    return 0
+
+
+def _migrate(args, repo: Path) -> int:
+    from langatlas_ingest.config import IngestConfig
+    from langatlas_ingest.db import connect
+    from langatlas_ingest.store import SourcingQueue
+    from langatlas_ingest.verify.ledger import VerdictLedger
+    from langatlas_ingest.verify.pipeline import VerifyDeps
+    from langatlas_pipeline.providers.core import RunContext
+
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.consolidate.migration import run_migration
+    from langatlas_research.cycle import load_cycle
+    from langatlas_research.paths import research_config_path
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    config = ResearchConfig.load(research_config_path(repo))
+    ingest_config = IngestConfig.load()
+    with connect(ingest_config.dsn) as conn, VerdictLedger() as ledger, \
+            RunContext.start(kind="r6-migrate",
+                             slug=f"{cycle.slug}-{args.migration_id[:4]}") as ctx:
+        deps = VerifyDeps.build(conn, ctx, config=ingest_config, ledger=ledger)
+        plan, results, outcome = run_migration(ctx, conn, cycle, args.migration_id,
+                                               repo_root=repo, config=config, deps=deps,
+                                               queue=SourcingQueue(conn))
+    for result in results:
+        print(f"admitted {result.key:44} {result.verdict}")
+    print(f"{len(plan.changes)} file(s), {len(plan.tombstones)} tombstone(s): {outcome!r}")
+    return 0 if type(outcome).__name__ == "Landed" else 1
+
+
+_HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migration,
+             "migrate": _migrate}
 
 
 def dispatch(args, root: Path | None) -> int:
