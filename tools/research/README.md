@@ -138,6 +138,30 @@ uv run --package langatlas-research langatlas-research reality shakedown 1 --clo
 A dimension's values are its member features (D67), so every finding is read from the cells, and
 only verified answers count.
 
+## R6: consolidation and settling
+
+```bash
+# R6 — after `reality finalize` put the cycle at r5-done. Full sequence: docs/runbooks/theme-cycle.md
+uv run --package langatlas-research langatlas-research consolidate open 1
+uv run --package langatlas-research langatlas-research consolidate edges 1       # cross-theme pass (Claude)
+uv run --package langatlas-research langatlas-research consolidate dedup 1       # then `consolidate rule`
+uv run --package langatlas-research langatlas-research consolidate draft-migration 1 --op merge --from a --to b --rationale "…"
+uv run --package langatlas-research langatlas-research consolidate migrate 1 <migration-id>   # id printed by draft-migration
+uv run --package langatlas-research langatlas-research consolidate slugs 1       # then `consolidate rename-slug`
+uv run --package langatlas-research langatlas-research consolidate settle 1 --by "Your Name"  # -> settled
+```
+
+The consolidation record (`research/consolidations/<NN>-<theme>.yaml`) is R6's spine. The
+cross-theme pass appends `pass: r6` entries to the cycle's own carve plan, so `draft debate /
+verify / mint` handle them unchanged. After each `consolidate migrate` the record is left as an
+uncommitted modification: commit and push it before the next migration (see the runbook).
+
+**Settling is the developer's act** (`--by` is required), and it changes the rules: once a theme
+is settled, CI (`consolidate guard`) refuses any commit that restructures one of its records
+without a D38 migration manifest. A migration is one commit (manifest + migrated corpus diff)
+that CI replays byte for byte (`langatlas-validate migrations replay`). The interpreter never
+mints a node, and every edge or rule it rewrites goes back through the D24 gate before it lands.
+
 ## Tests
 
 ```

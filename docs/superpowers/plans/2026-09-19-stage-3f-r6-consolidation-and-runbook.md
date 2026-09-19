@@ -7893,7 +7893,7 @@ Three deliverables:
 - Consumes: everything above.
 - Produces: the runbook, and the exit test that proves this plan's exit condition.
 
-- [ ] **Step 1: Write the exit test**
+- [x] **Step 1: Write the exit test**
 
 Create `tools/coverage/tests/test_exit_3f.py`:
 
@@ -8055,13 +8055,13 @@ def test_the_3f_exit_path(repo, tmp_path):
                                              instances_total=0)
 ```
 
-- [ ] **Step 2: Run the exit test**
+- [x] **Step 2: Run the exit test**
 
 Run: `uv --directory tools/coverage run pytest tests/test_exit_3f.py -m '' -v`
 Expected: PASS. If it fails, the failing assertion names the 3F piece that does not meet its
 neighbor. Fix that piece in its own task's module; do not loosen the assertion.
 
-- [ ] **Step 3: Write the runbook**
+- [x] **Step 3: Write the runbook**
 
 Create `docs/runbooks/theme-cycle.md`:
 
@@ -8243,7 +8243,7 @@ From here on, CI refuses any commit that restructures this theme's records witho
 | CI `ledger-check` TOMBSTONES | a tombstone line was edited or removed | restore it; the ledger is append-only |
 ````
 
-- [ ] **Step 4: Document R6 in the package README and the cycles README**
+- [x] **Step 4: Document R6 in the package README and the cycles README**
 
 In `tools/research/README.md`, add after the `## R5: reality checks` section:
 
@@ -8280,7 +8280,7 @@ act, recorded as `settled: {by, date}`); from then on CI refuses an unmanifested
 any record the cycle minted.
 ```
 
-- [ ] **Step 5: Run every suite and gate**
+- [x] **Step 5: Run every suite and gate**
 
 Run:
 ```bash
@@ -8299,7 +8299,7 @@ uv --directory tools/coverage run langatlas-coverage dossier
 ```
 Expected: every command exits 0. If one fails, report its output; do not claim the stage done.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/runbooks/theme-cycle.md tools/coverage/tests/test_exit_3f.py \
