@@ -117,3 +117,15 @@ def test_a_fabricated_locator_stratum_does_not_inherit_the_real_locator():
                                     chunks=chunks())[0]
     assert candidate["citation"]["locator"] == "p. 9999"
     assert candidate["evidence_chunk_ids"] == []
+
+
+def test_a_bracket_wrapped_or_punctuated_locator_still_resolves_to_the_real_chunk():
+    """The evidence block shows locators as `[p. 1]`, and models echo the brackets (or a
+    trailing period) back."""
+    for dressed in ("[p. 1]", "[p. 1].", "p. 1.", "ctm [p. 1]"):
+        ctx = FakeCompletionCtx({"candidates": [dict(PAYLOAD["candidates"][0],
+                                                     locator=dressed)]})
+        candidate = generate_candidates(ctx, conn=None, source_id="ctm",
+                                        stratum="overstated-claim", count=1, config=CONFIG,
+                                        chunks=chunks())[0]
+        assert candidate["evidence_chunk_ids"] == ["ctm#c00001"], dressed

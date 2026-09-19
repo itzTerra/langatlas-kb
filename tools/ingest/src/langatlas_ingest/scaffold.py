@@ -3,7 +3,10 @@ from langatlas_validate.normalize import normalize_record
 
 def render_source_yaml(id: str, type: str, title: str, *, author: list[dict] | None = None,
                        issued: dict | None = None, url: str | None = None,
-                       doi: str | None = None, tier: str, grounding: str,
+                       doi: str | None = None, container_title: str | None = None,
+                       volume: str | None = None, page: str | None = None,
+                       publisher: str | None = None, accessed: str | None = None,
+                       tier: str, grounding: str,
                        canonical_source: bool | None = None,
                        acquisition_note: str | None = None, edition: str | None = None,
                        edition_check_url: str | None = None,
@@ -24,7 +27,17 @@ def render_source_yaml(id: str, type: str, title: str, *, author: list[dict] | N
         data["URL"] = url
     if doi is not None:
         data["DOI"] = doi
+    if container_title is not None:
+        data["container-title"] = container_title
+    if volume is not None:
+        data["volume"] = volume
+    if page is not None:
+        data["page"] = page
+    if publisher is not None:
+        data["publisher"] = publisher
     custom: dict = {"tier": tier, "grounding": grounding}
+    if accessed is not None:
+        custom["accessed"] = accessed
     if canonical_source is not None:
         custom["canonical_source"] = canonical_source
     if acquisition_note is not None:

@@ -62,14 +62,23 @@ def _resolve_locator(locator: str, by_locator: dict, source_id: str):
     genuinely-grounded citation reads identically to a fabricated one — both come out as
     an empty `evidence_chunk_ids` — which defeats the point of grounding to real chunks.
 
-    Only a leading `"<source_id><separator>"` is stripped, so a citation to a locator that
+    Only a leading `"<source_id><separator>"`, wrapping brackets, and trailing punctuation
+    are stripped, so a citation to a locator that
     truly is not among the sampled chunks (or a deliberately fabricated one) still misses,
     same as before."""
     if locator in by_locator:
         return by_locator[locator]
     stripped = re.sub(rf"^{re.escape(source_id)}[\s:,-]+", "", locator.strip(),
                       flags=re.IGNORECASE)
-    return by_locator.get(stripped)
+    if stripped in by_locator:
+        return by_locator[stripped]
+    # The prompt shows evidence as `[<locator>] text`, so the model often echoes the
+    # brackets back (`[p. 125]`) or trails punctuation.
+    unwrapped = stripped.rstrip(".,;:").strip("[](){}").strip().rstrip(".,;:")
+    if unwrapped in by_locator:
+        return by_locator[unwrapped]
+    return next((chunk for key, chunk in by_locator.items()
+                 if key.rstrip(".,;:") == unwrapped), None)
 
 
 def _sample_chunks(conn, source_id: str, *, topic: str | None, ctx,

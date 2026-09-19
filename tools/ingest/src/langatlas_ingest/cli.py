@@ -342,7 +342,8 @@ def _cmd_new_source(args) -> int:
     canonical = True if args.canonical else (False if args.no_canonical else None)
     text = render_source_yaml(
         args.id, args.type, args.title, author=author, issued=issued, url=args.url,
-        doi=args.doi, tier=args.tier, grounding=args.grounding, canonical_source=canonical,
+        doi=args.doi, container_title=args.container_title, volume=args.volume,
+        page=args.page, publisher=args.publisher, accessed=args.accessed, tier=args.tier, grounding=args.grounding, canonical_source=canonical,
         acquisition_note=args.acquisition_note, edition=args.edition,
         edition_check_url=args.edition_check_url, locator_kinds=args.locator_kinds or None)
     out_dir = Path(args.out_dir) if args.out_dir else REPO_ROOT / "sources"
@@ -565,7 +566,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     golden_validate = sub.add_parser(
         "golden-validate", help="shape-check the committed golden sets (no DB, no provider)")
-    golden_validate.add_argument("--verifier-dir")
+    golden_validate.add_argument("--verifier-dir",
+                                 help="a relative path resolves against the working directory"
+                                      " (tools/ingest under `uv --directory`), not the repo root")
     golden_validate.add_argument("--controversy-dir")
     golden_validate.add_argument("--resolve", action="store_true",
                                  help="also resolve locators against Postgres")
@@ -577,7 +580,9 @@ def build_parser() -> argparse.ArgumentParser:
         "golden-score", help="score a verifier against the golden set (never a CI gate)")
     golden_score.add_argument("--verifier", help="module:attr entry point")
     golden_score.add_argument("--controversy-assessor", help="module:attr entry point")
-    golden_score.add_argument("--verifier-dir")
+    golden_score.add_argument("--verifier-dir",
+                              help="a relative path resolves against the working directory"
+                                   " (tools/ingest under `uv --directory`), not the repo root")
     golden_score.add_argument("--controversy-dir")
     golden_score.add_argument("--include-held-out", action="store_true",
                               help="run the audit slice — once, at the end, never to tune")
@@ -589,7 +594,11 @@ def build_parser() -> argparse.ArgumentParser:
     derive.add_argument("--theme", required=True)
     derive.add_argument("--band", default="exact-term")
     derive.add_argument("--limit", type=int)
-    derive.add_argument("--out", required=True)
+    derive.add_argument("--out", required=True,
+                        help="output file; a relative path resolves against the process's"
+                             " working directory, which is tools/ingest under `uv --directory"
+                             " tools/ingest run` — pass an absolute path or `../../tests/...`"
+                             " to land in the repo-root tests/golden/")
     derive.set_defaults(func=_cmd_golden_derive_queries)
 
     staleness = sub.add_parser("golden-staleness",
@@ -602,7 +611,10 @@ def build_parser() -> argparse.ArgumentParser:
     candidates.add_argument("--stratum", required=True)
     candidates.add_argument("--count", type=int, default=5)
     candidates.add_argument("--topic", help="seed retrieval instead of random sampling")
-    candidates.add_argument("--out", required=True)
+    candidates.add_argument("--out", required=True,
+                            help="output file; a relative path resolves against the process's"
+                                 " working directory (tools/ingest under `uv --directory`),"
+                                 " not the repo root")
     candidates.set_defaults(func=_cmd_golden_candidates)
 
     supersede = sub.add_parser(
@@ -622,6 +634,13 @@ def build_parser() -> argparse.ArgumentParser:
     new_source.add_argument("--issued-year", type=int, default=None)
     new_source.add_argument("--url", default=None)
     new_source.add_argument("--doi", default=None)
+    new_source.add_argument("--container-title", default=None,
+                            help="journal or proceedings title (CSL `container-title`)")
+    new_source.add_argument("--volume", default=None)
+    new_source.add_argument("--page", default=None, help="page range, e.g. '120-139'")
+    new_source.add_argument("--publisher", default=None)
+    new_source.add_argument("--accessed", default=None,
+                            help="ISO date the page was read (stored as `custom.accessed`)")
     new_source.add_argument("--tier", required=True, choices=["A", "B", "C", "D"])
     new_source.add_argument("--grounding", required=True,
                             choices=["formal-spec", "reference-implementation-docs",
