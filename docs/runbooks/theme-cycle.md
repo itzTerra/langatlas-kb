@@ -5,6 +5,14 @@ the shakedown the Stage 3 sub-plans were built against; every later cycle execut
 **Cycles change data, not code** — if a step needs a code change, that is a defect in the
 sub-plan that owns the step (3A–3F); re-open it rather than patching around it here.
 
+**Draft-only batch (D70).** Until the developer records the **structure review** (§ "Structure
+review" below), no cycle mints: `draft mint` refuses, `draft finalize` lands the carve plan and
+moves the cycle to `r4-drafted`, and R5/R6 wait. The seed structure (layers, concept/feature
+split, `realizes`, edge types, dimensions) is a hypothesis these first cycles test. Cycles 1-4
+(typing, memory-management, concurrency, syntax-layer-constructs) form the batch. A debate
+contradiction raised while the gate is closed is not registered with D45 (skipped on purpose);
+it is re-discovered when the batch is re-atomized.
+
 Checkpoints marked **[developer]** are yours; everything else is a command.
 
 ## 0. Setup for this cycle
@@ -75,6 +83,13 @@ $R draft mint $N
 $R draft status $N
 $R draft finalize $N                 # cycle -> r4-done
 ```
+
+While the gate is closed the sequence is: `draft atomize` → `draft contested` →
+`draft debate --all` → `draft verify` → `draft edges` (drafted against the carve plan's own
+nodes) → `draft debate --all` → `draft verify` → `draft finalize` (→ `r4-drafted`). Skip
+`draft mint`. A carve the structure cannot hold appears in `draft status` as `blocked` with a
+`structure-friction` finding; it is never debated, verified or minted. `draft drop N KEY
+--reason "…"` retires one you decide not to keep.
 
 **[developer]** A trigger you disagree with: `$R draft waive $N KEY --reason "…"`. An
 escalated debate: read `research/debates/<id>.yaml` and rule on it.
@@ -187,6 +202,44 @@ A settled cycle file **must** carry its `theme`; a settled cycle without one is 
 and the guard reports errors loudly rather than skipping it. Renaming a settled record's file
 while keeping the same `id` is free; a rename that also restructures its content is not.
 
+## Structure review (D70) — the checkpoint that opens minting
+
+After the four batch cycles are `r4-drafted`:
+
+```bash
+$R structure report                  # every structure-friction finding, grouped
+$R structure report --area adjacent  # adjacent-schema friction: decide case by case
+```
+
+**[developer]** Read the report and decide the schema changes (ordinary 0.x changes: schemas,
+`ontology/taxonomy/*.yaml`, and the role prompts' structure text — `_LAYERS` in
+`draft/ontologist.py` and `EDGE_TYPES` in `draft/edges.py`). The review's authority is ontology
+structure; `adjacent` findings are decided one by one. Then:
+
+```bash
+$R structure release --by "Your Name" --summary "the decisions, in a sentence or two"
+```
+
+This writes `research/structure-review.yaml` and opens minting. **[developer]** Commit it now:
+
+```bash
+git add research/structure-review.yaml && git commit -m "chore: record the structure review (D70)"
+```
+
+The file is the mint authority; a fresh clone or CI without it holds minting. Re-atomize each
+batch cycle from its existing survey, then run R4 with minting on:
+
+```bash
+$R draft atomize $N                  # a fresh carve plan against the revised structure
+# ... draft contested → debate → verify → mint → edges → … → draft finalize   (→ r4-done)
+```
+
+Read `structure report` **before** re-atomizing: a re-atomized plan replaces its findings (git
+keeps the old plan). A friction finding raised in any later cycle is reviewed at that cycle's R6;
+a change that touches a settled theme goes through the migration manifest. R5 stays out of the
+batch unless the structure is still unclear after it (then `reality compile` would need to read
+a carve plan — not built).
+
 ## After the cycle
 
 - The nightly jobs keep running: verification, controversy assessment (`$R controversy assess`
@@ -216,6 +269,8 @@ while keeping the same `id` is free; a rename that also restructures its content
 | CI `consolidate guard` SETTLED on a migration you ran | the manifest was committed by hand before `consolidate migrate`, so it is not in the migration commit | do not commit a drafted manifest; `consolidate migrate` lands it with the corpus diff |
 | migration refused: edge remap collision | two edges collapse onto one with differing polarity | resolve by hand in the manifest (requeue or tombstone one) |
 | `consolidate guard` errors on a settled cycle | that cycle has no `theme` — malformed | restore the cycle's `theme` field |
+| `MintHeld` | no structure review is recorded (D70) | finish the batch, `structure report`, then `structure release` |
+| `blocked by the seed structure … resolve at the structure review` | a carve the structure cannot hold | wait for the review and re-atomize, or `draft drop` it |
 
 **Known limit.** `consolidate edges` truncates the other-theme node list alphabetically at the
 role's `max_packet_terms`. Nodes late in the alphabet stop being offered to the cross-theme pass

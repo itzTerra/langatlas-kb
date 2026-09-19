@@ -1770,7 +1770,7 @@ Stop for review.
 **Interfaces:**
 - Consumes: everything above.
 
-- [ ] **Step 1: Write the exit test (the whole draft-only path, offline)**
+- [x] **Step 1: Write the exit test (the whole draft-only path, offline)**
 
 ```python
 # tools/research/tests/test_exit_3g.py
@@ -1852,12 +1852,12 @@ def test_the_draft_only_path_end_to_end(research_repo, signed_cycle):
     assert any("blocked" in b for b in r4_blockers(closed, plan, repo_root=research_repo))
 ```
 
-- [ ] **Step 2: Run it**
+- [x] **Step 2: Run it**
 
 Run: `uv --directory tools/research run pytest -q tests/test_exit_3g.py`
 Expected: PASS (all earlier tasks landed). A failure here is a defect in the task it names, not in this test.
 
-- [ ] **Step 3: Update the runbook**
+- [x] **Step 3: Update the runbook**
 
 In `docs/runbooks/theme-cycle.md`:
 
@@ -1925,7 +1925,7 @@ a carve plan — not built).
 | `blocked by the seed structure … resolve at the structure review` | a carve the structure cannot hold | wait for the review and re-atomize, or `draft drop` it |
 ```
 
-- [ ] **Step 4: Update the spec and the drafts README**
+- [x] **Step 4: Update the spec and the drafts README**
 
 In `context/spec.md`, after the "Graduated 0.x minting ceremony" paragraph in §7.4, add:
 
@@ -1943,12 +1943,12 @@ D4, D18, D24, D27, D31) are not part of the provisional structure.
 
 In `research/drafts/README.md` append: `An entry marked `blocked: structure` is a carve the seed structure cannot hold (D70); it is never debated, verified or minted, and is linked to a `structure-friction` finding the structure review reads (`langatlas-research structure report`).`
 
-- [ ] **Step 5: Run everything**
+- [x] **Step 5: Run everything**
 
 Run: `uv --directory tools/research run pytest -q` and `uv --directory tools/pipeline run pytest -q` and `uv --directory tools/validate run pytest -q`
 Expected: all PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/research/tests/test_exit_3g.py docs/runbooks/theme-cycle.md context/spec.md research/drafts/README.md

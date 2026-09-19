@@ -1221,6 +1221,16 @@ only a redirect/tombstone line; once a theme passes R5 it is **settled** — res
 need a lightweight migration manifest but no RFC; the full RFC-gated D16 process switches
 on at `1.0.0`.
 
+**Structure plasticity (D70)**: the seed structure (layers, concept/feature split, `realizes`,
+relation set, dimension model, seed qualities) is provisional until a developer **structure
+review**. R4's roles record misfits as `structure-friction` findings (classified by structural
+element and by `ontology` | `adjacent` area) rather than conforming; a carve the structure cannot
+hold stays in the carve plan as a `blocked` entry; R4 debates may raise `wrong-structure`.
+The first four themes run R3→R4 draft-only (carve plans and debates land, `r4-drafted`, nothing
+mints) until `structure release` records the review, after which the batch is re-atomized from
+the same surveys and mints; later cycles mint per cycle. Sourcing and process invariants (D1,
+D4, D18, D24, D27, D31) are not part of the provisional structure.
+
 **Source strategy**: curated-corpus-first. Seed = the D15 list + Jordan et al. (2015) +
 the D28 language specs. **Acquisitions (ratified in full)**: Scott *Programming Language
 Pragmatics*; Turbak & Gifford *Design Concepts in Programming Languages*; Harper *PFPL*

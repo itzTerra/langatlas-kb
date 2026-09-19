@@ -88,6 +88,11 @@ The carve plan (`research/drafts/<cycle>-<theme>.yaml`) is the spine: every step
 writes it back, so any step can be re-run without re-running the ones before it. `draft status`
 prints it.
 
+**D70: draft-only until the structure review.** `draft mint` refuses until
+`langatlas-research structure release` records the review, and until then `draft finalize`
+ends R4 at `r4-drafted` rather than `r4-done`; re-atomize each batch cycle after the release
+to mint (see the theme-cycle runbook, "Structure review"). R5 below starts from `r4-done`.
+
 **Nothing reaches the store except through the gate.** `draft mint` refuses an entry the D24
 verifier did not admit, and refuses a contested carve that has neither a debate nor a waiver.
 The developer's escape hatch is `draft waive <n> <key> --reason "…"` — never an agent's.
