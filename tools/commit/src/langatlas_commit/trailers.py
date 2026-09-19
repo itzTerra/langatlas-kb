@@ -33,3 +33,18 @@ def find_record_key_in_history(repo: Path, record_key: str) -> str | None:
     )
     shas = [line for line in result.stdout.splitlines() if line]
     return shas[0] if shas else None
+
+
+def changeset_key(changes: dict[str, str | None]) -> str:
+    """`record_key` for a multi-file commit (a migration, §5.2): order-free over paths, and a
+    deletion hashes differently from an empty file. Shares the Record-Key trailer, so
+    `find_record_key_in_history` makes a re-landed migration idempotent exactly like a
+    re-landed record."""
+    digest = hashlib.sha256()
+    for path in sorted(changes):
+        content = changes[path]
+        digest.update(path.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(b"\x01deleted" if content is None else content.encode("utf-8"))
+        digest.update(b"\0")
+    return digest.hexdigest()

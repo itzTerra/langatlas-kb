@@ -1505,7 +1505,7 @@ changeset with deletions. `land_record`'s behavior is unchanged.
     A `None` value deletes that path. The commit is idempotent by content: re-landing the same
     changeset returns the existing commit.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/commit/tests/test_changeset.py`:
 
@@ -1592,12 +1592,12 @@ def test_empty_and_impossible_changesets_are_refused(clone):
                        validator=_ok)
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/commit run pytest tests/test_changeset.py -v`
 Expected: FAIL with `ImportError: cannot import name 'land_changeset'`.
 
-- [ ] **Step 3: Add `changeset_key`**
+- [x] **Step 3: Add `changeset_key`**
 
 Append to `tools/commit/src/langatlas_commit/trailers.py`:
 
@@ -1617,7 +1617,7 @@ def changeset_key(changes: dict[str, str | None]) -> str:
     return digest.hexdigest()
 ```
 
-- [ ] **Step 4: Extract the integrate loop and add `land_changeset`**
+- [x] **Step 4: Extract the integrate loop and add `land_changeset`**
 
 In `tools/commit/src/langatlas_commit/land.py`:
 1. Change the trailers import to
@@ -1728,13 +1728,13 @@ def land_changeset(
                       status_checker=status_checker)
 ```
 
-- [ ] **Step 5: Run the commit suite**
+- [x] **Step 5: Run the commit suite**
 
 Run: `uv --directory tools/commit run pytest -q`
 Expected: PASS. That covers the new changeset tests and every existing `land_record` test,
 which proves the extracted loop behaves the same.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/commit/src/langatlas_commit/{land,trailers}.py tools/commit/tests/test_changeset.py \
