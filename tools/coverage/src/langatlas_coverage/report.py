@@ -25,10 +25,21 @@ def _parser() -> argparse.ArgumentParser:
     p_gaps = sub.add_parser("gaps", help="<dimension, value> corroborating-instance counts")
     p_gaps.add_argument("--min-instances", type=int, default=DEFAULT_MIN_INSTANCES)
     p_gaps.add_argument("--snapshot", action="store_true")
+    p_dossier = sub.add_parser("dossier", help="the five-item R6 exit dossier (advisory)")
+    p_dossier.add_argument("--ledger", type=Path, default=None,
+                           help="verdict ledger (default: the private tier's)")
+    p_dossier.add_argument("--cost-log", type=Path, default=None,
+                           help="cost log (default: the private tier's)")
+    p_dossier.add_argument("--snapshot", action="store_true")
     return parser
 
 
 def _render(args, root: Path) -> str:
+    if args.command == "dossier":
+        from langatlas_coverage.dossier import build_dossier, gather, render_dossier
+
+        return render_dossier(build_dossier(gather(root, ledger_path=args.ledger,
+                                                   cost_log=args.cost_log)))
     store = load_store(root)
     return render_gaps(gaps(store, min_instances=args.min_instances),
                        min_instances=args.min_instances, instances_total=len(store.instances))

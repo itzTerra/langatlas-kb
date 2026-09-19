@@ -7514,7 +7514,7 @@ The remaining three items:
 - Produces: `churn`, `graph_health`, `pipeline_readiness`, `build_dossier`, `gather`, and
   `langatlas-coverage dossier [--ledger P] [--cost-log P] [--snapshot]`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/coverage/tests/test_dossier_rest.py`:
 
@@ -7611,12 +7611,12 @@ def test_the_dossier_command_prints_the_five_items(coverage_store, tmp_path, cap
         assert f"| {title} |" in out
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/coverage run pytest tests/test_dossier_rest.py -v`
 Expected: FAIL with `ImportError: cannot import name 'build_dossier'`.
 
-- [ ] **Step 3: Implement the remaining items and `gather`**
+- [x] **Step 3: Implement the remaining items and `gather`**
 
 In `tools/coverage/src/langatlas_coverage/dossier.py`, extend the imports:
 
@@ -7822,7 +7822,7 @@ def gather(repo_root: Path, *, ledger_path: Path | None = None,
         compile_diagnostics=diagnostics, claude_by_cycle=claude_by_cycle)
 ```
 
-- [ ] **Step 4: Add `dossier` to the CLI**
+- [x] **Step 4: Add `dossier` to the CLI**
 
 In `tools/coverage/src/langatlas_coverage/report.py`, add to `_parser` before `return parser`:
 
@@ -7849,7 +7849,7 @@ def _render(args, root: Path) -> str:
                        min_instances=args.min_instances, instances_total=len(store.instances))
 ```
 
-- [ ] **Step 5: Run the tests, then the real dossier**
+- [x] **Step 5: Run the tests, then the real dossier**
 
 Run:
 ```bash
@@ -7863,7 +7863,7 @@ Expected:
 - pipeline readiness is `not-met`, with "Verifier calibration: thresholds NOT met" — the
   committed calibration's `thresholds_met` is false.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/coverage/src/langatlas_coverage/{dossier,report}.py \
