@@ -39,3 +39,20 @@ def test_themes_list_prints_every_theme(tmp_path, capsys):
 
     out = capsys.readouterr().out
     assert "typing" in out and "qualities-vocabulary" in out
+
+
+def test_structure_report_and_release(research_repo, signed_cycle, capsys):
+    from langatlas_research.cycle import advance, save_cycle
+    from langatlas_research.paths import structure_review_path
+
+    structure_review_path(research_repo).unlink()
+    assert main(["--repo-root", str(research_repo), "structure", "report"]) == 0
+    assert "no structure-friction findings" in capsys.readouterr().out
+    assert main(["--repo-root", str(research_repo), "structure", "release",
+                 "--by", "Michal", "--summary", "kept the model"]) == 1
+    assert "no cycle is at r4-drafted" in capsys.readouterr().err
+    save_cycle(advance(advance(signed_cycle, "r3-done"), "r4-drafted"),
+               repo_root=research_repo)
+    assert main(["--repo-root", str(research_repo), "structure", "release",
+                 "--by", "Michal", "--summary", "kept the model"]) == 0
+    assert structure_review_path(research_repo).exists()

@@ -92,6 +92,17 @@ def main(argv: list[str] | None = None) -> int:
     p_drop.add_argument("key")
     p_drop.add_argument("--reason", required=True)
 
+    p_structure = sub.add_parser("structure").add_subparsers(dest="structure_command",
+                                                             required=True)
+    p_report = p_structure.add_parser("report", help="the structure review's agenda (D70)")
+    p_report.add_argument("--area", choices=("ontology", "adjacent"), default=None)
+    p_release = p_structure.add_parser(
+        "release", help="developer: record the structure review and open minting")
+    p_release.add_argument("--by", required=True)
+    p_release.add_argument("--summary", required=True,
+                           help="the schema decisions the review reached")
+    p_release.add_argument("--date", default=None)
+
     p_instrument = sub.add_parser("instrument").add_subparsers(
         dest="instrument_command", required=True)
     for name, help_text in (("replay", "D30(a): the verifier-replay counterfactual"),
@@ -153,6 +164,22 @@ def _dispatch(args, root: Path | None) -> int:
 
     if args.command == "draft":
         return _dispatch_draft(args, root)
+
+    if args.command == "structure":
+        from langatlas_research.structure_review import (
+            collect_friction, release_structure_review, render_report,
+        )
+
+        if args.structure_command == "report":
+            rows = [row for row in collect_friction(root)
+                    if args.area in (None, row.area)]
+            print(render_report(rows))
+            return 0
+        path = release_structure_review(
+            by=args.by, date=args.date or _dt.date.today().isoformat(),
+            summary=args.summary, repo_root=root)
+        print(f"recorded {path}; minting is open")
+        return 0
 
     if args.command == "instrument":
         return _dispatch_instrument(args, root)      # Task 13 writes this

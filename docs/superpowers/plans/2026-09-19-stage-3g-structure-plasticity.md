@@ -1582,7 +1582,7 @@ Stop for review.
   - `render_report(rows: list[FrictionRow]) -> str`: grouped by `area` (`ontology` first) then `element`, each element headed by its finding count and distinct-theme count.
   - CLI: `structure report [--area ontology|adjacent]`, `structure release --by NAME --summary TEXT [--date YYYY-MM-DD]`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # appended to tools/research/tests/test_structure_review.py
@@ -1646,12 +1646,12 @@ def test_structure_report_and_release(research_repo, signed_cycle, capsys):
 ```
 (`main` is already imported in `test_cli.py`; if not, add `from langatlas_research.cli import main`.)
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_structure_review.py tests/test_cli.py`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Append to `structure_review.py`:
 
@@ -1744,12 +1744,12 @@ and in `_dispatch`:
         return 0
 ```
 
-- [ ] **Step 4: Run the package tests**
+- [x] **Step 4: Run the package tests**
 
 Run: `uv --directory tools/research run pytest -q`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research

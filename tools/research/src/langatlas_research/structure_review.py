@@ -6,14 +6,17 @@ the whole batch. Until `research/structure-review.yaml` exists no cycle mints, a
 finalize` lands the carve plan and moves the cycle to `r4-drafted` instead. Later cycles find the
 file already there and mint per cycle as the runbook always described."""
 import io
+from dataclasses import dataclass
 from pathlib import Path
 
 from ruamel.yaml import YAML
 
 from langatlas_research.cycle import load_cycle
 from langatlas_research.errors import MintHeld, StructureReviewRefused
-from langatlas_research.paths import cycles_dir, structure_review_path
+from langatlas_research.paths import cycles_dir, drafts_dir, structure_review_path
 from langatlas_research.schema import validate_research_record
+
+_read = YAML(typ="safe")
 
 
 def mint_open(repo_root: Path | None = None) -> bool:
@@ -63,3 +66,50 @@ def release_structure_review(*, by: str, date: str, summary: str,
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(buf.getvalue())
     return path
+
+
+@dataclass(frozen=True)
+class FrictionRow:
+    cycle: int
+    theme: str
+    area: str
+    element: str
+    detail: str
+    keys: tuple[str, ...]
+
+
+def collect_friction(repo_root: Path | None = None) -> list[FrictionRow]:
+    """Every `structure-friction` finding in every carve plan — the structure review's agenda.
+    Read it *before* re-atomizing: a re-atomized plan replaces its findings (git keeps the old
+    plan)."""
+    rows = []
+    for path in sorted(drafts_dir(repo_root).glob("*.yaml")):
+        plan = _read.load(path.read_text()) or {}
+        for finding in plan.get("findings") or []:
+            if finding.get("kind") == "structure-friction":
+                rows.append(FrictionRow(plan["cycle"], plan["theme"], finding["area"],
+                                        finding["element"], finding["detail"],
+                                        tuple(finding.get("keys") or ())))
+    return sorted(rows, key=lambda row: (row.cycle, row.area != "ontology", row.element))
+
+
+def render_report(rows: list[FrictionRow]) -> str:
+    """Grouped by area (`ontology` first), then element. How widespread a misfit is — the
+    number of distinct themes it appears in — is the first thing a review wants to know."""
+    if not rows:
+        return "no structure-friction findings"
+    lines: list[str] = []
+    for area in ("ontology", "adjacent"):
+        in_area = [row for row in rows if row.area == area]
+        if not in_area:
+            continue
+        lines.append(f"== {area} ==")
+        for element in sorted({row.element for row in in_area}):
+            group = [row for row in in_area if row.element == element]
+            themes = len({row.theme for row in group})
+            lines.append(f"{element}: {len(group)} finding(s) across {themes} theme(s)")
+            for row in group:
+                lines.append(f"  [{row.cycle:02d} {row.theme}] {', '.join(row.keys)}:"
+                             f" {row.detail}")
+        lines.append("")
+    return "\n".join(lines).rstrip()

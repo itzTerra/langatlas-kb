@@ -55,3 +55,43 @@ def test_a_blank_summary_is_refused(closed_repo, signed_cycle):
                repo_root=closed_repo)
     with pytest.raises(StructureReviewRefused, match="summary"):
         release_structure_review(by="M", date=" ", summary=" ", repo_root=closed_repo)
+
+
+from langatlas_research.draft.findings import friction_entry
+from langatlas_research.draft.plan import build_plan_record, save_plan
+from langatlas_research.structure_review import collect_friction, render_report
+
+
+def _plan_with(cycle, repo, *findings):
+    plan = build_plan_record(cycle=cycle, ontologist_run_id="r", generated_at="t")
+    plan["findings"] = list(findings)
+    save_plan(plan, repo_root=repo)
+
+
+def test_collect_friction_reads_every_plans_friction_findings(research_repo, signed_cycle):
+    _plan_with(signed_cycle, research_repo,
+               friction_entry("no refinement relation", keys=["gadt", "adts"],
+                              element="edge-types"),
+               {"kind": "rule-candidate", "detail": "x", "keys": []},
+               friction_entry("provenance has no slot for a chat link", keys=["a"],
+                              element="other", area="adjacent"))
+    rows = collect_friction(research_repo)
+    assert [(r.cycle, r.theme, r.area, r.element) for r in rows] == [
+        (1, "typing", "ontology", "edge-types"), (1, "typing", "adjacent", "other")]
+    assert rows[0].keys == ("gadt", "adts")
+
+
+def test_the_report_groups_by_area_then_element_and_says_how_widespread(
+        research_repo, signed_cycle):
+    _plan_with(signed_cycle, research_repo,
+               friction_entry("a", keys=["k1"], element="realizes"),
+               friction_entry("b", keys=["k2"], element="realizes"),
+               friction_entry("c", keys=["k3"], element="other", area="adjacent"))
+    text = render_report(collect_friction(research_repo))
+    assert text.index("== ontology ==") < text.index("== adjacent ==")
+    assert "realizes: 2 finding(s) across 1 theme(s)" in text
+    assert "[01 typing] k1: a" in text
+
+
+def test_an_empty_report_says_so():
+    assert render_report([]) == "no structure-friction findings"
