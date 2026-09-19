@@ -42,6 +42,10 @@ RECORD_KINDS_BY_LIST = {
 _AGENT_BY_LIST = {"nodes": "r4-ontologist", "edges": "r4-edge-drafter",
                   "quality_edges": "r4-edge-drafter"}
 
+# A plan list can hold entries from more than one role: R6's cross-theme pass appends to
+# `edges`. Such an entry names its pass, and its provenance names that pass's prompt.
+_AGENT_BY_PASS = {"r6": "r6-cross-theme-edge-drafter"}
+
 
 def plan_prompt_versions(*, loader=None) -> dict[str, str]:
     """`{plan list: the version of the prompt that drafts it}`, for `mint_items`.
@@ -55,7 +59,10 @@ def plan_prompt_versions(*, loader=None) -> dict[str, str]:
         from langatlas_pipeline.prompts import load_prompt
 
         loader = load_prompt
-    return {name: loader(agent).version for name, agent in _AGENT_BY_LIST.items()}
+    versions = {name: loader(agent).version for name, agent in _AGENT_BY_LIST.items()}
+    versions.update({f"edges:{pass_}": loader(agent).version
+                     for pass_, agent in _AGENT_BY_PASS.items()})
+    return versions
 
 
 def _slugs(repo_root: Path | None, rel: str, key: str) -> set[str]:
@@ -170,10 +177,12 @@ def mint_items(plan: dict, *, repo_root: Path | None, ctx_run_id: str, prompt_ve
                     entry["slug"], label=entry["label"], summary=entry["summary"],
                     repo_root=repo_root))
             else:
+                pass_ = entry.get("pass") if name == "edges" else None
+                version_key = f"edges:{pass_}" if pass_ in _AGENT_BY_PASS else name
                 items.append(entry_draft(entry, plan=plan, ctx_run_id=ctx_run_id,
                                          prompt_version=(prompt_versions or {}).get(
-                                             name, prompt_version),
-                                         agent=_AGENT_BY_LIST[name]))
+                                             version_key, prompt_version),
+                                         agent=_AGENT_BY_PASS.get(pass_, _AGENT_BY_LIST[name])))
     return items
 
 

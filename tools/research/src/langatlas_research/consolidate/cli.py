@@ -31,6 +31,8 @@ def add_parser(sub) -> None:
                          help="split: what becomes of the split node (default demote)")
     p_draft.add_argument("--rationale", required=True)
     p_draft.add_argument("--slug", help="migration id slug (default: op and node ids)")
+    group.add_parser("edges", help="the cross-theme edge pass (Claude)").add_argument(
+        "number", type=int)
     p_guard = group.add_parser("guard", help="CI: settled themes restructure only by manifest")
     p_guard.add_argument("--since", default=None)
     p_migrate = group.add_parser("migrate",
@@ -160,6 +162,52 @@ def _migrate(args, repo: Path) -> int:
     return 0 if type(outcome).__name__ == "Landed" else 1
 
 
+def _edges(args, repo: Path) -> int:
+    from langatlas_research.consolidate.cross_theme import run_cross_theme, skip_reason
+    from langatlas_research.consolidate.record import load_record, save_record
+    from langatlas_research.cycle import load_cycle, require_sign_off
+    from langatlas_research.draft.plan import load_plan, save_plan
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    require_sign_off(cycle, repo_root=repo)
+    record = load_record(cycle.slug, repo_root=repo)
+    plan = load_plan(cycle.slug, repo_root=repo)
+    reason = skip_reason(repo, cycle)
+    if reason:
+        save_record({**record, "cross_theme": {"run": None, "skipped": reason, "edges": []}},
+                    repo_root=repo)
+        print(f"cross-theme pass skipped: {reason}")
+        return 0
+
+    from langatlas_ingest.config import IngestConfig
+    from langatlas_ingest.db import connect
+    from langatlas_pipeline.providers.core import RunContext
+
+    from langatlas_research.config import ResearchConfig
+    from langatlas_research.draft.ontologist import ontologist_tools
+    from langatlas_research.paths import research_config_path
+    from langatlas_research.survey.chunks import db_chunk_lookup
+    from langatlas_research.survey.claude import role_budget
+
+    config = ResearchConfig.load(research_config_path(repo))
+    with connect(IngestConfig.load().dsn) as conn:
+        with RunContext.start(kind="r6-cross-theme", slug=cycle.slug,
+                              budget=role_budget(config.consolidation.cross_theme_drafter),
+                              agents=[{"role": "cross-theme-edge-drafter"}]) as ctx:
+            servers, tools = ontologist_tools(ctx, conn)
+            updated, record, warnings = run_cross_theme(
+                ctx, cycle, plan, record, repo_root=repo, lookup=db_chunk_lookup(conn),
+                config=config, mcp_servers=servers, allowed_tools=tools)
+    save_plan(updated, repo_root=repo)
+    save_record(record, repo_root=repo)
+    print(f"{len(record['cross_theme']['edges'])} cross-theme edge(s) proposed")
+    for warning in warnings:
+        print(f"warning: {warning}")
+    print(f"next: langatlas-research draft debate {cycle.number} --all, then draft verify /"
+          f" draft mint")
+    return 0
+
+
 def _guard(args, repo: Path) -> int:
     from langatlas_research.consolidate.guard import check_settled
 
@@ -271,7 +319,7 @@ def _rename_slug(args, repo: Path) -> int:
     return 0 if isinstance(outcome, Landed) else 1
 
 
-_HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migration,
+_HANDLERS = {"open": _open, "edges": _edges, "status": _status, "draft-migration": _draft_migration,
              "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule,
              "slugs": _slugs, "rename-slug": _rename_slug}
 

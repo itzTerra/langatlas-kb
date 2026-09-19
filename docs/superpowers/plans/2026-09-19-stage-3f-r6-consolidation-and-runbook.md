@@ -5684,7 +5684,7 @@ then handle them unchanged, so there is no second admissibility path.
   - R6 edges minted with `provenance.proposer.agent: r6-cross-theme-edge-drafter`;
   - CLI `consolidate edges N`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/research/tests/test_consolidate_cross_theme.py`:
 
@@ -5852,12 +5852,12 @@ def test_an_r6_edge_mints_under_its_own_prompt(research_repo, two_themes):
         "r6-cross-theme-edge-drafter", "v-r6")
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_cross_theme.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate.cross_theme'`.
 
-- [ ] **Step 3: Extract `append_edges` and make the shape rules public**
+- [x] **Step 3: Extract `append_edges` and make the shape rules public**
 
 In `tools/research/src/langatlas_research/draft/edges.py`:
 1. Rename `_EDGE_TYPES` → `EDGE_TYPES` and `_check_shape` → `check_shape`, including their uses
@@ -5901,7 +5901,7 @@ def append_edges(ctx, plan: dict, edges, *, lookup: ChunkLookup,
 Run: `uv --directory tools/research run pytest tests/test_draft_edges.py -v`
 Expected: PASS, unchanged. This is a pure refactor for R4.
 
-- [ ] **Step 4: Admit `pass` in the carve plan and attribute R6 edges to their prompt**
+- [x] **Step 4: Admit `pass` in the carve plan and attribute R6 edges to their prompt**
 
 In `research/schema/draft.schema.json`, add to the `properties` of the `edges` item schema:
 
@@ -5940,7 +5940,7 @@ In `mint_items`, replace the final `else:` branch's `items.append(entry_draft(..
 
 If a test pins `plan_prompt_versions()`'s exact dict, add the `"edges:r6"` key to that literal.
 
-- [ ] **Step 5: Add the role's configuration**
+- [x] **Step 5: Add the role's configuration**
 
 Append to `config/research.yaml`:
 
@@ -5969,7 +5969,7 @@ Then:
 2. In `ResearchConfig.load`, pass
    `consolidation=ConsolidationConfig(cross_theme_drafter=ClaudeRoleConfig(**data["consolidation"]["cross_theme_drafter"]))`.
 
-- [ ] **Step 6: Mint the prompt**
+- [x] **Step 6: Mint the prompt**
 
 Run:
 
@@ -6039,7 +6039,7 @@ PY
 Expected: it prints `r6-cross-theme-edge-drafter@<hash>`, and
 `prompts/r6-cross-theme-edge-drafter/` holds `CHANGELOG.md` plus one version file.
 
-- [ ] **Step 7: Implement the pass**
+- [x] **Step 7: Implement the pass**
 
 Create `tools/research/src/langatlas_research/consolidate/cross_theme.py`:
 
@@ -6220,7 +6220,7 @@ def run_cross_theme(ctx, cycle: Cycle, plan: dict, record: dict, *, repo_root: P
     return mark_contested(updated, repo_root=repo_root, store=store), record, warnings
 ```
 
-- [ ] **Step 8: Add `consolidate edges` to the CLI**
+- [x] **Step 8: Add `consolidate edges` to the CLI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -6278,7 +6278,7 @@ def _edges(args, repo: Path) -> int:
     return 0
 ```
 
-- [ ] **Step 9: Run the tests**
+- [x] **Step 9: Run the tests**
 
 Run:
 ```bash
@@ -6287,7 +6287,7 @@ uv --directory tools/research run pytest -m '' -q
 ```
 Expected: PASS.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/consolidate/{cross_theme,cli}.py \

@@ -67,6 +67,11 @@ class RealityConfig:
 
 
 @dataclass(frozen=True)
+class ConsolidationConfig:
+    cross_theme_drafter: ClaudeRoleConfig
+
+
+@dataclass(frozen=True)
 class ResearchConfig:
     pool: PoolConfig
     tagger: TaggerConfig
@@ -75,6 +80,7 @@ class ResearchConfig:
     draft: DraftConfig
     controversy: ControversyConfig
     reality: RealityConfig
+    consolidation: ConsolidationConfig
 
     @classmethod
     def load(cls, path: Path | None = None) -> "ResearchConfig":
@@ -84,6 +90,7 @@ class ResearchConfig:
         debate = draft["debate"]
         controversy = data["controversy"]
         reality = data["reality_check"]
+        consolidation = data["consolidation"]
         return cls(pool=PoolConfig(**survey["pool"]),
                    tagger=TaggerConfig(**survey["tagger"]),
                    surveyor=ClaudeRoleConfig(**survey["surveyor"]),
@@ -104,6 +111,9 @@ class ResearchConfig:
                        max_facts_per_run=controversy["max_facts_per_run"],
                        spread_min_assessments=controversy["spread_min_assessments"],
                        escalation=ClaudeRoleConfig(**controversy["escalation"])),
+                   consolidation=ConsolidationConfig(
+                       cross_theme_drafter=ClaudeRoleConfig(
+                           **consolidation["cross_theme_drafter"])),
                    reality=RealityConfig(
                        classifier=ClaudeRoleConfig(**reality["classifier"]),
                        max_characteristics=reality["max_characteristics"],

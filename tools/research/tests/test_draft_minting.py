@@ -180,7 +180,8 @@ def test_plan_prompt_versions_resolves_one_prompt_per_role():
     versions = plan_prompt_versions(
         loader=lambda prompt_id: type("P", (), {"version": f"v-{prompt_id}"})())
     assert versions == {"nodes": "v-r4-ontologist", "edges": "v-r4-edge-drafter",
-                        "quality_edges": "v-r4-edge-drafter"}
+                        "quality_edges": "v-r4-edge-drafter",
+                        "edges:r6": "v-r6-cross-theme-edge-drafter"}
 
 
 def test_an_unlanded_contradiction_ledger_leads_the_batch(signed_cycle, research_repo,

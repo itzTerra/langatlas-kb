@@ -27,7 +27,7 @@ from langatlas_validate.ids import canonical_endpoints, is_valid_slug
 
 EDGE_DRAFTER_PROMPT_ID = "r4-edge-drafter"
 
-_EDGE_TYPES = {
+EDGE_TYPES = {
     "requires": "`from` cannot exist in a language without `to`",
     "enables": "`from` makes `to` possible or practical, without requiring it",
     "influences": "`from` shapes how `to` is designed or used; needs a polarity of + or -",
@@ -103,7 +103,7 @@ def render_nodes(ctx, store, features_by_id: dict) -> str:
     return ctx.tool_result(tool="ontology-store", text="\n".join(lines), kind="store-nodes")
 
 
-def _check_shape(out: EdgeDrafterOut, store, known_qualities: set[str],
+def check_shape(out: EdgeDrafterOut, store, known_qualities: set[str],
                  max_edges: int) -> None:
     errors: list[str] = []
     if len(out.edges) + len(out.quality_edges) > max_edges:
@@ -154,6 +154,31 @@ def _tail(note: str) -> dict:
             "note": note}
 
 
+def append_edges(ctx, plan: dict, edges, *, lookup: ChunkLookup,
+                 pass_: str | None = None) -> tuple[dict, list[str]]:
+    """Bind each drafted edge's evidence and append it to the plan as a `proposed` entry.
+
+    @param pass_: "r6" for the cross-theme pass (the entry records it, and minting attributes
+        it to that pass's prompt); None for R4, whose entries predate the field.
+    @returns: `(updated plan, evidence warnings)`."""
+    warnings: list[str] = []
+    new_edges = []
+    for edge in edges:
+        frm, to = edge.frm, edge.to
+        if edge.type == "alternative-to":
+            frm, to = canonical_endpoints(frm, to)
+        key = edge_key(edge.type, frm, to)
+        evidence, edge_warnings = bind_evidence(edge.evidence, lookup=lookup, what=key)
+        warnings.extend(edge_warnings)
+        entry = {"key": key, "type": edge.type, "from": frm, "to": to,
+                 "polarity": edge.polarity, "statement": edge.statement,
+                 "evidence": evidence, **_tail(edge.note)}
+        if pass_ is not None:
+            entry["pass"] = pass_
+        new_edges.append(entry)
+    return {**plan, "edges": [*(plan.get("edges") or []), *new_edges]}, warnings
+
+
 def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                      lookup: ChunkLookup, config: ResearchConfig,
                      mcp_servers: dict | None = None, allowed_tools=(),
@@ -178,13 +203,13 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
         "nodes": render_nodes(ctx, store, features_by_id),
         "qualities": ", ".join(sorted(known_qualities)) or "(empty — propose what you need)",
         "edge_types": "\n".join(f"- {name}: {help_text}"
-                                for name, help_text in _EDGE_TYPES.items()),
+                                for name, help_text in EDGE_TYPES.items()),
         "max_edges": str(role.max_candidates),
     }
     out, _ = run_structured(ctx, prompt or load_prompt(EDGE_DRAFTER_PROMPT_ID), variables,
                             output_model=EdgeDrafterOut, role_config=role,
                             mcp_servers=mcp_servers, allowed_tools=allowed_tools)
-    _check_shape(out, store, known_qualities, role.max_candidates)
+    check_shape(out, store, known_qualities, role.max_candidates)
 
     updated = dict(plan)
     updated["runs"] = {**plan["runs"], "edge_drafter": ctx.run_id}
@@ -195,18 +220,8 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                                "label": quality.label, "summary": quality.summary,
                                **_tail(quality.note)} for quality in out.qualities)]
 
-    new_edges = []
-    for edge in out.edges:
-        frm, to = edge.frm, edge.to
-        if edge.type == "alternative-to":
-            frm, to = canonical_endpoints(frm, to)
-        key = edge_key(edge.type, frm, to)
-        evidence, edge_warnings = bind_evidence(edge.evidence, lookup=lookup, what=key)
-        warnings.extend(edge_warnings)
-        new_edges.append({"key": key, "type": edge.type, "from": frm, "to": to,
-                          "polarity": edge.polarity, "statement": edge.statement,
-                          "evidence": evidence, **_tail(edge.note)})
-    updated["edges"] = [*(plan.get("edges") or []), *new_edges]
+    updated, edge_warnings = append_edges(ctx, updated, out.edges, lookup=lookup)
+    warnings.extend(edge_warnings)
 
     new_quality_edges = []
     for edge in out.quality_edges:

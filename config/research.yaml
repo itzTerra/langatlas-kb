@@ -109,3 +109,13 @@ reality_check:
     haskell: [haskell-2010-report, ghc-users-guide]
     prolog: [deransart-prolog-1996]
     rust: [rust-fls, rust-reference]
+
+consolidation:
+  # R6 (Stage 3F). The cross-theme edge pass is judgment work (Claude, §7.1). Everything else
+  # in R6 — the dedup/alias audit, slug polish, the migration interpreter — is code.
+  cross_theme_drafter:
+    model: null
+    max_turns: 60
+    max_claude_messages: 160
+    max_packet_terms: 200           # other themes' features shown to the drafter
+    max_candidates: 40              # cross-theme edges accepted from one run

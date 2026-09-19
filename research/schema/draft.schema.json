@@ -156,7 +156,8 @@
           "status": { "$ref": "#/$defs/status" },
           "verification": { "$ref": "#/$defs/verification" },
           "note": { "type": "string" },
-          "drop_reason": { "type": "string" }
+          "drop_reason": { "type": "string" },
+          "pass": { "enum": ["r4", "r6"] }
         }
       }
     },
