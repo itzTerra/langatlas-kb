@@ -207,5 +207,9 @@ def validate_store(repo_root: Path) -> list[str]:
     errors.extend(f"{REDIRECTS_REL}: {e}"
                   for e in validate_redirects(load_redirects(repo_root), nodes=nodes))
 
+    from langatlas_validate.migrate import validate_manifests
+
+    errors.extend(validate_manifests(repo_root))
+
     errors.extend(validate_references(repo_root))
     return errors

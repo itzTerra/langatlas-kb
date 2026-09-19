@@ -1778,7 +1778,7 @@ It also registers the two simpler ops. Task 5 registers `merge` and `split` on t
   - `plan_migration` raises `MigrationError` for `merge` and `split` until Task 5, with
     "op 'merge' has no interpreter".
 
-- [ ] **Step 1: Write the manifest schema**
+- [x] **Step 1: Write the manifest schema**
 
 Create `ontology/schema/migration-manifest.schema.json`:
 
@@ -1909,7 +1909,7 @@ During `0.x` a manifest is *required* only for a restructure touching a **settle
 At `1.0.0` the RFC-gated D16 process (Stage 4) adds an `impact.md` beside each manifest.
 ```
 
-- [ ] **Step 2: Write the failing interpreter tests**
+- [x] **Step 2: Write the failing interpreter tests**
 
 Create `tools/validate/tests/test_migrate.py`:
 
@@ -2131,12 +2131,12 @@ def test_merge_and_split_are_not_interpreted_yet(graph):
             {"op": "merge", "from": ["alpha"], "to": "beta", "fact_remap": []}))
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_migrate.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_validate.migrate'`.
 
-- [ ] **Step 4: Implement the interpreter core**
+- [x] **Step 4: Implement the interpreter core**
 
 Create `tools/validate/src/langatlas_validate/migrate.py`:
 
@@ -2734,7 +2734,7 @@ def check_plan(repo_root: Path, plan: MigrationPlan, *, extra: dict | None = Non
         return validate_store(copy)
 ```
 
-- [ ] **Step 5: Schema-check committed manifests in `validate_store`**
+- [x] **Step 5: Schema-check committed manifests in `validate_store`**
 
 In `tools/validate/src/langatlas_validate/store.py`'s `validate_store`, next to the tombstone
 and redirect checks from Task 2, add:
@@ -2748,18 +2748,18 @@ and redirect checks from Task 2, add:
 Keep the import inside the function. `migrate.py` imports `store.py` at module level, so a
 top-level import here would be circular.
 
-- [ ] **Step 6: Run the tests to verify they pass**
+- [x] **Step 6: Run the tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest tests/test_migrate.py -v`
 Expected: PASS (all parametrized cases included).
 
-- [ ] **Step 7: Run the validate suite and the store gate**
+- [x] **Step 7: Run the validate suite and the store gate**
 
 Run: `uv --directory tools/validate run pytest -q && uv --directory tools/validate run langatlas-validate ci`
 Expected: all pass. `ci` exits 0, because `ontology/migrations/` holds only `.gitkeep` and the
 README.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add ontology/schema/migration-manifest.schema.json ontology/migrations/README.md \

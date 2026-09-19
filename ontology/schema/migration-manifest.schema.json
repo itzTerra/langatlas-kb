@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/schema/migration-manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["migration_id", "date", "ontology_version_before", "rationale", "dispositions"],
+  "properties": {
+    "migration_id": { "type": "string", "pattern": "^[0-9]{4}-[a-z0-9]+(-[a-z0-9]+)*$" },
+    "date": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    "cycle": { "type": "integer", "minimum": 1 },
+    "settled_themes": { "type": "array", "items": { "type": "string" } },
+    "ontology_version_before": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "rationale": { "type": "string", "minLength": 1 },
+    "dispositions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "oneOf": [
+          { "$ref": "#/$defs/split" }, { "$ref": "#/$defs/merge" },
+          { "$ref": "#/$defs/move" }, { "$ref": "#/$defs/remove" }
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "nodeId": { "type": "string", "pattern": "^[a-z]([a-z0-9]*(-[a-z0-9]+)*)?$", "maxLength": 48 },
+    "remapEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["match", "action"],
+      "properties": {
+        "match": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["anchor"],
+          "properties": {
+            "anchor": { "type": "string", "minLength": 1 },
+            "exclude": { "type": "string", "minLength": 1 }
+          }
+        },
+        "action": { "enum": ["remap", "requeue", "tombstone", "untouched"] },
+        "target": { "$ref": "#/$defs/nodeId" },
+        "reverify": { "enum": ["fast-path", "full"] },
+        "reason": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "action": { "const": "remap" } }, "required": ["action"] },
+          "then": { "required": ["target"] }
+        }
+      ]
+    },
+    "factRemap": { "type": "array", "items": { "$ref": "#/$defs/remapEntry" } },
+    "split": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "from", "to", "fact_remap"],
+      "properties": {
+        "op": { "const": "split" },
+        "from": { "$ref": "#/$defs/nodeId" },
+        "to": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/nodeId" } },
+        "old_node": { "enum": ["demote-to-concept", "tombstone"] },
+        "fact_remap": { "$ref": "#/$defs/factRemap" }
+      }
+    },
+    "merge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "from", "to", "fact_remap"],
+      "properties": {
+        "op": { "const": "merge" },
+        "from": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/nodeId" } },
+        "to": { "$ref": "#/$defs/nodeId" },
+        "fact_remap": { "$ref": "#/$defs/factRemap" }
+      }
+    },
+    "move": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "node", "to_layer", "fact_remap"],
+      "properties": {
+        "op": { "const": "move" },
+        "node": { "$ref": "#/$defs/nodeId" },
+        "to_layer": { "enum": [1, 2, 3] },
+        "to_dimension": { "type": ["string", "null"] },
+        "fact_remap": { "$ref": "#/$defs/factRemap" }
+      }
+    },
+    "remove": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["op", "node", "fact_remap"],
+      "properties": {
+        "op": { "const": "remove" },
+        "node": { "$ref": "#/$defs/nodeId" },
+        "fact_remap": { "$ref": "#/$defs/factRemap" }
+      }
+    }
+  }
+}
