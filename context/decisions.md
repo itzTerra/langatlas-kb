@@ -2373,6 +2373,49 @@ qualities). The list is a seed, not a closed set: 3C may still propose entries t
 and the `qualities vocabulary` R3 theme (Kaijanaho 2015 as evidence source) consolidates it later.
 Slugs and one-line summaries were written by Claude and are open to edit.
 
+## Research-phase structure decisions (2026-09-19 — from brainstorm 65 — **direction ratified by the developer**, details proposed)
+
+### D70. The seed ontology structure is provisional until a structure review
+
+*[developer 2026-09-19 — ratified in principle: the structure is provisional, misfits are
+collected rather than suppressed, and the first themes are drafted before anything mints. The
+batch size, theme choice, R5/edge-drafter handling, re-atomization and later-cycle handling were answered the same day and are ratified in the last paragraph; the review's scope over adjacent schema was answered on the same day too.]* The research phase exists to find the
+right ontology (§7.4), so the seed structure is a working hypothesis rather than a contract agent
+output must satisfy. **Provisional:** the three layers (D2), the concept/feature split and what
+`realizes` means, the relation vocabulary (`edge-types.yaml`), the dimension model (D39, D50,
+D67), the seed qualities (D69), and the record kinds. **Fixed:** sourcing and process invariants
+(D1, D4, D18, D24, D27, D29/D53, D31). Proposed mechanics: the R4 ontologist and edge drafter are
+told the structure is provisional and gain a `structure-friction` finding kind; the R4 shape
+check rejects a run only for hygiene errors (invalid slugs, duplicate keys, re-minting a
+committed id, exceeding the node cap) and keeps structural misfits in the carve plan as
+`blocked: structure` carves linked to a finding; R4 debates gain a `wrong-structure` challenge
+type whose resolutions feed findings; the first themes (cycle 1, typing, onward) run R3 → R4
+through `draft verify` in **draft-only mode** with no minting; a developer **structure review**
+then reads every `structure-friction` finding across the batch, decides schema changes (ordinary
+0.x changes) and the batch mints; later cycles mint per cycle as the runbook describes. Re-opens
+sub-plan 3C and touches 3A's cycle status machine and the theme-cycle runbook. Surfaced by cycle
+1's ontologist building feature→feature refinement chains the seed has no slot for (backlog
+topic 66).
+
+**Ratified answers (developer 2026-09-19):** the draft-only batch is **four themes**: `typing`,
+`memory-management`, `concurrency`, `syntax-layer-constructs` (Claude's choice: typing and memory
+management stress exclusive layer-3 dimensions and, in typing's case, refinement chains;
+concurrency stresses multi-valued models, rule candidates and cross-theme edges;
+syntax-layer-constructs is the only theme that stresses layer 1, otherwise untested). R5 does
+**not** run in the batch by default; compiling a questionnaire from a carve plan is kept only as
+an option if the structure is still unclear after the batch. The edge drafter **does** run in the
+batch, against carve-plan nodes. After the structure review the batch is **re-atomized by the
+ontologist from the same surveys**, not re-conformed by hand. A `structure-friction` finding
+raised after the review is handled **at that cycle's R6**, and a change touching a settled theme
+goes through the settled-theme migration manifest.
+
+The structure review's **decision authority stays ontology structure** (layers, kinds, relations,
+dimensions). Every `structure-friction` finding carries an `area` (`ontology` | `adjacent`); the
+review lists the `adjacent` ones for the developer to decide case by case, so sourcing-adjacent
+schema (the `provenance` block, fact-id scheme, instance-level fields) never changes as a side
+effect of an ontology review. Evidence that adjacent changes can be beneficial: D66 and D67 were
+corrections needed after ratification, and open topics 58 and 64 are unresolved adjacent gaps.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

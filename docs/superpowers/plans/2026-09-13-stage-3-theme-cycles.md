@@ -307,7 +307,10 @@ rotating language sample); the D24 verifier; `land_record`; the phase-1 language
   schema-shape regression fixture guards vocabulary drift, starting `mode: soft` per D48.
 - **The reality-check runner** — a **rotating 4–5-language sample per cycle** (paradigm spread,
   drawn by 3A's planner from the D28 15-language set) classified against the draft dimensions,
-  minting FeatureInstance records through the verifier and the commit protocol at small scale.
+  every answer run through the D24 verifier and recorded — *amended 2026-09-18 (D68): R5 mints
+  no FeatureInstance records and registers no languages* (minting would break D28's phase order,
+  D49's `not-yet-onboarded` state and D5/D34 sweep independence); the commit protocol is still
+  exercised by landing the compiled spec and the reality-check file.
   **This is deliberately not the sweep pipeline** (no independent parallel sweeps, no reconciler —
   Stage 5): it is the shakedown of the questionnaire format, the verifier and the commit protocol.
 - **`research/reality-checks/<cycle>-<theme>.yaml`** (D52's named authored artifact, the one

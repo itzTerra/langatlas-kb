@@ -54,39 +54,6 @@ ratified decisions D65–D68; the one deferred item became backlog topic 64.
    `haskell-2010-report`, edited by Marlow) currently list their editor as an author instead.
    Worth adding an `--editor` flag to `new-source`/`render_source_yaml` before the corpus grows
    further, or is author-as-editor an acceptable simplification long-term?
-3. `render_source_yaml`/`new-source` expose no flags for several CSL-JSON bibliographic fields
-   that later ingestion has needed in practice: `container-title`, `volume`, `page` (for
-   journal articles — three R1 records needed these added by direct YAML edit after the fact),
-   `publisher`, and `accessed` (for webpages, though the schema already defines
-   `custom.accessed`). Should Stage 3 add these flags to the scaffold tooling before the corpus
-   multiplies further, given every future journal-article or webpage source will hit the same
-   gap?
-4. Stage 2B's Task 10 (the fully developer-authored, no-agent-assisted held-out audit slice,
-   `tests/golden/verifier/held-out/items-audit.yaml`) was skipped on the developer's own
-   instruction after being told what depends on it: nothing in CI, but `golden-validate
-   --complete` will keep reporting one expected error (`held-out slice has 0 items`) until it
-   exists, and 2D will have no independent, never-tuned-against audit slice at calibration time.
-   Author it before or during 2D's calibration pass, or accept permanently skipping the audit
-   entirely (in which case `validate_set`'s held-out invariant check should be relaxed to allow
-   zero, rather than left as a standing, silently-ignored error)?
-5. `langatlas_ingest.goldens.authoring.generate_candidates`'s locator-matching (fixed in
-   `#stage-2b` for a source-id-prefix mismatch, see `git log --grep normalize.*candidate.*locator`)
-   still misses candidates whose locator comes back bracket-wrapped (e.g. `[p. 125]`,
-   `[§22.1]`) or otherwise punctuated differently from the bare `source_chunks.locator` format —
-   observed repeatedly while authoring Task 9's batches. In every observed case the underlying
-   citation was correct once the brackets were manually stripped during curation, so no bad data
-   reached the committed set, but every future `golden-candidates` run will keep silently
-   producing empty `evidence_chunk_ids` for otherwise-good candidates until the matcher is
-   widened. Worth a follow-up normalization pass before Stage 3 leans on this tool more heavily,
-   or is manual curation an acceptable permanent mitigation?
-6. `langatlas-sources golden-derive-queries --out <path>` (and every other CLI command taking a
-   relative `--out`/`--verifier-dir` path) resolves that path against the process's current
-   working directory, which is `tools/ingest` when invoked via `uv --directory tools/ingest run
-   ...` — the form every command in this plan uses. Every batch in Stage 2B that used
-   `golden-derive-queries` had to move the written file from `tools/ingest/tests/golden/...` to
-   the real repo-root `tests/golden/...` afterward. Worth defaulting relative `--out` paths to
-   resolve against `REPO_ROOT` instead of the CWD, or documenting the gotcha directly in the
-   command's `--help` text?
 
 ## Deferred (waiting on a specific future trigger, no action needed yet)
 
