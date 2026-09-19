@@ -4560,14 +4560,14 @@ settling is judged by the rules of its time.
   - `check_settled(repo_root, since) -> list[str]`;
   - CLI `langatlas-research consolidate guard [--since REF]`.
 
-- [ ] **Step 1: Make the change classifier public**
+- [x] **Step 1: Make the change classifier public**
 
 In `tools/validate/src/langatlas_validate/version.py`, rename `_diff_class` to `diff_class`
 (definition and its one call in `classify_change`). Change the first docstring line to "The
 strongest class of change between two versions of one record. Public: the settled-theme guard
 applies it per record." `grep -rn _diff_class tools/` must then return nothing.
 
-- [ ] **Step 2: Write the failing guard tests**
+- [x] **Step 2: Write the failing guard tests**
 
 Create `tools/research/tests/test_consolidate_guard.py`:
 
@@ -4705,12 +4705,12 @@ def test_the_cli_exits_nonzero_on_a_violation(settled_repo, capsys):
     assert "settled theme" in capsys.readouterr().out
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_guard.py -m '' -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate.guard'`.
 
-- [ ] **Step 4: Implement the guard**
+- [x] **Step 4: Implement the guard**
 
 Create `tools/research/src/langatlas_research/consolidate/guard.py`:
 
@@ -4817,7 +4817,7 @@ def check_settled(repo_root: Path, since: str | None) -> list[str]:
             for error in check_commit(repo_root, commit)]
 ```
 
-- [ ] **Step 5: Add `guard` to the CLI and to CI**
+- [x] **Step 5: Add `guard` to the CLI and to CI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -4849,7 +4849,7 @@ In `.github/workflows/ci.yml`, add after the `ledger-check` step from Task 6:
           --since "${{ steps.base.outputs.since }}"
 ```
 
-- [ ] **Step 6: Run the guard tests, the suites and the guard itself**
+- [x] **Step 6: Run the guard tests, the suites and the guard itself**
 
 Run:
 ```bash
@@ -4864,7 +4864,7 @@ Expected:
 - the last command prints `settled themes: no unmanifested restructure`, because no theme is
   settled yet.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/validate/src/langatlas_validate/version.py \

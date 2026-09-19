@@ -30,6 +30,8 @@ def add_parser(sub) -> None:
                          help="split: what becomes of the split node (default demote)")
     p_draft.add_argument("--rationale", required=True)
     p_draft.add_argument("--slug", help="migration id slug (default: op and node ids)")
+    p_guard = group.add_parser("guard", help="CI: settled themes restructure only by manifest")
+    p_guard.add_argument("--since", default=None)
     p_migrate = group.add_parser("migrate",
                                  help="plan, gate and land a drafted manifest as one commit")
     p_migrate.add_argument("number", type=int)
@@ -140,8 +142,19 @@ def _migrate(args, repo: Path) -> int:
     return 0 if type(outcome).__name__ == "Landed" else 1
 
 
+def _guard(args, repo: Path) -> int:
+    from langatlas_research.consolidate.guard import check_settled
+
+    errors = check_settled(repo, args.since)
+    for error in errors:
+        print(f"SETTLED {error}")
+    if not errors:
+        print("settled themes: no unmanifested restructure")
+    return 1 if errors else 0
+
+
 _HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migration,
-             "migrate": _migrate}
+             "migrate": _migrate, "guard": _guard}
 
 
 def dispatch(args, root: Path | None) -> int:

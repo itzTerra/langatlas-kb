@@ -79,8 +79,9 @@ def snapshot_at(repo_root: Path, ref: str) -> dict[str, dict]:
     return snapshot
 
 
-def _diff_class(before: dict, after: dict) -> str:
-    """The strongest class of change between two versions of one record."""
+def diff_class(before: dict, after: dict) -> str:
+    """The strongest class of change between two versions of one record. Public: the settled-theme
+    guard applies it per record."""
     before, after = _without_machine_fields(before), _without_machine_fields(after)
     if before == after:
         return "none"
@@ -121,7 +122,7 @@ def classify_change(before: dict[str, dict], after: dict[str, dict]) -> str:
     for path in set(after) - set(before):
         strongest = max(strongest, "additive", key=_RANK.index)
     for path in set(before) & set(after):
-        strongest = max(strongest, _diff_class(before[path], after[path]), key=_RANK.index)
+        strongest = max(strongest, diff_class(before[path], after[path]), key=_RANK.index)
     return strongest
 
 

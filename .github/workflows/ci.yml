@@ -65,6 +65,10 @@ jobs:
         run: >-
           uv --directory tools/validate run langatlas-validate ledger-check
           --since "${{ steps.base.outputs.since }}"
+      - name: Guard settled themes (§7.4)
+        run: >-
+          uv --directory tools/research run langatlas-research consolidate guard
+          --since "${{ steps.base.outputs.since }}"
       - name: Shape-check the committed golden sets
         # Shape only: no database, no provider. The *scored* harness is deliberately not
         # a CI gate (§8.6) — a golden run is a measurement, not a merge condition.

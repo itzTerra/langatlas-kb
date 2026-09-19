@@ -7,9 +7,10 @@ from dataclasses import dataclass, replace
 from pathlib import Path
 
 from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 from langatlas_research.errors import (
-    InvalidTransition, SignOffMissing, SignOffStale, UnknownTheme,
+    InvalidTransition, ResearchError, SignOffMissing, SignOffStale, UnknownTheme,
 )
 from langatlas_research.paths import cycles_dir
 from langatlas_research.schema import validate_research_record
@@ -173,16 +174,27 @@ def settle_cycle(cycle: Cycle, *, by: str, date: str) -> Cycle:
 def settled_themes_by_record(cycle_dicts) -> dict[str, str]:
     """@param cycle_dicts: parsed cycle records (as `load_cycle` reads them, or as git holds
         them at some ref — the settled-theme guard reads history).
+    @raises ResearchError: a settled cycle has no theme (fail loud, never fail open).
     @returns: record id -> theme, for every id a settled cycle minted. Theme membership lives
         on the cycle (3A): node schemas have no theme field."""
     membership: dict[str, str] = {}
     for data in cycle_dicts:
         if isinstance(data, dict) and data.get("status") == "settled":
+            theme = data.get("theme")
+            if not theme:
+                raise ResearchError(f"settled cycle {data.get('cycle')!r} has no theme: "
+                                    f"malformed, so its records cannot be protected")
             for record_id in data.get("nodes_minted") or []:
-                membership.setdefault(record_id, data["theme"])
+                membership.setdefault(record_id, theme)
     return membership
 
 
 def settled_record_ids(repo_root: Path | None = None) -> dict[str, str]:
-    return settled_themes_by_record(
-        _yaml.load(path.read_text()) for path in sorted(cycles_dir(repo_root).glob("*.yaml")))
+    """@raises ResearchError: a cycle file is not parseable YAML."""
+    loaded = []
+    for path in sorted(cycles_dir(repo_root).glob("*.yaml")):
+        try:
+            loaded.append(_yaml.load(path.read_text()))
+        except YAMLError as exc:
+            raise ResearchError(f"{path.name}: malformed cycle file: {exc}") from exc
+    return settled_themes_by_record(loaded)
