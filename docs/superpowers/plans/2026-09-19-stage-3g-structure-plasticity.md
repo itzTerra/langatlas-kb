@@ -550,7 +550,7 @@ Stop for review.
   - `plan_store_view(store: StoreView, plan: dict) -> StoreView`: the store plus the plan's unblocked, undropped nodes.
   - Edge plan entries may carry `blocked` / `block_reason`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # appended to tools/research/tests/test_draft_edges.py
@@ -601,12 +601,12 @@ def test_the_plan_store_view_adds_unblocked_undropped_plan_nodes():
     assert view.concepts == {"c1"} and view.features == {"old", "f1"}
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_edges.py`
 Expected: FAIL (`ImportError: plan_store_view` / unexpected keyword `collect_misfits`).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `ontologist.py`, below `read_store`:
 
@@ -676,12 +676,12 @@ and replace the findings assembly with:
     updated["findings"] = [*findings, *synthesize_friction(edge_misfits, findings)]
 ```
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_edges.py tests/test_consolidate_cross_theme.py`
 Expected: PASS (the cross-theme tests prove R6 kept its strict default).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research

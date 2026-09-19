@@ -100,6 +100,21 @@ def read_store(repo_root: Path | None) -> StoreView:
                      dimensions=frozenset(committed_dimensions(root)))
 
 
+def plan_store_view(store: StoreView, plan: dict) -> StoreView:
+    """The store plus the carve plan's own live nodes, for drafting edges while nothing is
+    minted yet (D70's draft-only batch). A blocked or dropped carve is not an endpoint: it is
+    waiting on the structure review or gone."""
+    from langatlas_research.draft.structure import is_blocked
+
+    concepts, features = set(store.concepts), set(store.features)
+    for entry in plan.get("nodes") or []:
+        if is_blocked(entry) or entry["status"] == "dropped":
+            continue
+        (concepts if entry["kind"] == "concept" else features).add(entry["id"])
+    return StoreView(concepts=frozenset(concepts), features=frozenset(features),
+                     dimensions=store.dimensions)
+
+
 def ontologist_tools(ctx, conn) -> tuple[dict, tuple[str, ...]]:
     """Corpus tools only — no finding aids, no built-ins (no filesystem, shell or web)."""
     from langatlas_ingest.tools import SERVER_NAME, TOOL_NAMES, sdk_source_tools

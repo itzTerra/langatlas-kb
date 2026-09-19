@@ -99,9 +99,13 @@ def render_nodes(ctx, store, features_by_id: dict) -> str:
     return ctx.tool_result(tool="ontology-store", text="\n".join(lines), kind="store-nodes")
 
 
-def check_shape(out: EdgeDrafterOut, store, known_qualities: set[str],
-                 max_edges: int) -> None:
+def check_shape(out: EdgeDrafterOut, store, known_qualities: set[str], max_edges: int,
+                *, collect_misfits: bool = False) -> dict[int, str]:
+    """Hygiene-check the drafter output. With `collect_misfits`, an edge that touches a
+    concept is returned as `{index into out.edges: reason}` instead of raising (D70: a missing
+    edge type is information about the structure). Everything else stays a hygiene error."""
     errors: list[str] = []
+    misfits: dict[int, list[str]] = {}
     if len(out.edges) + len(out.quality_edges) > max_edges:
         errors.append(f"{len(out.edges) + len(out.quality_edges)} edges exceeds the"
                       f" configured cap of {max_edges}")
@@ -113,11 +117,15 @@ def check_shape(out: EdgeDrafterOut, store, known_qualities: set[str],
         if quality.slug in known_qualities:
             errors.append(f"quality {quality.slug!r} is already committed")
 
-    for edge in out.edges:
+    for index, edge in enumerate(out.edges):
         for endpoint in (edge.frm, edge.to):
             if endpoint in store.concepts:
-                errors.append(f"{edge.type} {edge.frm}->{edge.to}: {endpoint!r} is a"
-                              f" concept; §3.1's edge types connect features")
+                message = (f"{edge.type} {edge.frm}->{edge.to}: {endpoint!r} is a concept;"
+                           f" §3.1's edge types connect features")
+                if collect_misfits:
+                    misfits.setdefault(index, []).append(message)
+                else:
+                    errors.append(message)
             elif endpoint not in store.features:
                 errors.append(f"{edge.type} {edge.frm}->{edge.to}: {endpoint!r} is not a"
                               f" committed node")
@@ -143,6 +151,7 @@ def check_shape(out: EdgeDrafterOut, store, known_qualities: set[str],
                               f" immutable)")
     if errors:
         raise DraftOutputInvalid(f"{EDGE_DRAFTER_PROMPT_ID}: " + "; ".join(errors))
+    return {index: "; ".join(reasons) for index, reasons in misfits.items()}
 
 
 def _tail(note: str) -> dict:
@@ -185,10 +194,17 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
         or the record schemas would reject.
     @raises EvidenceUnresolvable: an edge whose every evidence chunk id failed to resolve."""
     require_sign_off(cycle, repo_root=repo_root)
+    # `store` is the committed truth (what `mark_contested` collides ids against); `view` is what
+    # the drafter may name as endpoints. While the mint gate is closed (D70's draft-only batch)
+    # nothing of the theme is committed, so the view adds the carve plan's own live nodes.
+    view = store
     if store is None:
-        from langatlas_research.draft.ontologist import read_store
+        from langatlas_research.draft.ontologist import plan_store_view, read_store
+        from langatlas_research.structure_review import mint_open
 
-        store = read_store(repo_root)
+        store = view = read_store(repo_root)
+        if not mint_open(repo_root):
+            view = plan_store_view(store, plan)
     role = config.draft.edge_drafter
     known_qualities = committed_qualities(repo_root)
     theme = load_themes(repo_root)[cycle.theme]
@@ -196,7 +212,7 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
     features_by_id = {entry["id"]: entry for entry in plan.get("nodes") or []}
     variables = {
         "theme_label": theme.label,
-        "nodes": render_nodes(ctx, store, features_by_id),
+        "nodes": render_nodes(ctx, view, features_by_id),
         "qualities": ", ".join(sorted(known_qualities)) or "(empty — propose what you need)",
         "edge_types": "\n".join(f"- {name}: {help_text}"
                                 for name, help_text in EDGE_TYPES.items()),
@@ -205,7 +221,10 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
     out, _ = run_structured(ctx, prompt or load_prompt(EDGE_DRAFTER_PROMPT_ID), variables,
                             output_model=EdgeDrafterOut, role_config=role,
                             mcp_servers=mcp_servers, allowed_tools=allowed_tools)
-    check_shape(out, store, known_qualities, role.max_candidates)
+    from langatlas_research.draft.structure import BLOCKED, Misfit, synthesize_friction
+
+    misfits = check_shape(out, view, known_qualities, role.max_candidates,
+                          collect_misfits=True)
 
     updated = dict(plan)
     updated["runs"] = {**plan["runs"], "edge_drafter": ctx.run_id}
@@ -218,6 +237,16 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
 
     updated, edge_warnings = append_edges(ctx, updated, out.edges, lookup=lookup)
     warnings.extend(edge_warnings)
+
+    base = len(updated["edges"]) - len(out.edges)
+    edge_misfits = []
+    if misfits:
+        edges = list(updated["edges"])
+        for index, reason in misfits.items():
+            edges[base + index] = {**edges[base + index], "blocked": BLOCKED,
+                                   "block_reason": reason}
+            edge_misfits.append(Misfit(edges[base + index]["key"], "edge-types", reason))
+        updated["edges"] = edges
 
     new_quality_edges = []
     for edge in out.quality_edges:
@@ -234,8 +263,8 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                                   "assessments": assessments, **_tail(edge.note)})
     updated["quality_edges"] = [*(plan.get("quality_edges") or []), *new_quality_edges]
 
-    updated["findings"] = [*(plan.get("findings") or []),
-                           *(finding.as_entry() for finding in out.findings)]
+    findings = [*(plan.get("findings") or []), *(f.as_entry() for f in out.findings)]
+    updated["findings"] = [*findings, *synthesize_friction(edge_misfits, findings)]
 
     for warning in warnings:
         ctx.writer.append(role="system", content=warning, flags=["r4:draft-warning"])
