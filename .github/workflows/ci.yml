@@ -10,6 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Migration replay, the tombstone append-only check and the settled-theme guard all
+          # read history back to the push's or pull request's base.
+          fetch-depth: 0
+      - name: Resolve the base for history checks
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "since=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "since=${{ github.event.before }}" >> "$GITHUB_OUTPUT"
+          fi
       - uses: astral-sh/setup-uv@v3
       - name: Install packages
         run: |
@@ -44,6 +56,15 @@ jobs:
           tests/test_r3_tagging_job.py tests/test_controversy_job.py tests/test_driver_overrides.py
       - name: Run the store-validating gate
         run: uv --directory tools/validate run langatlas-validate ci
+      - name: Replay every migration added since the base (§5.2)
+        # An unknown or all-zero base (a branch's first push) replays the whole history.
+        run: >-
+          uv --directory tools/validate run langatlas-validate migrations replay
+          --since "${{ steps.base.outputs.since }}"
+      - name: Check the tombstone ledger is append-only (§3.3)
+        run: >-
+          uv --directory tools/validate run langatlas-validate ledger-check
+          --since "${{ steps.base.outputs.since }}"
       - name: Shape-check the committed golden sets
         # Shape only: no database, no provider. The *scored* harness is deliberately not
         # a CI gate (§8.6) — a golden run is a measurement, not a merge condition.

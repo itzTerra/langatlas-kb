@@ -3131,7 +3131,7 @@ interpreter produces from its parent tree. This task adds:
     or all-zero `--since` replays the whole history.
   - the CI step id `base` with output `since`, which Task 9 reuses.
 
-- [ ] **Step 1: Write the failing replay tests**
+- [x] **Step 1: Write the failing replay tests**
 
 Create `tools/validate/tests/test_replay.py`:
 
@@ -3216,12 +3216,12 @@ def test_the_cli_reports_and_exits_on_the_replay(store_git, capsys, tmp_path):
     assert "ok 0001-remove-alpha" in capsys.readouterr().out
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_replay.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_validate.replay'`.
 
-- [ ] **Step 3: Implement `replay.py`**
+- [x] **Step 3: Implement `replay.py`**
 
 Create `tools/validate/src/langatlas_validate/replay.py`:
 
@@ -3306,7 +3306,7 @@ def replay_since(repo_root: Path, since: str | None) -> list[ReplayResult]:
             for commit, rel in added_manifests(repo_root, base)]
 ```
 
-- [ ] **Step 4: Add the `migrations` CLI group**
+- [x] **Step 4: Add the `migrations` CLI group**
 
 In `tools/validate/src/langatlas_validate/cli.py`, add above `main`:
 
@@ -3373,12 +3373,12 @@ Dispatch it:
         return cmd_migrations_replay(root, args.since)
 ```
 
-- [ ] **Step 5: Run the replay tests**
+- [x] **Step 5: Run the replay tests**
 
 Run: `uv --directory tools/validate run pytest tests/test_replay.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 6: Wire replay and the append-only check into CI**
+- [x] **Step 6: Wire replay and the append-only check into CI**
 
 In `.github/workflows/ci.yml`'s `validate` job, replace the first step
 (`- uses: actions/checkout@v4`) with:
@@ -3413,7 +3413,7 @@ Add these two steps directly after `- name: Run the store-validating gate`:
           --since "${{ steps.base.outputs.since }}"
 ```
 
-- [ ] **Step 7: Run the new commands against the real repository**
+- [x] **Step 7: Run the new commands against the real repository**
 
 Run:
 ```bash
@@ -3424,7 +3424,7 @@ uv --directory tools/validate run pytest -q
 Expected: `no migration manifests added since 'HEAD~1'`, exit 0; the ledger check exits 0;
 the suite passes.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/validate/src/langatlas_validate/{replay,cli}.py tools/validate/tests/test_replay.py \

@@ -1,4 +1,5 @@
 import argparse
+import subprocess
 from pathlib import Path
 from typing import Iterator
 from ruamel.yaml import YAML
@@ -199,6 +200,48 @@ def cmd_ledger_check(root: Path, since: str | None) -> int:
     return 1 if errors else 0
 
 
+def cmd_migrations_plan(root: Path, manifest_path: Path) -> int:
+    """A dry run: what `consolidate migrate` would commit, and whether the result validates."""
+    from langatlas_validate.migrate import (
+        MigrationError, check_plan, load_manifest, plan_migration,
+    )
+
+    try:
+        plan = plan_migration(root, load_manifest(manifest_path))
+    except MigrationError as exc:
+        print(f"REFUSED {exc}")
+        return 1
+    for rel, text in sorted(plan.changes.items()):
+        print(f"{'delete' if text is None else 'write '} {rel}")
+    for entry in plan.tombstones:
+        print(f"tombstone {entry['anchor']} ({entry['action']}) ->"
+              f" {', '.join(entry['superseded_by']) or 'retired'}")
+    for rel in plan.gated:
+        print(f"gate {rel}")
+    errors = check_plan(root, plan)
+    for error in errors:
+        print(f"STORE {error}")
+    return 1 if errors else 0
+
+
+def cmd_migrations_replay(root: Path, since: str | None) -> int:
+    from langatlas_validate.replay import replay_since
+
+    try:
+        results = replay_since(root, since)
+    except (subprocess.CalledProcessError, OSError) as exc:
+        print(f"REFUSED cannot read the git history under {root}: {exc}")
+        return 1
+    if not results:
+        print(f"no migration manifests added since {since!r}")
+    for result in results:
+        if not result.errors:
+            print(f"ok {result.migration_id} {result.commit[:10]}")
+        for error in result.errors:
+            print(f"FAIL {result.migration_id} {result.commit[:10]}: {error}")
+    return 1 if any(result.errors for result in results) else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="langatlas-validate")
     parser.add_argument("--version", action="version", version=__version__)
@@ -231,6 +274,16 @@ def main(argv: list[str] | None = None) -> int:
     p_ledger.add_argument("--since", default=None)
     p_ledger.add_argument("--repo-root", type=Path, default=None)
 
+    p_migrations = sub.add_parser("migrations", help="D38 migration manifests")
+    migrations = p_migrations.add_subparsers(dest="migrations_command", required=True)
+    p_mplan = migrations.add_parser("plan", help="dry-run one manifest against this tree")
+    p_mplan.add_argument("manifest", type=Path)
+    p_mplan.add_argument("--repo-root", type=Path, default=None)
+    p_replay = migrations.add_parser("replay",
+                                     help="replay every manifest added since --since (§5.2)")
+    p_replay.add_argument("--since", default=None)
+    p_replay.add_argument("--repo-root", type=Path, default=None)
+
     args = parser.parse_args(argv)
     if args.command == "precommit":
         return cmd_precommit(args.files, args.kind)
@@ -262,6 +315,11 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_resolve(args.repo_root or _REPO_ROOT, args.fact_id)
     if args.command == "ledger-check":
         return cmd_ledger_check(args.repo_root or _REPO_ROOT, args.since)
+    if args.command == "migrations":
+        root = args.repo_root or _REPO_ROOT
+        if args.migrations_command == "plan":
+            return cmd_migrations_plan(root, args.manifest)
+        return cmd_migrations_replay(root, args.since)
     parser.print_help()
     return 0
 
