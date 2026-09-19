@@ -156,3 +156,9 @@ class MigrationRecordNotUpdated(ResearchError):
 class DedupRefused(ResearchError):
     """A dedup ruling that cannot be recorded: no reason, a node outside the pair, or an alias
     the feature does not carry."""
+
+
+class SlugRefused(ResearchError):
+    """A slug rename that would break §3.5's grammar or a published URL: the new slug is taken
+    by a live node, or already redirects somewhere else. Also a store file the polish cannot
+    read."""

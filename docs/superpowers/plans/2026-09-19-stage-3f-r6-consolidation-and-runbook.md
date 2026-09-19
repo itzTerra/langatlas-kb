@@ -5371,7 +5371,7 @@ changeset.
   - error `SlugRefused`;
   - CLI `consolidate slugs N` and `consolidate rename-slug N NODE NEW_SLUG`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/research/tests/test_consolidate_slugs.py`:
 
@@ -5469,12 +5469,12 @@ def test_rename_slug_lands_record_and_redirect_together(store_repo):
     assert set(files.split()) == {"features/rust-ownership.yaml", "ontology/redirects.yaml"}
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_slugs.py -m '' -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate.slugs'`.
 
-- [ ] **Step 3: Implement slug polish**
+- [x] **Step 3: Implement slug polish**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -5578,7 +5578,7 @@ def rename_slug(repo_root: Path, node_id: str, new_slug: str) -> dict[str, str]:
             REDIRECTS_REL: render_redirects(redirects)}
 ```
 
-- [ ] **Step 4: Add `slugs` and `rename-slug` to the CLI**
+- [x] **Step 4: Add `slugs` and `rename-slug` to the CLI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -5622,7 +5622,7 @@ def _rename_slug(args, repo: Path) -> int:
     return 0 if isinstance(outcome, Landed) else 1
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run:
 ```bash
@@ -5631,7 +5631,7 @@ uv --directory tools/research run pytest -m '' -q
 ```
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/consolidate/{slugs,cli}.py \

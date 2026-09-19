@@ -48,6 +48,12 @@ def add_parser(sub) -> None:
     how.add_argument("--drop-alias", metavar="ALIAS")
     p_rule.add_argument("--node", help="with --drop-alias: the feature losing the alias")
     p_rule.add_argument("--reason", required=True)
+    group.add_parser("slugs", help="list slug-polish candidates").add_argument(
+        "number", type=int)
+    p_rename = group.add_parser("rename-slug", help="rename a slug; the old one redirects")
+    p_rename.add_argument("number", type=int)
+    p_rename.add_argument("node")
+    p_rename.add_argument("new_slug")
 
 
 def _now() -> str:
@@ -235,8 +241,39 @@ def _rule(args, repo: Path) -> int:
     return 0
 
 
+def _slugs(args, repo: Path) -> int:
+    from langatlas_research.consolidate.slugs import slug_candidates
+    from langatlas_research.cycle import load_cycle, require_sign_off
+
+    require_sign_off(load_cycle(args.number, repo_root=repo), repo_root=repo)
+    found = slug_candidates(repo)
+    for candidate in found:
+        print(f"{candidate['node']:40} {candidate['slug']:40} -> {candidate['suggested']:40}"
+              f" {', '.join(candidate['signals'])}")
+    print(f"{len(found)} candidate(s)")
+    return 0
+
+
+def _rename_slug(args, repo: Path) -> int:
+    from langatlas_commit.land import Landed, land_changeset
+
+    from langatlas_research.consolidate.slugs import rename_slug
+    from langatlas_research.cycle import load_cycle, require_sign_off
+    from langatlas_research.land import store_validator
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    require_sign_off(cycle, repo_root=repo)
+    changes = rename_slug(repo, args.node, args.new_slug)
+    outcome = land_changeset(repo, changes, message=f"rename slug of {args.node} to"
+                             f" {args.new_slug}", chat_run_id=f"r6-developer-{cycle.slug}",
+                             validator=store_validator)
+    print(f"{args.node}: slug {args.new_slug}: {outcome!r}")
+    return 0 if isinstance(outcome, Landed) else 1
+
+
 _HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migration,
-             "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule}
+             "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule,
+             "slugs": _slugs, "rename-slug": _rename_slug}
 
 
 def dispatch(args, root: Path | None) -> int:
