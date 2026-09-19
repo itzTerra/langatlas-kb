@@ -21,6 +21,7 @@ from langatlas_pipeline.transcripts.writer import utc_now
 from langatlas_research.config import ResearchConfig
 from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
+from langatlas_research.draft.findings import FindingOut
 from langatlas_research.draft.plan import build_plan_record
 from langatlas_research.errors import DraftOutputInvalid
 from langatlas_research.survey.chunks import ChunkLookup
@@ -63,13 +64,6 @@ class DimensionOut(BaseModel):
     applies_to: list[str] = Field(default_factory=lambda: ["general-purpose"])
     note: str = ""
     contested_note: str | None = None
-
-
-class FindingOut(BaseModel):
-    kind: Literal["rule-candidate", "cross-theme-edge", "unmappable-candidate",
-                  "missing-locator-backend"]
-    detail: str
-    keys: list[str] = Field(default_factory=list)
 
 
 class OntologistOut(BaseModel):
@@ -236,7 +230,7 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
         elif node.excluded_rationale:
             entry["excluded_rationale"] = node.excluded_rationale
         plan["nodes"].append(entry)
-    plan["findings"] = [finding.model_dump() for finding in out.findings]
+    plan["findings"] = [finding.as_entry() for finding in out.findings]
 
     for warning in warnings:
         ctx.writer.append(role="system", content=warning, flags=["r4:draft-warning"])

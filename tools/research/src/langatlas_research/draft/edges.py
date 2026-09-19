@@ -18,6 +18,7 @@ from langatlas_research.config import ResearchConfig
 from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.contested import mark_contested
 from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
+from langatlas_research.draft.findings import FindingOut
 from langatlas_research.draft.minting import committed_qualities
 from langatlas_research.errors import DraftOutputInvalid
 from langatlas_research.survey.chunks import ChunkLookup
@@ -26,6 +27,8 @@ from langatlas_research.themes import load_themes
 from langatlas_validate.ids import canonical_endpoints, is_valid_slug
 
 EDGE_DRAFTER_PROMPT_ID = "r4-edge-drafter"
+
+EdgeFindingOut = FindingOut
 
 EDGE_TYPES = {
     "requires": "`from` cannot exist in a language without `to`",
@@ -71,13 +74,6 @@ class QualityOut(BaseModel):
     label: str
     summary: str
     note: str = ""
-
-
-class EdgeFindingOut(BaseModel):
-    kind: Literal["rule-candidate", "cross-theme-edge", "unmappable-candidate",
-                  "missing-locator-backend"]
-    detail: str
-    keys: list[str] = Field(default_factory=list)
 
 
 class EdgeDrafterOut(BaseModel):
@@ -239,7 +235,7 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
     updated["quality_edges"] = [*(plan.get("quality_edges") or []), *new_quality_edges]
 
     updated["findings"] = [*(plan.get("findings") or []),
-                           *(finding.model_dump() for finding in out.findings)]
+                           *(finding.as_entry() for finding in out.findings)]
 
     for warning in warnings:
         ctx.writer.append(role="system", content=warning, flags=["r4:draft-warning"])

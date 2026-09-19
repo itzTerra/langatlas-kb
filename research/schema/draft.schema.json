@@ -202,10 +202,18 @@
         "required": ["kind", "detail"],
         "properties": {
           "kind": { "enum": ["rule-candidate", "cross-theme-edge", "unmappable-candidate",
-                             "missing-locator-backend"] },
+                             "missing-locator-backend", "structure-friction"] },
           "detail": { "type": "string", "minLength": 1 },
-          "keys": { "type": "array", "items": { "type": "string" } }
-        }
+          "keys": { "type": "array", "items": { "type": "string" } },
+          "area": { "enum": ["ontology", "adjacent"] },
+          "element": { "enum": ["layers", "concept-feature-split", "realizes", "edge-types",
+                                "dimension-model", "qualities", "record-kinds", "other"] }
+        },
+        "allOf": [
+          { "if": { "properties": { "kind": { "const": "structure-friction" } },
+                    "required": ["kind"] },
+            "then": { "required": ["area", "element"] } }
+        ]
       }
     }
   }

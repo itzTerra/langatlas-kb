@@ -165,7 +165,7 @@ def run_cross_theme(ctx, cycle: Cycle, plan: dict, record: dict, *, repo_root: P
 
     updated, warnings = append_edges(ctx, plan, out.edges, lookup=lookup, pass_="r6")
     updated["findings"] = [*(plan.get("findings") or []),
-                           *(finding.model_dump() for finding in out.findings)]
+                           *(finding.as_entry() for finding in out.findings)]
     for warning in warnings:
         ctx.writer.append(role="system", content=warning, flags=["r6:draft-warning"])
     new_keys = [entry["key"] for entry in updated["edges"][len(plan.get("edges") or []):]]
