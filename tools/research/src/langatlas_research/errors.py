@@ -124,6 +124,18 @@ class RealityOutputInvalid(ResearchError):
     (D18), and the developer reads it and re-runs the language."""
 
 
+class ConsolidationMissing(ResearchError):
+    """An R6 step ran before `consolidate open` created the cycle's consolidation record."""
+
+
+class ConsolidationInvalid(ResearchError):
+    """A consolidation record failed `research/schema/consolidation.schema.json`."""
+
+
+class R6NotReady(ResearchError):
+    """R6 was started on a cycle that has not finished R5."""
+
+
 class R5Incomplete(ResearchError):
     """`reality finalize` found open work: an unclassified language, or a cell that never
     reached the gate."""

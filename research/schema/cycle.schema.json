@@ -23,6 +23,15 @@
         "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" }
       }
     },
+    "settled": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["by", "date"],
+      "properties": {
+        "by": { "type": "string" },
+        "date": { "type": "string" }
+      }
+    },
     "nodes_minted": { "type": "array", "items": { "type": "string" } },
     "artifacts": {
       "type": "object",
@@ -31,6 +40,7 @@
         "survey": { "type": "string" },
         "draft": { "type": "string" },
         "reality_check": { "type": "string" },
+        "consolidation": { "type": "string" },
         "debates": { "type": "array", "items": { "type": "string" } }
       }
     }

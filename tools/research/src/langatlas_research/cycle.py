@@ -37,6 +37,7 @@ class Cycle:
     nodes_minted: tuple[str, ...] = ()
     artifacts: dict | None = None
     signed_off: dict | None = None
+    settled: dict | None = None
 
     @property
     def slug(self) -> str:
@@ -50,6 +51,8 @@ class Cycle:
                 "artifacts": dict(self.artifacts or {})}
         if self.signed_off is not None:
             data["signed_off"] = dict(self.signed_off)
+        if self.settled is not None:
+            data["settled"] = dict(self.settled)
         return data
 
 
@@ -102,7 +105,8 @@ def load_cycle(number: int, *, repo_root: Path | None = None) -> Cycle:
                  languages=tuple(data["languages"]),
                  nodes_minted=tuple(data["nodes_minted"]),
                  artifacts=dict(data.get("artifacts") or {}),
-                 signed_off=data.get("signed_off"))
+                 signed_off=data.get("signed_off"),
+                 settled=data.get("settled"))
 
 
 def sign_off(cycle: Cycle, *, by: str, date: str, repo_root: Path | None = None) -> Cycle:
@@ -152,3 +156,33 @@ def record_minted(cycle: Cycle, node_ids, *, repo_root: Path | None = None) -> C
     updated = replace(cycle, nodes_minted=merged)
     save_cycle(updated, repo_root=repo_root)
     return updated
+
+
+def settle_cycle(cycle: Cycle, *, by: str, date: str) -> Cycle:
+    """§7.4's settled state: once a theme passes R5 and its R6 consolidation closes, a
+    restructure of its records needs a migration manifest. Settling is the developer's act —
+    like sign-off, it names who and when. Pure: `consolidate settle` saves and lands it.
+
+    @raises InvalidTransition: the cycle is not at `r5-done`."""
+    if cycle.status != "r5-done":
+        raise InvalidTransition(f"cycle {cycle.slug} is at {cycle.status!r}; only an r5-done"
+                                f" cycle can be settled")
+    return replace(advance(cycle, "settled"), settled={"by": by, "date": date})
+
+
+def settled_themes_by_record(cycle_dicts) -> dict[str, str]:
+    """@param cycle_dicts: parsed cycle records (as `load_cycle` reads them, or as git holds
+        them at some ref — the settled-theme guard reads history).
+    @returns: record id -> theme, for every id a settled cycle minted. Theme membership lives
+        on the cycle (3A): node schemas have no theme field."""
+    membership: dict[str, str] = {}
+    for data in cycle_dicts:
+        if isinstance(data, dict) and data.get("status") == "settled":
+            for record_id in data.get("nodes_minted") or []:
+                membership.setdefault(record_id, data["theme"])
+    return membership
+
+
+def settled_record_ids(repo_root: Path | None = None) -> dict[str, str]:
+    return settled_themes_by_record(
+        _yaml.load(path.read_text()) for path in sorted(cycles_dir(repo_root).glob("*.yaml")))

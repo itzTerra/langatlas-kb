@@ -3466,7 +3466,7 @@ This task gives R6 its spine, as R4 has the carve plan and R5 the reality check:
   - `consolidate/cli.py` with `add_parser(sub)`, `dispatch(args, root)` and a `_HANDLERS` dict
     that later tasks extend.
 
-- [ ] **Step 1: Write the consolidation schema and extend the cycle schema**
+- [x] **Step 1: Write the consolidation schema and extend the cycle schema**
 
 Create `research/schema/consolidation.schema.json`:
 
@@ -3550,7 +3550,7 @@ Add one line to the `artifacts` properties:
         "consolidation": { "type": "string" },
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tools/research/tests/test_consolidate_record.py`:
 
@@ -3648,12 +3648,12 @@ def test_r6_opens_only_on_an_r5_done_cycle_and_is_idempotent(research_repo, sign
     assert consolidation_path("01-typing", research_repo).exists()
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_record.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate'`.
 
-- [ ] **Step 4: Add the errors, the path and the kind**
+- [x] **Step 4: Add the errors, the path and the kind**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -3691,7 +3691,7 @@ def consolidations_dir(repo_root: Path | None = None) -> Path:
 In `tools/research/src/langatlas_research/schema.py`, extend `DIR_KINDS` with
 `"consolidations": "consolidation"`.
 
-- [ ] **Step 5: Add the settled state to the cycle**
+- [x] **Step 5: Add the settled state to the cycle**
 
 In `tools/research/src/langatlas_research/cycle.py`:
 1. Add a field to `Cycle`, after `signed_off`: `settled: dict | None = None`.
@@ -3736,7 +3736,7 @@ def settled_record_ids(repo_root: Path | None = None) -> dict[str, str]:
         _yaml.load(path.read_text()) for path in sorted(cycles_dir(repo_root).glob("*.yaml")))
 ```
 
-- [ ] **Step 6: Implement the record and `open_r6`**
+- [x] **Step 6: Implement the record and `open_r6`**
 
 Create `tools/research/src/langatlas_research/consolidate/__init__.py` as an empty file.
 
@@ -3862,7 +3862,7 @@ def open_r6(cycle_number: int, *, repo_root: Path, opened_at: str) -> tuple[Cycl
     return cycle, record
 ```
 
-- [ ] **Step 7: Add the `consolidate` CLI group**
+- [x] **Step 7: Add the `consolidate` CLI group**
 
 Create `tools/research/src/langatlas_research/consolidate/cli.py`:
 
@@ -3944,7 +3944,7 @@ In `_dispatch`, directly after the `reality` branch, add:
         return dispatch_consolidate(args, root)
 ```
 
-- [ ] **Step 8: Run the tests, then create the directory README**
+- [x] **Step 8: Run the tests, then create the directory README**
 
 Run:
 ```bash
@@ -3958,12 +3958,12 @@ Expected:
 - `validate` reports `0 error(s)`. Cycle 1's committed record gains no field, so it stays
   valid.
 
-- [ ] **Step 9: Run the research suite**
+- [x] **Step 9: Run the research suite**
 
 Run: `uv --directory tools/research run pytest -m '' -q`
 Expected: PASS.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add research/schema/{consolidation,cycle}.schema.json research/consolidations/README.md \

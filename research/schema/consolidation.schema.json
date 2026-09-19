@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://langatlas.dev/research-schema/consolidation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["cycle", "theme", "theme_digest", "opened_at", "cross_theme", "dedup",
+               "migrations"],
+  "properties": {
+    "cycle": { "type": "integer", "minimum": 1 },
+    "theme": { "type": "string" },
+    "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
+    "opened_at": { "type": "string" },
+    "cross_theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["run", "skipped", "edges"],
+      "properties": {
+        "run": { "type": ["string", "null"] },
+        "skipped": { "type": ["string", "null"] },
+        "edges": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "dedup": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "nodes", "signals", "disposition", "reason"],
+        "properties": {
+          "key": { "type": "string", "pattern": "^d-[0-9a-f]{12}$" },
+          "nodes": { "type": "array", "minItems": 2, "maxItems": 2,
+                     "items": { "type": "string" } },
+          "signals": {
+            "type": "array", "minItems": 1,
+            "items": { "enum": ["same-name", "name-is-alias", "shared-alias",
+                                "id-token-overlap"] }
+          },
+          "disposition": { "enum": ["distinct", "merge", "drop-alias"] },
+          "reason": { "type": "string", "minLength": 1 },
+          "migration": { "type": "string" },
+          "node": { "type": "string" },
+          "alias": { "type": "string" }
+        },
+        "allOf": [
+          { "if": { "properties": { "disposition": { "const": "merge" } } },
+            "then": { "required": ["migration", "node"] } },
+          { "if": { "properties": { "disposition": { "const": "drop-alias" } } },
+            "then": { "required": ["node", "alias"] } }
+        ]
+      }
+    },
+    "migrations": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[0-9]{4}-[a-z0-9]+(-[a-z0-9]+)*$" }
+    }
+  }
+}

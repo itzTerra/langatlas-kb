@@ -12,6 +12,12 @@ from pathlib import Path
 REPO_ROOT = Path(os.environ.get("LANGATLAS_ROOT", Path(__file__).resolve().parents[4]))
 
 _READMES = {
+    "consolidations": "R6 consolidation records (`<cycle>-<theme>.yaml`): whether the cross-theme\n"
+                      "edge pass ran (its edges live in the cycle's carve plan, marked\n"
+                      "`pass: r6`), the developer's rulings on dedup/alias candidates, and the\n"
+                      "migrations this consolidation landed. Written by `langatlas-research\n"
+                      "consolidate` (Stage 3F); read by later cycles' dedup audits (a `distinct`\n"
+                      "ruling is never re-raised) and by `coverage report.py dossier`.\n",
     "cycles": "One file per theme cycle (`<NN>-<theme>.yaml`): the developer's sign-off, the\n"
               "cycle's rotating R5 language sample, its status, and the node ids it minted.\n"
               "Written by `langatlas-research cycle`; read by every R3-R6 runner and by\n"
@@ -66,6 +72,10 @@ def debates_dir(repo_root: Path | None = None) -> Path:
 
 def reality_checks_dir(repo_root: Path | None = None) -> Path:
     return research_root(repo_root) / "reality-checks"
+
+
+def consolidations_dir(repo_root: Path | None = None) -> Path:
+    return research_root(repo_root) / "consolidations"
 
 
 def research_schema_dir(repo_root: Path | None = None) -> Path:

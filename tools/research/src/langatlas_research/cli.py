@@ -111,6 +111,10 @@ def main(argv: list[str] | None = None) -> int:
 
     add_reality_parser(sub)
 
+    from langatlas_research.consolidate.cli import add_parser as add_consolidate_parser
+
+    add_consolidate_parser(sub)
+
     args = parser.parse_args(argv)
     root = args.repo_root
     try:
@@ -156,6 +160,11 @@ def _dispatch(args, root: Path | None) -> int:
         from langatlas_research.reality.cli import dispatch as dispatch_reality
 
         return dispatch_reality(args, root)
+
+    if args.command == "consolidate":
+        from langatlas_research.consolidate.cli import dispatch as dispatch_consolidate
+
+        return dispatch_consolidate(args, root)
 
     if args.cycle_command == "new":
         cycle = new_cycle(args.number, args.theme, repo_root=root,
