@@ -16,6 +16,7 @@ from langatlas_research.cycle import Cycle, advance, load_cycle, require_sign_of
 from langatlas_research.draft.contested import open_carves
 from langatlas_research.draft.contradictions import contradictions_pending
 from langatlas_research.draft.plan import entries, load_plan, render_plan
+from langatlas_research.draft.structure import is_blocked
 from langatlas_research.errors import R4Incomplete
 from langatlas_research.land import store_validator
 from langatlas_research.schema import validate_research_record
@@ -41,6 +42,11 @@ def r4_blockers(cycle: Cycle, plan: dict, *, repo_root: Path | None) -> list[str
 
     for name, entry in entries(plan):
         if entry["status"] in _TERMINAL:
+            continue
+        if is_blocked(entry):
+            blockers.append(f"{entry['key']}: blocked by the seed structure"
+                            f" ({entry['block_reason']}) — resolve at the structure review,"
+                            f" or `draft drop` it")
             continue
         if entry.get("debate_id") and entry["status"] == "proposed":
             # The only way this combination arises (see `draft.contested.waive`'s

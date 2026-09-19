@@ -19,6 +19,7 @@ from ruamel.yaml import YAML
 from langatlas_research.draft.contradictions import contradictions_mint, contradictions_pending
 from langatlas_research.draft.evidence import as_drafts
 from langatlas_research.draft.plan import ENTRY_LISTS, entries, set_entry
+from langatlas_research.draft.structure import is_blocked
 from langatlas_research.drafts import (
     Assessment, ConceptDraft, EdgeDraft, FeatureDraft, Proposer, QualityEdgeDraft,
 )
@@ -124,6 +125,8 @@ def entry_draft(entry: dict, *, plan: dict, ctx_run_id: str, prompt_version: str
 def _mintable(name: str, entry: dict) -> bool:
     """@raises UndebatedCarve / NotAdmissible: for an entry that must not be minted at all —
     as opposed to one that is simply not ready yet, which returns False."""
+    if is_blocked(entry):
+        return False
     if entry["status"] in ("dropped", "minted"):
         return False
     if entry.get("contested") and not entry.get("debate_id") and not entry.get("waiver"):

@@ -22,6 +22,7 @@ from langatlas_ingest.verify.pipeline import VerifyDeps, verify_pair
 from langatlas_research.config import ResearchConfig
 from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.plan import entries, set_entry
+from langatlas_research.draft.structure import is_blocked
 from langatlas_research.mint import MintedRecord, render_draft
 from langatlas_validate.compile import derive_facts
 
@@ -116,6 +117,15 @@ def verify_entry(ctx, conn, minted: MintedRecord, *, key: str, kind: str,
                       run_id=getattr(ctx, "run_id", None), per_fact=tuple(per_fact))
 
 
+def _ready(entry: dict) -> bool:
+    """A blocked carve waits for the structure review (D70); one still waiting on a debate is
+    simply not ready, and stamping a verdict on it would hide that."""
+    if is_blocked(entry):
+        return False
+    return entry["status"] in ("debated", "waived") or (
+        entry["status"] == "proposed" and not entry.get("contested"))
+
+
 def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,
                 config: ResearchConfig, lookup=None, deps: VerifyDeps | None = None,
                 queue=None, verifier=verify_pair) -> tuple[dict, list[GateResult]]:
@@ -138,9 +148,7 @@ def verify_plan(ctx, conn, plan: dict, *, cycle: Cycle, repo_root: Path | None,
     for name, entry in entries(plan):
         if name not in GATED_LISTS:
             continue
-        ready = entry["status"] in ("debated", "waived") or (
-            entry["status"] == "proposed" and not entry.get("contested"))
-        if not ready:
+        if not _ready(entry):
             continue
         minted = render_draft(entry_draft(entry, plan=plan, ctx_run_id=ctx.run_id,
                                           prompt_version=""))

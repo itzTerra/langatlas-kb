@@ -45,3 +45,11 @@ def test_draft_status_summarizes_the_plan(research_repo, signed_cycle, capsys):
     assert main(["--repo-root", str(research_repo), "draft", "status", "1"]) == 0
     out = capsys.readouterr().out
     assert "proposed" in out and "minted" in out
+
+
+def test_draft_drop_records_the_reason(research_repo, signed_cycle, capsys):
+    _plan(signed_cycle, research_repo, [_node()])
+    assert main(["--repo-root", str(research_repo), "draft", "drop", "1", "type-system",
+                 "--reason", "no slot in the revised structure"]) == 0
+    entry = load_plan(signed_cycle.slug, repo_root=research_repo)["nodes"][0]
+    assert entry["status"] == "dropped" and "no slot" in entry["drop_reason"]

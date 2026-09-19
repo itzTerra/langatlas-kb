@@ -10,6 +10,7 @@ shape 3B gives an unclosable sourcing gap. An agent never waives anything."""
 from pathlib import Path
 
 from langatlas_research.draft.plan import ENTRY_LISTS, entries, find_entry, set_entry
+from langatlas_research.draft.structure import is_blocked
 
 TRIGGERS = ("merged-candidates", "split-candidate", "new-dimension", "new-quality",
             "single-source", "id-collision", "ontologist-flagged")
@@ -60,6 +61,8 @@ def contested_triggers(plan: dict, *, repo_root: Path | None = None,
         key = entry["key"]
         if entry.get("status") in _TERMINAL:
             continue
+        if is_blocked(entry):
+            continue
         if "ontologist-flagged" in (entry.get("contested") or []):
             flag(key, "ontologist-flagged")
         if len(entry.get("from_candidates") or []) > 1:
@@ -104,7 +107,8 @@ def open_carves(plan: dict) -> list[str]:
     open: git already holds it, so there is nothing left to debate."""
     return [entry["key"] for _name, entry in entries(plan)
             if entry.get("contested") and entry.get("debate_id") is None
-            and entry.get("status") not in ("waived", *_TERMINAL)]
+            and entry.get("status") not in ("waived", *_TERMINAL)
+            and not is_blocked(entry)]
 
 
 def waive(plan: dict, key: str, reason: str) -> dict:
@@ -127,3 +131,17 @@ def waive(plan: dict, key: str, reason: str) -> dict:
     if entry.get("debate_id") and entry["status"] != "proposed":
         raise ValueError(f"{key} already has debate {entry['debate_id']}")
     return set_entry(plan, key, status="waived", waiver=reason)
+
+
+def drop(plan: dict, key: str, reason: str) -> dict:
+    """The developer's way out of a carve that cannot be minted — for a blocked carve, one the
+    revised structure still has no slot for. Never called by an agent.
+
+    @raises KeyError: no entry with this key.
+    @raises ValueError: the entry is already minted, or `reason` is blank."""
+    _name, entry = find_entry(plan, key)
+    if entry["status"] == "minted":
+        raise ValueError(f"{key} is minted; git already holds it")
+    if not reason.strip():
+        raise ValueError("a drop needs a reason")
+    return set_entry(plan, key, status="dropped", drop_reason=reason.strip())

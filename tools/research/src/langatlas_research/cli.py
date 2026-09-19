@@ -87,6 +87,10 @@ def main(argv: list[str] | None = None) -> int:
     p_waive.add_argument("number", type=int)
     p_waive.add_argument("key")
     p_waive.add_argument("--reason", required=True)
+    p_drop = p_draft.add_parser("drop", help="developer: drop a carve that cannot be minted")
+    p_drop.add_argument("number", type=int)
+    p_drop.add_argument("key")
+    p_drop.add_argument("--reason", required=True)
 
     p_instrument = sub.add_parser("instrument").add_subparsers(
         dest="instrument_command", required=True)
@@ -383,6 +387,18 @@ def _dispatch_draft(args, root: Path | None) -> int:
             print(f"error: {exc}", file=sys.stderr)
             return 1
         print(f"waived {args.key} ({cycle.slug}): {args.reason}")
+        return 0
+
+    if args.draft_command == "drop":
+        from langatlas_research.draft.contested import drop
+
+        plan = load_plan(cycle.slug, repo_root=repo)
+        try:
+            save_plan(drop(plan, args.key, args.reason), repo_root=repo)
+        except (KeyError, ValueError) as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+        print(f"dropped {args.key} ({cycle.slug}): {args.reason}")
         return 0
 
     if args.draft_command == "finalize":

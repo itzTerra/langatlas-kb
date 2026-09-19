@@ -710,7 +710,7 @@ Stop for review.
 
 A blocked carve is never debated (no triggers), never verified, never minted, and `finalize_r4` (the mint-mode finalize) reports it as a blocker so a plan with a stuck carve cannot reach `r4-done` silently. `draft drop` is the developer's way out of a carve the revised structure still cannot hold.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # appended to tools/research/tests/test_draft_structure.py
@@ -787,12 +787,12 @@ def test_draft_drop_records_the_reason(research_repo, signed_cycle, capsys):
     assert entry["status"] == "dropped" and "no slot" in entry["drop_reason"]
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_structure.py tests/test_draft_cli.py`
 Expected: FAIL (`ImportError: drop` / `_ready`).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `contested.py`: import `from langatlas_research.draft.structure import is_blocked`. In `contested_triggers`, right after the terminal-status skip add `if is_blocked(entry): continue`. In `open_carves` add `and not is_blocked(entry)` to the condition. Append:
 
@@ -860,12 +860,12 @@ and in `_dispatch_draft` (offline, beside `waive`):
         return 0
 ```
 
-- [ ] **Step 4: Run the package tests**
+- [x] **Step 4: Run the package tests**
 
 Run: `uv --directory tools/research run pytest -q`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research
