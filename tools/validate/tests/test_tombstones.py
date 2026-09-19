@@ -116,6 +116,20 @@ def test_ledger_check_fails_on_a_removed_line_and_skips_without_a_base(store_git
     assert main(["ledger-check", "--since", "0" * 40, "--repo-root", str(store.root)]) == 0
 
 
+def test_a_truncated_ledger_is_an_error_string_not_a_traceback(store_git, capsys):
+    from langatlas_validate.store import validate_store
+
+    store, repo = store_git
+    store.feature("alpha")
+    base = repo.commit({TOMBSTONES_REL: "tombstones: []\n"})
+    repo.commit({TOMBSTONES_REL: "tombstones:\n  - fact_id: [f-00000\n"})
+
+    assert any(e.startswith("tombstones.yaml:") and "unparseable" in e
+               for e in validate_store(store.root))
+    assert main(["ledger-check", "--since", base, "--repo-root", str(store.root)]) == 1
+    assert "tombstones.yaml" in capsys.readouterr().out
+
+
 def test_resolve_prints_the_chain(mini_store, capsys):
     from langatlas_validate.compile import derive_facts
     from langatlas_validate.store import iter_store_records

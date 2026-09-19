@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from ruamel.yaml import YAML
+from ruamel.yaml.error import YAMLError
 
 from langatlas_validate.schema import validate_record
 
@@ -52,10 +53,20 @@ class Resolution:
     chain: tuple[dict, ...]
 
 
+class TombstoneParseError(YAMLError):
+    """`tombstones.yaml` is not parseable YAML (a truncated or hand-mangled ledger)."""
+
+
 def parse_tombstones(text: str | None) -> list[dict]:
+    """@raises TombstoneParseError: the text is not valid YAML."""
     if not text:
         return []
-    return list((_safe.load(text) or {}).get("tombstones") or [])
+    try:
+        data = _safe.load(text)
+    except YAMLError as exc:
+        raise TombstoneParseError(
+            f"{TOMBSTONES_REL}: unparseable YAML: {str(exc).splitlines()[0]}") from exc
+    return list((data or {}).get("tombstones") or [])
 
 
 def load_tombstones(repo_root: Path) -> list[dict]:

@@ -196,12 +196,15 @@ def validate_store(repo_root: Path) -> list[str]:
 
     from langatlas_validate.redirects import REDIRECTS_REL, load_redirects, validate_redirects
     from langatlas_validate.tombstones import (
-        TOMBSTONES_REL, load_tombstones, validate_tombstones,
+        TOMBSTONES_REL, TombstoneParseError, load_tombstones, validate_tombstones,
     )
 
     live = {fact["fact_id"] for fact in facts}
-    errors.extend(f"{TOMBSTONES_REL}: {e}"
-                  for e in validate_tombstones(load_tombstones(repo_root), live=live))
+    try:
+        errors.extend(f"{TOMBSTONES_REL}: {e}"
+                      for e in validate_tombstones(load_tombstones(repo_root), live=live))
+    except TombstoneParseError as exc:
+        errors.append(str(exc))
     nodes = {data["id"]: data.get("slug") for _p, kind, _t, data in store_records
              if kind in ("feature", "concept")}
     errors.extend(f"{REDIRECTS_REL}: {e}"

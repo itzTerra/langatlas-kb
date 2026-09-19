@@ -3,7 +3,7 @@ from ruamel.yaml import YAML
 
 from langatlas_validate.compile import derive_facts
 from langatlas_validate.migrate import (
-    MigrationError, apply_plan, check_plan, iter_manifests, manifest_rel, match_anchor,
+    MigrationError, apply_plan, check_plan, is_manifest_path, iter_manifests, manifest_rel, match_anchor,
     plan_migration, render_manifest, validate_manifests,
 )
 from langatlas_validate.normalize import normalize_record
@@ -275,3 +275,16 @@ def test_a_quality_edge_remaps_onto_the_surviving_feature(graph):
         after["edge.affects-quality.gamma.learnability#assessments[a-1]"]]
     assert "edges/gamma/affects-quality--learnability.yaml" in plan.gated
     assert validate_store(graph.root) == []
+
+
+@pytest.mark.parametrize("rel, expected", [
+    ("ontology/migrations/0001-x/manifest.yaml", True),
+    ("ontology/migrations/0012-split-a-b/manifest.yaml", True),
+    ("ontology/migrations/0001-x/sub/manifest.yaml", False),
+    ("ontology/migrations/manifest.yaml", False),
+    ("ontology/migrations/notanid/manifest.yaml", False),
+    ("ontology/migrations/0001-x/other.yaml", False),
+    ("other/migrations/0001-x/manifest.yaml", False),
+])
+def test_is_manifest_path_is_exactly_the_replayed_shape(rel, expected):
+    assert is_manifest_path(rel) is expected

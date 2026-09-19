@@ -113,6 +113,18 @@ def test_a_manifest_commit_is_left_to_replay(settled_repo):
     assert check_settled(repo, base) == []
 
 
+@pytest.mark.parametrize("path", ["ontology/migrations/0001-x/sub/manifest.yaml",
+                                  "ontology/migrations/manifest.yaml",
+                                  "ontology/migrations/notanid/manifest.yaml"])
+def test_a_manifest_shaped_file_outside_the_replayed_path_is_not_exempt(settled_repo, path):
+    repo, base = settled_repo
+    _commit(repo, {"edges/alpha/requires--beta.yaml": None, path: "migration_id: 0001-x\n"})
+
+    [error] = check_settled(repo, base)
+
+    assert "removes a record of settled theme 'typing'" in error
+
+
 def test_an_unsettled_theme_restructures_freely(store_repo):
     base = _commit(store_repo, {"features/alpha.yaml": _feature("alpha"),
                                 "features/beta.yaml": _feature("beta"),

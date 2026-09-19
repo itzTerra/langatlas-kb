@@ -33,6 +33,7 @@ jobs:
           uv --directory tools/orchestrator sync --extra dev
           uv --directory tools/questionnaire sync --extra dev
           uv --directory tools/coverage sync --extra dev
+          uv --directory tools/commit sync --extra dev
       - name: Test the finding-aids package
         # No database and no network: every adapter takes an injected client, and the
         # `live` marker is deselected by default.
@@ -46,6 +47,9 @@ jobs:
       - name: Test the coverage reports
         # No database, no provider; the `git`-marked exit test builds throwaway local repos.
         run: uv --directory tools/coverage run pytest -m ''
+      - name: Test the commit protocol package
+        # No database, no provider, no network: the `land` tests build throwaway local repos.
+        run: uv --directory tools/commit run pytest
       - name: Schema-check the committed questionnaire specs
         run: uv --directory tools/questionnaire run langatlas-questionnaire validate
       - name: Test the validate package

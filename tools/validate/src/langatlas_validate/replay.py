@@ -15,7 +15,7 @@ from langatlas_validate.gitrefs import (
     changed_paths, commits_since, extract_tree, resolve_ref, show,
 )
 from langatlas_validate.migrate import (
-    MANIFEST_NAME, MIGRATIONS_REL, MigrationError, plan_migration,
+    MigrationError, is_manifest_path, plan_migration,
 )
 
 _safe = YAML(typ="safe")
@@ -28,18 +28,12 @@ class ReplayResult:
     errors: tuple[str, ...]
 
 
-def _is_manifest(rel: str) -> bool:
-    parts = rel.split("/")
-    return (rel.startswith(f"{MIGRATIONS_REL}/") and len(parts) == 4
-            and parts[-1] == MANIFEST_NAME)
-
-
 def added_manifests(repo_root: Path, since: str | None) -> list[tuple[str, str]]:
     """@param since: a resolved sha; None walks the whole history.
     @returns `(commit, manifest path)` for every manifest a commit after `since` added."""
     return [(commit, rel) for commit in commits_since(repo_root, since)
             for status, rel in changed_paths(repo_root, commit)
-            if status == "A" and _is_manifest(rel)]
+            if status == "A" and is_manifest_path(rel)]
 
 
 def replay_commit(repo_root: Path, commit: str, manifest_rel: str) -> ReplayResult:

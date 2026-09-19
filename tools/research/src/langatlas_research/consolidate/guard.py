@@ -19,7 +19,7 @@ from langatlas_validate.compile import derive_facts
 from langatlas_validate.gitrefs import (
     changed_paths, commits_since, list_files, resolve_ref, show,
 )
-from langatlas_validate.migrate import MANIFEST_NAME, MIGRATIONS_REL
+from langatlas_validate.migrate import is_manifest_path
 from langatlas_validate.tombstones import TOMBSTONES_REL, parse_tombstones
 from langatlas_validate.version import diff_class
 
@@ -46,10 +46,6 @@ def settled_ids_at(repo_root: Path, ref: str) -> dict[str, str]:
         if rel.endswith(".yaml"):
             cycles.append(_load(show(repo_root, ref, rel), f"{ref[:10]}:{rel}"))
     return settled_themes_by_record(cycles)
-
-
-def _is_manifest(rel: str) -> bool:
-    return rel.startswith(f"{MIGRATIONS_REL}/") and rel.endswith(f"/{MANIFEST_NAME}")
 
 
 def _kind(rel: str, data: dict) -> str:
@@ -83,7 +79,7 @@ def _check_commit(repo_root: Path, commit: str) -> list[str]:
     if parent is None:
         return []
     changes = changed_paths(root, commit)
-    if any(status == "A" and _is_manifest(rel) for status, rel in changes):
+    if any(status == "A" and is_manifest_path(rel) for status, rel in changes):
         return []
     settled = settled_ids_at(root, parent)
     if not settled:

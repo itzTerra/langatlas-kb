@@ -186,15 +186,20 @@ def cmd_ledger_check(root: Path, since: str | None) -> int:
     """§3.3's append-only rule, checked against the push's or pull request's base."""
     from langatlas_validate.gitrefs import resolve_ref, show
     from langatlas_validate.tombstones import (
-        TOMBSTONES_REL, check_append_only, load_tombstones, parse_tombstones,
+        TOMBSTONES_REL, TombstoneParseError, check_append_only, load_tombstones,
+        parse_tombstones,
     )
 
     base = resolve_ref(root, since)
     if base is None:
         print(f"ledger-check: no base commit for {since!r}; nothing to compare against")
         return 0
-    errors = check_append_only(parse_tombstones(show(root, base, TOMBSTONES_REL)),
-                               load_tombstones(root), live_after=_live_fact_ids(root))
+    try:
+        errors = check_append_only(parse_tombstones(show(root, base, TOMBSTONES_REL)),
+                                   load_tombstones(root), live_after=_live_fact_ids(root))
+    except TombstoneParseError as exc:
+        print(f"TOMBSTONES {exc}")
+        return 1
     for error in errors:
         print(f"TOMBSTONES {error}")
     return 1 if errors else 0

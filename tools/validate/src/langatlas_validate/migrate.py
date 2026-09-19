@@ -82,6 +82,18 @@ def _dump(data) -> str:
     return buf.getvalue()
 
 
+def is_manifest_path(rel: str) -> bool:
+    """True only for `ontology/migrations/<migration id>/manifest.yaml` — the one shape
+    `iter_manifests`, `validate_manifests` and replay all see. A manifest anywhere else is
+    invisible to them, so nothing may treat it as one."""
+    prefix = f"{MIGRATIONS_REL}/"
+    if not rel.startswith(prefix):
+        return False
+    parts = rel[len(prefix):].split("/")
+    return (len(parts) == 2 and parts[1] == MANIFEST_NAME
+            and bool(_ID_PATTERN.match(parts[0])))
+
+
 def manifest_rel(migration_id: str) -> str:
     if not isinstance(migration_id, str) or not _ID_PATTERN.match(migration_id):
         raise MigrationError(f"migration_id {migration_id!r} does not match the manifest"
