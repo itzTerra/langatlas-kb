@@ -28,7 +28,7 @@ from ruamel.yaml import YAML
 
 from langatlas_validate.compile import derive_facts
 from langatlas_validate.ids import canonical_endpoints, canonical_when_all, compose_edge_id
-from langatlas_validate.normalize import normalize_record
+from langatlas_validate.normalize import normalize_record, normalize_value
 from langatlas_validate.redirects import REDIRECTS_REL, parse_redirects, render_redirects
 from langatlas_validate.schema import validate_record
 from langatlas_validate.store import iter_store_records
@@ -491,8 +491,80 @@ def _apply_move(store: _Store, disposition: dict, snapshots: dict) -> None:
     store.put(rel, record.kind, record.data)
 
 
-_CHECKS = {"remove": _check_remove, "move": _check_move}
-_APPLY = {"remove": _apply_remove, "move": _apply_move}
+def _check_merge(store: _Store, disposition: dict) -> None:
+    survivor = disposition["to"]
+    _rel, record = _need_node(store, "merge", survivor)
+    if survivor in disposition["from"]:
+        raise MigrationError(f"merge: {survivor!r} cannot be both merged away and the survivor")
+    for node_id in disposition["from"]:
+        _need_node(store, "merge", node_id, kind=record.kind)
+
+
+def _check_split(store: _Store, disposition: dict) -> None:
+    _need_node(store, "split", disposition["from"], kind="feature")
+    children = disposition["to"]
+    if disposition["from"] in children or len(set(children)) != len(children):
+        raise MigrationError("split: the children must be distinct and must not include the"
+                             " node being split")
+    for child in children:
+        _need_node(store, "split", child, kind="feature")
+
+
+def _apply_merge(store: _Store, disposition: dict, snapshots: dict) -> None:
+    """The survivor absorbs the merged nodes' names as aliases (D49: synonym search and the
+    absence grep keep finding them), and their slugs 301 to it (§5.2)."""
+    survivor_id = disposition["to"]
+    rel, survivor = store.node(survivor_id)
+    if survivor.kind == "feature":
+        aliases = list(survivor.data.get("aliases") or [])
+        seen = {normalize_value(name, freetext=True)
+                for name in [survivor.data["name"], *aliases]}
+        for node_id in disposition["from"]:
+            for name in [snapshots[node_id]["name"], *(snapshots[node_id].get("aliases") or [])]:
+                key = normalize_value(name, freetext=True)
+                if key not in seen:
+                    aliases.append(name)
+                    seen.add(key)
+        if aliases != list(survivor.data.get("aliases") or []):
+            survivor.data["aliases"] = aliases
+            store.put(rel, survivor.kind, survivor.data)
+    else:
+        _rewrite_realizes(store, {node_id: survivor_id for node_id in disposition["from"]})
+    for node_id in disposition["from"]:
+        store.redirects[snapshots[node_id]["slug"]] = survivor_id
+    for old, target in list(store.redirects.items()):
+        if target in disposition["from"]:
+            store.redirects[old] = survivor_id
+    store.redirects.pop(survivor.data["slug"], None)
+
+
+def _apply_split(store: _Store, disposition: dict, snapshots: dict) -> None:
+    """Demote (default): the feature becomes a Concept with the same id, name, summary and
+    provenance — so its definition fact keeps its id — and every child `realizes` it. That
+    Concept is the hub page §5.2 asks for. Tombstone: the node is already gone; only
+    redirects to it remain to drop."""
+    old_id = disposition["from"]
+    if not _keeps_node(disposition):
+        _drop_redirects_to(store, {old_id})
+        return
+    rel, record = store.node(old_id)
+    concept = {key: record.data[key] for key in
+               ("id", "slug", "name", "summary", "provenance", "controversy")
+               if key in record.data}
+    store.delete(rel)
+    store.put(f"concepts/{old_id}.yaml", "concept", concept)
+    for child in disposition["to"]:
+        child_rel, child_record = store.node(child)
+        realizes = list(child_record.data.get("realizes") or [])
+        if old_id not in realizes:
+            child_record.data["realizes"] = [*realizes, old_id]
+            store.put(child_rel, child_record.kind, child_record.data)
+
+
+_CHECKS = {"remove": _check_remove, "move": _check_move, "merge": _check_merge,
+           "split": _check_split}
+_APPLY = {"remove": _apply_remove, "move": _apply_move, "merge": _apply_merge,
+          "split": _apply_split}
 
 
 def _check(store: _Store, disposition: dict) -> None:

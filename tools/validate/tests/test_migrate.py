@@ -209,12 +209,6 @@ def test_a_malformed_move_is_refused(graph, move, message):
         plan_migration(graph.root, _manifest(disposition))
 
 
-def test_merge_and_split_are_not_interpreted_yet(graph):
-    with pytest.raises(MigrationError, match="no interpreter"):
-        plan_migration(graph.root, _manifest(
-            {"op": "merge", "from": ["alpha"], "to": "beta", "fact_remap": []}))
-
-
 @pytest.mark.parametrize("text, message", [
     ("- a\n- b\n", "must be a mapping"),
     ("just a string\n", "must be a mapping"),

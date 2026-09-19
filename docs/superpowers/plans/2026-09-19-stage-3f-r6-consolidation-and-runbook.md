@@ -2792,7 +2792,7 @@ These are the two casebook rows with node-level effects beyond disposing of fact
   `_drop_redirects_to`, `_CHECKS`, `_APPLY`).
 - Produces: `plan_migration` interprets all four ops.
 
-- [ ] **Step 1: Write the failing merge and split tests**
+- [x] **Step 1: Write the failing merge and split tests**
 
 Create `tools/validate/tests/test_migrate_merge_split.py`:
 
@@ -2991,13 +2991,13 @@ def test_dispositions_apply_in_order(splittable):
     assert _safe.load(plan.changes["features/guards.yaml"])["realizes"] == ["pattern-matching"]
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_migrate_merge_split.py -v`
 Expected: FAIL with `MigrationError: op 'merge' has no interpreter` (and the same for
 `split`).
 
-- [ ] **Step 3: Implement merge and split**
+- [x] **Step 3: Implement merge and split**
 
 In `tools/validate/src/langatlas_validate/migrate.py`, change the normalize import to
 `from langatlas_validate.normalize import normalize_record, normalize_value`. Then add these
@@ -3085,17 +3085,17 @@ _APPLY = {"remove": _apply_remove, "move": _apply_move, "merge": _apply_merge,
 
 Delete `test_merge_and_split_are_not_interpreted_yet` from `tools/validate/tests/test_migrate.py`.
 
-- [ ] **Step 4: Run the interpreter tests**
+- [x] **Step 4: Run the interpreter tests**
 
 Run: `uv --directory tools/validate run pytest tests/test_migrate.py tests/test_migrate_merge_split.py -v`
 Expected: PASS.
 
-- [ ] **Step 5: Run the validate suite**
+- [x] **Step 5: Run the validate suite**
 
 Run: `uv --directory tools/validate run pytest -q`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/validate/src/langatlas_validate/migrate.py \
