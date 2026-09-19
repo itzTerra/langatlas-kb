@@ -783,7 +783,7 @@ with no schema and no reader. This task gives them both:
   `langatlas-validate resolve FACT_ID [--repo-root P]` and
   `langatlas-validate ledger-check [--since REF] [--repo-root P]`.
 
-- [ ] **Step 1: Write the failing git-helper tests**
+- [x] **Step 1: Write the failing git-helper tests**
 
 Create `tools/validate/tests/test_gitrefs.py`:
 
@@ -836,12 +836,12 @@ def test_list_files_and_extract_tree_read_a_past_commit(git_repo, tmp_path):
     assert (tmp_path / "old" / "dir" / "a.yaml").read_text() == "a: 1\n"
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_gitrefs.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_validate.gitrefs'`.
 
-- [ ] **Step 3: Implement `gitrefs.py`**
+- [x] **Step 3: Implement `gitrefs.py`**
 
 Create `tools/validate/src/langatlas_validate/gitrefs.py`:
 
@@ -911,12 +911,12 @@ def extract_tree(repo_root: Path, ref: str, dest: Path) -> None:
         tar.extractall(dest, filter="data")
 ```
 
-- [ ] **Step 4: Run the git-helper tests to verify they pass**
+- [x] **Step 4: Run the git-helper tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest tests/test_gitrefs.py -v`
 Expected: PASS (5 tests).
 
-- [ ] **Step 5: Write the failing tombstone tests**
+- [x] **Step 5: Write the failing tombstone tests**
 
 Create `tools/validate/tests/test_tombstones.py`:
 
@@ -1026,7 +1026,7 @@ def test_the_ledger_is_append_only_except_for_a_resurrecting_revert():
     assert check_append_only(before, [], live_after={"f-000000000001"}) == []
 ```
 
-- [ ] **Step 6: Write the tombstone schema**
+- [x] **Step 6: Write the tombstone schema**
 
 Create `ontology/schema/tombstone.schema.json`:
 
@@ -1066,7 +1066,7 @@ RECORD_KINDS = (
 Run `grep -rn "RECORD_KINDS\|contradiction\"," tools/validate/tests/test_schema.py`. If a test
 pins the tuple's contents, add `"tombstone"` to that literal.
 
-- [ ] **Step 7: Implement `tombstones.py`**
+- [x] **Step 7: Implement `tombstones.py`**
 
 Create `tools/validate/src/langatlas_validate/tombstones.py`:
 
@@ -1218,12 +1218,12 @@ def check_append_only(before, after, *, live_after: set[str]) -> list[str]:
     return errors
 ```
 
-- [ ] **Step 8: Run the tombstone tests to verify they pass**
+- [x] **Step 8: Run the tombstone tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest tests/test_tombstones.py -v`
 Expected: PASS (10 tests).
 
-- [ ] **Step 9: Write the failing redirect tests**
+- [x] **Step 9: Write the failing redirect tests**
 
 Create `tools/validate/tests/test_redirects.py`:
 
@@ -1276,7 +1276,7 @@ def test_validate_store_checks_both_ledgers(mini_store):
     assert any(e.startswith("tombstones.yaml") and "neither" in e for e in errors)
 ```
 
-- [ ] **Step 10: Implement `redirects.py`**
+- [x] **Step 10: Implement `redirects.py`**
 
 Create `tools/validate/src/langatlas_validate/redirects.py`:
 
@@ -1332,7 +1332,7 @@ def validate_redirects(mapping: dict[str, str], *, nodes: dict[str, str]) -> lis
     return errors
 ```
 
-- [ ] **Step 11: Wire both ledgers into `validate_store`**
+- [x] **Step 11: Wire both ledgers into `validate_store`**
 
 In `tools/validate/src/langatlas_validate/store.py`, change the fact-derivation block of
 `validate_store` so the facts are derived once and reused, then add the two checks just before
@@ -1365,7 +1365,7 @@ In `tools/validate/src/langatlas_validate/store.py`, change the fact-derivation 
 Extend the docstring's list with: "the tombstone ledger and the redirect map (§3.2/§5.1 —
 Stage 3F)".
 
-- [ ] **Step 12: Add `resolve` and `ledger-check` to the CLI**
+- [x] **Step 12: Add `resolve` and `ledger-check` to the CLI**
 
 In `tools/validate/src/langatlas_validate/cli.py`, add these two functions above `main`:
 
@@ -1461,7 +1461,7 @@ def test_resolve_prints_the_chain(mini_store, capsys):
     assert f"-> {live}" in capsys.readouterr().out
 ```
 
-- [ ] **Step 13: Run the validate suite and the store gate**
+- [x] **Step 13: Run the validate suite and the store gate**
 
 Run:
 ```bash
@@ -1471,7 +1471,7 @@ uv --directory tools/validate run langatlas-validate ci
 Expected: all tests pass, and `ci` exits 0 on the real (empty) store: `tombstones: []` and
 `redirects: {}` are both valid.
 
-- [ ] **Step 14: Commit**
+- [x] **Step 14: Commit**
 
 ```bash
 git add ontology/schema/tombstone.schema.json \

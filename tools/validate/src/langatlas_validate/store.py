@@ -150,7 +150,8 @@ def validate_store(repo_root: Path) -> list[str]:
     """CI's store-validating gate (D13): schema validity + normalization drift for
     every live record, the claim-template registry's own self-check, D64's canonical-ordering
     rule for `alternative-to` edges and rules' `when_all`, and cross-record referential
-    integrity (§3.3 — added in Stage 3A, the first stage that mints nodes)."""
+    integrity (§3.3 — added in Stage 3A, the first stage that mints nodes), and the tombstone
+    ledger and the redirect map (§3.2/§5.1 — Stage 3F)."""
     from langatlas_validate.compile import derive_facts
     from langatlas_validate.references import validate_references
 
@@ -162,9 +163,10 @@ def validate_store(repo_root: Path) -> list[str]:
     errors.extend(validate_contradictions(repo_root))
 
     store_records = list(iter_store_records(repo_root))
+    facts = derive_facts(store_records)
 
     by_path: dict[str, list[str]] = {}
-    for fact in derive_facts(store_records):
+    for fact in facts:
         by_path.setdefault(fact["record_path"], []).append(fact["fact_id"])
     errors.extend(validate_controversy_blocks(
         [(str(path), kind, data, by_path.get(str(path), []))
@@ -191,6 +193,19 @@ def validate_store(repo_root: Path) -> list[str]:
             custom = data.get("custom") if isinstance(data.get("custom"), dict) else {}
             if not custom.get("canonical_source") and not custom.get("acquisition_note"):
                 errors.append(f"{rel}: custom.acquisition_note required for a non-canonical source")
+
+    from langatlas_validate.redirects import REDIRECTS_REL, load_redirects, validate_redirects
+    from langatlas_validate.tombstones import (
+        TOMBSTONES_REL, load_tombstones, validate_tombstones,
+    )
+
+    live = {fact["fact_id"] for fact in facts}
+    errors.extend(f"{TOMBSTONES_REL}: {e}"
+                  for e in validate_tombstones(load_tombstones(repo_root), live=live))
+    nodes = {data["id"]: data.get("slug") for _p, kind, _t, data in store_records
+             if kind in ("feature", "concept")}
+    errors.extend(f"{REDIRECTS_REL}: {e}"
+                  for e in validate_redirects(load_redirects(repo_root), nodes=nodes))
 
     errors.extend(validate_references(repo_root))
     return errors

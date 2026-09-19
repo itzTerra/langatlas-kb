@@ -156,6 +156,49 @@ def cmd_regression_run() -> int:
     return _print_report(run_regression(_FIXTURES), verbose=True)
 
 
+def _live_fact_ids(root: Path) -> set[str]:
+    from langatlas_validate.compile import derive_facts
+    from langatlas_validate.store import iter_store_records
+
+    return {fact["fact_id"] for fact in derive_facts(list(iter_store_records(root)))}
+
+
+def cmd_resolve(root: Path, fact_id: str) -> int:
+    from langatlas_validate.tombstones import ChainTooDeep, load_tombstones, resolve_fact
+
+    try:
+        resolution = resolve_fact(fact_id, entries=load_tombstones(root),
+                                  live=_live_fact_ids(root))
+    except ChainTooDeep as exc:         # includes ChainCycle
+        print(f"{fact_id}: {exc}")
+        return 1
+    print(f"{resolution.fact_id}: {resolution.status}")
+    for successor in resolution.successors:
+        print(f"  -> {successor}")
+    for entry in resolution.chain:
+        print(f"  via {entry['fact_id']} ({entry['anchor']}: {entry['reason']},"
+              f" {entry['action']}{', ' + entry['migration_id'] if entry.get('migration_id') else ''})")
+    return 1 if resolution.status == "unknown" else 0
+
+
+def cmd_ledger_check(root: Path, since: str | None) -> int:
+    """§3.3's append-only rule, checked against the push's or pull request's base."""
+    from langatlas_validate.gitrefs import resolve_ref, show
+    from langatlas_validate.tombstones import (
+        TOMBSTONES_REL, check_append_only, load_tombstones, parse_tombstones,
+    )
+
+    base = resolve_ref(root, since)
+    if base is None:
+        print(f"ledger-check: no base commit for {since!r}; nothing to compare against")
+        return 0
+    errors = check_append_only(parse_tombstones(show(root, base, TOMBSTONES_REL)),
+                               load_tombstones(root), live_after=_live_fact_ids(root))
+    for error in errors:
+        print(f"TOMBSTONES {error}")
+    return 1 if errors else 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="langatlas-validate")
     parser.add_argument("--version", action="version", version=__version__)
@@ -178,6 +221,15 @@ def main(argv: list[str] | None = None) -> int:
                            help="git ref to diff the store against (default HEAD~1)")
     p_version.add_argument("--apply", action="store_true",
                            help="write ontology/VERSION and append to ontology/CHANGELOG.md")
+
+    p_resolve = sub.add_parser("resolve", help="walk a fact id's tombstone chain (§5.4)")
+    p_resolve.add_argument("fact_id")
+    p_resolve.add_argument("--repo-root", type=Path, default=None)
+
+    p_ledger = sub.add_parser("ledger-check",
+                              help="tombstones.yaml is append-only since --since (§3.3)")
+    p_ledger.add_argument("--since", default=None)
+    p_ledger.add_argument("--repo-root", type=Path, default=None)
 
     args = parser.parse_args(argv)
     if args.command == "precommit":
@@ -206,6 +258,10 @@ def main(argv: list[str] | None = None) -> int:
             changelog.write_text(changelog.read_text().rstrip("\n") +
                                  f"\n\n## {rendered}\n\n- {change} change since {args.since}\n")
         return 0
+    if args.command == "resolve":
+        return cmd_resolve(args.repo_root or _REPO_ROOT, args.fact_id)
+    if args.command == "ledger-check":
+        return cmd_ledger_check(args.repo_root or _REPO_ROOT, args.since)
     parser.print_help()
     return 0
 
