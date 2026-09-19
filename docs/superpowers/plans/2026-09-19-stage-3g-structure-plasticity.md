@@ -1465,7 +1465,7 @@ Stop for review.
 **Interfaces:**
 - Produces: a new latest version of each of the four prompts; no variable changes (each paragraph is static text inserted at the end of the `# system` section, before `# user`).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tools/research/tests/test_prompts_provisional.py
@@ -1488,12 +1488,12 @@ def test_the_latest_version_carries_the_provisional_structure_paragraph(prompt_i
     assert text.index(EXPECT[prompt_id][0]) < text.index("# user")
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_prompts_provisional.py`
 Expected: FAIL (4 failures).
 
-- [ ] **Step 3: Mint the four versions**
+- [x] **Step 3: Mint the four versions**
 
 Run from the repo root:
 
@@ -1552,12 +1552,12 @@ EOF
 ```
 Expected: four lines `prompt_id v-old -> v-new`, and one new `v<N>` line appended to each `CHANGELOG.md`.
 
-- [ ] **Step 4: Run the tests**
+- [x] **Step 4: Run the tests**
 
 Run: `uv --directory tools/research run pytest -q tests/test_prompts_provisional.py` then `uv --directory tools/pipeline run pytest -q`
 Expected: PASS. (The pipeline suite covers the prompt registry and any regression-fixture checks that new versions trigger.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add prompts tools/research/tests/test_prompts_provisional.py
