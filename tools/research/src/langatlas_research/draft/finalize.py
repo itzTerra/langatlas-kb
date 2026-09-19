@@ -77,16 +77,47 @@ def _debate_artifacts(plan: dict) -> list[str]:
     return [f"research/debates/{debate_id}.yaml" for debate_id in ids]
 
 
-def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
-                lander=land_record) -> tuple[Cycle, list]:
-    """@raises SignOffMissing / SignOffStale / R4Incomplete / DraftMissing"""
-    cycle = load_cycle(cycle_number, repo_root=repo_root)
-    require_sign_off(cycle, repo_root=repo_root)
-    plan = load_plan(cycle.slug, repo_root=repo_root)
-    blockers = r4_blockers(cycle, plan, repo_root=repo_root)
-    if blockers:
-        raise R4Incomplete(f"{cycle.slug} cannot close R4: " + "; ".join(blockers))
+_GATED_LISTS = ("nodes", "edges", "quality_edges")
 
+
+def r4_draft_blockers(cycle: Cycle, plan: dict, *, repo_root: Path | None) -> list[str]:
+    """What stops a *draft-only* R4 from closing (D70). Debates must be done and every live
+    carve must have reached the verifier — verification does not depend on the structure, so
+    it runs during the draft — but nothing has to be minted, and a blocked carve is the point
+    of the batch, not a blocker."""
+    blockers = [f"schema: {error}" for error in
+                validate_research_record(plan, "draft", repo_root=repo_root)]
+    if plan.get("theme_digest") != cycle.signed_off["theme_digest"]:
+        blockers.append("the carve plan predates the current sign-off: re-run"
+                        " `draft atomize`")
+    if not any(True for _name, _entry in entries(plan)):
+        blockers.append("the carve plan has no entries at all")
+    for key in open_carves(plan):
+        blockers.append(f"{key}: contested with no debate and no waiver — run"
+                        f" `draft debate` or `draft waive`")
+    for name, entry in entries(plan):
+        if entry["status"] in _TERMINAL or is_blocked(entry):
+            continue
+        if entry.get("debate_id") and entry["status"] == "proposed":
+            blockers.append(f"{entry['key']}: escalated — the developer must rule (see"
+                            f" draft debate record {entry['debate_id']})")
+            continue
+        if name in _GATED_LISTS:
+            verification = entry.get("verification")
+            if verification is None:
+                blockers.append(f"{entry['key']}: never reached the verifier — run"
+                                f" `draft verify`")
+            elif not verification["admissible"]:
+                blockers.append(f"{entry['key']}: the gate refused it"
+                                f" ({verification['verdict']}) — fix the claim or its"
+                                f" citations, or drop the carve")
+    return blockers
+
+
+def _land_plan(cycle: Cycle, plan: dict, *, target: str, repo_root: Path,
+               status_checker, lander) -> tuple[Cycle, list]:
+    """Land the debate records, the plan and the cycle file (in that order) and advance the
+    cycle to `target`. Shared by the mint-mode and draft-only finalizers."""
     run_id = plan["runs"]["ontologist"]
     # The debate records go first: a debate record is 3C's hand-off to 3D, and the cycle is
     # about to point at these paths as its artifacts. `draft debate` writes them but does not
@@ -108,7 +139,7 @@ def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
     if not isinstance(plan_result, Landed):
         return cycle, results
 
-    updated = cycle if cycle.status == "r4-done" else advance(cycle, "r4-done")
+    updated = cycle if cycle.status == target else advance(cycle, target)
     artifacts = {**(cycle.artifacts or {}), "draft": plan_rel}
     debates = _debate_artifacts(plan)
     if debates:
@@ -123,3 +154,30 @@ def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
         save_cycle(cycle, repo_root=repo_root)
         return cycle, results
     return updated, results
+
+
+def finalize_r4(cycle_number: int, *, repo_root: Path, status_checker=None,
+                lander=land_record) -> tuple[Cycle, list]:
+    """@raises SignOffMissing / SignOffStale / R4Incomplete / DraftMissing"""
+    cycle = load_cycle(cycle_number, repo_root=repo_root)
+    require_sign_off(cycle, repo_root=repo_root)
+    plan = load_plan(cycle.slug, repo_root=repo_root)
+    blockers = r4_blockers(cycle, plan, repo_root=repo_root)
+    if blockers:
+        raise R4Incomplete(f"{cycle.slug} cannot close R4: " + "; ".join(blockers))
+    return _land_plan(cycle, plan, target="r4-done", repo_root=repo_root,
+                      status_checker=status_checker, lander=lander)
+
+
+def finalize_r4_draft(cycle_number: int, *, repo_root: Path, status_checker=None,
+                      lander=land_record) -> tuple[Cycle, list]:
+    """D70's draft-only close: land the plan and debates, mint nothing, move to `r4-drafted`.
+    @raises SignOffMissing / SignOffStale / R4Incomplete / DraftMissing"""
+    cycle = load_cycle(cycle_number, repo_root=repo_root)
+    require_sign_off(cycle, repo_root=repo_root)
+    plan = load_plan(cycle.slug, repo_root=repo_root)
+    blockers = r4_draft_blockers(cycle, plan, repo_root=repo_root)
+    if blockers:
+        raise R4Incomplete(f"{cycle.slug} cannot close its draft: " + "; ".join(blockers))
+    return _land_plan(cycle, plan, target="r4-drafted", repo_root=repo_root,
+                      status_checker=status_checker, lander=lander)

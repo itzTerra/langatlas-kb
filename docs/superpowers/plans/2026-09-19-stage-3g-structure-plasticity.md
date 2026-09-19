@@ -897,7 +897,7 @@ Stop for review.
 
 The gate is a single file: while `research/structure-review.yaml` does not exist, no cycle mints and `draft finalize` lands the plan and moves the cycle to `r4-drafted`. Writing the file is the developer's `structure release` act (Task 8), so the first four cycles are held by default and later cycles mint normally.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # tools/research/tests/test_structure_review.py
@@ -1030,12 +1030,12 @@ def test_draft_mint_is_held_until_a_structure_review(research_repo, signed_cycle
     assert "structure review" in capsys.readouterr().err
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_structure_review.py tests/test_cycle.py tests/test_draft_finalize.py tests/test_draft_cli.py`
 Expected: FAIL (missing module / status).
 
-- [ ] **Step 3: Implement the plumbing**
+- [x] **Step 3: Implement the plumbing**
 
 `errors.py` (append):
 
@@ -1293,7 +1293,7 @@ Import `is_blocked` and `open_carves` (already imported) in `finalize.py`.
 ```
 (a contradiction names carve-plan nodes that are not committed, so it cannot land; the debate record keeps `resolution.contradiction`, and re-atomization repeats the debates.)
 
-- [ ] **Step 4: Open the gate in the two repo fixtures**
+- [x] **Step 4: Open the gate in the two repo fixtures**
 
 In `tests/conftest.py`, add near the top:
 
@@ -1306,12 +1306,12 @@ def _open_structure_review_gate(repo):
 ```
 Call it in `store_repo` right after `ensure_layout(clone)` (before the `git add -A`) and in `research_repo` right after its `ensure_layout(repo)` call. Existing mint tests keep passing; the new tests unlink the file to close the gate.
 
-- [ ] **Step 5: Run the package tests**
+- [x] **Step 5: Run the package tests**
 
 Run: `uv --directory tools/research run pytest -q`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/research research/schema

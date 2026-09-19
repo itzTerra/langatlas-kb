@@ -362,6 +362,10 @@ def _dispatch_draft(args, root: Path | None) -> int:
 
     repo = root or REPO_ROOT
     cycle = load_cycle(args.number, repo_root=repo)
+    if args.draft_command == "mint":
+        from langatlas_research.structure_review import require_mint_open
+
+        require_mint_open(repo)
 
     if args.draft_command == "contested":
         plan = load_plan(cycle.slug, repo_root=repo)
@@ -375,8 +379,9 @@ def _dispatch_draft(args, root: Path | None) -> int:
         plan = load_plan(cycle.slug, repo_root=repo)
         for name, entry in entries(plan):
             verdict = (entry.get("verification") or {}).get("verdict", "-")
+            blocked = f" blocked ({entry.get('block_reason', '')})" if entry.get("blocked") else ""
             print(f"{name:14} {entry['key']:44} {entry['status']:9} {verdict:12}"
-                  f" {entry.get('debate_id') or ''}")
+                  f" {entry.get('debate_id') or ''}{blocked}")
         return 0
 
     if args.draft_command == "waive":
@@ -402,13 +407,19 @@ def _dispatch_draft(args, root: Path | None) -> int:
         return 0
 
     if args.draft_command == "finalize":
-        from langatlas_research.draft.finalize import finalize_r4
+        from langatlas_research.draft.finalize import finalize_r4, finalize_r4_draft
+        from langatlas_research.structure_review import mint_open
 
-        updated, results = finalize_r4(cycle.number, repo_root=repo)
+        if mint_open(repo):
+            updated, results = finalize_r4(cycle.number, repo_root=repo)
+            expected = "r4-done"
+        else:
+            updated, results = finalize_r4_draft(cycle.number, repo_root=repo)
+            expected = "r4-drafted"
         for result in results:
             print(repr(result))
         print(f"cycle {updated.slug} -> {updated.status}")
-        return 0 if updated.status == "r4-done" else 1
+        return 0 if updated.status == expected else 1
 
     return _dispatch_draft_online(args, cycle, repo)
 
@@ -475,6 +486,7 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
 
         if args.draft_command == "debate":
             from langatlas_research.draft.contradictions import mint_debate_contradiction
+            from langatlas_research.structure_review import mint_open
             from langatlas_research.draft.contested import open_carves
             from langatlas_research.draft.debate import run_debate
             from langatlas_research.draft.ontologist import ontologist_tools
@@ -511,7 +523,8 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
                         # Both contexts carry the debate id so the transcripts join up.
                         ctx.manifest.debate_id = debate_id
                         moderator_ctx.manifest.debate_id = debate_id
-                contradiction = mint_debate_contradiction(debate, repo_root=repo)
+                contradiction = (None if not mint_open(repo)
+                                 else mint_debate_contradiction(debate, repo_root=repo))
                 save_plan(plan, repo_root=repo)
                 resolution = debate["resolution"]
                 print(f"{debate_id}  {key}: {resolution['disposition']} ->"

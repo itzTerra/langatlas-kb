@@ -10,7 +10,7 @@
     "theme": { "type": "string" },
     "theme_digest": { "type": "string", "pattern": "^[0-9a-f]{16}$" },
     "status": {
-      "enum": ["drafted", "signed-off", "r3-done", "r4-done", "r5-done", "settled"]
+      "enum": ["drafted", "signed-off", "r3-done", "r4-drafted", "r4-done", "r5-done", "settled"]
     },
     "languages": { "type": "array", "items": { "type": "string" } },
     "signed_off": {

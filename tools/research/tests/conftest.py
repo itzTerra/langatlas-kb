@@ -9,6 +9,13 @@ def _git(args, cwd):
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, check=True)
 
 
+def _open_structure_review_gate(repo):
+    from langatlas_research.paths import structure_review_path
+
+    structure_review_path(repo).write_text(
+        "reviewed_by: test\ndate: '2026-09-20'\nsummary: fixture\nbatch: [1]\n")
+
+
 @pytest.fixture
 def store_repo(tmp_path):
     """A throwaway origin + clone carrying just enough canonical store to validate.
@@ -39,6 +46,7 @@ def store_repo(tmp_path):
     (clone / "ontology" / "CHANGELOG.md").write_text("# Ontology changelog\n")
 
     ensure_layout(clone)
+    _open_structure_review_gate(clone)
     for schema in (REPO_ROOT / "research" / "schema").glob("*.schema.json"):
         (clone / "research" / "schema" / schema.name).write_text(schema.read_text())
     (clone / "research" / "themes.yaml").write_text(
@@ -115,6 +123,7 @@ def research_repo(tmp_path):
     """A research/ tree with the real schemas and theme list, no git."""
     repo = tmp_path / "repo"
     ensure_layout(repo)
+    _open_structure_review_gate(repo)
     for schema in (REPO_ROOT / "research" / "schema").glob("*.schema.json"):
         (repo / "research" / "schema" / schema.name).write_text(schema.read_text())
     themes_path(repo).write_text(themes_path(REPO_ROOT).read_text())

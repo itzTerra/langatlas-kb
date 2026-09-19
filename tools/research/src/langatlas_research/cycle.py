@@ -16,7 +16,7 @@ from langatlas_research.paths import cycles_dir
 from langatlas_research.schema import validate_research_record
 from langatlas_research.themes import load_themes, theme_digest
 
-CYCLE_STATUSES = ("drafted", "signed-off", "r3-done", "r4-done", "r5-done", "settled")
+CYCLE_STATUSES = ("drafted", "signed-off", "r3-done", "r4-drafted", "r4-done", "r5-done", "settled")
 
 _yaml = YAML(typ="safe")
 

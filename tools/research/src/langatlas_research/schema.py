@@ -63,6 +63,11 @@ def validate_research_tree(repo_root: Path | None = None) -> list[str]:
             errors.extend(f"research/themes.yaml: {e}" for e in validate_research_record(
                 _yaml.load(registry.read_text()) or {}, "theme-registry", repo_root=repo_root))
 
+    review = root / "structure-review.yaml"
+    if review.exists():
+        errors.extend(f"research/structure-review.yaml: {e}" for e in validate_research_record(
+            _yaml.load(review.read_text()) or {}, "structure-review", repo_root=repo_root))
+
     for name, kind in DIR_KINDS.items():
         directory = root / name
         files = sorted(directory.glob("*.yaml")) if directory.exists() else []

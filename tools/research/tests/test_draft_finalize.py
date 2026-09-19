@@ -4,7 +4,9 @@ from langatlas_commit.land import BlockedRedMain, Landed
 from langatlas_research.cycle import advance, load_cycle, save_cycle
 from langatlas_research.draft.contested import waive
 from langatlas_research.draft.debate import apply_resolution
-from langatlas_research.draft.finalize import finalize_r4, r4_blockers
+from langatlas_research.draft.finalize import (
+    finalize_r4, finalize_r4_draft, r4_blockers, r4_draft_blockers,
+)
 from langatlas_research.draft.plan import build_plan_record, find_entry, save_plan
 from langatlas_research.errors import R4Incomplete
 
@@ -197,3 +199,42 @@ def test_an_unlanded_contradiction_ledger_blocks_finalize(research_repo, r3_done
     plan = _saved_plan(r3_done, research_repo, [_node()])
     blockers = r4_blockers(r3_done, plan, repo_root=research_repo)
     assert any("contradiction ledger" in b and "draft mint" in b for b in blockers)
+
+
+def test_a_blocked_carve_does_not_block_the_draft_finalize(research_repo, r3_done):
+    blocked = _node(key="child", id="child", kind="feature", layer=2, status="proposed",
+                    verification=None, blocked="structure", block_reason="realizes a feature")
+    plan = _saved_plan(r3_done, research_repo, [_node(status="verified"), blocked])
+    assert r4_draft_blockers(r3_done, plan, repo_root=research_repo) == []
+
+
+def test_an_unverified_live_carve_blocks_the_draft_finalize(research_repo, r3_done):
+    plan = _saved_plan(r3_done, research_repo,
+                       [_node(status="proposed", verification=None)])
+    assert any("never reached the verifier" in b
+               for b in r4_draft_blockers(r3_done, plan, repo_root=research_repo))
+
+
+def test_an_unlanded_verified_carve_is_fine_while_drafting(research_repo, r3_done):
+    plan = _saved_plan(r3_done, research_repo, [_node(status="verified")])
+    assert r4_draft_blockers(r3_done, plan, repo_root=research_repo) == []
+
+
+def test_draft_finalize_lands_the_plan_and_moves_the_cycle_to_r4_drafted(
+        research_repo, r3_done):
+    _saved_plan(r3_done, research_repo, [_node(status="verified")])
+    landed = []
+
+    def _lander(repo_root, path, content, *, chat_run_id, validator, status_checker=None):
+        landed.append(path)
+        return Landed(commit_sha="abc1234")
+
+    cycle, _ = finalize_r4_draft(r3_done.number, repo_root=research_repo, lander=_lander)
+    assert cycle.status == "r4-drafted"
+    assert landed == [f"research/drafts/{r3_done.slug}.yaml",
+                      f"research/cycles/{r3_done.slug}.yaml"]
+    assert load_cycle(r3_done.number, repo_root=research_repo).status == "r4-drafted"
+    # ...and the same cycle can still close R4 for real once the gate opens.
+    plan = _saved_plan(cycle, research_repo, [_node()])
+    final, _ = finalize_r4(cycle.number, repo_root=research_repo, lander=_lander)
+    assert final.status == "r4-done"

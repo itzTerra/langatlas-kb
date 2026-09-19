@@ -222,3 +222,15 @@ def test_an_unlanded_entry_keeps_its_previous_status(signed_cycle, research_repo
     updated, _results = mint_plan(plan, repo_root=research_repo, cycle=signed_cycle,
                                   chat_run_id="r", prompt_version="v", lander=_lander)
     assert find_entry(updated, "type-system")[1]["status"] == "verified"
+
+
+def test_mint_plan_is_held_while_the_structure_gate_is_closed(signed_cycle, research_repo):
+    from langatlas_research.errors import MintHeld
+    from langatlas_research.paths import structure_review_path
+
+    structure_review_path(research_repo).unlink()
+    plan = build_plan_record(cycle=signed_cycle, ontologist_run_id="r",
+                             generated_at="2026-09-20T10:00:00Z")
+    with pytest.raises(MintHeld, match="structure review"):
+        mint_plan(plan, repo_root=research_repo, cycle=signed_cycle, chat_run_id="r",
+                  prompt_version="p1")

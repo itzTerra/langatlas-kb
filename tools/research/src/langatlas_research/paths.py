@@ -126,3 +126,7 @@ def private_controversy_dir() -> Path:
     from langatlas_pipeline import paths as pipeline_paths
 
     return pipeline_paths.PRIVATE_DIR / "research" / "controversy"
+
+
+def structure_review_path(repo_root: Path | None = None) -> Path:
+    return research_root(repo_root) / "structure-review.yaml"

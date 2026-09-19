@@ -77,3 +77,14 @@ def test_recording_minted_nodes_is_append_only_and_deduped(repo):
 
     assert cycle.nodes_minted == ("pattern-matching", "row-polymorphism", "type-inference")
     assert load_cycle(1, repo_root=repo).nodes_minted == cycle.nodes_minted
+
+
+def test_r4_drafted_sits_between_r3_done_and_r4_done(repo):
+    from langatlas_research.cycle import CYCLE_STATUSES, advance, new_cycle
+
+    assert CYCLE_STATUSES.index("r3-done") < CYCLE_STATUSES.index("r4-drafted") \
+        < CYCLE_STATUSES.index("r4-done")
+    cycle = advance(advance(new_cycle(1, "typing", repo_root=repo), "r3-done"), "r4-drafted")
+    assert advance(cycle, "r4-done").status == "r4-done"
+    with pytest.raises(InvalidTransition):
+        advance(cycle, "r3-done")

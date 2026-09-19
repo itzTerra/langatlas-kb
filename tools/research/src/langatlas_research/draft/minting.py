@@ -223,6 +223,9 @@ def mint_plan(plan: dict, *, repo_root: Path, cycle, chat_run_id: str, prompt_ve
     @returns: `(updated plan, the lander's (MintedRecord, LandResult) pairs)`."""
     from langatlas_commit.land import Landed
 
+    from langatlas_research.structure_review import require_mint_open
+
+    require_mint_open(repo_root)
     pending = contradictions_pending(repo_root)
     items = mint_items(plan, repo_root=repo_root, ctx_run_id=chat_run_id,
                        prompt_version=prompt_version, prompt_versions=prompt_versions,

@@ -168,3 +168,13 @@ class R6Incomplete(ResearchError):
     """`consolidate settle` found open work: R5 unfinished, the cross-theme pass not run, an
     unlanded carve-plan entry, an unruled dedup candidate, or an unlanded migration — or a
     landing was interrupted partway (the message says what landed)."""
+
+
+class MintHeld(ResearchError):
+    """D70: nothing mints until the developer has recorded the structure review
+    (`langatlas-research structure release`). Drafting, debating and verifying still run."""
+
+
+class StructureReviewRefused(ResearchError):
+    """`structure release` cannot record the review: none is due, one is already recorded, or
+    the record would be blank."""
