@@ -1,0 +1,39 @@
+[project]
+name = "langatlas-coverage"
+version = "0.1.0"
+description = "LangAtlas coverage analytics — the R6 exit dossier and the dimension gaps report (D52)"
+requires-python = ">=3.12"
+license = "MIT"
+dependencies = [
+  "ruamel.yaml>=0.18",
+  "langatlas-validate",
+  "langatlas-pipeline",
+  "langatlas-ingest",
+  "langatlas-questionnaire",
+  "langatlas-research",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+langatlas-coverage = "langatlas_coverage.report:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/langatlas_coverage"]
+
+[tool.uv.sources]
+langatlas-validate = { path = "../validate", editable = true }
+langatlas-commit = { path = "../commit", editable = true }
+langatlas-pipeline = { path = "../pipeline", editable = true }
+langatlas-ingest = { path = "../ingest", editable = true }
+langatlas-finding-aids = { path = "../finding-aids", editable = true }
+langatlas-questionnaire = { path = "../questionnaire", editable = true }
+langatlas-research = { path = "../research", editable = true }
+
+[tool.pytest.ini_options]
+markers = ["git: creates throwaway git repositories and runs the real commit protocol"]

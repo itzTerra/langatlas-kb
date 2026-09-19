@@ -6633,7 +6633,7 @@ Output goes to stdout, with an optional snapshot under the gitignored `reports/`
   - the console script `langatlas-coverage`, and `tools/coverage/report.py` as the spec-path
     shim.
 
-- [ ] **Step 1: Create the package**
+- [x] **Step 1: Create the package**
 
 Create `tools/coverage/pyproject.toml`:
 
@@ -6721,7 +6721,7 @@ count per node, keyed by immutable id"), recomputed from the store on every run 
 Output is ephemeral: stdout, plus `--snapshot` to `reports/` (gitignored). Never committed.
 ```
 
-- [ ] **Step 2: Lock and install**
+- [x] **Step 2: Lock and install**
 
 Run:
 ```bash
@@ -6730,7 +6730,7 @@ uv --directory tools/coverage sync --extra dev
 ```
 Expected: `tools/coverage/uv.lock` is written, and the sync succeeds.
 
-- [ ] **Step 3: Write the failing tests**
+- [x] **Step 3: Write the failing tests**
 
 Create `tools/coverage/tests/conftest.py`:
 
@@ -6930,12 +6930,12 @@ def test_gaps_prints_and_optionally_snapshots(coverage_store, capsys):
     assert "static-typing" in snapshot.read_text()
 ```
 
-- [ ] **Step 4: Run them to verify they fail**
+- [x] **Step 4: Run them to verify they fail**
 
 Run: `uv --directory tools/coverage run pytest -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_coverage.metrics'`.
 
-- [ ] **Step 5: Implement the metrics core**
+- [x] **Step 5: Implement the metrics core**
 
 Create `tools/coverage/src/langatlas_coverage/metrics.py`:
 
@@ -7039,7 +7039,7 @@ def fact_verification(facts, *, ledger, source_facts: dict) -> dict[str, str]:
             for fact in facts if fact.get("sources")}
 ```
 
-- [ ] **Step 6: Implement `gaps` and the CLI**
+- [x] **Step 6: Implement `gaps` and the CLI**
 
 Create `tools/coverage/src/langatlas_coverage/gaps.py`:
 
@@ -7134,12 +7134,12 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 ```
 
-- [ ] **Step 7: Run the tests to verify they pass**
+- [x] **Step 7: Run the tests to verify they pass**
 
 Run: `uv --directory tools/coverage run pytest -v`
 Expected: PASS (8 tests).
 
-- [ ] **Step 8: Wire the package into CI**
+- [x] **Step 8: Wire the package into CI**
 
 In `.github/workflows/ci.yml`, add to the `Install packages` step:
 
@@ -7155,13 +7155,13 @@ Add after `Test the questionnaire compiler`:
         run: uv --directory tools/coverage run pytest -m ''
 ```
 
-- [ ] **Step 9: Run it against the real store**
+- [x] **Step 9: Run it against the real store**
 
 Run: `uv --directory tools/coverage run langatlas-coverage gaps`
 Expected: the caveat, "No FeatureInstance records yet", an empty table (no dimensions are
 committed), and exit 0.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add tools/coverage/ .github/workflows/ci.yml \
