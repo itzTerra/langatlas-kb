@@ -48,6 +48,47 @@ def test_open_r5_refuses_a_cycle_that_has_not_finished_r4(store_repo):
         _open(store_repo)
 
 
+def test_open_r5_refuses_a_spec_with_a_non_canonical_exclusivity(store_repo):
+    """A dimension minted with a non-canonical `exclusivity` (e.g. "multi-valued" instead of
+    "exclusive"/"multi") compiles fine, but `compute_findings`'s `== "exclusive"` string
+    comparison would silently disable exclusivity-violation detection on it. `open_r5` must
+    catch this with `validate_spec` and refuse to land, rather than letting CI's
+    `langatlas-questionnaire validate` catch it after the commit already happened."""
+    from dataclasses import replace
+
+    from langatlas_research.cycle import advance, save_cycle
+    from langatlas_research.drafts import Evidence, FeatureDraft, Proposer
+    from langatlas_research.mint import render_draft
+    from langatlas_research.taxonomy import mint_dimension
+
+    repo = store_repo
+    dimension = mint_dimension("type-checking-discipline", label="Type checking discipline",
+                               exclusivity="multi-valued", repo_root=repo)
+    (repo / dimension.path).write_text(dimension.text)
+    proposer = Proposer(agent="r4-ontologist", model="claude", prompt_version="v-test")
+    for fid, name, layer, dimension_slug, aliases in (
+            ("dynamic-typing", "Dynamic typing", 3, "type-checking-discipline",
+             ("dynamic type checking",)),
+            ("static-typing", "Static typing", 3, "type-checking-discipline", ())):
+        minted = render_draft(FeatureDraft(
+            id=fid, name=name, summary=f"{name} is a typing discipline.",
+            evidence=(Evidence(source="pierce-tapl-2002", locator="§1.1"),),
+            proposer=proposer, chat_run_id="2026-09-18-r4-mint-01-typing-01", layer=layer,
+            dimension=dimension_slug, aliases=aliases))
+        (repo / minted.path).write_text(minted.text)
+    cycle = sign_off(new_cycle(1, "typing", repo_root=repo, languages=("python", "haskell")),
+                     by="dev", date="2026-09-20", repo_root=repo)
+    cycle = advance(advance(cycle, "r3-done"), "r4-done")
+    save_cycle(replace(cycle, nodes_minted=("dynamic-typing", "static-typing")),
+              repo_root=repo)
+
+    before = _git(["rev-parse", "origin/main"], repo)
+    with pytest.raises(R5NotReady, match="exclusivity"):
+        _open(repo)
+    assert _git(["rev-parse", "origin/main"], repo) == before   # nothing landed
+    assert not (repo / "questionnaire").exists()
+
+
 def test_open_r5_never_silently_discards_classifier_runs(ontology_repo, r5_run):
     record, _ = _open(ontology_repo)
     save_record(replace_language(record, "python", cells=[], uncovered=[], run=r5_run),

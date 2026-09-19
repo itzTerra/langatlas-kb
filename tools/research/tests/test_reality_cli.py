@@ -3,6 +3,7 @@ import pytest
 
 from langatlas_questionnaire.spec import write_spec
 from langatlas_research.cli import main
+from langatlas_research.paths import themes_path
 from langatlas_research.reality.record import load_record, replace_language, save_record
 
 
@@ -50,6 +51,21 @@ def test_shakedown_edits_need_their_text(opened):
     assert _cli(opened, "shakedown", "1", "--add", "sources") == 1
     assert _cli(opened, "shakedown", "1", "--close", "s-sources-00000000",
                 "--resolution", "x") == 1
+
+
+def test_shakedown_is_gated_on_a_fresh_sign_off(opened, capsys):
+    """`_GATED` includes "shakedown" because it can commit via `land_record` once the reality
+    check is tracked — D27 requires sign-off before any such commit path. A stale sign-off
+    (the theme list edited since) must block the command before it touches the record. `main()`
+    catches `SignOffStale` (a `ResearchError`) and turns it into a nonzero exit, so that's the
+    calling convention asserted here rather than a raised exception."""
+    before = load_record("01-typing", repo_root=opened)
+    themes_path(opened).write_text(
+        themes_path(opened).read_text().replace("Type systems,", "Type systems (edited),"))
+    assert _cli(opened, "shakedown", "1", "--add", "sources",
+                "--detail", "erlang: no spec ingested") == 1
+    assert "re-sign the cycle" in capsys.readouterr().err
+    assert load_record("01-typing", repo_root=opened) == before
 
 
 def test_finalize_reports_its_blockers_and_exits_nonzero(opened, capsys):

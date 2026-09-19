@@ -134,9 +134,12 @@ def decide_fact(fact_id: str, pairs, source_facts: dict, *, has_since: bool = Fa
 
     bounced = exhausted = False
     reason = ""
-    if pairs and not admissible:
+    if bound_reason:
+        # The D66 bound already fully explains the failure; don't let `_bounce` pick a
+        # generic reason from an unrelated pair and file a spurious queue entry against it.
+        reason = bound_reason
+    elif pairs and not admissible:
         bounced, reason, exhausted = _bounce(queue, fact_id, pairs, bounce_budget)
-    reason = reason or bound_reason
 
     return FactOutcome(fact_id=fact_id, admissible=admissible, verification=verification,
                        confidence=confidence, bounced=bounced, bounce_reason=reason,

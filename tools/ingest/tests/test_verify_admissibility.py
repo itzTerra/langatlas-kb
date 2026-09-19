@@ -195,3 +195,19 @@ def test_the_bound_is_case_and_whitespace_tolerant():
 def test_a_fact_without_a_since_is_untouched_by_the_bound():
     got = decide_fact("f-000000000001", [pair("book")], VERSIONED)
     assert got.admissible is True
+
+
+def test_a_bound_failure_is_not_re_attributed_to_an_unrelated_partial_pair():
+    """A D66 bound failure on the as-of pair fully explains the outcome; it must not let
+    `_bounce` pick a generic reason from an unrelated `partial` pair and file a queue
+    entry (and consume that source's bounce budget) against the wrong citation."""
+    queue = FakeQueue()
+    pairs = [_as_of("jls"), pair("book", verdict="partial")]
+    got = decide_fact("f-000000000001", pairs, VERSIONED, has_since=True, since="8",
+                      queue=queue)
+    assert got.admissible is False
+    assert "documents" in got.bounce_reason
+    assert got.bounced is False
+    assert got.exhausted is False
+    assert queue.filed == []
+    assert queue.bounced == []

@@ -12,7 +12,7 @@ from pathlib import Path
 from langatlas_commit.land import Landed, land_record
 from langatlas_pipeline.transcripts.writer import utc_now
 from langatlas_questionnaire.compiler import CompileError, compile_spec
-from langatlas_questionnaire.spec import load_spec, render_spec, spec_rel
+from langatlas_questionnaire.spec import load_spec, render_spec, spec_rel, validate_spec
 from langatlas_research.cycle import Cycle, advance, load_cycle, require_sign_off, save_cycle
 from langatlas_research.draft.contradictions import contradictions_mint, contradictions_pending
 from langatlas_research.errors import R5Incomplete, R5NotReady
@@ -60,6 +60,9 @@ def open_r5(cycle_number: int, *, repo_root: Path, chat_run_id: str, restart: bo
         spec = compile_spec(repo_root)
     except CompileError as exc:
         raise R5NotReady(str(exc)) from exc
+    spec_errors = validate_spec(spec)
+    if spec_errors:
+        raise R5NotReady(f"compiled spec fails schema validation: {'; '.join(spec_errors)}")
 
     rel = spec_rel(spec["ontology_version"])
     outcome = lander(repo_root, rel, render_spec(spec), chat_run_id=chat_run_id,
