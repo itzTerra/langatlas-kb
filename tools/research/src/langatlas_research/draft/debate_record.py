@@ -19,8 +19,8 @@ from langatlas_research.errors import DebateIncomplete
 from langatlas_research.paths import debates_dir
 from langatlas_research.schema import validate_research_record
 
-CHALLENGE_TYPES = ("wrong-atomization", "wrong-layer", "missing-source", "redundant-with",
-                   "scope")
+CHALLENGE_TYPES = ("wrong-atomization", "wrong-layer", "wrong-structure",
+                   "missing-source", "redundant-with", "scope")
 DISPOSITIONS = ("keep", "revise", "split", "merge", "drop", "escalate")
 # Fixed by tests/golden/controversy/cases-bootstrap.yaml — see the module docstring.
 DEBATE_OUTCOMES = ("resolved", "converged-after-revision", "escalated")

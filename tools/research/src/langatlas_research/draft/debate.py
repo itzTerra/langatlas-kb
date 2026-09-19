@@ -22,6 +22,7 @@ from langatlas_research.cycle import Cycle, require_sign_off
 from langatlas_research.draft.debate_record import (
     CHALLENGE_TYPES, DISPOSITIONS, next_debate_id, resolution_outcome, rounds, save_debate,
 )
+from langatlas_research.draft.findings import STRUCTURE_ELEMENTS, friction_entry
 from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
 from langatlas_research.draft.plan import find_entry, set_entry
 from langatlas_research.errors import DebateIncomplete
@@ -111,6 +112,7 @@ class ModeratorOut(BaseModel):
     merge_into: str | None = None
     drop_reason: str = ""
     contradiction: ContradictionOut | None = None
+    structure_element: Literal[STRUCTURE_ELEMENTS] | None = None     # type: ignore[valid-type]
 
 
 def render_entry(entry: dict) -> str:
@@ -342,7 +344,8 @@ def run_debate(ctx, cycle: Cycle, plan: dict, key: str, *, repo_root: Path | Non
     record["resolution"]["rounds"] = rounds(record)
     for field, value in (("revision", verdict.revision),
                          ("merge_into", verdict.merge_into),
-                         ("drop_reason", verdict.drop_reason)):
+                         ("drop_reason", verdict.drop_reason),
+                         ("structure_element", verdict.structure_element)):
         if value:
             record["resolution"][field] = value
     if verdict.split_into:
@@ -352,9 +355,21 @@ def run_debate(ctx, cycle: Cycle, plan: dict, key: str, *, repo_root: Path | Non
     if verdict.contradiction:
         record["resolution"]["contradiction"] = verdict.contradiction.model_dump()
 
-    updated = apply_resolution(plan, record, lookup=lookup)
+    updated = add_debate_friction(apply_resolution(plan, record, lookup=lookup), record)
     save_debate(record, repo_root=repo_root)
     return updated, record
+
+
+def add_debate_friction(plan: dict, debate: dict) -> dict:
+    """D70: an upheld `wrong-structure` challenge means the carve is fine but the structure has
+    no slot for it. The carve keeps whatever disposition it earned; the structure review reads
+    the finding. Pure."""
+    resolution = debate["resolution"]
+    if "wrong-structure" not in resolution["upheld_challenges"]:
+        return plan
+    finding = friction_entry(resolution["rationale"], keys=[debate["target"]["key"]],
+                             element=resolution.get("structure_element") or "other")
+    return {**plan, "findings": [*(plan.get("findings") or []), finding]}
 
 
 def _split_entry(item: SplitOut, *, lookup: ChunkLookup, debate_id: str) -> dict:

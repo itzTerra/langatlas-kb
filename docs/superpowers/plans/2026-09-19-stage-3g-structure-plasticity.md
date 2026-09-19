@@ -1338,7 +1338,7 @@ Stop for review.
 
 A `wrong-structure` resolution never changes the carve: the moderator still picks a disposition on the carve's own merits (usually `keep`).
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```python
 # appended to tools/research/tests/test_draft_debate.py
@@ -1391,12 +1391,12 @@ def test_the_debate_schema_accepts_wrong_structure(research_repo, signed_cycle):
                 repo_root=research_repo)
 ```
 
-- [ ] **Step 2: Run to verify failure**
+- [x] **Step 2: Run to verify failure**
 
 Run: `uv --directory tools/research run pytest -q tests/test_draft_debate.py`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 `debate_record.py`: `CHALLENGE_TYPES = ("wrong-atomization", "wrong-layer", "wrong-structure", "missing-source", "redundant-with", "scope")`.
 
@@ -1441,12 +1441,12 @@ def add_debate_friction(plan: dict, debate: dict) -> dict:
     return {**plan, "findings": [*(plan.get("findings") or []), finding]}
 ```
 
-- [ ] **Step 4: Run the package tests**
+- [x] **Step 4: Run the package tests**
 
 Run: `uv --directory tools/research run pytest -q`
 Expected: PASS (including `test_debate_goldens.py` and `test_exit_3c.py`, which prove the extra challenge type broke nothing in 3D's contract).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research research/schema/debate.schema.json

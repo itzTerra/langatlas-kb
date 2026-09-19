@@ -276,3 +276,72 @@ def test_apply_resolution_is_pure(signed_cycle, plan):
     updated = apply_resolution(plan, debate)
     assert find_entry(updated, "static-typing")[1]["status"] == "debated"
     assert find_entry(plan, "static-typing")[1]["status"] == "proposed"
+
+
+def test_wrong_structure_is_a_challenge_type():
+    from langatlas_research.draft.debate_record import CHALLENGE_TYPES
+
+    assert "wrong-structure" in CHALLENGE_TYPES
+
+
+def test_an_upheld_wrong_structure_challenge_files_a_friction_finding():
+    from langatlas_research.draft.debate import add_debate_friction
+
+    plan = {"findings": []}
+    debate = {"id": "d-01-typing-001", "target": {"key": "type-classes"},
+              "resolution": {"upheld_challenges": ["wrong-structure"],
+                             "structure_element": "edge-types",
+                             "rationale": "no relation expresses that this specialises another"}}
+    updated = add_debate_friction(plan, debate)
+    assert updated["findings"] == [{
+        "kind": "structure-friction", "keys": ["type-classes"], "area": "ontology",
+        "element": "edge-types",
+        "detail": "no relation expresses that this specialises another"}]
+    assert plan["findings"] == []          # pure
+
+
+def test_a_missing_element_defaults_to_other_and_other_debates_add_nothing():
+    from langatlas_research.draft.debate import add_debate_friction
+
+    debate = {"id": "d", "target": {"key": "k"},
+              "resolution": {"upheld_challenges": ["wrong-structure"], "rationale": "r"}}
+    assert add_debate_friction({"findings": []}, debate)["findings"][0]["element"] == "other"
+    quiet = {"id": "d", "target": {"key": "k"},
+             "resolution": {"upheld_challenges": ["scope"], "rationale": "r"}}
+    assert add_debate_friction({"findings": []}, quiet) == {"findings": []}
+
+
+def test_the_debate_schema_accepts_wrong_structure(research_repo, signed_cycle):
+    from langatlas_research.draft.debate_record import save_debate
+
+    save_debate({"id": f"d-{signed_cycle.slug}-001", "cycle": 1, "theme": "typing",
+                 "target": {"list": "nodes", "key": "type-classes"},
+                 "opened": "2026-09-20", "runs": {"debate": "r"}, "triggers": [],
+                 "personas": {}, "pre_challenge": {}, "messages": [
+                     {"seq": 1, "role": "challenger-a", "persona": "p", "text": "x",
+                      "challenges": [{"type": "wrong-structure", "text": "no slot"}]}],
+                 "resolution": {"outcome": "resolved", "disposition": "keep",
+                                "standing_dissent": False, "rounds": 1,
+                                "upheld_challenges": ["wrong-structure"],
+                                "structure_element": "edge-types", "rationale": "sound"}},
+                repo_root=research_repo)
+
+
+def test_run_debate_records_the_element_and_files_the_friction_finding(
+        fake_ctx, research_repo, signed_cycle, plan, config, prompts, fake_lookup):
+    moderator_ctx = type(fake_ctx)(run_id="mod-1")
+    moderator_ctx.claude_results.append(_result(
+        {"disposition": "keep", "standing_dissent": False,
+         "upheld_challenges": ["wrong-structure"], "structure_element": "edge-types",
+         "rationale": "the carve is sound but no edge type fits it"}))
+    _script(fake_ctx, challenges_a=[{"type": "wrong-structure", "text": "no slot"}],
+            challenges_b=[], moderator=None)
+
+    updated, debate = run_debate(fake_ctx, signed_cycle, plan, "static-typing",
+                                 repo_root=research_repo, config=config, lookup=fake_lookup,
+                                 moderator_ctx=moderator_ctx, prompts=prompts)
+
+    assert debate["resolution"]["structure_element"] == "edge-types"
+    assert updated["findings"][-1]["kind"] == "structure-friction"
+    assert updated["findings"][-1]["element"] == "edge-types"
+    assert updated["findings"][-1]["keys"] == ["static-typing"]
