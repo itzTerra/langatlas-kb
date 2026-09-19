@@ -464,7 +464,7 @@ test store builder every later validate task uses.
   - the test fixtures `mini_store` (a `MiniStore` with `feature` / `concept` / `edge` /
     `quality_edge` / `rule` / `write` builders), `git_repo`, and `store_git`.
 
-- [ ] **Step 1: Write the shared test fixtures**
+- [x] **Step 1: Write the shared test fixtures**
 
 Create `tools/validate/tests/conftest.py`:
 
@@ -610,7 +610,7 @@ def store_git(mini_store, tmp_path):
     return mini_store, repo
 ```
 
-- [ ] **Step 2: Write the failing anchor tests**
+- [x] **Step 2: Write the failing anchor tests**
 
 Create `tools/validate/tests/test_anchors.py`:
 
@@ -666,12 +666,12 @@ def test_anchors_are_unique_across_the_store(mini_store):
     assert len(anchors) == len(set(anchors))
 ```
 
-- [ ] **Step 3: Run the tests to verify they fail**
+- [x] **Step 3: Run the tests to verify they fail**
 
 Run: `uv --directory tools/validate run pytest tests/test_anchors.py -v`
 Expected: FAIL with `ImportError: cannot import name 'anchor_record_id'`.
 
-- [ ] **Step 4: Add the anchors**
+- [x] **Step 4: Add the anchors**
 
 In `tools/validate/src/langatlas_validate/compile.py`, add after the imports:
 
@@ -730,12 +730,12 @@ Append one paragraph to `derive_facts`' docstring:
     no FeatureInstances to borrow one from.
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/validate run pytest tests/test_anchors.py -v`
 Expected: PASS (3 tests).
 
-- [ ] **Step 6: Run every suite that reads derived facts**
+- [x] **Step 6: Run every suite that reads derived facts**
 
 Run:
 ```bash
@@ -747,7 +747,7 @@ uv --directory tools/orchestrator run pytest -q tests/test_controversy_job.py
 Expected: all pass. If a test compares a whole fact dict literally, add the new `"anchor"`
 key to that literal. Do not change behavior to make the old literal pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add tools/validate/tests/conftest.py tools/validate/tests/test_anchors.py \

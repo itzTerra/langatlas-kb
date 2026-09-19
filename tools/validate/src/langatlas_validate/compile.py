@@ -4,6 +4,12 @@ from langatlas_validate.claims import build_claim, fact_id
 from langatlas_validate.ids import compose_instance_id, compose_syntax_id
 
 
+def anchor_record_id(anchor: str) -> str:
+    """`fi.rust.pattern-matching#since` -> `fi.rust.pattern-matching`. A record id is slugs
+    joined by dots, never a `#`, so the first `#` is always the split point."""
+    return anchor.split("#", 1)[0]
+
+
 def _grep_vocabulary(feature: dict | None) -> list[str]:
     """D49's negative-grep vocabulary for an absence claim: the feature's own name first, then
     its `aliases:`, deduplicated. Empty when the feature record is not among the derived
@@ -24,6 +30,11 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
     `since.sources` (D25's fold table); an absence cites at status level and carries D49's
     extra verifier inputs. `#since` is derived for identity only — its own fact id, never a
     second verification of the same citations.
+
+    Stage 3F: every fact carries its §3.2 anchor — `<node>#summary`, `<edge>#exists`,
+    `<edge>#polarity`, `<edge>#assessments[<key>]`, `<rule>#exists` — because D38's
+    migration matchers and `tombstones.yaml` name facts by anchor, and Stage 3's store holds
+    no FeatureInstances to borrow one from.
     """
     facts: list[dict] = []
     features = {data["id"]: data for _p, kind, _t, data in records if kind == "feature"}
@@ -41,7 +52,8 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
             summary = data.get("summary")
             if summary:
                 _add(build_claim("node-definition", node_id=data["id"],
-                                 text=summary["text"]), path, summary.get("sources"))
+                                 text=summary["text"]), path, summary.get("sources"),
+                     anchor=f"{data['id']}#summary")
         elif kind == "feature-instance":
             instance_id = compose_instance_id(data["language"], data["feature"])
             since = data.get("since")
@@ -78,17 +90,19 @@ def derive_facts(records: list[tuple[Path, str, str, dict]]) -> list[dict]:
             # The edge's own citations, so the pair is verifiable at all — without them
             # `edge-exists` yields zero (claim, citation) pairs and can never be verified.
             _add(build_claim("edge-exists", edge_id=edge_id), path,
-                 (data.get("statement") or {}).get("sources"))
+                 (data.get("statement") or {}).get("sources"), anchor=f"{edge_id}#exists")
             if data.get("type") == "influences" and "polarity" in data:
                 _add(build_claim("edge-polarity", edge_id=edge_id,
-                                 polarity=data["polarity"]), path)
+                                 polarity=data["polarity"]), path,
+                     anchor=f"{edge_id}#polarity")
         elif kind == "affects-quality-edge":
             for a in data.get("assessments", []):
                 _add(build_claim("quality-assessment", edge_id=data["id"],
-                                 assessment_key=a["key"]), path, a.get("sources"))
+                                 assessment_key=a["key"]), path, a.get("sources"),
+                     anchor=f"{data['id']}#assessments[{a['key']}]")
         elif kind == "rule":
             _add(build_claim("rule-exists", rule_id=data["id"], message=data["message"]),
-                path, data.get("sources"))
+                 path, data.get("sources"), anchor=f"{data['id']}#exists")
 
     return facts
 
