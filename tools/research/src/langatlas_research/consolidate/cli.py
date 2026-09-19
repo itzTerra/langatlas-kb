@@ -52,6 +52,10 @@ def add_parser(sub) -> None:
     p_rule.add_argument("--reason", required=True)
     group.add_parser("slugs", help="list slug-polish candidates").add_argument(
         "number", type=int)
+    p_settle = group.add_parser("settle", help="close R6 and mark the theme settled (§7.4)")
+    p_settle.add_argument("number", type=int)
+    p_settle.add_argument("--by", default=None, help="the developer settling the theme (required)")
+    p_settle.add_argument("--date", default=None)
     p_rename = group.add_parser("rename-slug", help="rename a slug; the old one redirects")
     p_rename.add_argument("number", type=int)
     p_rename.add_argument("node")
@@ -319,8 +323,21 @@ def _rename_slug(args, repo: Path) -> int:
     return 0 if isinstance(outcome, Landed) else 1
 
 
-_HANDLERS = {"open": _open, "edges": _edges, "status": _status, "draft-migration": _draft_migration,
-             "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule,
+def _settle(args, repo: Path) -> int:
+    from langatlas_research.consolidate.lifecycle import settle
+
+    cycle, results = settle(args.number, repo_root=repo, by=args.by or "",
+                            date=args.date or _dt.date.today().isoformat())
+    for result in results:
+        print(repr(result))
+    print(f"cycle {cycle.slug} -> {cycle.status}")
+    if cycle.status == "settled":
+        print("next: uv run --package langatlas-coverage langatlas-coverage dossier")
+    return 0 if cycle.status == "settled" else 1
+
+
+_HANDLERS = {"open": _open, "edges": _edges, "status": _status, "settle": _settle,
+             "draft-migration": _draft_migration, "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule,
              "slugs": _slugs, "rename-slug": _rename_slug}
 
 

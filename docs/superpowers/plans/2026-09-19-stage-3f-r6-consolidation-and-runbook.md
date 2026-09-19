@@ -6330,7 +6330,7 @@ Then it lands the carve plan, the consolidation record and the settled cycle.
   -> (Cycle, results)`, error `R6Incomplete`, and the CLI command
   `consolidate settle N [--by B] [--date D]`.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 Create `tools/research/tests/test_consolidate_settle.py`:
 
@@ -6433,12 +6433,12 @@ def test_settle_refuses_a_cycle_that_has_not_finished_r5(research_repo, ready):
         settle(1, repo_root=research_repo, by="Dev", date="2026-10-05", lander=Lander())
 ```
 
-- [ ] **Step 2: Run them to verify they fail**
+- [x] **Step 2: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_settle.py -v`
 Expected: FAIL with `ImportError: cannot import name 'r6_blockers'`.
 
-- [ ] **Step 3: Implement the blockers and the settle step**
+- [x] **Step 3: Implement the blockers and the settle step**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -6552,7 +6552,7 @@ def settle(cycle_number: int, *, repo_root: Path, by: str, date: str, status_che
 
 Move the new imports to the top of the module, next to the existing ones.
 
-- [ ] **Step 4: Add `consolidate settle` to the CLI**
+- [x] **Step 4: Add `consolidate settle` to the CLI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -6583,7 +6583,7 @@ def _settle(args, repo: Path) -> int:
     return 0 if cycle.status == "settled" else 1
 ```
 
-- [ ] **Step 5: Run the tests**
+- [x] **Step 5: Run the tests**
 
 Run:
 ```bash
@@ -6592,7 +6592,7 @@ uv --directory tools/research run pytest -m '' -q
 ```
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/consolidate/{lifecycle,cli}.py \

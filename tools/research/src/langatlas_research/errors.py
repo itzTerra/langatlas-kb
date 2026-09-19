@@ -162,3 +162,9 @@ class SlugRefused(ResearchError):
     """A slug rename that would break §3.5's grammar or a published URL: the new slug is taken
     by a live node, or already redirects somewhere else. Also a store file the polish cannot
     read."""
+
+
+class R6Incomplete(ResearchError):
+    """`consolidate settle` found open work: R5 unfinished, the cross-theme pass not run, an
+    unlanded carve-plan entry, an unruled dedup candidate, or an unlanded migration — or a
+    landing was interrupted partway (the message says what landed)."""
