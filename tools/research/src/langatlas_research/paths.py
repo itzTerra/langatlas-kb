@@ -29,11 +29,14 @@ _READMES = {
                "the controversy assessor (Stage 3D) and the D30 instrumentation scripts.\n"
                "`draft debate` writes a record but does not commit it: the records are landed by\n"
                "`draft finalize`, together with the carve plan whose conclusions they are.\n",
-    "reality-checks": "R5 structured findings (`<cycle>-<theme>.yaml`): unmappable features,\n"
-                      "uninhabited dimension values, unfittable languages, exclusivity violations.\n"
-                      "Written by the reality-check runner (Stage 3E); read by\n"
-                      "`coverage report.py dossier` (Stage 3F) as the one dossier item that is not\n"
-                      "pure computation.\n",
+    "reality-checks": "R5 reality checks (`<cycle>-<theme>.yaml`): the sampled languages' answers\n"
+                      "to the theme's compiled questionnaire, the D24 gate's verdicts on them,\n"
+                      "the structured findings (unmappable features, uninhabited dimension\n"
+                      "values, unfittable languages, exclusivity violations) and the shakedown\n"
+                      "issue log. Written by `langatlas-research reality` (Stage 3E); read by\n"
+                      "`coverage report.py dossier` (Stage 3F). Nothing here is minted into the\n"
+                      "store (D68), and Stage 5 sweep agents never read this directory — their\n"
+                      "answers must stay independent (D5/D34).\n",
 }
 
 

@@ -5481,7 +5481,7 @@ git commit -m "feat(#stage-3e): open and close R5 and drive it from the CLI"
   4. the findings, the shakedown log and the cycle's `r5-done` land last;
   5. no `languages/<lang>/` directory is created (D68).
 
-- [ ] **Step 1: Write the exit test**
+- [x] **Step 1: Write the exit test**
 
 `tools/research/tests/test_exit_3e.py`:
 
@@ -5671,14 +5671,14 @@ def test_a_signed_cycle_runs_r5_from_compile_to_committed_findings(ontology_repo
     assert validate_research_tree(repo) == []
 ```
 
-- [ ] **Step 2: Run the exit test**
+- [x] **Step 2: Run the exit test**
 
 Run: `uv --directory tools/research run pytest tests/test_exit_3e.py -m '' -v`
 Expected: PASS. If a count is off, read `git log --stat base..origin/main` in the test's
 `tmp_path` before touching the assertion. An unexpected commit is a finding about `land_record`,
 not about the test.
 
-- [ ] **Step 3: Document R5**
+- [x] **Step 3: Document R5**
 
 Replace the body of `research/reality-checks/README.md`, and the `"reality-checks"` entry of
 `_READMES` in `tools/research/src/langatlas_research/paths.py`, with the same text. In `paths.py`,
@@ -5732,7 +5732,7 @@ A dimension's values are its member features (D67), so every finding is read fro
 only verified answers count.
 ````
 
-- [ ] **Step 4: Run every suite this plan touched**
+- [x] **Step 4: Run every suite this plan touched**
 
 Run:
 ```bash
@@ -5749,7 +5749,7 @@ uv --directory tools/research run langatlas-research validate
 ```
 Expected: every command exits 0. If any fails, report its output; do not claim the stage done.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add tools/research/tests/test_exit_3e.py research/reality-checks/README.md \

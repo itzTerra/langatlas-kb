@@ -104,6 +104,40 @@ uv run --package langatlas-research langatlas-research instrument replay 1  # di
 uv run --package langatlas-research langatlas-research instrument cost 1    # what did they cost?
 ```
 
+## R5: reality checks
+
+```bash
+# R5 — after `draft finalize` put the cycle at r4-done. Each step refuses an unsigned or stale
+# cycle, and every provider step opens its own logged run.
+uv run --package langatlas-research langatlas-research reality compile 1    # compile + commit the questionnaire
+uv run --package langatlas-research langatlas-research reality classify 1   # one Claude session per sampled language
+uv run --package langatlas-research langatlas-research reality verify 1     # the D24 gate; verdicts to the ledger
+uv run --package langatlas-research langatlas-research reality status 1     # cells, findings, open shakedown entries
+uv run --package langatlas-research langatlas-research reality finalize 1   # -> r5-done
+```
+
+The reality check (`research/reality-checks/<cycle>-<theme>.yaml`) is the spine, like R4's carve
+plan: every step reads it and writes it back, and `reality classify --language <l> --redo`
+re-runs a single language.
+
+**R5 is a shakedown, not a sweep, and it mints nothing (D68).** The cycle's rotating
+4–5-language sample answers the theme's slice of the compiled questionnaire (D46). Every answer
+passes through the real D24 gate, with `since` verified inside the existence claim (D65). An
+as-of `since` is accepted only when it is the version its citation documents (D66). The cells
+are recorded, never landed in `languages/`.
+
+**The shakedown log is R5's second output.** Friction in the compiler, the questionnaire format,
+the verifier or the sources is filed automatically. The developer adds and closes entries by
+hand:
+
+```bash
+uv run --package langatlas-research langatlas-research reality shakedown 1 --add sources --detail "…"
+uv run --package langatlas-research langatlas-research reality shakedown 1 --close s-sources-1a2b3c4d --resolution "…"
+```
+
+A dimension's values are its member features (D67), so every finding is read from the cells, and
+only verified answers count.
+
 ## Tests
 
 ```
