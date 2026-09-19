@@ -28,6 +28,10 @@ _STRUCTURAL_FIELDS = {"id", "layer", "dimension", "type", "from", "to", "when_al
 # controversy batch would bump MINOR every time it found its first contested fact.
 _MACHINE_FIELDS = {"controversy"}
 
+# Synonym lists. No claim is built from them, so no fact id or meaning moves when they change —
+# a synonym fix is PATCH, and a settled theme needs no manifest for one.
+_METADATA_FIELDS = {"aliases"}
+
 
 def _without_machine_fields(record: dict) -> dict:
     return {k: v for k, v in record.items() if k not in _MACHINE_FIELDS}
@@ -85,6 +89,11 @@ def diff_class(before: dict, after: dict) -> str:
     before, after = _without_machine_fields(before), _without_machine_fields(after)
     if before == after:
         return "none"
+    core_before = {k: v for k, v in before.items() if k not in _METADATA_FIELDS}
+    core_after = {k: v for k, v in after.items() if k not in _METADATA_FIELDS}
+    if core_before == core_after:
+        return "cosmetic"
+    before, after = core_before, core_after
     for field in _STRUCTURAL_FIELDS:
         if before.get(field) != after.get(field):
             return "restructuring"

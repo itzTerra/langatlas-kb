@@ -66,7 +66,7 @@ def test_a_new_record_is_additive():
 
 def test_a_new_field_is_additive():
     after = {"features/pattern-matching.yaml":
-             BEFORE["features/pattern-matching.yaml"] | {"aliases": ["destructuring"]}}
+             BEFORE["features/pattern-matching.yaml"] | {"realizes": ["matching"]}}
 
     assert classify_change(BEFORE, after) == "additive"
 
@@ -105,3 +105,21 @@ def test_after_one_zero_a_restructure_needs_governance():
 
 def test_after_one_zero_additive_is_still_minor():
     assert bump((1, 4, 0), "additive") == (1, 5, 0)
+
+
+from langatlas_validate.version import diff_class
+
+
+def test_an_aliases_only_edit_is_cosmetic_even_when_it_drops_one():
+    record = BEFORE["features/pattern-matching.yaml"]
+    two = {"features/x.yaml": record | {"aliases": ["a", "b"]}}
+
+    assert classify_change(two, {"features/x.yaml": record | {"aliases": ["a"]}}) == "cosmetic"
+    assert classify_change(two, {"features/x.yaml": dict(record)}) == "cosmetic"
+    assert classify_change({"features/x.yaml": dict(record)}, two) == "cosmetic"
+
+
+def test_an_alias_change_does_not_hide_a_restructure():
+    record = BEFORE["features/pattern-matching.yaml"]
+
+    assert diff_class(record | {"aliases": ["a"]}, record | {"layer": 3}) == "restructuring"

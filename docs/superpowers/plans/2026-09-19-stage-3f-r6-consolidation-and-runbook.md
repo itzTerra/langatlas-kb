@@ -4912,7 +4912,7 @@ edit becomes **cosmetic** for `version-bump` (and therefore free under the settl
     `consolidate rule N KEY (--distinct | --merge-into NODE | --drop-alias ALIAS --node NODE) --reason R`;
   - an aliases-only change classifies as `cosmetic`.
 
-- [ ] **Step 1: Write the failing version tests**
+- [x] **Step 1: Write the failing version tests**
 
 In `tools/validate/tests/test_version.py`, the existing `test_a_new_field_is_additive` uses
 `aliases` as its example field, and that is the behavior this task changes. Switch its example to
@@ -4947,7 +4947,7 @@ def test_an_alias_change_does_not_hide_a_restructure():
     assert diff_class(record | {"aliases": ["a"]}, record | {"layer": 3}) == "restructuring"
 ```
 
-- [ ] **Step 2: Make aliases metadata in `diff_class`**
+- [x] **Step 2: Make aliases metadata in `diff_class`**
 
 In `tools/validate/src/langatlas_validate/version.py`, add below `_MACHINE_FIELDS`:
 
@@ -4970,7 +4970,7 @@ At the top of `diff_class`, after the machine-field strip and the `none` check, 
 Run: `uv --directory tools/validate run pytest tests/test_version.py -v`
 Expected: PASS.
 
-- [ ] **Step 3: Write the failing audit tests**
+- [x] **Step 3: Write the failing audit tests**
 
 Create `tools/research/tests/test_consolidate_dedup.py`:
 
@@ -5095,12 +5095,12 @@ def test_rule_merge_drafts_a_manifest(research_repo, audited):
             / "manifest.yaml").exists()
 ```
 
-- [ ] **Step 4: Run them to verify they fail**
+- [x] **Step 4: Run them to verify they fail**
 
 Run: `uv --directory tools/research run pytest tests/test_consolidate_dedup.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_research.consolidate.dedup'`.
 
-- [ ] **Step 5: Implement the audit**
+- [x] **Step 5: Implement the audit**
 
 Append to `tools/research/src/langatlas_research/errors.py`:
 
@@ -5241,7 +5241,7 @@ def drop_alias(repo_root: Path, node_id: str, alias: str) -> tuple[str, str]:
     return rel, normalize_record(dump_yaml(data), "feature")
 ```
 
-- [ ] **Step 6: Add `dedup` and `rule` to the CLI**
+- [x] **Step 6: Add `dedup` and `rule` to the CLI**
 
 In `tools/research/src/langatlas_research/consolidate/cli.py`, add to `add_parser`:
 
@@ -5321,7 +5321,7 @@ def _rule(args, repo: Path) -> int:
     return 0
 ```
 
-- [ ] **Step 7: Run the tests**
+- [x] **Step 7: Run the tests**
 
 Run:
 ```bash
@@ -5331,7 +5331,7 @@ uv --directory tools/research run pytest -m '' -q
 ```
 Expected: PASS.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add tools/research/src/langatlas_research/consolidate/{dedup,cli}.py \

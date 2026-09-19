@@ -2,6 +2,7 @@
 or a database; `edges` and `migrate` open their own `RunContext` (D18). Later tasks add their
 subcommands to `add_parser` and `_HANDLERS`."""
 import datetime as _dt
+import sys
 from pathlib import Path
 
 from langatlas_research.errors import ResearchError
@@ -36,6 +37,17 @@ def add_parser(sub) -> None:
                                  help="plan, gate and land a drafted manifest as one commit")
     p_migrate.add_argument("number", type=int)
     p_migrate.add_argument("migration_id")
+    group.add_parser("dedup", help="list the cycle's open dedup/alias candidates").add_argument(
+        "number", type=int)
+    p_rule = group.add_parser("rule", help="developer ruling on one dedup candidate")
+    p_rule.add_argument("number", type=int)
+    p_rule.add_argument("key")
+    how = p_rule.add_mutually_exclusive_group(required=True)
+    how.add_argument("--distinct", action="store_true")
+    how.add_argument("--merge-into", metavar="NODE")
+    how.add_argument("--drop-alias", metavar="ALIAS")
+    p_rule.add_argument("--node", help="with --drop-alias: the feature losing the alias")
+    p_rule.add_argument("--reason", required=True)
 
 
 def _now() -> str:
@@ -153,8 +165,78 @@ def _guard(args, repo: Path) -> int:
     return 1 if errors else 0
 
 
+
+def _dedup(args, repo: Path) -> int:
+    from langatlas_research.consolidate.dedup import open_candidates
+    from langatlas_research.consolidate.record import load_record
+    from langatlas_research.cycle import load_cycle
+
+    from langatlas_research.cycle import require_sign_off
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    require_sign_off(cycle, repo_root=repo)
+    found = open_candidates(repo, cycle=cycle, record=load_record(cycle.slug, repo_root=repo))
+    for candidate in found:
+        print(f"{candidate['key']}  {' / '.join(candidate['nodes']):56}"
+              f" {', '.join(candidate['signals'])}")
+    print(f"{len(found)} open candidate(s)")
+    return 0
+
+
+def _rule(args, repo: Path) -> int:
+    from langatlas_commit.land import Landed, land_record
+
+    from langatlas_research.consolidate.dedup import candidates, drop_alias, make_ruling
+    from langatlas_research.consolidate.migration import draft_manifest, write_draft
+    from langatlas_research.consolidate.record import add_ruling, load_record, save_record
+    from langatlas_research.cycle import load_cycle, require_sign_off
+    from langatlas_research.land import store_validator
+
+    cycle = load_cycle(args.number, repo_root=repo)
+    require_sign_off(cycle, repo_root=repo)
+    record = load_record(cycle.slug, repo_root=repo)
+    candidate = next((c for c in candidates(repo, cycle=cycle) if c["key"] == args.key), None)
+    if candidate is None:
+        print(f"error: {args.key} is not a current candidate of {cycle.slug}", file=sys.stderr)
+        return 1
+    if args.distinct:
+        ruling = make_ruling(candidate, disposition="distinct", reason=args.reason)
+    elif args.merge_into:
+        if args.merge_into not in candidate["nodes"]:
+            print(f"error: {args.merge_into} is not one of {candidate['nodes']}", file=sys.stderr)
+            return 1
+        other = next(node for node in candidate["nodes"] if node != args.merge_into)
+        manifest = draft_manifest(repo, {"op": "merge", "from": [other], "to": args.merge_into},
+                                  cycle=cycle, date=_dt.date.today().isoformat(),
+                                  rationale=args.reason, slug=f"merge-{other}")
+        path = write_draft(repo, manifest)
+        ruling = make_ruling(candidate, disposition="merge", reason=args.reason,
+                             migration=manifest["migration_id"], node=args.merge_into)
+        print(f"drafted {path.relative_to(repo)}; land it with `langatlas-research consolidate"
+              f" migrate {cycle.number} {manifest['migration_id']}`")
+    else:
+        if not args.node:
+            print("error: --drop-alias needs --node (the feature losing the alias)",
+                  file=sys.stderr)
+            return 1
+        if args.node not in candidate["nodes"]:
+            print(f"error: {args.node} is not one of {candidate['nodes']}", file=sys.stderr)
+            return 1
+        rel, text = drop_alias(repo, args.node, args.drop_alias)
+        outcome = land_record(repo, rel, text, chat_run_id=f"r6-developer-{cycle.slug}",
+                              validator=store_validator)
+        if not isinstance(outcome, Landed):
+            print(f"error: {rel} did not land: {outcome!r}", file=sys.stderr)
+            return 1
+        ruling = make_ruling(candidate, disposition="drop-alias", reason=args.reason,
+                             node=args.node, alias=args.drop_alias)
+    save_record(add_ruling(record, ruling), repo_root=repo)
+    print(f"ruled {args.key}: {ruling['disposition']}")
+    return 0
+
+
 _HANDLERS = {"open": _open, "status": _status, "draft-migration": _draft_migration,
-             "migrate": _migrate, "guard": _guard}
+             "migrate": _migrate, "guard": _guard, "dedup": _dedup, "rule": _rule}
 
 
 def dispatch(args, root: Path | None) -> int:

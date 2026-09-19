@@ -151,3 +151,8 @@ class MigrationRecordNotUpdated(ResearchError):
     """The migration LANDED (its commit stands) but the consolidation record could not record
     it. This is not a failed migration — do not re-run it; add the id to the record's
     `migrations` list by hand."""
+
+
+class DedupRefused(ResearchError):
+    """A dedup ruling that cannot be recorded: no reason, a node outside the pair, or an alias
+    the feature does not carry."""
