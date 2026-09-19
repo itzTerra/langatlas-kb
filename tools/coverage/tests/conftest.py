@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from langatlas_research.cycle import Cycle
 from langatlas_validate.ids import compose_edge_id
 from langatlas_validate.normalize import normalize_record
 
@@ -63,3 +64,30 @@ def coverage_store(tmp_path) -> CoverageStore:
     store.write("languages/_registry.yaml",
                 "languages:\n  python:\n    name: Python\n  haskell:\n    name: Haskell\n")
     return store
+
+
+@pytest.fixture
+def make_cycle():
+    def build(number, theme, status="r5-done", nodes=()):
+        return Cycle(number=number, theme=theme, theme_digest="a" * 16, status=status,
+                     languages=("python",), nodes_minted=tuple(nodes), artifacts={},
+                     signed_off={"by": "Dev", "date": "2026-10-01", "theme_digest": "a" * 16})
+    return build
+
+
+@pytest.fixture
+def make_inputs():
+    """A `DossierInputs` with empty defaults; tests override only what they measure."""
+    from langatlas_coverage.dossier import DossierInputs
+    from langatlas_coverage.metrics import Store
+
+    empty = Store(features={}, concepts={}, edges={}, quality_edges={}, rules={}, instances={},
+                  dimensions={}, facts=())
+
+    def build(**overrides):
+        base = {"store": empty, "cycles": (), "plans": {}, "reality": {}, "manifests": (),
+                "membership": {}, "verification": None, "calibration": None,
+                "retrieval_verdict": False, "compile_errors": (), "compile_failure": "",
+                "compile_diagnostics": 0, "claude_by_cycle": {}}
+        return DossierInputs(**{**base, **overrides})
+    return build

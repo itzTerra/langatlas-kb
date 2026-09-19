@@ -7196,7 +7196,7 @@ Both are pure functions of a `DossierInputs` snapshot. Task 16 gathers that snap
   - `ITEM_STATUSES`, `UNMAPPABLE_BAR_PERCENT`, `DossierItem`, `DossierInputs`;
   - `sourcing_integrity(inputs)`, `reality_checks(inputs)`, `render_dossier(items)`.
 
-- [ ] **Step 1: Add the inputs fixture**
+- [x] **Step 1: Add the inputs fixture**
 
 Append to `tools/coverage/tests/conftest.py`:
 
@@ -7232,7 +7232,7 @@ def make_inputs():
     return build
 ```
 
-- [ ] **Step 2: Write the failing tests**
+- [x] **Step 2: Write the failing tests**
 
 Create `tools/coverage/tests/test_dossier_sourcing.py`:
 
@@ -7318,12 +7318,12 @@ def test_the_dossier_renders_a_summary_table_and_the_advisory_note(make_inputs):
     assert "## Reality-check results — no-data" in text
 ```
 
-- [ ] **Step 3: Run them to verify they fail**
+- [x] **Step 3: Run them to verify they fail**
 
 Run: `uv --directory tools/coverage run pytest tests/test_dossier_sourcing.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'langatlas_coverage.dossier'`.
 
-- [ ] **Step 4: Implement the first two items**
+- [x] **Step 4: Implement the first two items**
 
 Create `tools/coverage/src/langatlas_coverage/dossier.py`:
 
@@ -7467,12 +7467,12 @@ def render_dossier(items: list[DossierItem]) -> str:
     return "\n".join(lines) + "\n"
 ```
 
-- [ ] **Step 5: Run the tests to verify they pass**
+- [x] **Step 5: Run the tests to verify they pass**
 
 Run: `uv --directory tools/coverage run pytest -v`
 Expected: PASS.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tools/coverage/src/langatlas_coverage/dossier.py tools/coverage/tests/conftest.py \
