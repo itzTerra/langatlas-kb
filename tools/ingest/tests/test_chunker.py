@@ -247,3 +247,32 @@ def test_a_production_config_keeps_ordinary_breadcrumbs_verbatim():
     chunks = chunk_document(html_doc(), config=CONFIG, locator_kinds=["web-fragment"])
     assert chunks[-1].text.startswith("Expressions > Match expressions\n\n")
     assert "…" not in chunks[-1].text
+
+
+def test_content_before_the_first_heading_joins_that_heading_s_section():
+    """Front matter (an RFC's metadata block, a doc's opening sentence) precedes the
+    first real heading in plenty of real documents. It belongs to no section of its own
+    — folding it into the section that follows keeps it reachable by that section's
+    locator instead of failing the whole document for want of one (§4.3)."""
+    doc = ExtractedDocument(
+        source_id="rfc", media_type="text/html", backend="fake", backend_version="0",
+        page_count=0, outline=["Summary"],
+        blocks=[
+            Block(text="Feature Name: nll. Start Date: 2017-08-02."),
+            Block(text="Summary", heading_level=1, anchor="summary"),
+            Block(text=body(10)),
+        ])
+    chunks = chunk_document(doc, config=CONFIG, locator_kinds=["web-fragment"])
+    assert chunks[0].section_path == ["Summary"]
+    assert "Feature Name: nll." in chunks[0].text
+
+
+def test_a_document_with_no_heading_at_all_still_fails_hard():
+    """The fold-forward only rescues content that precedes a *real* heading. A document
+    with none anywhere is exactly `test_no_admissible_locator_kind_is_a_hard_failure`'s
+    case and must still refuse rather than emit an un-locatable chunk."""
+    doc = ExtractedDocument(source_id="s", media_type="text/plain", backend="f",
+                            backend_version="0", page_count=0, outline=[],
+                            blocks=[Block(text=body(30))])
+    with pytest.raises(ExtractionFailed, match="locator"):
+        chunk_document(doc, config=CONFIG, locator_kinds=["book-page"])

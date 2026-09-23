@@ -321,7 +321,14 @@ def chunk_document(doc: ExtractedDocument, *, config: IngestConfig,
 
     for block in doc.blocks:
         if block.heading_level:
-            accumulator.flush(section)
+            # `section.path` is empty only before the first heading is seen (§4.3): that
+            # content has no section of its own to be flushed under, so it is left in
+            # the accumulator's buffer to fold forward into the section this heading is
+            # about to open, rather than being flushed here and failing `_locator_for`
+            # for want of any locator. Once a real section exists, every later heading
+            # flushes it as usual.
+            if section.path:
+                accumulator.flush(section)
             while stack and stack[-1][0] >= block.heading_level:
                 stack.pop()
             stack.append((block.heading_level, block.text))
