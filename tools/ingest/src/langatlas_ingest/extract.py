@@ -73,6 +73,8 @@ def backend_identity(media_type: str, config: IngestConfig) -> tuple[str, str] |
         return "trafilatura", trafilatura.__version__
     if media_type == "text/plain":
         return "plaintext", "1"
+    if media_type == "text/markdown":
+        return "markdown-atx", "1"
     return None
 
 
@@ -95,6 +97,10 @@ def extract_document(path: Path, *, source_id: str, media_type: str,
                                 blocks=[Block(text=paragraph.strip())
                                         for paragraph in text.split("\n\n")
                                         if paragraph.strip()])
+    elif media_type == "text/markdown":
+        from langatlas_ingest.backends.markdown import extract_markdown
+
+        doc = extract_markdown(Path(path), source_id=source_id)
     else:
         raise ExtractionFailed(source_id, f"unsupported media type {media_type!r}")
 

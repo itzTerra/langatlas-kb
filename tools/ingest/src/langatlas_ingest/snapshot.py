@@ -12,7 +12,8 @@ from langatlas_ingest.errors import SnapshotMissing
 _yaml = YAML(typ="safe")
 _yaml.default_flow_style = False
 
-_EXTENSIONS = {"application/pdf": ".pdf", "text/html": ".html", "text/plain": ".txt"}
+_EXTENSIONS = {"application/pdf": ".pdf", "text/html": ".html", "text/plain": ".txt",
+              "text/markdown": ".md"}
 
 
 def utc_now() -> str:
