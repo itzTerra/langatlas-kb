@@ -158,6 +158,34 @@ def _anchors_by_key(
     return aligned
 
 
+def _wrap_bare_body(raw: str) -> str | None:
+    """`raw` with its `<body>`'s existing children moved inside a new `<article>`, for
+    `extract_html`'s landmark-less retry. Not a byte of the content moves, is added, or
+    is reordered — only a wrapper goes around it — so this cannot itself manufacture a
+    heading or an anchor; it only gives trafilatura's landmark-matching XPath a node
+    `(.//article)[1]` always accepts unconditionally, in place of a document it currently
+    finds no content candidate in at all.
+
+    Returns None if there is no `<body>` to wrap (a malformed or non-HTML fragment) —
+    the caller then keeps the original, unretried result."""
+    import lxml.etree
+    import lxml.html
+
+    try:
+        tree = lxml.html.fromstring(raw)
+    except (lxml.etree.ParserError, ValueError):
+        return None
+    body = tree.find(".//body")
+    if body is None:
+        return None
+    article = lxml.etree.SubElement(body, "article")
+    article.text, body.text = body.text, None
+    for child in list(body):
+        if child is not article:
+            article.append(child)
+    return lxml.html.tostring(tree, encoding="unicode")
+
+
 def extract_html(path: Path, *, source_id: str) -> ExtractedDocument:
     """Structure comes from trafilatura's own `<head rend="hN">` elements, not from
     guessing at markdown markup or matching body text against heading text: a block's
@@ -171,28 +199,46 @@ def extract_html(path: Path, *, source_id: str) -> ExtractedDocument:
     output only appears once a document is substantial enough, and typically wrapped in a
     landmark element (`<article>`/`<main>`), to trip its content-detection heuristics —
     the same prose flattens to bare `<p>` elements, with no `<head>` at all, inside a bare
-    `<body>` with no such wrapper, or when the document is too small. That is treated
-    below as a deliberate, fully-degraded document rather than patched around: every
-    block becomes plain body text, the outline stays empty, and no heading is ever
-    invented from it."""
+    `<body>` with no such wrapper (verified further: specifically once enough of the page
+    is link-dense — a nav bar, a linked list — that trafilatura judges the whole,
+    unscoped page unpromising and never gets to the real content below it), or when the
+    document is too small. The retry below recovers the landmark-less case; a document
+    still headingless after it is treated as a deliberate, fully-degraded document rather
+    than patched around further: every block becomes plain body text, the outline stays
+    empty, and no heading is ever invented from it."""
     import trafilatura
 
     raw = path.read_text(encoding="utf-8", errors="replace")
     parser = _AnchorParser()
     parser.feed(raw)
 
-    xml_text = trafilatura.extract(raw, output_format="xml", include_formatting=True,
-                                   include_comments=False, include_tables=True,
-                                   favor_recall=True, with_metadata=True)
-    elements: list[ET.Element] = []
-    if xml_text:
+    def _run(html: str) -> list[ET.Element]:
+        xml_text = trafilatura.extract(html, output_format="xml", include_formatting=True,
+                                       include_comments=False, include_tables=True,
+                                       favor_recall=True, with_metadata=True)
+        if not xml_text:
+            return []
         try:
             root = ET.fromstring(xml_text)
         except ET.ParseError:
-            root = None
-        main = root.find("main") if root is not None else None
-        if main is not None:
-            elements = list(main)
+            return []
+        main = root.find("main")
+        return list(main) if main is not None else []
+
+    elements = _run(raw)
+    if not any(element.tag == "head" for element in elements):
+        # No landmark for trafilatura's content-detection XPath to scope its judgment
+        # to (see docstring) is the single most common reason a document with real
+        # headings still collapses. Retrying inside a synthetic `<article>` changes only
+        # which region trafilatura considers a content candidate — every element inside
+        # it still passes through trafilatura's own `convert_headings`/precision
+        # filtering exactly as it would under a real landmark, so this never promotes
+        # anything this backend itself judged to be a heading.
+        wrapped = _wrap_bare_body(raw)
+        if wrapped is not None:
+            retried = _run(wrapped)
+            if any(element.tag == "head" for element in retried):
+                elements = retried
 
     blocks: list[Block] = []
     outline: list[str] = []

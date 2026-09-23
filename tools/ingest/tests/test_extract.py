@@ -83,6 +83,54 @@ def test_html_extraction_keeps_heading_anchors(tmp_path):
     assert all(block.page is None for block in doc.blocks)         # HTML has no pages
 
 
+# A bare-body page dominated by a nav link bar and list-heavy content, no `<article>`/
+# `<main>`/recognized-id wrapper anywhere — verified directly against the installed
+# trafilatura that it makes the *whole page* collapse to flat, headingless paragraphs
+# (no `<head>` at all), exactly like the two real pages (an old personal site, a
+# pkgdown-rendered CRAN vignette) that surfaced this. A cleaner bare-body fixture with
+# little link density does not reproduce it — trafilatura still finds the real content
+# without a landmark when nothing competes with it for attention.
+def _bare_body_no_landmark(prose: str) -> str:
+    nav = "<center>" + "|".join(f'<a href="{i}.html">link{i}</a>' for i in range(15)) \
+        + "</center>"
+    items = "".join(f'<li><a href="x{i}.html">Item {i}</a>. {prose}</li>\n'
+                    for i in range(20))
+    return (f"<html><body>{nav}<center><h1>Overview</h1><h4>subtitle here</h4></center>"
+            f"<p>Available here:</p><ul>{items}</ul>"
+            f'<h2 id="errata">Errata</h2><p>{prose}</p></body></html>')
+
+
+def test_html_headings_survive_a_bare_body_with_no_landmark_element(tmp_path):
+    """The headings are still real, author-written structure even though trafilatura's
+    content-detection XPath found no `<article>`/`<main>`/recognized-id landmark to
+    scope its judgment to and so collapsed the whole page (this file's own docstring).
+    `extract_html` gives it a synthetic `<article>` landmark to work with and lets it
+    re-run its own heading detection from there — nothing here decides what counts as a
+    heading; that stays entirely trafilatura's call, exactly as in the landmarked path."""
+    path = tmp_path / "bare.html"
+    path.write_text(_bare_body_no_landmark(PROSE))
+    doc = extract_document(path, source_id="ref", media_type="text/html",
+                           config=IngestConfig.load())
+    headings = [(b.text, b.anchor) for b in doc.blocks if b.heading_level]
+    assert ("Overview", None) in headings
+    assert ("Errata", "errata") in headings
+    assert doc.outline
+
+
+def test_a_bare_body_with_no_headings_still_collapses_to_plain_body_text(tmp_path):
+    """The synthetic-landmark retry only ever recovers headings trafilatura's own
+    detection confirms are real. A bare-body page with no `<hN>` at all has nothing for
+    it to find, so the true degenerate collapse — flat body text, empty outline, no
+    invented heading — must still happen exactly as before."""
+    path = tmp_path / "bare.html"
+    path.write_text(f"<html><body><p>{PROSE}</p></body></html>")
+    doc = extract_document(path, source_id="ref", media_type="text/html",
+                           config=IngestConfig.load())
+    assert doc.outline == []
+    assert all(block.heading_level == 0 for block in doc.blocks)
+    assert doc.char_count > 0
+
+
 def test_html_heading_text_repeated_in_body_does_not_steal_the_anchor(tmp_path):
     """A body paragraph that happens to repeat an earlier heading's text verbatim (e.g. a
     one-word recap) must never be promoted into a heading, and must never carry that
