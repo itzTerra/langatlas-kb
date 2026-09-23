@@ -1,0 +1,16 @@
+cycle: 2
+theme: memory-management
+theme_digest: bc20b9198086845a
+status: signed-off
+languages:
+  - prolog
+  - cpp
+  - csharp
+  - javascript
+  - ocaml
+nodes_minted: []
+artifacts: {}
+signed_off:
+  by: Michal Doležel
+  date: '2026-09-20'
+  theme_digest: bc20b9198086845a

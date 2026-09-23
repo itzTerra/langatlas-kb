@@ -1,0 +1,16 @@
+cycle: 3
+theme: concurrency
+theme_digest: ffa27761ff610882
+status: signed-off
+languages:
+  - elixir
+  - rust
+  - swift
+  - r
+  - go
+nodes_minted: []
+artifacts: {}
+signed_off:
+  by: Michal Doležel
+  date: '2026-09-20'
+  theme_digest: ffa27761ff610882

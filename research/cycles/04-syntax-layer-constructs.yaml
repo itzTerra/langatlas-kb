@@ -1,0 +1,16 @@
+cycle: 4
+theme: syntax-layer-constructs
+theme_digest: b0aff59359b724c5
+status: signed-off
+languages:
+  - c
+  - java
+  - python
+  - haskell
+  - erlang
+nodes_minted: []
+artifacts: {}
+signed_off:
+  by: Michal Doležel
+  date: '2026-09-20'
+  theme_digest: b0aff59359b724c5
