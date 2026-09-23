@@ -1,0 +1,14 @@
+id: swift-se-0306
+type: webpage
+title: 'SE-0306: Actors'
+author:
+  - family: Lattner
+    given: Chris
+  - family: Hoyt
+    given: Doug
+  - family: McCall
+    given: John
+URL: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0306-actors.md
+custom:
+  tier: B
+  grounding: design-doc

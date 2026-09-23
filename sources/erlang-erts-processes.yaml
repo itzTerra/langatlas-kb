@@ -1,0 +1,10 @@
+id: erlang-erts-processes
+type: webpage
+title: 'Erlang Reference Manual: Processes'
+author:
+  - family: Ericsson AB
+    given: ''
+URL: https://www.erlang.org/doc/system/ref_man_processes.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs

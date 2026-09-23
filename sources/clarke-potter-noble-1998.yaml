@@ -1,0 +1,18 @@
+id: clarke-potter-noble-1998
+type: paper-conference
+title: Ownership Types for Flexible Alias Protection
+author:
+  - family: Clarke
+    given: David G.
+  - family: Potter
+    given: John M.
+  - family: Noble
+    given: James
+issued:
+  date-parts:
+    -   - 1998
+URL: https://dl.acm.org/doi/10.1145/286936.286947
+DOI: 10.1145/286936.286947
+custom:
+  tier: A
+  grounding: formal-spec
