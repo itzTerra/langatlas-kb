@@ -163,19 +163,29 @@ def render_for_prompt(ctx, hits: list[dict], *, tool: str = "search_sources") ->
     an empty string rather than an empty citation block, so callers can tell 'no evidence
     found' from 'evidence found but blank'.
 
-    The citation header (`source_id`/`locator`/`breadcrumb`) is document-derived text, not
-    something this module invented — `breadcrumb` is heading text pulled straight from the
-    source, and a `named-section` locator can be arbitrary single-line text. It is folded
-    into the same string passed to `ctx.tool_result` rather than interpolated around the
-    delimited block, so it is scanned, logged, and delimited exactly like the chunk body:
-    nothing document-derived reaches the output unmediated.
+    The header leads with `chunk_id` — the one thing a role is ever actually asked to cite
+    back (an `evidence_chunk_ids` field, `get_source_section`'s own argument). It used to
+    carry only `source_id`/`locator`/`breadcrumb`, so a role that read a passage through
+    this tool rather than the static term index had never once been shown a real chunk id
+    to copy, and cited the locator text in its place instead (confirmed live: R3's
+    surveyor did exactly this, cycle after cycle, once its corpus grew past what the
+    static index alone covers).
+
+    `chunk_id` is synthesized by this package's own chunker, never document text, so
+    adding it introduces no new injection surface. `source_id`/`locator`/`breadcrumb` are
+    document-derived text, not something this module invented — `breadcrumb` is heading
+    text pulled straight from the source, and a `named-section` locator can be arbitrary
+    single-line text. The whole header is folded into the same string passed to
+    `ctx.tool_result` rather than interpolated around the delimited block, so it is
+    scanned, logged, and delimited exactly like the chunk body: nothing document-derived
+    reaches the output unmediated.
 
     `tool` names the call for the D31 log: `search_sources`'s SDK handler renders under its
     own name, and `get_source_section`'s SDK handler passes `tool="get_source_section"` so
     the transcript attributes each rendered chunk to the tool that actually produced it."""
     blocks = []
     for hit in hits:
-        header = f"[{hit['source_id']} {hit['locator']}] {hit['breadcrumb']}"
+        header = f"[{hit['chunk_id']}] ({hit['source_id']} {hit['locator']}) {hit['breadcrumb']}"
         delimited = ctx.tool_result(tool=tool, text=f"{header}\n{hit['text']}",
                                     source_id=hit["source_id"], kind="source-chunk")
         blocks.append(delimited)
