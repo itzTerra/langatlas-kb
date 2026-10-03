@@ -41,11 +41,15 @@ def test_low_relevance_and_untagged_rows_are_ignored():
     assert build_term_index(tags, POOL, min_relevance=2, seed_terms=()) == []
 
 
-def test_evidence_is_capped_at_three_highest_relevance_chunks():
+def test_evidence_is_capped_at_two_highest_relevance_chunks():
+    """Lowered from three on 2026-10-03: cycle 3's term index (2693 distinct terms, a
+    1019-chunk pool) rendered a ~46KB surveyor packet, and the surveyor began citing
+    chunk ids it had never actually been shown instead of copying real ones. Fewer,
+    higher-relevance citations per term is the direct lever on that packet's density."""
     tags = [_tags(c, r, defined=["generics"]) for c, r in
             (("ctm#c1", 2), ("ctm#c2", 3), ("ctm#c3", 3), ("ctm#c4", 2))]
     entry = build_term_index(tags, POOL, min_relevance=2, seed_terms=())[0]
-    assert [ref.chunk_id for ref in entry.evidence] == ["ctm#c2", "ctm#c3", "ctm#c1"]
+    assert [ref.chunk_id for ref in entry.evidence] == ["ctm#c2", "ctm#c3"]
 
 
 def test_a_seed_term_with_no_hits_is_still_listed_last():
@@ -65,6 +69,43 @@ def test_the_rendered_index_is_one_delimited_block_respecting_the_limit(fake_ctx
     assert "tapl#c1" in rendered or "tapl#c2" in rendered
     assert rendered.count("evidence:") == 1
     assert render_term_index(fake_ctx, [], limit=5) == ""
+
+
+def test_a_garbled_ocr_breadcrumb_is_omitted_from_the_rendered_evidence(fake_ctx):
+    """A scanned PDF's OCR sometimes mis-recognises a heading into noise (digits fused into
+    letters: 'Qxl + qEy1 + dY1.') rather than real section text. Showing that to the
+    surveyor as if it were a normal heading is actively misleading, not merely useless —
+    cycle 3's run surfaced exactly this pattern (bernstein-hadzilacos-goodman-1987) ranked
+    at the very top of its term index. The chunk id and locator are still real and still
+    shown; only the garbled label is dropped."""
+    pool = Pool(cycle_slug="03-concurrency", theme_digest="0" * 16, queries=("Concurrency",),
+               entries=(ChunkRef(chunk_id="bhg#c00113", source_id="bhg", locator="p. 68",
+                                 breadcrumb="dxl --, Qxl + qEy1 + dY1.", content_hash="h"),))
+    tags = [_tags("bhg#c00113", 3, defined=["deadlock"])]
+    index = build_term_index(tags, pool, min_relevance=2, seed_terms=())
+    rendered = render_term_index(fake_ctx, index, limit=5)
+    assert "qEy1" not in rendered and "dY1" not in rendered
+    assert "bhg#c00113" in rendered and "p. 68" in rendered
+
+
+def test_a_clean_breadcrumb_still_renders_in_full(fake_ctx):
+    tags = [_tags("tapl#c1", 3, defined=["subtyping"])]
+    index = build_term_index(tags, POOL, min_relevance=2, seed_terms=())
+    rendered = render_term_index(fake_ctx, index, limit=5)
+    assert "Ch" in rendered   # POOL's fixture breadcrumb, unchanged
+
+
+def test_a_real_spec_identifier_breadcrumb_is_not_mistaken_for_ocr_garbage(fake_ctx):
+    """SE-0304, PEP 703, N4861 and the like are real, common, upper-then-digit section
+    identifiers across this corpus — the filter must never strip these."""
+    pool = Pool(cycle_slug="03-concurrency", theme_digest="0" * 16, queries=("Concurrency",),
+               entries=(ChunkRef(chunk_id="se0304#c1", source_id="se0304", locator="§3",
+                                 breadcrumb="SE-0304 > Structured concurrency > Task groups",
+                                 content_hash="h"),))
+    tags = [_tags("se0304#c1", 3, defined=["task-group"])]
+    index = build_term_index(tags, pool, min_relevance=2, seed_terms=())
+    rendered = render_term_index(fake_ctx, index, limit=5)
+    assert "Task groups" in rendered
 
 
 def test_the_tagging_summary_counts_only_tagged_rows():

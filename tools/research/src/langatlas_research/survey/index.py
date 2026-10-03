@@ -2,6 +2,7 @@
 found, where they are defined, and how widely. Ranking favours breadth across *sources* over
 raw counts, because R3's point is cross-book aliasing — a term one textbook repeats forty times
 is less informative than one three books each define once."""
+import re
 from collections import Counter
 from dataclasses import dataclass
 
@@ -10,7 +11,18 @@ from langatlas_research.survey.pool import Pool
 from langatlas_research.survey.tagger import normalize_term
 from langatlas_research.survey.tags import ChunkTags
 
-MAX_EVIDENCE = 3
+# Lowered from 3 on 2026-10-03 (cycle 3's post-mortem): a large, rich pool pushes the
+# term index itself past ~2600 distinct terms, and the surveyor began citing chunk ids it
+# was never actually shown rather than copying real ones from a packet this dense. Fewer,
+# higher-relevance citations per term is the direct lever on that density.
+MAX_EVIDENCE = 2
+
+# An intra-word lowercase-then-uppercase transition ("qEy1", "dY1") is how a scanned PDF's
+# OCR misreads a heading into noise; a real heading or spec identifier never does this —
+# "SE-0304", "PEP 703", "N4861" are all upper-then-digit, never lower-then-upper. Matching
+# only that specific transition (not "any digit near a letter") keeps real alphanumeric
+# identifiers in the corpus from being mistaken for garbage.
+_OCR_GARBLED_BREADCRUMB = re.compile(r"[a-z][A-Z]")
 
 
 @dataclass(frozen=True)
@@ -59,6 +71,12 @@ def build_term_index(tags, pool: Pool, *, min_relevance: int, seed_terms) -> lis
     return entries
 
 
+def _render_evidence(ref: ChunkRef) -> str:
+    if _OCR_GARBLED_BREADCRUMB.search(ref.breadcrumb):
+        return f"{ref.chunk_id} ({ref.source_id} {ref.locator})"
+    return f"{ref.chunk_id} ({ref.source_id} {ref.locator}, {ref.breadcrumb})"
+
+
 def render_term_index(ctx, entries, *, limit: int) -> str:
     """Terms are tagger output lifted from document text and breadcrumbs are document text,
     so the whole index enters the prompt as one D31 block."""
@@ -69,8 +87,8 @@ def render_term_index(ctx, entries, *, limit: int) -> str:
         if entry.seed and not entry.evidence and not entry.mention_count:
             lines.append(f"- {entry.term} | seed term with no corpus hits")
             continue
-        evidence = "; ".join(f"{ref.chunk_id} ({ref.source_id} {ref.locator}, {ref.breadcrumb})"
-                             for ref in entry.evidence) or "none (mentioned only)"
+        evidence = "; ".join(_render_evidence(ref) for ref in entry.evidence) \
+            or "none (mentioned only)"
         lines.append(f"- {entry.term} | defined in {len(entry.defining_sources)} sources,"
                      f" mentioned {entry.mention_count}x across {entry.source_count} sources"
                      f" | evidence: {evidence}")
