@@ -8,18 +8,38 @@ survey:
     # retrieval.candidates in config/ingest.yaml by SourceSearch itself.
     k_per_query: 40
     # Hard ceiling on the frozen pool. The tagging job costs one completion per batch, so
-    # this is the knob that bounds a cycle's university-API volume.
-    max_chunks: 600
+    # this is the knob that bounds a cycle's university-API volume. Raised from 600 on
+    # 2026-09-26: cycle 3's widened concurrency seed terms (18 -> 23) filled the pool
+    # exactly to the old cap, truncating a query's genuine top-k hits rather than
+    # reflecting real scarcity. Raised again the same day, 800 -> 1200, for the same
+    # reason once concurrency's corrected 32-term seed list (see D70/themes.yaml history)
+    # hit 800 exactly too.
+    max_chunks: 1200
   tagger:
-    alias: deepseek                 # volume lane: university API only (D6)
+    alias: glm                      # volume lane: university API only (D6). Was deepseek;
+                                     # switched 2026-09-26 after the gateway started
+                                     # returning "Model is blocked" for every deepseek*
+                                     # variant. glm is already probed (provider_capabilities
+                                     # .yaml) with the same schema support and context size.
     batch_size: 6                   # chunks per completion call
     min_relevance: 2                # 0-3; below this a chunk never reaches the surveyor packet
   surveyor:
     model: null
     max_turns: 60
     max_claude_messages: 120
-    max_packet_terms: 150           # term-index rows handed to the surveyor
-    max_candidates: 80              # inventory entries accepted from one run
+    # Term-index rows handed to the surveyor. Lowered from 150 on 2026-10-03: cycle 3's
+    # term index (2693 distinct terms, ~2.3x cycle 1's 1174 at the same 150-row limit
+    # that worked there) rendered a ~46KB packet, and the surveyor started citing chunk
+    # ids it had never been shown instead of copying real ones. 70 scales the row count
+    # down by roughly the same 2.3x the term universe grew, paired with the evidence-
+    # per-term cut (survey/index.py's MAX_EVIDENCE 3 -> 2) for a combined ~70% reduction
+    # in packet size.
+    max_packet_terms: 70
+    # Inventory entries accepted from one run. Raised from 80 on 2026-09-27: cycle 3's
+    # widened (32-term) concurrency pool genuinely surfaced 98, then 131, candidates —
+    # both over the cap in force at the time. Set well above the second overshoot rather
+    # than incrementally, to avoid a third ~20-minute surveyor rerun over a near-miss.
+    max_candidates: 200
   scout:
     model: null
     max_turns: 80
