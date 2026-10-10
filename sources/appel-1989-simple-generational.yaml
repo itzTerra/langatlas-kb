@@ -1,0 +1,13 @@
+id: appel-1989-simple-generational
+type: article-journal
+title: Simple Generational Garbage Collection and Fast Allocation
+author:
+  - family: Appel
+    given: Andrew W.
+issued:
+  date-parts:
+    -   - 1989
+DOI: 10.1002/spe.4380190206
+custom:
+  tier: A
+  grounding: third-party-reference

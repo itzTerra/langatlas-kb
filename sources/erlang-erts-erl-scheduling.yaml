@@ -1,0 +1,13 @@
+id: erlang-erts-erl-scheduling
+type: webpage
+title: erl — Erlang Runtime System Application (ERTS) Reference Manual
+author:
+  - family: Ericsson AB
+    given: ''
+issued:
+  date-parts:
+    -   - 2025
+URL: https://www.erlang.org/doc/apps/erts/erl_cmd.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs

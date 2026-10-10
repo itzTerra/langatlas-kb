@@ -1,0 +1,13 @@
+id: warren-1983-wam
+type: report
+title: An Abstract Prolog Instruction Set
+author:
+  - family: Warren
+    given: David H. D.
+issued:
+  date-parts:
+    -   - 1983
+URL: http://www.ai.sri.com/pubs/files/641.pdf
+custom:
+  tier: A
+  grounding: formal-spec

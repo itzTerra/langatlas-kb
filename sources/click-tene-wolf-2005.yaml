@@ -1,0 +1,18 @@
+id: click-tene-wolf-2005
+type: paper-conference
+title: The Pauseless GC Algorithm
+author:
+  - family: Click
+    given: Cliff
+  - family: Tene
+    given: Gil
+  - family: Wolf
+    given: Michael
+issued:
+  date-parts:
+    -   - 2005
+URL: https://www.usenix.org/legacy/events/vee05/full_papers/p46-click.pdf
+DOI: 10.1145/1064979.1064988
+custom:
+  tier: A
+  grounding: third-party-reference

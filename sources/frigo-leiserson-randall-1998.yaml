@@ -1,0 +1,18 @@
+id: frigo-leiserson-randall-1998
+type: paper-conference
+title: The Implementation of the Cilk-5 Multithreaded Language
+author:
+  - family: Frigo
+    given: Matteo
+  - family: Leiserson
+    given: Charles E.
+  - family: Randall
+    given: Keith H.
+issued:
+  date-parts:
+    -   - 1998
+URL: https://dl.acm.org/doi/10.1145/277650.277725
+DOI: 10.1145/277650.277725
+custom:
+  tier: A
+  grounding: reference-implementation-docs

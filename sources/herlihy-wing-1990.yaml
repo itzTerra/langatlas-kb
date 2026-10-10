@@ -1,0 +1,16 @@
+id: herlihy-wing-1990
+type: article-journal
+title: 'Linearizability: A Correctness Condition for Concurrent Objects'
+author:
+  - family: Herlihy
+    given: Maurice
+  - family: Wing
+    given: Jeannette M.
+issued:
+  date-parts:
+    -   - 1990
+URL: https://dl.acm.org/doi/10.1145/78969.78972
+DOI: 10.1145/78969.78972
+custom:
+  tier: A
+  grounding: formal-spec

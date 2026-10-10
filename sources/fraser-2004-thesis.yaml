@@ -1,0 +1,13 @@
+id: fraser-2004-thesis
+type: report
+title: Practical Lock-Freedom
+author:
+  - family: Fraser
+    given: Keir
+issued:
+  date-parts:
+    -   - 2004
+URL: https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-579.pdf
+custom:
+  tier: A
+  grounding: formal-spec

@@ -1,0 +1,15 @@
+id: park-goldberg-1992
+type: paper-conference
+title: Escape Analysis on Lists
+author:
+  - family: Park
+    given: Young Gil
+  - family: Goldberg
+    given: Benjamin
+issued:
+  date-parts:
+    -   - 1992
+URL: https://cs.nyu.edu/~goldberg/pubs/pg92.pdf
+custom:
+  tier: A
+  grounding: formal-spec

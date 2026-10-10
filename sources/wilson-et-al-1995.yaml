@@ -1,0 +1,20 @@
+id: wilson-et-al-1995
+type: paper-conference
+title: 'Dynamic Storage Allocation: A Survey and Critical Review'
+author:
+  - family: Wilson
+    given: Paul R.
+  - family: Johnstone
+    given: Mark S.
+  - family: Neely
+    given: Michael
+  - family: Boles
+    given: David
+issued:
+  date-parts:
+    -   - 1995
+URL: https://www.cs.hmc.edu/~oneill/gc-library/Wilson-Alloc-Survey-1995.pdf
+DOI: 10.1007/3-540-60368-9_19
+custom:
+  tier: A
+  grounding: third-party-reference

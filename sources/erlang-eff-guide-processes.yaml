@@ -1,0 +1,13 @@
+id: erlang-eff-guide-processes
+type: webpage
+title: 'Erlang/OTP Efficiency Guide: Processes'
+author:
+  - family: Ericsson AB
+    given: ''
+issued:
+  date-parts:
+    -   - 2025
+URL: https://www.erlang.org/doc/system/eff_guide_processes.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs

@@ -1,0 +1,14 @@
+id: armstrong-2010-cacm
+type: article-journal
+title: Erlang
+author:
+  - family: Armstrong
+    given: Joe
+issued:
+  date-parts:
+    -   - 2010
+URL: https://dl.acm.org/doi/10.1145/1810891.1810910
+DOI: 10.1145/1810891.1810910
+custom:
+  tier: A
+  grounding: third-party-reference

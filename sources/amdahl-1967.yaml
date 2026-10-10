@@ -1,0 +1,14 @@
+id: amdahl-1967
+type: paper-conference
+title: Validity of the Single Processor Approach to Achieving Large Scale Computing Capabilities
+author:
+  - family: Amdahl
+    given: Gene M.
+issued:
+  date-parts:
+    -   - 1967
+URL: https://dl.acm.org/doi/10.1145/1465482.1465560
+DOI: 10.1145/1465482.1465560
+custom:
+  tier: A
+  grounding: formal-spec

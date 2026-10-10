@@ -1,0 +1,17 @@
+id: jones-hosking-moss-2012
+type: book
+title: 'The Garbage Collection Handbook: The Art of Automatic Memory Management'
+author:
+  - family: Jones
+    given: Richard
+  - family: Hosking
+    given: Antony
+  - family: Moss
+    given: Eliot
+issued:
+  date-parts:
+    -   - 2012
+DOI: 10.1201/9781315388021
+custom:
+  tier: A
+  grounding: third-party-reference

@@ -1,0 +1,13 @@
+id: ecma-334-7th
+type: standard
+title: 'ECMA-334: C# Language Specification, 7th edition'
+author:
+  - family: Ecma International
+    given: ''
+issued:
+  date-parts:
+    -   - 2023
+URL: https://ecma-international.org/wp-content/uploads/ECMA-334_7th_edition_december_2023.pdf
+custom:
+  tier: A
+  grounding: formal-spec

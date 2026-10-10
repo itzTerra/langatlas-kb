@@ -1,0 +1,13 @@
+id: rust-std-thread-scope
+type: webpage
+title: std::thread::scope — Rust Standard Library Documentation
+author:
+  - family: The Rust Project Developers
+    given: ''
+issued:
+  date-parts:
+    -   - 2025
+URL: https://doc.rust-lang.org/std/thread/fn.scope.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs

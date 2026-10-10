@@ -1,0 +1,19 @@
+id: tc39-weakrefs
+type: report
+title: ECMAScript WeakRefs and FinalizationRegistry Proposal
+author:
+  - family: Bloom
+    given: Dean
+  - family: Hoban
+    given: Ron
+  - family: Marsden
+    given: Sathya
+  - family: Wirfs-Brock
+    given: Allen
+issued:
+  date-parts:
+    -   - 2020
+URL: https://github.com/tc39/proposal-weakrefs
+custom:
+  tier: B
+  grounding: design-doc

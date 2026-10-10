@@ -1,0 +1,18 @@
+id: bekkers-et-al-1992
+type: paper-conference
+title: Dynamic memory management for sequential logic programming languages
+author:
+  - family: Bekkers
+    given: Yves
+  - family: Ridoux
+    given: Olivier
+  - family: Ungaro
+    given: Lucien
+issued:
+  date-parts:
+    -   - 1992
+URL: https://link.springer.com/chapter/10.1007/BFb0017184
+DOI: 10.1007/BFb0017184
+custom:
+  tier: A
+  grounding: third-party-reference

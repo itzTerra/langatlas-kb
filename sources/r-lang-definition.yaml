@@ -1,0 +1,13 @@
+id: r-lang-definition
+type: report
+title: R Language Definition
+author:
+  - family: R Core Team
+    given: ''
+issued:
+  date-parts:
+    -   - 2025
+URL: https://cran.r-project.org/doc/manuals/r-release/R-lang.html
+custom:
+  tier: B
+  grounding: formal-spec

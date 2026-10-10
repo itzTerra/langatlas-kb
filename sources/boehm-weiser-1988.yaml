@@ -1,0 +1,16 @@
+id: boehm-weiser-1988
+type: article-journal
+title: Garbage Collection in an Uncooperative Environment
+author:
+  - family: Boehm
+    given: Hans-Juergen
+  - family: Weiser
+    given: Mark
+issued:
+  date-parts:
+    -   - 1988
+URL: https://www.hboehm.info/spe_gc_paper/preprint.ps.gz
+DOI: 10.1002/spe.4380180902
+custom:
+  tier: A
+  grounding: formal-spec

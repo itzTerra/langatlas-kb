@@ -1,0 +1,20 @@
+id: eswaran-et-al-1976
+type: article-journal
+title: The notions of consistency and predicate locks in a database system
+author:
+  - family: Eswaran
+    given: Kapali P.
+  - family: Gray
+    given: Jim N.
+  - family: Lorie
+    given: Raymond A.
+  - family: Traiger
+    given: Irving L.
+issued:
+  date-parts:
+    -   - 1976
+URL: https://dl.acm.org/doi/10.1145/360363.360369
+DOI: 10.1145/360363.360369
+custom:
+  tier: A
+  grounding: third-party-reference

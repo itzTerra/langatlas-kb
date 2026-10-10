@@ -1,0 +1,14 @@
+id: stroustrup-2001-exception-safety
+type: paper-conference
+title: 'Exception Safety: Concepts and Techniques'
+author:
+  - family: Stroustrup
+    given: Bjarne
+issued:
+  date-parts:
+    -   - 2001
+URL: https://www.stroustrup.com/except.pdf
+DOI: 10.1007/3-540-45407-1_4
+custom:
+  tier: A
+  grounding: design-doc

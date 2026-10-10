@@ -1,0 +1,16 @@
+id: doligez-leroy-1993
+type: paper-conference
+title: A concurrent, generational garbage collector for a multithreaded implementation of ML
+author:
+  - family: Doligez
+    given: Damien
+  - family: Leroy
+    given: Xavier
+issued:
+  date-parts:
+    -   - 1993
+URL: https://xavierleroy.org/publi/concurrent-gc.pdf
+DOI: 10.1145/158511.158611
+custom:
+  tier: A
+  grounding: third-party-reference

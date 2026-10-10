@@ -1,0 +1,13 @@
+id: jep-379
+type: report
+title: 'JEP 379: Shenandoah: A Low-Pause-Time Garbage Collector (Production)'
+author:
+  - family: Kennke
+    given: Roman
+issued:
+  date-parts:
+    -   - 2020
+URL: https://openjdk.org/jeps/379
+custom:
+  tier: B
+  grounding: design-doc

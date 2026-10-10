@@ -1,0 +1,30 @@
+id: sivaramakrishnan-et-al-2020
+type: article-journal
+title: Retrofitting Parallelism onto OCaml
+author:
+  - family: Sivaramakrishnan
+    given: KC
+  - family: Dolan
+    given: Stephen
+  - family: White
+    given: Leo
+  - family: Jaffer
+    given: Sadiq
+  - family: Kelly
+    given: Tom
+  - family: Sahoo
+    given: Anmol
+  - family: Parimala
+    given: Sudha
+  - family: Dhiman
+    given: Atul
+  - family: Madhavapeddy
+    given: Anil
+issued:
+  date-parts:
+    -   - 2020
+URL: https://dl.acm.org/doi/10.1145/3408995
+DOI: 10.1145/3408995
+custom:
+  tier: A
+  grounding: design-doc
