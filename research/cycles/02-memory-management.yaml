@@ -1,7 +1,7 @@
 cycle: 2
 theme: memory-management
 theme_digest: 6f27faeff90ccc69
-status: signed-off
+status: r3-done
 languages:
   - prolog
   - cpp
@@ -9,7 +9,8 @@ languages:
   - javascript
   - ocaml
 nodes_minted: []
-artifacts: {}
+artifacts:
+  survey: research/surveys/02-memory-management.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-10-09'
