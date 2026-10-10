@@ -1,6 +1,6 @@
 cycle: 2
 theme: memory-management
-theme_digest: bc20b9198086845a
+theme_digest: 6f27faeff90ccc69
 status: signed-off
 languages:
   - prolog
@@ -12,5 +12,5 @@ nodes_minted: []
 artifacts: {}
 signed_off:
   by: Michal Doležel
-  date: '2026-09-20'
-  theme_digest: bc20b9198086845a
+  date: '2026-10-09'
+  theme_digest: 6f27faeff90ccc69

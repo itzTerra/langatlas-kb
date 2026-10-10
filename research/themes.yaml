@@ -8,77 +8,210 @@ themes:
     summary: >-
       Type systems, checking discipline, inference, polymorphism and the design choices
       that distinguish them.
-    seed_terms: [type system, static typing, dynamic typing, type inference, generics,
-                 subtyping, algebraic data types]
+    seed_terms: [type system, static typing, dynamic typing, type inference, generics, subtyping, 
+          algebraic data types]
   - slug: memory-management
     label: Memory management
     summary: >-
-      How storage is allocated, reclaimed and made safe: manual management, garbage
-      collection, ownership, regions, reference counting.
-    seed_terms: [garbage collection, manual memory management, ownership, borrow checking,
-                 reference counting, region inference]
+      How storage is allocated, reclaimed and made safe: manual management, tracing and reference-counting
+      collectors and their variants, ownership and borrowing, regions and lifetimes, destructors and finalization,
+      and the failure modes (dangling pointers, leaks, fragmentation, pauses) these disciplines trade
+      against.
+    seed_terms:
+      - garbage collection
+      - manual memory management
+      - ownership
+      - borrow checking
+      - reference counting
+      - region inference
+      - tracing collection
+      - mark-and-sweep
+      - copying collection
+      - generational collection
+      - destructors and finalization
+      - linear and affine types
+      - dangling pointers and leaks
+      - fragmentation and compaction
+      - collection pauses
+      - free lists and allocator block-size strategy
+      - weak references
+      - distributed garbage collection
+      - external resource reclamation and explicit release
+      - write barriers
+      - conservative collection
+      - heap sizing and collector tuning
+      - GC safe points and stack maps
+      - accurate versus conservative pointer finding
+      - pinning and interior pointers
+      - escape analysis and stack allocation
+      - thread-local heaps
+      - read barriers
+      - ephemerons
+      - soft, weak and phantom reference strengths
+      - remembered sets and card tables
+      - tricolour abstraction and collector invariants
+      - arena and obstack allocation with bulk release
+      - scoped and immortal memory areas
+      - atom and clause garbage collection
+      - trail and choice-point reclamation on backtracking
+      - temporal memory safety enforcement
+      - smart pointers and automatic reference counting
+      - allocation colour and safe-memory reclamation
+      - idle-time and feedback-driven collection scheduling
+      - mark-compact and compaction order
+      - mark-region and line-granularity reclamation
+      - space leaks from reachable but unused data
+      - storage duration classes and object lifetime
+      - static capabilities for memory protocols
+      - heap profiling and retainer analysis
+      - handles and collector interaction with foreign code
+      - safely derived pointers
+      - ownership transfer and move semantics
+      - collector control and tuning APIs exposed to programs
+      - mutator-collector interface (barriers, safe points, handshakes)
+      - per-object metadata and header overhead
+      - heap parsability and filler objects
+      - allocation colour and collector phase invariants
+      - promotion on sharing and object globalisation
+      - moving versus non-moving collection
+      - allocator fit policies (first-, next-, best-fit)
+      - splitting and coalescing, deferred coalescing
+      - splitting thresholds
+      - boundary tags and allocator metadata
+      - wilderness preservation
+      - indexed and bitmapped fits
   - slug: concurrency
     label: Concurrency
     summary: >-
-      Models for concurrent and parallel execution and the synchronization they imply.
-    seed_terms: [threads, actors, message passing, communicating sequential processes,
-                 software transactional memory, async await, data race freedom]
+      Models for concurrent and parallel execution, the activities they introduce (threads, processes,
+      actors, tasks, coroutines), the communication and synchronization they imply (shared state with
+      locks, monitors and transactions; message passing over ports, mailboxes and channels; dataflow synchronization),
+      the ordering guarantees languages specify for them, and the correctness and progress hazards these
+      mechanisms address (races, deadlock, starvation, liveness) together with the cost model of parallel
+      execution.
+    seed_terms:
+      - threads
+      - actors
+      - message passing
+      - communicating sequential processes
+      - software transactional memory
+      - async await
+      - data race freedom
+      - monitors and condition variables
+      - semaphores
+      - locks and mutual exclusion
+      - preemptive versus cooperative scheduling
+      - fairness
+      - dataflow variables
+      - declarative concurrency
+      - memory model and happens-before
+      - structured concurrency and cancellation
+      - parallelism versus concurrency
+      - futures and promises
+      - coroutines and quasi-concurrency
+      - data parallelism
+      - atomics and lock-free synchronization
+      - channels and select
+      - race condition
+      - deadlock and deadlock avoidance
+      - starvation and liveness
+      - work and depth
+      - granularity of parallelism
+      - nonblocking algorithms
+      - reader-writer locks
+      - barriers
+      - process isolation and failure detection
+      - selective receive and mailboxes
+      - static data-race prevention (actor isolation, send/sync types)
+      - progress guarantees (wait-free, lock-free, obstruction-free)
+      - forward-progress assumptions in language specifications
+      - memory fences and per-operation memory orderings
+      - tuple spaces and coordination models
+      - ports and active objects
+      - work stealing and lazy task creation
+      - thread pools and worker sessions
+      - reproducible parallel random-number streams
+      - priority inversion avoidance
+      - reader-writer locks and latches
+      - global interpreter lock
+      - interpreter isolation as a concurrency model
+      - deferred and biased reference counting for thread safety
+      - consensus power of synchronization primitives
+      - compare-and-swap, DCAS and load-linked/store-conditional
+      - universal constructions for concurrent data structures
+      - consistency model taxonomy (strict, causal, release, weak)
+      - helping mechanisms in lock-free algorithms
+      - supervision and error-propagation links
+      - linearizability and linearization points
+      - speculation and rollback
+      - observable nondeterminism
+      - concurrent versus parallel versus distributed
+      - cache coherence and false sharing
+      - deferred reclamation (RCU, hazard pointers)
+      - actor reentrancy
+      - signal and message ordering guarantees
+      - logical clocks and happened-before as a partial order
+      - dataflow variables, streams and stream objects
+      - rendezvous, task entries and protected objects
+      - work sharing versus work stealing
+      - scoped threads and borrowing across threads
+      - termination detection
   - slug: higher-order-programming
     label: Higher-order programming
     summary: >-
       First-class functions, closures, currying and the abstractions built from them.
-    seed_terms: [first-class functions, closures, lambda, currying, partial application,
-                 higher-order function]
+    seed_terms: [first-class functions, closures, lambda, currying, partial application, 
+          higher-order function]
   - slug: adts-and-pattern-matching
     label: ADTs and pattern matching
     summary: >-
       Algebraic data types, variants, destructuring and exhaustiveness.
-    seed_terms: [algebraic data type, sum type, product type, pattern matching,
-                 exhaustiveness checking, destructuring]
+    seed_terms: [algebraic data type, sum type, product type, pattern matching, exhaustiveness 
+          checking, destructuring]
   - slug: modules
     label: Modules
     summary: >-
       Modularity, namespacing, interfaces, separate compilation and functors.
-    seed_terms: [module system, namespace, interface, separate compilation, functor,
-                 information hiding]
+    seed_terms: [module system, namespace, interface, separate compilation, functor, information 
+          hiding]
   - slug: metaprogramming
     label: Metaprogramming
     summary: >-
       Macros, reflection, staged computation and code generation.
-    seed_terms: [macro, hygienic macro, reflection, staged computation, code generation,
-                 template metaprogramming]
+    seed_terms: [macro, hygienic macro, reflection, staged computation, code generation, template 
+          metaprogramming]
   - slug: evaluation-and-parameter-passing
     label: Evaluation and parameter passing
     summary: >-
       Evaluation order, strictness, and how arguments reach a callee.
-    seed_terms: [call by value, call by reference, call by name, lazy evaluation,
-                 strictness, evaluation order]
+    seed_terms: [call by value, call by reference, call by name, lazy evaluation, strictness, 
+          evaluation order]
   - slug: effects-and-exceptions
     label: Effects and exceptions
     summary: >-
       Effect tracking, exception handling, error values and resource safety.
-    seed_terms: [exception handling, checked exceptions, effect system, error values,
-                 resource acquisition is initialization, algebraic effects]
+    seed_terms: [exception handling, checked exceptions, effect system, error values, resource 
+          acquisition is initialization, algebraic effects]
   - slug: dispatch-and-inheritance
     label: Dispatch and inheritance
     summary: >-
       Method dispatch, subtyping relationships, inheritance, traits and protocols.
-    seed_terms: [dynamic dispatch, single dispatch, multiple dispatch, inheritance,
-                 mixin, trait, protocol, interface default method]
+    seed_terms: [dynamic dispatch, single dispatch, multiple dispatch, inheritance, mixin, trait, 
+          protocol, interface default method]
   - slug: syntax-layer-constructs
     label: Syntax-layer constructs
     summary: >-
       Layer-1 surface constructs: block structure, significant whitespace, operators,
       literals and the grammar-level choices they encode.
-    seed_terms: [significant whitespace, block delimiter, operator overloading,
-                 literal syntax, expression-oriented syntax]
+    seed_terms: [significant whitespace, block delimiter, operator overloading, literal syntax, 
+          expression-oriented syntax]
   - slug: qualities-vocabulary
     label: Qualities vocabulary
     summary: >-
       The controlled quality vocabulary itself (readability, safety, performance,
       learnability, ...) and what the literature actually supports about it.
-    seed_terms: [readability, maintainability, safety, performance, learnability,
-                 expressiveness, empirical evidence]
+    seed_terms: [readability, maintainability, safety, performance, learnability, expressiveness, 
+          empirical evidence]
     note: >-
       Feeds ontology/taxonomy/qualities.yaml rather than features/; Kaijanaho (2015) is
       the ratified empirical-evidence source for quality edges.

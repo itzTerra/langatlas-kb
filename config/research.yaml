@@ -13,8 +13,9 @@ survey:
     # exactly to the old cap, truncating a query's genuine top-k hits rather than
     # reflecting real scarcity. Raised again the same day, 800 -> 1200, for the same
     # reason once concurrency's corrected 32-term seed list (see D70/themes.yaml history)
-    # hit 800 exactly too.
-    max_chunks: 1200
+    # hit 800 exactly too. Raised again on 2026-10-03, 1200 -> 1800: concurrency's round-5
+    # widening (32 -> 42 terms) hit 1200 exactly too.
+    max_chunks: 1800
   tagger:
     alias: glm                      # volume lane: university API only (D6). Was deepseek;
                                      # switched 2026-09-26 after the gateway started
@@ -37,9 +38,11 @@ survey:
     max_packet_terms: 70
     # Inventory entries accepted from one run. Raised from 80 on 2026-09-27: cycle 3's
     # widened (32-term) concurrency pool genuinely surfaced 98, then 131, candidates —
-    # both over the cap in force at the time. Set well above the second overshoot rather
-    # than incrementally, to avoid a third ~20-minute surveyor rerun over a near-miss.
-    max_candidates: 200
+    # both over the cap in force at the time. Raised again on 2026-10-04, 200 -> 350:
+    # after the chunk-id citation fix (tools/ingest's render_for_prompt), the surveyor
+    # reliably found far more real, evidenced candidates per run (197, then 217 over the
+    # old cap) — set well above the new overshoot rather than incrementally.
+    max_candidates: 350
   scout:
     model: null
     max_turns: 80

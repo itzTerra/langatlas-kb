@@ -1,6 +1,6 @@
 cycle: 3
 theme: concurrency
-theme_digest: ffa27761ff610882
+theme_digest: 2bb7d5e7d229092f
 status: signed-off
 languages:
   - elixir
@@ -12,5 +12,5 @@ nodes_minted: []
 artifacts: {}
 signed_off:
   by: Michal Doležel
-  date: '2026-09-20'
-  theme_digest: ffa27761ff610882
+  date: '2026-10-03'
+  theme_digest: 2bb7d5e7d229092f
