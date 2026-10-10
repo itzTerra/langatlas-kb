@@ -1,0 +1,1429 @@
+cycle: 2
+theme: memory-management
+theme_digest: 6f27faeff90ccc69
+generated_at: '2026-10-10T18:02:51Z'
+runs:
+  surveyor: 2026-10-10-r3-survey-02-memory-management-04
+  scout: 2026-10-10-r3-scout-02-memory-management-01
+tagging:
+  prompt: r3-tagger@v-f1961f62
+  models:
+    - glm
+  chunks_tagged: 1582
+  chunks_relevant: 1069
+pool:
+  digest: 3d52f96ab78f0d79
+  chunk_count: 1582
+  queries:
+    - Memory management
+    - 'How storage is allocated, reclaimed and made safe: manual management, tracing and reference-counting
+      collectors and their variants, ownership and borrowing, regions and lifetimes, destructors and finalization,
+      and the failure modes (dangling pointers, leaks, fragmentation, pauses) these disciplines trade
+      against.'
+    - garbage collection
+    - manual memory management
+    - ownership
+    - borrow checking
+    - reference counting
+    - region inference
+    - tracing collection
+    - mark-and-sweep
+    - copying collection
+    - generational collection
+    - destructors and finalization
+    - linear and affine types
+    - dangling pointers and leaks
+    - fragmentation and compaction
+    - collection pauses
+    - free lists and allocator block-size strategy
+    - weak references
+    - distributed garbage collection
+    - external resource reclamation and explicit release
+    - write barriers
+    - conservative collection
+    - heap sizing and collector tuning
+    - GC safe points and stack maps
+    - accurate versus conservative pointer finding
+    - pinning and interior pointers
+    - escape analysis and stack allocation
+    - thread-local heaps
+    - read barriers
+    - ephemerons
+    - soft, weak and phantom reference strengths
+    - remembered sets and card tables
+    - tricolour abstraction and collector invariants
+    - arena and obstack allocation with bulk release
+    - scoped and immortal memory areas
+    - atom and clause garbage collection
+    - trail and choice-point reclamation on backtracking
+    - temporal memory safety enforcement
+    - smart pointers and automatic reference counting
+    - allocation colour and safe-memory reclamation
+    - idle-time and feedback-driven collection scheduling
+    - mark-compact and compaction order
+    - mark-region and line-granularity reclamation
+    - space leaks from reachable but unused data
+    - storage duration classes and object lifetime
+    - static capabilities for memory protocols
+    - heap profiling and retainer analysis
+    - handles and collector interaction with foreign code
+    - safely derived pointers
+    - ownership transfer and move semantics
+    - collector control and tuning APIs exposed to programs
+    - mutator-collector interface (barriers, safe points, handshakes)
+    - per-object metadata and header overhead
+    - heap parsability and filler objects
+    - allocation colour and collector phase invariants
+    - promotion on sharing and object globalisation
+    - moving versus non-moving collection
+    - allocator fit policies (first-, next-, best-fit)
+    - splitting and coalescing, deferred coalescing
+    - splitting thresholds
+    - boundary tags and allocator metadata
+    - wilderness preservation
+    - indexed and bitmapped fits
+checklist:
+  mirror_versions:
+    pldb: 00522ea57a40a0bca9f56b424556af6734634831
+    hyperpolyglot: 83a34e1ec620
+  gap_terms:
+    - GC safe points and stack maps
+    - accurate versus conservative pointer finding
+    - allocation colour and collector phase invariants
+    - allocation colour and safe-memory reclamation
+    - allocator fit policies (first-, next-, best-fit)
+    - arena and obstack allocation with bulk release
+    - atom and clause garbage collection
+    - borrow checking
+    - boundary tags and allocator metadata
+    - collection pauses
+    - collector control and tuning APIs exposed to programs
+    - conservative collection
+    - copying collection
+    - dangling pointers and leaks
+    - destructors and finalization
+    - distributed garbage collection
+    - ephemerons
+    - escape analysis and stack allocation
+    - external resource reclamation and explicit release
+    - fragmentation and compaction
+    - free lists and allocator block-size strategy
+    - garbage collection
+    - generational collection
+    - handles and collector interaction with foreign code
+    - heap parsability and filler objects
+    - heap profiling and retainer analysis
+    - heap sizing and collector tuning
+    - idle-time and feedback-driven collection scheduling
+    - indexed and bitmapped fits
+    - linear and affine types
+    - manual memory management
+    - mark-and-sweep
+    - mark-compact and compaction order
+    - mark-region and line-granularity reclamation
+    - moving versus non-moving collection
+    - mutator-collector interface (barriers, safe points, handshakes)
+    - ownership
+    - ownership transfer and move semantics
+    - per-object metadata and header overhead
+    - pinning and interior pointers
+    - promotion on sharing and object globalisation
+    - read barriers
+    - reference counting
+    - region inference
+    - remembered sets and card tables
+    - safely derived pointers
+    - scoped and immortal memory areas
+    - smart pointers and automatic reference counting
+    - soft, weak and phantom reference strengths
+    - space leaks from reachable but unused data
+    - splitting and coalescing, deferred coalescing
+    - splitting thresholds
+    - static capabilities for memory protocols
+    - storage duration classes and object lifetime
+    - temporal memory safety enforcement
+    - thread-local heaps
+    - tracing collection
+    - trail and choice-point reclamation on backtracking
+    - tricolour abstraction and collector invariants
+    - weak references
+    - wilderness preservation
+    - write barriers
+candidates:
+  - key: mark-sweep-collection
+    name: Mark-sweep garbage collection
+    gloss: Tracing collector that marks reachable objects from roots then sweeps the heap, freeing 
+      anything left unmarked.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00117
+        source_id: jones-hosking-moss-2012
+        locator: pp. 56–57
+      - chunk_id: jones-hosking-moss-2012#c00118
+        source_id: jones-hosking-moss-2012
+        locator: p. 57
+    aliases:
+      - label: mark and sweep
+  - key: tricolour-abstraction
+    name: Tricolour abstraction
+    gloss: Model colouring objects white, grey or black to reason about tracing progress and the 
+      invariants concurrent collectors must preserve.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00124
+        source_id: jones-hosking-moss-2012
+        locator: §2.2
+    aliases: []
+  - key: semispace-copying-collection
+    name: Semispace copying collection
+    gloss: Tracing collector that evacuates live objects from one half of the heap to the other, 
+      compacting as it copies.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00176
+        source_id: jones-hosking-moss-2012
+        locator: §4.1
+      - chunk_id: turbak-gifford-dcpl#c01754
+        source_id: turbak-gifford-dcpl
+        locator: pp. 1159–1160
+      - chunk_id: jones-hosking-moss-2012#c00174
+        source_id: jones-hosking-moss-2012
+        locator: p. 84
+    aliases:
+      - label: stop-and-copy GC
+        chunk_id: turbak-gifford-dcpl#c01754
+      - label: copying garbage collection
+        chunk_id: jones-hosking-moss-2012#c00174
+  - key: cheney-scan
+    name: Cheney's scanning algorithm
+    gloss: Breadth-first work-list technique for copying collection that uses the to-space itself as
+      the scan/free queue.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00178
+        source_id: jones-hosking-moss-2012
+        locator: pp. 86–87
+      - chunk_id: jones-hosking-moss-2012#c00180
+        source_id: jones-hosking-moss-2012
+        locator: p. 87
+    aliases: []
+  - key: mark-compact-collection
+    name: Mark-compact garbage collection
+    gloss: Tracing collector that marks live objects then slides or relocates them in place to 
+      eliminate fragmentation without a second heap half.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00150
+        source_id: jones-hosking-moss-2012
+        locator: p. 72
+      - chunk_id: jones-hosking-moss-2012#c00153
+        source_id: jones-hosking-moss-2012
+        locator: p. 73
+      - chunk_id: v8-orinoco-trash-talk#c00003
+        source_id: v8-orinoco-trash-talk
+        locator: '#compaction'
+    aliases: []
+  - key: compaction-order
+    name: Compaction order (arbitrary, linearising, sliding)
+    gloss: The policy a moving collector uses to decide where relocated objects end up, trading 
+      locality against implementation simplicity.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00151
+        source_id: jones-hosking-moss-2012
+        locator: pp. 72–73
+    aliases: []
+  - key: generational-garbage-collection
+    name: Generational garbage collection
+    gloss: Collector strategy that segregates objects by age and collects younger generations more 
+      often, exploiting that most objects die young.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00328
+        source_id: jones-hosking-moss-2012
+        locator: p. 154
+      - chunk_id: dotnet-gc-fundamentals#c00009
+        source_id: dotnet-gc-fundamentals
+        locator: '#generations'
+      - chunk_id: v8-orinoco-trash-talk#c00004
+        source_id: v8-orinoco-trash-talk
+        locator: '#generational-layout'
+    aliases:
+      - label: generation scavenging
+  - key: weak-generational-hypothesis
+    name: Weak generational hypothesis
+    gloss: Empirical observation that most allocated objects become unreachable very soon after 
+      allocation, motivating generational collector design.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: degenbaev-et-al-2016-concurrent-marking#c00001
+        source_id: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 1
+      - chunk_id: v8-orinoco-trash-talk#c00004
+        source_id: v8-orinoco-trash-talk
+        locator: '#generational-layout'
+    aliases: []
+  - key: reference-counting-gc
+    name: Reference counting
+    gloss: Direct reclamation scheme that tags each object with a count of pointers to it and frees 
+      it when the count drops to zero.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00205
+        source_id: jones-hosking-moss-2012
+        locator: §5.1
+      - chunk_id: jones-hosking-moss-2012#c00201
+        source_id: jones-hosking-moss-2012
+        locator: §5.1
+      - chunk_id: turbak-gifford-dcpl#c01748
+        source_id: turbak-gifford-dcpl
+        locator: §18.3.1
+    aliases: []
+  - key: reference-counting-cycle-problem
+    name: Reference-count cycle uncollectability
+    gloss: The inherent inability of plain reference counting to reclaim isolated cyclic data 
+      structures whose internal counts never fall to zero.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00206
+        source_id: jones-hosking-moss-2012
+        locator: §5.1
+      - chunk_id: pep-442#c00002
+        source_id: pep-442
+        locator: § Definitions
+    aliases:
+      - label: reference cycle
+        chunk_id: pep-442#c00002
+  - key: deferred-reference-counting
+    name: Deferred reference counting
+    gloss: Reference-counting variant that skips incrementing/decrementing counts for pointers 
+      stored in roots, reducing mutator overhead.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00259
+        source_id: jones-hosking-moss-2012
+        locator: p. 124
+      - chunk_id: jones-hosking-moss-2012#c00261
+        source_id: jones-hosking-moss-2012
+        locator: p. 126
+    aliases: []
+  - key: cyclic-reference-counting
+    name: Cyclic (trial-deletion) reference counting
+    gloss: Partial-tracing extension to reference counting that finds and reclaims garbage cycles by
+      trial-decrementing suspect subgraphs.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00225
+        source_id: jones-hosking-moss-2012
+        locator: §5.5
+      - chunk_id: jones-hosking-moss-2012#c01021
+        source_id: jones-hosking-moss-2012
+        locator: §18.5
+    aliases:
+      - label: the Recycler
+        chunk_id: jones-hosking-moss-2012#c01021
+  - key: gc-mutator-interface
+    name: Mutator/collector interface (New, Read, Write)
+    gloss: The abstract set of program operations a garbage collector must intercept or augment to 
+      track allocation and pointer updates.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00109
+        source_id: jones-hosking-moss-2012
+        locator: p. 53
+    aliases: []
+  - key: ownership-rust
+    name: Ownership
+    gloss: Discipline where each value has exactly one owning binding responsible for its 
+      destruction, statically tracked by the compiler.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-fls#c00379
+        source_id: rust-fls
+        locator: § 15.5. Passing Conventions¶
+      - chunk_id: jones-hosking-moss-2012#c00071
+        source_id: jones-hosking-moss-2012
+        locator: §1.1
+    aliases: []
+  - key: borrowing
+    name: Borrowing
+    gloss: Mechanism for creating a temporary reference to a value without transferring ownership, 
+      checked against aliasing and mutation rules.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-fls#c00167
+        source_id: rust-fls
+        locator: § 6.5.1. Borrow Expression¶
+      - chunk_id: rust-fls#c00378
+        source_id: rust-fls
+        locator: § 15.4. Borrowing¶
+      - chunk_id: rust-reference#c00423
+        source_id: rust-reference
+        locator: p. 329
+    aliases:
+      - label: borrow expression
+        chunk_id: rust-fls#c00167
+  - key: move-semantics
+    name: Move semantics / passing by move
+    gloss: Transfer of ownership of a value between bindings that leaves the source unusable rather 
+      than copying the value's contents.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-fls#c00379
+        source_id: rust-fls
+        locator: § 15.5. Passing Conventions¶
+      - chunk_id: wg21-n1856#c00019
+        source_id: wg21-n1856
+        locator: § Addition - Class template unqiue_ptr
+      - chunk_id: wg21-n1856#c00029
+        source_id: wg21-n1856
+        locator: § Addition - Class template unqiue_ptr
+    aliases:
+      - label: passing convention
+        chunk_id: rust-fls#c00379
+  - key: region-based-memory-management
+    name: Region-based memory management
+    gloss: Discipline allocating values into lexically or inferred regions that are reclaimed as a 
+      whole unit, often in constant time.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00421
+        source_id: jones-hosking-moss-2012
+        locator: p. 193
+      - chunk_id: turbak-gifford-dcpl#c01530
+        source_id: turbak-gifford-dcpl
+        locator: §16.3.5
+      - chunk_id: pierce-attapl-2004#c00210
+        source_id: pierce-attapl-2004
+        locator: §3.7
+    aliases:
+      - label: letregion
+        chunk_id: turbak-gifford-dcpl#c01531
+  - key: region-inference
+    name: Region inference
+    gloss: Static analysis (Tofte–Talpin) that automatically assigns program values to regions and 
+      inserts region allocation/deallocation points.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00214
+        source_id: pierce-attapl-2004
+        locator: §3.8
+      - chunk_id: pierce-attapl-2004#c00216
+        source_id: pierce-attapl-2004
+        locator: §3.8
+    aliases:
+      - label: multiplicity inference
+        chunk_id: pierce-attapl-2004#c00214
+  - key: smart-pointer
+    name: Smart pointer
+    gloss: A library type that overloads pointer-like operations to automate storage reclamation, 
+      such as unique or shared ownership pointers.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00072
+        source_id: jones-hosking-moss-2012
+        locator: §1.1
+      - chunk_id: wg21-n1450#c00041
+        source_id: wg21-n1450
+        locator: § C. Class template shared_ptr
+    aliases: []
+  - key: unique-ownership-pointer
+    name: Unique-ownership pointer (unique_ptr)
+    gloss: A smart pointer providing strict single-ownership semantics that destroys its referent 
+      when the pointer itself is destroyed.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c01375
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §1
+      - chunk_id: wg21-n1856#c00024
+        source_id: wg21-n1856
+        locator: § Addition - Class template unqiue_ptr
+    aliases:
+      - label: auto_ptr (superseded)
+        chunk_id: wg21-n1856#c00024
+  - key: shared-ownership-pointer
+    name: Shared-ownership (reference-counted) pointer
+    gloss: A smart pointer implementing shared ownership where the last owner is responsible for 
+      releasing the referenced resource.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c01375
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §1
+      - chunk_id: wg21-n1450#c00041
+        source_id: wg21-n1450
+        locator: § C. Class template shared_ptr
+    aliases:
+      - label: shared_ptr
+        chunk_id: wg21-n1450#c00041
+  - key: finalizer
+    name: Finalizer
+    gloss: A method the runtime invokes on an object before reclaiming its storage, used to release 
+      resources that storage reclamation alone cannot free.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00822
+        source_id: ecma-334-7th
+        locator: §15.13
+      - chunk_id: jls-se25#c00647
+        source_id: jls-se25
+        locator: §12.6
+      - chunk_id: python-langref-3#c00103
+        source_id: python-langref-3
+        locator: § 3.3.1. Basic customization
+    aliases:
+      - label: __del__
+        chunk_id: python-langref-3#c00103
+  - key: destructor
+    name: Destructor
+    gloss: A deterministic member function invoked at a well-defined point in an object's scope exit
+      to release its resources.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00821
+        source_id: ecma-334-7th
+        locator: §15.13
+      - chunk_id: rust-fls#c00382
+        source_id: rust-fls
+        locator: § 15.7. Destructors¶
+    aliases:
+      - label: Drop::drop
+        chunk_id: rust-fls#c00382
+  - key: object-resurrection
+    name: Object resurrection
+    gloss: The situation where a finalizer creates a new reference to the object being finalized, 
+      postponing or repeating its destruction.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00103
+        source_id: python-langref-3
+        locator: § 3.3.1. Basic customization
+      - chunk_id: pep-442#c00005
+        source_id: pep-442
+        locator: § Reference-counted disposal
+    aliases: []
+  - key: drop-scope
+    name: Drop scope
+    gloss: The lexical region of code associated with a variable or temporary, determining the point
+      at which its destructor runs.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: rust-reference#c00617
+        source_id: rust-reference
+        locator: pp. 475–476
+      - chunk_id: rust-fls#c00382
+        source_id: rust-fls
+        locator: § 15.7. Destructors¶
+    aliases: []
+  - key: weak-reference
+    name: Weak reference
+    gloss: A reference that does not by itself keep its referent alive, allowing the collector to 
+      reclaim the referent while the reference is cleared.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00619
+        source_id: jones-hosking-moss-2012
+        locator: §12.2
+      - chunk_id: jones-hosking-moss-2012#c00637
+        source_id: jones-hosking-moss-2012
+        locator: p. 277
+    aliases: []
+  - key: reference-strength-hierarchy
+    name: Reference strength hierarchy (soft/weak/phantom)
+    gloss: A ranked set of reference kinds (strong, soft, weak, finaliser, phantom) each defining a 
+      different threshold of reachability for collection.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00626
+        source_id: jones-hosking-moss-2012
+        locator: p. 273
+      - chunk_id: jones-hosking-moss-2012#c00633
+        source_id: jones-hosking-moss-2012
+        locator: pp. 275–276
+    aliases: []
+  - key: ephemeron
+    name: Ephemeron
+    gloss: A weak key/value pair whose value is only strongly held while its key remains reachable, 
+      enabling safe per-object side tables.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00637
+        source_id: jones-hosking-moss-2012
+        locator: p. 277
+      - chunk_id: sivaramakrishnan-et-al-2020#c00043
+        source_id: sivaramakrishnan-et-al-2020
+        locator: p. 15
+    aliases: []
+  - key: write-barrier
+    name: Write barrier
+    gloss: Code the collector injects into pointer-store operations to record information (e.g. for 
+      generational or concurrent collection) needed for correctness.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00109
+        source_id: jones-hosking-moss-2012
+        locator: p. 53
+      - chunk_id: jones-hosking-moss-2012#c00844
+        source_id: jones-hosking-moss-2012
+        locator: pp. 374–375
+      - chunk_id: jones-hosking-moss-2012#c00566
+        source_id: jones-hosking-moss-2012
+        locator: p. 251
+    aliases: []
+  - key: read-barrier
+    name: Read barrier
+    gloss: Code the collector injects into pointer-load operations, used by some concurrent and 
+      copying collectors to maintain tracing invariants.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00847
+        source_id: jones-hosking-moss-2012
+        locator: pp. 376–377
+      - chunk_id: jones-hosking-moss-2012#c00849
+        source_id: jones-hosking-moss-2012
+        locator: p. 377
+    aliases: []
+  - key: incremental-update-vs-snapshot-barriers
+    name: Incremental-update vs snapshot-at-the-beginning barriers
+    gloss: Two families of concurrent-collector barrier techniques that preserve either a strong (no
+      black-to-white pointer) or weak tracing invariant.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00844
+        source_id: jones-hosking-moss-2012
+        locator: pp. 374–375
+      - chunk_id: jones-hosking-moss-2012#c00847
+        source_id: jones-hosking-moss-2012
+        locator: pp. 376–377
+    aliases:
+      - label: insertion barrier / deletion barrier
+        chunk_id: jones-hosking-moss-2012#c00844
+  - key: card-table-remembered-set
+    name: Card table remembered set
+    gloss: A side table dividing the heap into small cards, marked dirty by write barriers to let 
+      generational or regional collectors find cross-region pointers cheaply.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00556
+        source_id: jones-hosking-moss-2012
+        locator: pp. 246–247
+      - chunk_id: jones-hosking-moss-2012#c00428
+        source_id: jones-hosking-moss-2012
+        locator: §10.4
+      - chunk_id: jones-hosking-moss-2012#c00853
+        source_id: jones-hosking-moss-2012
+        locator: p. 379
+    aliases: []
+  - key: conservative-garbage-collection
+    name: Conservative garbage collection
+    gloss: Collection technique for uncooperative languages that treats ambiguous stack/register 
+      slots as possible pointers without compiler type information.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00129
+        source_id: jones-hosking-moss-2012
+        locator: §2.4
+      - chunk_id: jones-hosking-moss-2012#c00309
+        source_id: jones-hosking-moss-2012
+        locator: p. 147
+    aliases:
+      - label: Boehm-Demers-Weiser collector
+        chunk_id: jones-hosking-moss-2012#c01328
+  - key: accurate-pointer-finding
+    name: Accurate (type-precise) pointer finding
+    gloss: Technique giving the collector exact knowledge of which stack, register or object slots 
+      hold pointers, enabling moving collection.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00129
+        source_id: jones-hosking-moss-2012
+        locator: §2.4
+      - chunk_id: jones-hosking-moss-2012#c00502
+        source_id: jones-hosking-moss-2012
+        locator: p. 228
+    aliases: []
+  - key: gc-safe-point
+    name: GC safe point
+    gloss: A program location at which it is correct to suspend a thread for garbage collection 
+      because collector invariants hold there.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00525
+        source_id: jones-hosking-moss-2012
+        locator: §11.6
+      - chunk_id: jones-hosking-moss-2012#c00524
+        source_id: jones-hosking-moss-2012
+        locator: §11.6
+    aliases:
+      - label: GC-point
+        chunk_id: jones-hosking-moss-2012#c00524
+  - key: stack-map
+    name: Stack map
+    gloss: A compiler-generated table describing which stack frame slots hold pointers at a given 
+      instruction, used by the collector during root scanning.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00502
+        source_id: jones-hosking-moss-2012
+        locator: p. 228
+      - chunk_id: jones-hosking-moss-2012#c00590
+        source_id: jones-hosking-moss-2012
+        locator: §11.12
+    aliases: []
+  - key: escape-analysis
+    name: Escape analysis
+    gloss: Static analysis determining whether an object's lifetime is confined to the allocating 
+      method or thread, enabling stack allocation or lock elision.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: choi-et-al-1999#c00000
+        source_id: choi-et-al-1999
+        locator: p. 1
+      - chunk_id: choi-et-al-1999#c00002
+        source_id: choi-et-al-1999
+        locator: p. 1
+    aliases: []
+  - key: stack-allocation-of-heap-objects
+    name: Compiler-driven stack allocation
+    gloss: Optimization that places an object on the call stack instead of the heap when escape 
+      analysis proves it does not outlive its allocating frame.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: choi-et-al-1999#c00037
+        source_id: choi-et-al-1999
+        locator: p. 13
+      - chunk_id: choi-et-al-1999#c00049
+        source_id: choi-et-al-1999
+        locator: p. 17
+    aliases: []
+  - key: free-list-allocation
+    name: Free-list allocation
+    gloss: Allocator design that records free memory cells in a data structure and selects one to 
+      satisfy each allocation request.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00267
+        source_id: jones-hosking-moss-2012
+        locator: §7.2
+      - chunk_id: jones-hosking-moss-2012#c00274
+        source_id: jones-hosking-moss-2012
+        locator: pp. 132–134
+    aliases: []
+  - key: allocator-fit-policy
+    name: Allocator fit policy (first-, next-, best-fit)
+    gloss: The rule a sequential free-list allocator uses to choose among candidate free cells for a
+      given allocation request.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00267
+        source_id: jones-hosking-moss-2012
+        locator: §7.2
+      - chunk_id: wilson-et-al-1995#c00185
+        source_id: wilson-et-al-1995
+        locator: §4
+    aliases: []
+  - key: segregated-fits-allocation
+    name: Segregated-fits allocation
+    gloss: Allocator design maintaining a separate free list per size class so most allocations run 
+      in constant time.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00281
+        source_id: jones-hosking-moss-2012
+        locator: §7.4
+      - chunk_id: jones-hosking-moss-2012#c00286
+        source_id: jones-hosking-moss-2012
+        locator: §7.5
+    aliases: []
+  - key: buddy-system-allocation
+    name: Buddy system allocation
+    gloss: Allocator scheme using power-of-two (or Fibonacci) size classes that splits and coalesces
+      blocks with their unique buddy neighbour.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00285
+        source_id: jones-hosking-moss-2012
+        locator: pp. 137–138
+      - chunk_id: scott-plp#c00172
+        source_id: scott-plp
+        locator: p. 185
+      - chunk_id: wilson-et-al-1995#c00113
+        source_id: wilson-et-al-1995
+        locator: §3
+    aliases:
+      - label: Fibonacci buddy system
+        chunk_id: wilson-et-al-1995#c00113
+  - key: splitting-and-coalescing
+    name: Splitting and coalescing (including deferred coalescing)
+    gloss: Allocator mechanics of dividing a free block to satisfy a smaller request and merging 
+      adjacent free blocks back together, sometimes lazily.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: wilson-et-al-1995#c00007
+        source_id: wilson-et-al-1995
+        locator: p. 3
+      - chunk_id: scott-plp#c00172
+        source_id: scott-plp
+        locator: p. 185
+    aliases: []
+  - key: wilderness-preservation
+    name: Wilderness preservation heuristic
+    gloss: Allocator heuristic that treats the last, extensible block of the heap specially to 
+      reduce fragmentation near the OS-growable boundary.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: wilson-et-al-1995#c00185
+        source_id: wilson-et-al-1995
+        locator: §4
+      - chunk_id: jones-hosking-moss-2012#c00435
+        source_id: jones-hosking-moss-2012
+        locator: §10.5
+    aliases:
+      - label: wilderness boundary
+        chunk_id: jones-hosking-moss-2012#c00435
+  - key: bitmapped-fits-allocation
+    name: Bitmapped-fits allocation
+    gloss: Allocator technique using a side bitmap of free/allocated granules to search for a fit 
+      faster than scanning the heap directly.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00274
+        source_id: jones-hosking-moss-2012
+        locator: pp. 132–134
+    aliases: []
+  - key: internal-fragmentation
+    name: Internal fragmentation
+    gloss: Wasted space inside an allocated block left over when a request is rounded up to a larger
+      standard size class.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00172
+        source_id: scott-plp
+        locator: p. 185
+      - chunk_id: jones-hosking-moss-2012#c00150
+        source_id: jones-hosking-moss-2012
+        locator: p. 72
+    aliases: []
+  - key: external-fragmentation
+    name: External fragmentation
+    gloss: Heap-wide wastage where free memory exists but no contiguous region is large enough to 
+      satisfy a request.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00150
+        source_id: jones-hosking-moss-2012
+        locator: p. 72
+      - chunk_id: wilson-et-al-1995#c00045
+        source_id: wilson-et-al-1995
+        locator: §2
+    aliases: []
+  - key: fragmentation-time-varying-behavior
+    name: Fragmentation as a function of program phase behaviour
+    gloss: The empirical finding that fragmentation arises from isolated object deaths and 
+      time-varying allocation patterns rather than a fixed statistical property.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: wilson-et-al-1995#c00045
+        source_id: wilson-et-al-1995
+        locator: §2
+      - chunk_id: wilson-et-al-1995#c00056
+        source_id: wilson-et-al-1995
+        locator: §2
+    aliases: []
+  - key: arena-obstack-allocation
+    name: Arena / obstack bulk-release allocation
+    gloss: Custom allocator style that bump-allocates objects into a chunked region and frees an 
+      entire phase's objects at once.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: wilson-et-al-1995#c00191
+        source_id: wilson-et-al-1995
+        locator: §4
+      - chunk_id: wilson-et-al-1995#c00192
+        source_id: wilson-et-al-1995
+        locator: §4
+      - chunk_id: pierce-attapl-2004#c00216
+        source_id: pierce-attapl-2004
+        locator: §3.8
+    aliases:
+      - label: obstacks
+        chunk_id: wilson-et-al-1995#c00191
+      - label: zone system
+        chunk_id: wilson-et-al-1995#c00191
+  - key: thread-local-allocation-buffer
+    name: Thread-local allocation buffer
+    gloss: Per-thread chunk of heap space from which a thread allocates without synchronising with 
+      other threads, refilled from a global pool.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00299
+        source_id: jones-hosking-moss-2012
+        locator: §7.7
+      - chunk_id: jones-hosking-moss-2012#c00300
+        source_id: jones-hosking-moss-2012
+        locator: §7.7
+    aliases:
+      - label: local allocation buffer (LAB)
+        chunk_id: jones-hosking-moss-2012#c00300
+  - key: thread-local-garbage-collection
+    name: Thread-local garbage collection
+    gloss: Collector design that reclaims each thread's private heaplet independently, promoting 
+      objects to shared status only when they escape.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00410
+        source_id: jones-hosking-moss-2012
+        locator: p. 189
+    aliases: []
+  - key: pinning
+    name: Object pinning
+    gloss: Marking an object as immovable for the duration some external code or language feature 
+      needs a stable address to it.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00520
+        source_id: jones-hosking-moss-2012
+        locator: §11.4
+      - chunk_id: ecma-334-7th#c00988
+        source_id: ecma-334-7th
+        locator: §23.7
+    aliases:
+      - label: fixed statement
+        chunk_id: ecma-334-7th#c00988
+  - key: interior-pointer
+    name: Interior / derived pointer handling
+    gloss: Collector support for pointers computed as an offset into or arithmetic on an object, 
+      which complicates moving collection and root finding.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00512
+        source_id: jones-hosking-moss-2012
+        locator: p. 231
+      - chunk_id: jones-hosking-moss-2012#c00590
+        source_id: jones-hosking-moss-2012
+        locator: §11.12
+    aliases:
+      - label: derived pointers
+        chunk_id: jones-hosking-moss-2012#c00512
+  - key: safely-derived-pointer
+    name: Safely derived pointer
+    gloss: A pointer value a conservative collector or leak detector can prove was produced from a 
+      traceable object reference, as opposed to an opaque integer.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c01341
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §1
+    aliases:
+      - label: declare_reachable
+        chunk_id: iso-iec-14882-cpp20-n4861#c01341
+  - key: foreign-code-handle
+    name: Handles for foreign/external code interaction
+    gloss: Indirection layer letting native or external code reference managed objects safely 
+      without exposing movable addresses directly.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00590
+        source_id: jones-hosking-moss-2012
+        locator: §11.12
+      - chunk_id: jones-hosking-moss-2012#c00520
+        source_id: jones-hosking-moss-2012
+        locator: §11.4
+    aliases: []
+  - key: distributed-garbage-collection
+    name: Distributed garbage collection
+    gloss: Reclamation across process or machine boundaries, typically combining local collectors 
+      with cross-process techniques like weighted reference counting or leases.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01253
+        source_id: vanroy-haridi-2003
+        locator: §11.7.4
+      - chunk_id: jones-hosking-moss-2012#c01276
+        source_id: jones-hosking-moss-2012
+        locator: pp. 562–563
+    aliases: []
+  - key: weighted-reference-counting
+    name: Weighted reference counting
+    gloss: Distributed reference-counting variant where each remote reference carries a credit 
+      weight, avoiding per-reference acknowledgement messages.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01253
+        source_id: vanroy-haridi-2003
+        locator: §11.7.4
+    aliases: []
+  - key: time-lease-reclamation
+    name: Time-lease distributed reclamation
+    gloss: Failure-tolerant distributed GC mechanism where remote references must periodically renew
+      a lease or be presumed dead.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01253
+        source_id: vanroy-haridi-2003
+        locator: §11.7.4
+    aliases: []
+  - key: idle-time-gc-scheduling
+    name: Idle-time garbage-collection scheduling
+    gloss: Scheduling strategy that triggers collection work during application idle periods to 
+      minimise user-visible pause impact.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: degenbaev-et-al-2016-concurrent-marking#c00008
+        source_id: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 4
+      - chunk_id: degenbaev-et-al-2016-concurrent-marking#c00009
+        source_id: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 4
+    aliases: []
+  - key: incremental-concurrent-parallel-gc
+    name: Incremental, concurrent and parallel collection
+    gloss: Orthogonal techniques that split, overlap with the mutator, or multithread collector work
+      to reduce or hide stop-the-world pauses.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: degenbaev-et-al-2016-concurrent-marking#c00014
+        source_id: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 6
+    aliases: []
+  - key: heap-sizing-and-tuning
+    name: Heap sizing and collector tuning
+    gloss: Mechanisms and heuristics (promotion thresholds, growth factors, suggested heap size) 
+      that adjust collector behaviour to meet pause/throughput goals.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00356
+        source_id: jones-hosking-moss-2012
+        locator: p. 166
+      - chunk_id: ghc-users-guide#c00406
+        source_id: ghc-users-guide
+        locator: §5.7.3
+    aliases: []
+  - key: collector-control-api
+    name: Collector control API exposed to programs
+    gloss: Language- or runtime-level interface letting program code request, defer or tune garbage 
+      collection explicitly.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: python-gc-module-docs#c00002
+        source_id: python-gc-module-docs
+        locator: § gc — Garbage Collector interface¶
+      - chunk_id: dotnet-gc-fundamentals#c00005
+        source_id: dotnet-gc-fundamentals
+        locator: '#conditions-for-a-garbage-collection'
+    aliases:
+      - label: GC.Collect
+        chunk_id: dotnet-gc-fundamentals#c00005
+      - label: gc.set_threshold
+        chunk_id: python-gc-module-docs#c00002
+  - key: scoped-memory
+    name: Scoped memory area
+    gloss: A real-time-Java memory region with a programmer-defined lifetime whose contents are 
+      reclaimed when all referents leave scope, bypassing GC latency.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00083
+        source_id: rtsj-1-0-2-spec
+        locator: p. 48
+      - chunk_id: rtsj-1-0-2-spec#c00081
+        source_id: rtsj-1-0-2-spec
+        locator: p. 47
+    aliases: []
+  - key: immortal-memory
+    name: Immortal memory area
+    gloss: A memory region whose objects are never reclaimed during normal execution, giving 
+      non-heap real-time code GC-free access.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00392
+        source_id: rtsj-1-0-2-spec
+        locator: pp. 200–201
+      - chunk_id: rtsj-1-0-2-spec#c00081
+        source_id: rtsj-1-0-2-spec
+        locator: p. 47
+    aliases: []
+  - key: linear-types
+    name: Linear types
+    gloss: Substructural type discipline requiring every value be consumed exactly once, ruling out 
+      both discarding and duplicating it.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00018
+        source_id: pierce-attapl-2004
+        locator: §1.1
+      - chunk_id: pierce-attapl-2004#c00025
+        source_id: pierce-attapl-2004
+        locator: §1.2
+      - chunk_id: ghc-users-guide#c00814
+        source_id: ghc-users-guide
+        locator: §6.4.22
+    aliases: []
+  - key: affine-types
+    name: Affine types
+    gloss: Substructural type discipline requiring every value be used at most once, permitting 
+      discarding but not duplication.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pierce-attapl-2004#c00018
+        source_id: pierce-attapl-2004
+        locator: §1.1
+    aliases: []
+  - key: malloc-free-manual-allocation
+    name: malloc/free manual heap allocation
+    gloss: C-style explicit allocation functions that hand out and reclaim raw storage entirely 
+      under programmer control.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00792
+        source_id: c23-n3220
+        locator: §7.24.3
+      - chunk_id: c23-n3220#c00790
+        source_id: c23-n3220
+        locator: §7.24.3
+    aliases: []
+  - key: automatic-reference-counting-objc
+    name: Automatic Reference Counting (ARC)
+    gloss: Compiler-inserted retain/release memory management for Objective-C objects that frees 
+      programmers from writing manual retain/release calls but requires manual cycle breaking.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: clang-arc-spec#c00006
+        source_id: clang-arc-spec
+        locator: § General#
+      - chunk_id: clang-arc-spec#c00010
+        source_id: clang-arc-spec
+        locator: § Retain count semantics#
+      - chunk_id: clang-arc-spec#c00029
+        source_id: clang-arc-spec
+        locator: § Semantics#
+    aliases: []
+  - key: storage-duration
+    name: Storage duration classes
+    gloss: A classification (static, thread, automatic, allocated) of an object's lifetime that 
+      determines when its storage is reserved and released.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00130
+        source_id: c23-n3220
+        locator: §6.2.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00152
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §6
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00153
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §6
+    aliases: []
+  - key: using-statement-dispose-pattern
+    name: using statement / Dispose pattern
+    gloss: Language construct and idiom that deterministically calls a resource's release method at 
+      the end of a scope, complementing GC for non-memory resources.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00645
+        source_id: ecma-334-7th
+        locator: §13.14
+      - chunk_id: dotnet-idisposable-pattern#c00010
+        source_id: dotnet-idisposable-pattern
+        locator: '#base-class-with-unmanaged-resources'
+    aliases:
+      - label: IDisposable
+        chunk_id: dotnet-idisposable-pattern#c00010
+  - key: dangling-pointer
+    name: Dangling pointer
+    gloss: A pointer that still refers to the address of storage that has already been deallocated 
+      or reused for another object.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: szekeres-et-al-2013#c00009
+        source_id: szekeres-et-al-2013
+        locator: pp. 3–4
+      - chunk_id: vanroy-haridi-2003#c00190
+        source_id: vanroy-haridi-2003
+        locator: §2.4.7
+    aliases:
+      - label: dangling reference
+        chunk_id: vanroy-haridi-2003#c00190
+  - key: use-after-free
+    name: Use-after-free / double-free
+    gloss: A temporal memory-safety violation where freed memory is read, written, or freed again 
+      through a stale pointer, often exploitable.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: szekeres-et-al-2013#c00009
+        source_id: szekeres-et-al-2013
+        locator: pp. 3–4
+      - chunk_id: szekeres-et-al-2013#c00033
+        source_id: szekeres-et-al-2013
+        locator: p. 10
+    aliases: []
+  - key: memory-leak
+    name: Memory leak
+    gloss: A defect where unreachable or no-longer-needed storage is never reclaimed, causing memory
+      usage to grow until resources are exhausted.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00190
+        source_id: vanroy-haridi-2003
+        locator: §2.4.7
+      - chunk_id: jones-hosking-moss-2012#c00070
+        source_id: jones-hosking-moss-2012
+        locator: §1.1
+    aliases: []
+  - key: space-leak
+    name: Space leak from retained-but-unused data
+    gloss: A leak specific to lazy or garbage-collected languages where reachable but logically dead
+      data (often unevaluated thunks) is retained.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: ghc-users-guide#c01303
+        source_id: ghc-users-guide
+        locator: §8.5.2
+      - chunk_id: ghc-users-guide#c00269
+        source_id: ghc-users-guide
+        locator: §5.3.2
+    aliases: []
+  - key: heap-retainer-profiling
+    name: Retainer (heap) profiling
+    gloss: Diagnostic technique identifying which live objects (the system stack, thunks, mutable 
+      objects) keep a given piece of data reachable.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: ghc-users-guide#c01302
+        source_id: ghc-users-guide
+        locator: §8.5.2
+      - chunk_id: ghc-users-guide#c01303
+        source_id: ghc-users-guide
+        locator: §8.5.2
+    aliases: []
+  - key: temporal-memory-safety
+    name: Temporal memory safety enforcement
+    gloss: Guarantees or defenses preventing a pointer from being used outside its referent's 
+      lifetime, addressing dangling-pointer and use-after-free classes of bugs.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: szekeres-et-al-2013#c00033
+        source_id: szekeres-et-al-2013
+        locator: p. 10
+      - chunk_id: c23-n3220#c00130
+        source_id: c23-n3220
+        locator: §6.2.4
+    aliases: []
+  - key: prolog-trail-and-backtracking-reclamation
+    name: Trail and choice-point reclamation on backtracking
+    gloss: WAM mechanism recording conditional variable bindings in a trail so bindings and 
+      heap/stack space can be undone and reclaimed when a choice point fails.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: aitkaci-wam-1991#c00053
+        source_id: aitkaci-wam-1991
+        locator: §4.2
+      - chunk_id: aitkaci-wam-1991#c00054
+        source_id: aitkaci-wam-1991
+        locator: §4.2
+    aliases:
+      - label: choice point frame
+        chunk_id: aitkaci-wam-1991#c00054
+  - key: prolog-cut-choice-point-discard
+    name: Cut-driven choice-point discard
+    gloss: Prolog's cut operator explicitly discards choice points created since a marked point, 
+      immediately reclaiming their space.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: aitkaci-wam-1991#c00145
+        source_id: aitkaci-wam-1991
+        locator: pp. 126–127
+    aliases: []
+  - key: atom-and-clause-garbage-collection
+    name: Atom and clause garbage collection
+    gloss: Prolog-specific reclamation of interned atoms and retracted/erased clauses, distinct from
+      heap term garbage collection.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: swipl-manual-memory#c00001
+        source_id: swipl-manual-memory
+        locator: §4.43.1
+      - chunk_id: swipl-manual-memory#c00002
+        source_id: swipl-manual-memory
+        locator: §4.43.1
+    aliases:
+      - label: garbage_collect_atoms
+        chunk_id: swipl-manual-memory#c00001
+      - label: garbage_collect_clauses
+        chunk_id: swipl-manual-memory#c00002
+  - key: logic-programming-memory-management
+    name: Logic-programming memory management (usefulness logic)
+    gloss: A body of survey work analysing which runtime objects in logic-language implementations 
+      are live versus garbage and how they can be reclaimed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: bekkers-et-al-1992#c00000
+        source_id: bekkers-et-al-1992
+        locator: '#Abs1'
+    aliases: []
+  - key: mark-region-collection
+    name: Mark-region (line-granularity) collection
+    gloss: Collector style, exemplified by Immix, that marks at the granularity of lines within 
+      blocks and bump-allocates into recovered lines.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00435
+        source_id: jones-hosking-moss-2012
+        locator: §10.5
+    aliases:
+      - label: immix
+        chunk_id: jones-hosking-moss-2012#c00435
+  - key: garbage-first-regional-collection
+    name: Garbage-First (regional) collection
+    gloss: Collector dividing the heap into equal-sized regions and selecting an arbitrary subset 
+      for incremental young/old collection using region remembered sets.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00428
+        source_id: jones-hosking-moss-2012
+        locator: §10.4
+    aliases:
+      - label: G1
+        chunk_id: jones-hosking-moss-2012#c00428
+  - key: persistent-heap-durability
+    name: Persistent-heap durability and checkpoints
+    gloss: Techniques (redo/undo logs, durability barriers) that make garbage-collected heap state 
+      survive process restarts via persistent memory.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c01354
+        source_id: jones-hosking-moss-2012
+        locator: pp. 601–602
+    aliases: []
+  - key: ocaml-multicore-gc
+    name: Multicore OCaml collector design
+    gloss: A generational, incremental, non-moving-major, parallel collector retrofitted onto OCaml 
+      to add parallelism while preserving single-core performance.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: sivaramakrishnan-et-al-2020#c00013
+        source_id: sivaramakrishnan-et-al-2020
+        locator: p. 5
+      - chunk_id: sivaramakrishnan-et-al-2020#c00018
+        source_id: sivaramakrishnan-et-al-2020
+        locator: §3.2
+    aliases: []
+  - key: allocation-colour-states
+    name: Allocation colour / collector phase invariants
+    gloss: Per-object marking states (e.g. Marked, Unmarked, Garbage, Free) a concurrent collector 
+      uses in place of classic black/white/grey to avoid shared synchronisation.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: sivaramakrishnan-et-al-2020#c00018
+        source_id: sivaramakrishnan-et-al-2020
+        locator: §3.2
+    aliases: []
+unevidenced:
+  - key: concurrent-mark-sweep-pause-reduction
+    name: Concurrent mark-sweep pause reduction techniques
+    gloss: Specific CMS/ZGC/Shenandoah pause-reduction engineering beyond what Jones-Hosking-Moss 
+      covers generically.
+    origin: prior
+    search_hint: OpenJDK ZGC/Shenandoah design documents or JEP 333/379
+    disposition: dropped
+  - key: rust-lifetime-elision-rules
+    name: Rust lifetime elision rules
+    gloss: The specific compiler rules for inferring lifetime parameters without explicit 
+      annotation.
+    origin: prior
+    search_hint: Rust Reference, Lifetime elision section
+    disposition: dropped
+  - key: swift-arc-weak-unowned
+    name: Swift ARC weak/unowned reference qualifiers
+    gloss: Swift's distinct weak vs unowned reference annotations for ARC cycle breaking, parallel 
+      to but distinct from Objective-C ARC.
+    origin: prior
+    search_hint: Swift language reference, Automatic Reference Counting chapter
+    disposition: dropped
+theme_amendments: []
+scouting: []
