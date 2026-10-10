@@ -2,21 +2,22 @@ id: flood-et-al-2016-shenandoah
 type: paper-conference
 title: 'Shenandoah: An open-source concurrent compacting garbage collector for OpenJDK'
 author:
-  - family: Flood
-    given: Christine H.
-  - family: Kennke
-    given: Roman
-  - family: Dinn
-    given: Andrew
-  - family: Haley
-    given: Andrew
-  - family: Westrelin
-    given: Roland
+- family: Flood
+  given: Christine H.
+- family: Kennke
+  given: Roman
+- family: Dinn
+  given: Andrew
+- family: Haley
+  given: Andrew
+- family: Westrelin
+  given: Roland
 issued:
   date-parts:
-    -   - 2016
+  - - 2016
 URL: https://dl.acm.org/doi/10.1145/2972206.2972210
 DOI: 10.1145/2972206.2972210
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: ACM paywall; full text not yet acquired.

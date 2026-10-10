@@ -2,12 +2,14 @@ id: wg21-n1856
 type: report
 title: Rvalue Reference Recommendations for Chapter 20
 author:
-  - family: Hinnant
-    given: Howard E.
+- family: Hinnant
+  given: Howard E.
 issued:
   date-parts:
-    -   - 2005
+  - - 2005
 URL: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2005/n1856.html
 custom:
   tier: B
   grounding: design-doc
+  acquisition_note: WG21's own open-std.org paper archive, a committee proposal rather than a 
+    journal/standard publication.

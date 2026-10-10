@@ -2,20 +2,21 @@ id: degenbaev-et-al-2016-concurrent-marking
 type: paper-conference
 title: Idle Time Garbage Collection Scheduling
 author:
-  - family: Degenbaev
-    given: Ulan
-  - family: Eisinger
-    given: Jochen
-  - family: Ernst
-    given: Manfred
-  - family: McIlroy
-    given: Ross
-  - family: Payer
-    given: Hannes
+- family: Degenbaev
+  given: Ulan
+- family: Eisinger
+  given: Jochen
+- family: Ernst
+  given: Manfred
+- family: McIlroy
+  given: Ross
+- family: Payer
+  given: Hannes
 issued:
   date-parts:
-    -   - 2016
+  - - 2016
 DOI: 10.1145/2908080.2908106
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: No fetchable URL found; DOI-only citation, full text not yet acquired.

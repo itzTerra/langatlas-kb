@@ -2,13 +2,15 @@ id: hanson-1990
 type: article-journal
 title: Fast Allocation and Deallocation of Memory Based on Object Lifetimes
 author:
-  - family: Hanson
-    given: David R.
+- family: Hanson
+  given: David R.
 issued:
   date-parts:
-    -   - 1990
+  - - 1990
 URL: https://onlinelibrary.wiley.com/doi/abs/10.1002/spe.4380200104
 DOI: 10.1002/spe.4380200104
 custom:
   tier: A
   grounding: reference-implementation-docs
+  acquisition_note: Wiley's publisher page blocks automated fetches (403); PDF supplied by the 
+    developer.

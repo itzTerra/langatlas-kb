@@ -2,13 +2,15 @@ id: hoare-1978-csp
 type: article-journal
 title: Communicating Sequential Processes
 author:
-  - family: Hoare
-    given: C. A. R.
+- family: Hoare
+  given: C. A. R.
 issued:
   date-parts:
-    -   - 1978
+  - - 1978
 URL: https://www.cs.cmu.edu/~crary/819-f09/Hoare78.pdf
 DOI: 10.1145/359576.359585
 custom:
   tier: A
   grounding: formal-spec
+  acquisition_note: CACM's own archive is paywalled; fetched from a CMU course-page mirror of the 
+    paper.

@@ -2,12 +2,14 @@ id: aitkaci-wam-1991
 type: book
 title: "Warren's Abstract Machine: A Tutorial Reconstruction"
 author:
-  - family: Aït-Kaci
-    given: Hassan
+- family: Aït-Kaci
+  given: Hassan
 issued:
   date-parts:
-    -   - 1991
+  - - 1991
 URL: http://wambook.sourceforge.net/wambook.pdf
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: Original wambook.sourceforge.net link returned 404; PDF supplied by the 
+    developer.

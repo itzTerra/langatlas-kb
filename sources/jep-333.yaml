@@ -2,14 +2,15 @@ id: jep-333
 type: report
 title: 'JEP 333: ZGC: A Scalable Low-Latency Garbage Collector (Experimental)'
 author:
-  - family: Karlsson
-    given: Per
-  - family: Liden
-    given: Per
+- family: Karlsson
+  given: Per
+- family: Liden
+  given: Per
 issued:
   date-parts:
-    -   - 2018
+  - - 2018
 URL: https://openjdk.org/jeps/333
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true

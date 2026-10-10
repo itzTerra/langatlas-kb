@@ -2,15 +2,16 @@ id: chase-lev-2005
 type: paper-conference
 title: Dynamic Circular Work-Stealing Deque
 author:
-  - family: Chase
-    given: David
-  - family: Lev
-    given: Yossi
+- family: Chase
+  given: David
+- family: Lev
+  given: Yossi
 issued:
   date-parts:
-    -   - 2005
+  - - 2005
 URL: https://dl.acm.org/doi/10.1145/1073970.1073974
 DOI: 10.1145/1073970.1073974
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

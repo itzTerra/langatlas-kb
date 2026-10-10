@@ -2,12 +2,13 @@ id: erlang-stdlib-supervisor
 type: webpage
 title: supervisor — Erlang/OTP stdlib Reference Manual
 author:
-  - family: Ericsson AB
-    given: ''
+- family: Ericsson AB
+  given: ''
 issued:
   date-parts:
-    -   - 2025
+  - - 2025
 URL: https://www.erlang.org/doc/apps/stdlib/supervisor.html
 custom:
   tier: B
   grounding: reference-implementation-docs
+  canonical_source: true

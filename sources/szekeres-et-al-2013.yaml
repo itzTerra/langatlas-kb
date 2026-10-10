@@ -2,19 +2,21 @@ id: szekeres-et-al-2013
 type: paper-conference
 title: 'SoK: Eternal War in Memory'
 author:
-  - family: Szekeres
-    given: Laszlo
-  - family: Payer
-    given: Mathias
-  - family: Wei
-    given: Tao
-  - family: Song
-    given: Dawn
+- family: Szekeres
+  given: Laszlo
+- family: Payer
+  given: Mathias
+- family: Wei
+  given: Tao
+- family: Song
+  given: Dawn
 issued:
   date-parts:
-    -   - 2013
+  - - 2013
 URL: https://people.eecs.berkeley.edu/~dawnsong/papers/Oakland13-SoK-CR.pdf
 DOI: 10.1109/SP.2013.13
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: Author-hosted copy on Dawn Song's Berkeley faculty page, not the publisher 
+    (IEEE).

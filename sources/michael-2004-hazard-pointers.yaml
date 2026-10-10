@@ -2,13 +2,15 @@ id: michael-2004-hazard-pointers
 type: article-journal
 title: 'Hazard Pointers: Safe Memory Reclamation for Lock-Free Objects'
 author:
-  - family: Michael
-    given: Maged M.
+- family: Michael
+  given: Maged M.
 issued:
   date-parts:
-    -   - 2004
+  - - 2004
 URL: https://ieeexplore.ieee.org/document/1291819
 DOI: 10.1109/TPDS.2004.8
 custom:
   tier: A
   grounding: formal-spec
+  acquisition_note: IEEE Xplore's page returns no extractable content to automated fetch; full text 
+    not yet acquired.

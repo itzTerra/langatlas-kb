@@ -2,12 +2,14 @@ id: vyukov-2012-go-scheduler
 type: report
 title: Scalable Go Scheduler Design Doc
 author:
-  - family: Vyukov
-    given: Dmitry
+- family: Vyukov
+  given: Dmitry
 issued:
   date-parts:
-    -   - 2012
+  - - 2012
 URL: https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit
 custom:
   tier: B
   grounding: design-doc
+  acquisition_note: Design doc hosted on Google Docs by its author (Dmitry Vyukov), not a formal 
+    publication; exported via Docs' own PDF export.

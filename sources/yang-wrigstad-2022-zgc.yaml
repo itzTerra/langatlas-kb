@@ -2,15 +2,16 @@ id: yang-wrigstad-2022-zgc
 type: article-journal
 title: 'Deep Dive into ZGC: A Modern Garbage Collector in OpenJDK'
 author:
-  - family: Yang
-    given: Albert Mingkun
-  - family: Wrigstad
-    given: Tobias
+- family: Yang
+  given: Albert Mingkun
+- family: Wrigstad
+  given: Tobias
 issued:
   date-parts:
-    -   - 2022
+  - - 2022
 URL: https://dl.acm.org/doi/10.1145/3488949
 DOI: 10.1145/3488949
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

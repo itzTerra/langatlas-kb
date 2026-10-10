@@ -2,12 +2,13 @@ id: openmp-api-6-0
 type: standard
 title: OpenMP Application Programming Interface, Version 6.0
 author:
-  - family: OpenMP Architecture Review Board
-    given: ''
+- family: OpenMP Architecture Review Board
+  given: ''
 issued:
   date-parts:
-    -   - 2024
+  - - 2024
 URL: https://www.openmp.org/wp-content/uploads/OpenMP-API-Specification-6-0.pdf
 custom:
   tier: B
   grounding: formal-spec
+  canonical_source: true

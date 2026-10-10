@@ -2,15 +2,16 @@ id: blumofe-leiserson-1999
 type: article-journal
 title: Scheduling Multithreaded Computations by Work Stealing
 author:
-  - family: Blumofe
-    given: Robert D.
-  - family: Leiserson
-    given: Charles E.
+- family: Blumofe
+  given: Robert D.
+- family: Leiserson
+  given: Charles E.
 issued:
   date-parts:
-    -   - 1999
+  - - 1999
 URL: https://dl.acm.org/doi/10.1145/324133.324234
 DOI: 10.1145/324133.324234
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

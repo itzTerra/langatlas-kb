@@ -2,14 +2,15 @@ id: rtsj-1-0-2-spec
 type: report
 title: The Real-Time Specification for Java, Version 1.0.2
 author:
-  - family: Dibble
-    given: Peter (ed.)
-  - family: The Real-Time for Java Expert Group
-    given: ''
+- family: Dibble
+  given: Peter (ed.)
+- family: The Real-Time for Java Expert Group
+  given: ''
 issued:
   date-parts:
-    -   - 2006
+  - - 2006
 URL: https://www.rtsj.org/docs/rtsj_1.0.2_spec.pdf
 custom:
   tier: B
   grounding: formal-spec
+  canonical_source: true

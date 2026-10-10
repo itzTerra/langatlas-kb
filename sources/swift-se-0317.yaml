@@ -2,11 +2,12 @@ id: swift-se-0317
 type: webpage
 title: 'SE-0317: async let'
 author:
-  - family: McCall
-    given: John
-  - family: Toste
-    given: Konrad
+- family: McCall
+  given: John
+- family: Toste
+  given: Konrad
 URL: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0317-async-let.md
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true

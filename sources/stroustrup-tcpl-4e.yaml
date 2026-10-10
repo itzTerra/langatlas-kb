@@ -2,12 +2,13 @@ id: stroustrup-tcpl-4e
 type: book
 title: The C++ Programming Language
 author:
-  - family: Stroustrup
-    given: Bjarne
+- family: Stroustrup
+  given: Bjarne
 issued:
   date-parts:
-    -   - 2013
+  - - 2013
 URL: https://www.stroustrup.com/4th.html
 custom:
   tier: A
   grounding: design-doc
+  canonical_source: true

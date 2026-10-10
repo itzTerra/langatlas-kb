@@ -2,13 +2,14 @@ id: lea-2000-forkjoin
 type: paper-conference
 title: A Java Fork/Join Framework
 author:
-  - family: Lea
-    given: Doug
+- family: Lea
+  given: Doug
 issued:
   date-parts:
-    -   - 2000
+  - - 2000
 URL: https://dl.acm.org/doi/10.1145/337449.337465
 DOI: 10.1145/337449.337465
 custom:
   tier: A
   grounding: reference-implementation-docs
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

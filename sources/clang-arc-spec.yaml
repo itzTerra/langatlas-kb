@@ -2,12 +2,13 @@ id: clang-arc-spec
 type: report
 title: Objective-C Automatic Reference Counting (ARC)
 author:
-  - family: Clang Team
-    given: ''
+- family: Clang Team
+  given: ''
 issued:
   date-parts:
-    -   - 2026
+  - - 2026
 URL: https://clang.llvm.org/docs/AutomaticReferenceCounting.html
 custom:
   tier: B
   grounding: formal-spec
+  canonical_source: true

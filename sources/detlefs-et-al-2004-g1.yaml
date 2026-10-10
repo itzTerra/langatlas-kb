@@ -2,19 +2,20 @@ id: detlefs-et-al-2004-g1
 type: paper-conference
 title: Garbage-first garbage collection
 author:
-  - family: Detlefs
-    given: David
-  - family: Flood
-    given: Christine
-  - family: Heller
-    given: Steve
-  - family: Printezis
-    given: Tony
+- family: Detlefs
+  given: David
+- family: Flood
+  given: Christine
+- family: Heller
+  given: Steve
+- family: Printezis
+  given: Tony
 issued:
   date-parts:
-    -   - 2004
+  - - 2004
 URL: https://dl.acm.org/doi/10.1145/1029873.1029879
 DOI: 10.1145/1029873.1029879
 custom:
   tier: A
   grounding: third-party-reference
+  acquisition_note: ACM paywall; full text not yet acquired.

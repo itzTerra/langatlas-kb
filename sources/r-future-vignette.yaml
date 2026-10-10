@@ -2,9 +2,10 @@ id: r-future-vignette
 type: report
 title: 'A Future for R: A Comprehensive Overview'
 author:
-  - family: Bengtsson
-    given: Henrik
+- family: Bengtsson
+  given: Henrik
 URL: https://cran.r-project.org/web/packages/future/vignettes/future-1-overview.html
 custom:
   tier: B
   grounding: reference-implementation-docs
+  canonical_source: true

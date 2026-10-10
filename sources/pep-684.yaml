@@ -2,12 +2,13 @@ id: pep-684
 type: report
 title: PEP 684 – A Per-Interpreter GIL
 author:
-  - family: Snow
-    given: Eric
+- family: Snow
+  given: Eric
 issued:
   date-parts:
-    -   - 2022
+  - - 2022
 URL: https://peps.python.org/pep-0684/
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true

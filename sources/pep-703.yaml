@@ -2,12 +2,13 @@ id: pep-703
 type: report
 title: PEP 703 – Making the Global Interpreter Lock Optional in CPython
 author:
-  - family: Gross
-    given: Sam
+- family: Gross
+  given: Sam
 issued:
   date-parts:
-    -   - 2023
+  - - 2023
 URL: https://peps.python.org/pep-0703/
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true

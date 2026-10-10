@@ -2,12 +2,13 @@ id: rust-rfc-2094
 type: webpage
 title: 'RFC 2094: Non-lexical lifetimes'
 author:
-  - family: Matsakis
-    given: Niko
+- family: Matsakis
+  given: Niko
 issued:
   date-parts:
-    -   - 2017
+  - - 2017
 URL: https://rust-lang.github.io/rfcs/2094-nll.html
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true
