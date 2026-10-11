@@ -1,0 +1,20 @@
+id: lecuyer-et-al-2002-rngstreams
+type: article-journal
+title: An Object-Oriented Random-Number Package with Many Long Streams and Substreams
+author:
+  - family: L'Ecuyer
+    given: Pierre
+  - family: Simard
+    given: Richard
+  - family: Chen
+    given: E. Jack
+  - family: Kelton
+    given: W. David
+issued:
+  date-parts:
+    -   - 2002
+URL: https://www.iro.umontreal.ca/~lecuyer/myftp/papers/streams00.pdf
+DOI: 10.1287/opre.50.6.1073.358
+custom:
+  tier: A
+  grounding: formal-spec

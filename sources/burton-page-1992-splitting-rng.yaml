@@ -1,0 +1,15 @@
+id: burton-page-1992-splitting-rng
+type: article-journal
+title: Distributed Random Number Generation
+author:
+  - family: Burton
+    given: F. Warren
+  - family: Page
+    given: Rex L.
+issued:
+  date-parts:
+    -   - 1992
+URL: https://www.cs.indiana.edu/~lkuper/papers/burton-page.pdf
+custom:
+  tier: A
+  grounding: formal-spec

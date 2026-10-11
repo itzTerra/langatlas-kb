@@ -1,0 +1,15 @@
+id: lavender-schmidt-1996-active-object
+type: paper-conference
+title: 'Active Object: An Object Behavioral Pattern for Concurrent Programming'
+author:
+  - family: Lavender
+    given: R. Greg
+  - family: Schmidt
+    given: Douglas C.
+issued:
+  date-parts:
+    -   - 1996
+URL: https://www.dre.vanderbilt.edu/~schmidt/PDF/Act-Obj.pdf
+custom:
+  tier: B
+  grounding: design-doc
