@@ -1,0 +1,10 @@
+id: go-doc-race-detector
+type: webpage
+title: Data Race Detector — The Go Programming Language
+issued:
+  date-parts:
+    -   - 2026
+URL: https://go.dev/doc/articles/race_detector
+custom:
+  tier: B
+  grounding: reference-implementation-docs

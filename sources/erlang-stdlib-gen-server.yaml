@@ -1,0 +1,13 @@
+id: erlang-stdlib-gen-server
+type: webpage
+title: gen_server — Erlang/OTP stdlib Reference Manual
+issued:
+  date-parts:
+  - - 2026
+URL: https://www.erlang.org/doc/apps/stdlib/gen_server.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  acquisition_note: Extraction pipeline found no admissible section locator on this erlang.org page 
+    (different HTML structure than the design_principles docs); content not yet ingested. 
+    erlang-design-principles-gen-server covers the same gen_server concept.

@@ -1,0 +1,10 @@
+id: erlang-design-principles-gen-server
+type: webpage
+title: gen_server Behaviour — Erlang/OTP Design Principles
+issued:
+  date-parts:
+    -   - 2026
+URL: https://www.erlang.org/docs/22/design_principles/gen_server_concepts.html
+custom:
+  tier: B
+  grounding: design-doc

@@ -1,0 +1,22 @@
+id: savage-et-al-1997-eraser
+type: article-journal
+title: 'Eraser: A Dynamic Data Race Detector for Multithreaded Programs'
+author:
+  - family: Savage
+    given: Stefan
+  - family: Burrows
+    given: Michael
+  - family: Nelson
+    given: Greg
+  - family: Sobalvarro
+    given: Patrick
+  - family: Anderson
+    given: Thomas
+issued:
+  date-parts:
+    -   - 1997
+URL: https://doi.org/10.1145/265924.265927
+DOI: 10.1145/265924.265927
+custom:
+  tier: A
+  grounding: formal-spec

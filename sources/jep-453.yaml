@@ -1,0 +1,15 @@
+id: jep-453
+type: webpage
+title: 'JEP 453: Structured Concurrency (Preview)'
+author:
+  - family: Pressler
+    given: Ron
+  - family: Bateman
+    given: Alan
+issued:
+  date-parts:
+    -   - 2023
+URL: https://openjdk.org/jeps/453
+custom:
+  tier: B
+  grounding: design-doc

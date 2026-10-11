@@ -1,0 +1,20 @@
+id: honda-vasconcelos-kubo-1998
+type: paper-conference
+title: Language Primitives and Type Discipline for Structured Communication-Based Programming
+author:
+- family: Honda
+  given: Kohei
+- family: Vasconcelos
+  given: Vasco T.
+- family: Kubo
+  given: Makoto
+issued:
+  date-parts:
+  - - 1998
+URL: https://doi.org/10.1007/BFb0053567
+DOI: 10.1007/BFb0053567
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: Springer chapter page serves only the abstract to automated fetch (QA warn, 4/11
+    outline sections missing); full chapter text not yet acquired.

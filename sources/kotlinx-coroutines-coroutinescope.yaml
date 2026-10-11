@@ -1,0 +1,11 @@
+id: kotlinx-coroutines-coroutinescope
+type: webpage
+title: CoroutineScope — kotlinx.coroutines API Documentation
+issued:
+  date-parts:
+    -   - 2026
+URL: 
+  https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-scope/
+custom:
+  tier: B
+  grounding: reference-implementation-docs
