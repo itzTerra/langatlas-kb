@@ -1,0 +1,21 @@
+id: swift-se-0430
+type: report
+title: 'SE-0430: sending parameter and result values'
+author:
+- family: McLellan
+  given: Joshua
+- family: Gregor
+  given: Doug
+- family: McCall
+  given: John
+- family: Kluge
+  given: Michael
+issued:
+  date-parts:
+  - - 2024
+URL: 
+  https://github.com/swiftlang/swift-evolution/blob/main/proposals/0430-transferring-parameters-and-results.md
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true

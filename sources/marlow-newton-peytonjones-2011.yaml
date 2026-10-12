@@ -1,0 +1,19 @@
+id: marlow-newton-peytonjones-2011
+type: paper-conference
+title: A Monad for Deterministic Parallelism
+author:
+- family: Marlow
+  given: Simon
+- family: Newton
+  given: Ryan
+- family: Peyton Jones
+  given: Simon
+issued:
+  date-parts:
+  - - 2011
+URL: https://doi.org/10.1145/2034675.2034685
+DOI: 10.1145/2034675.2034685
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

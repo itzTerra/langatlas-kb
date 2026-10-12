@@ -1,0 +1,14 @@
+id: chapel-language-spec
+type: report
+title: 'Chapel Language Specification: Locales'
+author:
+- family: Chapel Team
+  given: Hewlett Packard Enterprise
+issued:
+  date-parts:
+  - - 2025
+URL: https://chapel-lang.org/docs/language/spec/locales.html
+custom:
+  tier: B
+  grounding: formal-spec
+  canonical_source: true

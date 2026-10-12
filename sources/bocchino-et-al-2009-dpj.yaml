@@ -1,0 +1,33 @@
+id: bocchino-et-al-2009-dpj
+type: paper-conference
+title: A Type and Effect System for Deterministic Parallel Java
+author:
+- family: Bocchino
+  given: Robert L.
+- family: Adve
+  given: Vikram S.
+- family: Dig
+  given: Danny
+- family: Adve
+  given: Sarita V.
+- family: Heumann
+  given: Stephen
+- family: Komuravelli
+  given: Rakesh
+- family: Overbey
+  given: Jeffrey
+- family: Simmons
+  given: Patrick
+- family: Sung
+  given: Hyojin
+- family: Vakilian
+  given: Mohsen
+issued:
+  date-parts:
+  - - 2009
+URL: https://doi.org/10.1145/1640089.1640097
+DOI: 10.1145/1640089.1640097
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

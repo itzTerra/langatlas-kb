@@ -1,0 +1,16 @@
+id: jep-491
+type: report
+title: 'JEP 491: Synchronize Virtual Threads without Pinning'
+author:
+- family: Pressler
+  given: Ron
+- family: Cimadamore
+  given: Maurizio
+issued:
+  date-parts:
+  - - 2024
+URL: https://openjdk.org/jeps/491
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true
