@@ -1,0 +1,15 @@
+id: gelernter-1985-linda
+type: article-journal
+title: Generative Communication in Linda
+author:
+- family: Gelernter
+  given: David
+issued:
+  date-parts:
+  - - 1985
+URL: https://dl.acm.org/doi/10.1145/2363.2433
+DOI: 10.1145/2363.2433
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

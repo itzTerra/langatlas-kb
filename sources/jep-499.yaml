@@ -1,0 +1,16 @@
+id: jep-499
+type: webpage
+title: 'JEP 499: Structured Concurrency (Fourth Preview)'
+author:
+- family: Pressler
+  given: Ron
+- family: Bateman
+  given: Alan
+issued:
+  date-parts:
+  - - 2025
+URL: https://openjdk.org/jeps/499
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true
