@@ -1,0 +1,17 @@
+id: kung-robinson-1981
+type: article-journal
+title: On Optimistic Methods for Concurrency Control
+author:
+- family: Kung
+  given: H. T.
+- family: Robinson
+  given: John T.
+issued:
+  date-parts:
+  - - 1981
+URL: https://dl.acm.org/doi/10.1145/319566.319567
+DOI: 10.1145/319566.319567
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

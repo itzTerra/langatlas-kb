@@ -1,0 +1,17 @@
+id: herlihy-moss-1993
+type: paper-conference
+title: 'Transactional Memory: Architectural Support for Lock-Free Data Structures'
+author:
+- family: Herlihy
+  given: Maurice
+- family: Moss
+  given: J. Eliot B.
+issued:
+  date-parts:
+  - - 1993
+URL: https://www.cs.cmu.edu/~410-s05/lectures/L31_TM.pdf
+DOI: 10.1145/165123.165164
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: Original CMU course-page link returned 404; PDF supplied by the developer.
