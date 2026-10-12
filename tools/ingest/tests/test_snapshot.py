@@ -2,7 +2,7 @@ import hashlib
 import json
 import pytest
 from langatlas_ingest.errors import SnapshotMissing
-from langatlas_ingest.snapshot import SnapshotStore, savepagenow
+from langatlas_ingest.snapshot import SnapshotStore, _default_fetcher, savepagenow
 
 
 def test_put_copies_the_original_and_records_its_hash(snapshot_root, tmp_path):
@@ -214,3 +214,49 @@ def test_sources_enumerates_every_stored_snapshot(snapshot_root, tmp_path):
     store.put("a-source", pdf, media_type="application/pdf")
     (snapshot_root / "half-written").mkdir()      # no manifest: not a stored source
     assert store.sources() == ["a-source", "b-source"]
+
+
+class _FakeResponse:
+    def __init__(self, content: bytes, headers: dict[str, str]):
+        self.content = content
+        self.headers = headers
+
+    def raise_for_status(self):
+        pass
+
+
+def test_default_fetcher_recovers_markdown_structure_github_mistypes_as_plain(monkeypatch):
+    """raw.githubusercontent.com serves every `.md` file as `Content-Type: text/plain`
+    (confirmed against a live Swift Evolution proposal), which sends it down extract.py's
+    plaintext path -- paragraph blocks with no heading at all -- so every chunk fails
+    `_locator_for`'s admissible-locator check. The URL's own extension is a better signal
+    than a host that mistypes every markdown file it serves."""
+    monkeypatch.setattr("httpx.get", lambda *a, **k: _FakeResponse(
+        b"# Title\n\nBody.", {"content-type": "text/plain; charset=utf-8"}))
+
+    _, media_type = _default_fetcher(
+        "https://raw.githubusercontent.com/org/repo/main/proposals/0337-foo.md")
+
+    assert media_type == "text/markdown"
+
+
+def test_default_fetcher_trusts_an_unambiguous_content_type_over_the_extension(monkeypatch):
+    """A server that correctly declares text/html for an .html-looking path (or any path)
+    must not be second-guessed -- the extension override only kicks in for the generic
+    types that carry no real structural signal."""
+    monkeypatch.setattr("httpx.get", lambda *a, **k: _FakeResponse(
+        b"<html></html>", {"content-type": "text/html; charset=utf-8"}))
+
+    _, media_type = _default_fetcher("https://example.org/doc.md")
+
+    assert media_type == "text/html"
+
+
+def test_default_fetcher_leaves_a_plain_text_url_alone(monkeypatch):
+    """No `.md`/`.markdown` extension in the URL: text/plain stays text/plain."""
+    monkeypatch.setattr("httpx.get", lambda *a, **k: _FakeResponse(
+        b"just text", {"content-type": "text/plain; charset=utf-8"}))
+
+    _, media_type = _default_fetcher("https://example.org/notes.txt")
+
+    assert media_type == "text/plain"

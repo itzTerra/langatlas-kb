@@ -216,6 +216,14 @@ class SnapshotStore:
             _yaml.dump(data, handle)
 
 
+# Content-Type values too generic to trust over the URL's own extension: a host that
+# serves markdown as one of these (raw.githubusercontent.com does, for every `.md` file)
+# sends it down extract.py's plaintext path, which has no concept of a heading, so every
+# chunk fails `_locator_for`'s admissible-locator check downstream.
+_GENERIC_CONTENT_TYPES = {"text/plain", "application/octet-stream"}
+_EXTENSION_MEDIA_TYPES = {".md": "text/markdown", ".markdown": "text/markdown"}
+
+
 def _default_fetcher(url: str) -> tuple[bytes, str]:
     import httpx
 
@@ -223,4 +231,9 @@ def _default_fetcher(url: str) -> tuple[bytes, str]:
                          headers={"User-Agent": "langatlas-ingest/0.1 (+https://langatlas.dev)"})
     response.raise_for_status()
     media_type = response.headers.get("content-type", "text/html").split(";")[0].strip()
+    if media_type in _GENERIC_CONTENT_TYPES:
+        path = httpx.URL(url).path.lower()
+        for suffix, specific_type in _EXTENSION_MEDIA_TYPES.items():
+            if path.endswith(suffix):
+                return response.content, specific_type
     return response.content, media_type
