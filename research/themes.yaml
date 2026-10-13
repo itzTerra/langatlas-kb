@@ -201,10 +201,26 @@ themes:
   - slug: syntax-layer-constructs
     label: Syntax-layer constructs
     summary: >-
-      Layer-1 surface constructs: block structure, significant whitespace, operators,
-      literals and the grammar-level choices they encode.
-    seed_terms: [significant whitespace, block delimiter, operator overloading, literal syntax, 
-          expression-oriented syntax]
+      Layer-1 surface constructs: lexical structure (tokens, whitespace, comments, identifiers, literals),
+      block and statement structure, operator notation and overloading, and the grammar-level choices
+      these encode — including abstract versus concrete syntax, ambiguity and disambiguation, and syntactic
+      sugar/desugaring between a surface and a core language.
+    seed_terms:
+      - significant whitespace
+      - block delimiter
+      - operator overloading
+      - literal syntax
+      - expression-oriented syntax
+      - operator precedence and associativity
+      - fixity declaration
+      - statement terminator versus separator
+      - comment forms
+      - reserved words and contextual keywords
+      - source character set and encoding
+      - abstract versus concrete syntax
+      - syntactic sugar and desugaring
+      - grammar ambiguity and dangling else
+      - s-expression notation
   - slug: qualities-vocabulary
     label: Qualities vocabulary
     summary: >-
