@@ -1,0 +1,3997 @@
+cycle: 3
+theme: concurrency
+theme_digest: 2bb7d5e7d229092f
+generated_at: '2026-10-13T19:59:33Z'
+runs:
+  surveyor: 2026-10-13-r3-survey-03-concurrency-01
+tagging:
+  prompt: r3-tagger@v-f1961f62
+  models:
+    - glm
+  chunks_tagged: 1755
+  chunks_relevant: 1167
+pool:
+  digest: b26ea2505caa13e4
+  chunk_count: 1755
+  queries:
+    - Concurrency
+    - Models for concurrent and parallel execution, the activities they introduce (threads, 
+      processes, actors, tasks, coroutines), the communication and synchronization they imply 
+      (shared state with locks, monitors and transactions; message passing over ports, mailboxes and
+      channels; dataflow synchronization), the ordering guarantees languages specify for them, and 
+      the correctness and progress hazards these mechanisms address (races, deadlock, starvation, 
+      liveness) together with the cost model of parallel execution.
+    - threads
+    - actors
+    - message passing
+    - communicating sequential processes
+    - software transactional memory
+    - async await
+    - data race freedom
+    - monitors and condition variables
+    - semaphores
+    - locks and mutual exclusion
+    - preemptive versus cooperative scheduling
+    - fairness
+    - dataflow variables
+    - declarative concurrency
+    - memory model and happens-before
+    - structured concurrency and cancellation
+    - parallelism versus concurrency
+    - futures and promises
+    - coroutines and quasi-concurrency
+    - data parallelism
+    - atomics and lock-free synchronization
+    - channels and select
+    - race condition
+    - deadlock and deadlock avoidance
+    - starvation and liveness
+    - work and depth
+    - granularity of parallelism
+    - nonblocking algorithms
+    - reader-writer locks
+    - barriers
+    - process isolation and failure detection
+    - selective receive and mailboxes
+    - static data-race prevention (actor isolation, send/sync types)
+    - progress guarantees (wait-free, lock-free, obstruction-free)
+    - forward-progress assumptions in language specifications
+    - memory fences and per-operation memory orderings
+    - tuple spaces and coordination models
+    - ports and active objects
+    - work stealing and lazy task creation
+    - thread pools and worker sessions
+    - reproducible parallel random-number streams
+    - priority inversion avoidance
+    - reader-writer locks and latches
+    - global interpreter lock
+    - interpreter isolation as a concurrency model
+    - deferred and biased reference counting for thread safety
+    - consensus power of synchronization primitives
+    - compare-and-swap, DCAS and load-linked/store-conditional
+    - universal constructions for concurrent data structures
+    - consistency model taxonomy (strict, causal, release, weak)
+    - helping mechanisms in lock-free algorithms
+    - supervision and error-propagation links
+    - linearizability and linearization points
+    - speculation and rollback
+    - observable nondeterminism
+    - concurrent versus parallel versus distributed
+    - cache coherence and false sharing
+    - deferred reclamation (RCU, hazard pointers)
+    - actor reentrancy
+    - signal and message ordering guarantees
+    - logical clocks and happened-before as a partial order
+    - dataflow variables, streams and stream objects
+    - rendezvous, task entries and protected objects
+    - work sharing versus work stealing
+    - scoped threads and borrowing across threads
+    - termination detection
+checklist:
+  mirror_versions:
+    pldb: 00522ea57a40a0bca9f56b424556af6734634831
+    hyperpolyglot: 83a34e1ec620
+  gap_terms:
+    - actor reentrancy
+    - actors
+    - async await
+    - atomics and lock-free synchronization
+    - barriers
+    - cache coherence and false sharing
+    - channels and select
+    - communicating sequential processes
+    - compare-and-swap, DCAS and load-linked/store-conditional
+    - concurrent versus parallel versus distributed
+    - consensus power of synchronization primitives
+    - consistency model taxonomy (strict, causal, release, weak)
+    - coroutines and quasi-concurrency
+    - data parallelism
+    - data race freedom
+    - dataflow variables
+    - dataflow variables, streams and stream objects
+    - deadlock and deadlock avoidance
+    - declarative concurrency
+    - deferred and biased reference counting for thread safety
+    - deferred reclamation (RCU, hazard pointers)
+    - fairness
+    - forward-progress assumptions in language specifications
+    - futures and promises
+    - global interpreter lock
+    - granularity of parallelism
+    - helping mechanisms in lock-free algorithms
+    - interpreter isolation as a concurrency model
+    - linearizability and linearization points
+    - locks and mutual exclusion
+    - logical clocks and happened-before as a partial order
+    - memory fences and per-operation memory orderings
+    - memory model and happens-before
+    - message passing
+    - monitors and condition variables
+    - nonblocking algorithms
+    - observable nondeterminism
+    - parallelism versus concurrency
+    - ports and active objects
+    - preemptive versus cooperative scheduling
+    - priority inversion avoidance
+    - process isolation and failure detection
+    - progress guarantees (wait-free, lock-free, obstruction-free)
+    - race condition
+    - reader-writer locks
+    - reader-writer locks and latches
+    - rendezvous, task entries and protected objects
+    - reproducible parallel random-number streams
+    - scoped threads and borrowing across threads
+    - selective receive and mailboxes
+    - semaphores
+    - signal and message ordering guarantees
+    - software transactional memory
+    - speculation and rollback
+    - starvation and liveness
+    - static data-race prevention (actor isolation, send/sync types)
+    - structured concurrency and cancellation
+    - supervision and error-propagation links
+    - termination detection
+    - thread pools and worker sessions
+    - threads
+    - tuple spaces and coordination models
+    - universal constructions for concurrent data structures
+    - work and depth
+    - work sharing versus work stealing
+    - work stealing and lazy task creation
+candidates:
+  - key: concurrency
+    name: Concurrency
+    gloss: Organising a program as several logically independent activities that each proceed at 
+      their own pace and interact only where the programmer arranges it.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00097
+        source_id: vanroy-haridi-2003
+        locator: §1.10
+      - chunk_id: vanroy-haridi-2003#c00443
+        source_id: vanroy-haridi-2003
+        locator: p. 280
+      - chunk_id: ghc-users-guide#c01076
+        source_id: ghc-users-guide
+        locator: §6.15
+    aliases:
+      - label: concurrent programming
+        chunk_id: vanroy-haridi-2003#c00209
+  - key: parallelism-vs-concurrency
+    name: Parallelism versus concurrency
+    gloss: Distinction between concurrency as a structuring abstraction for independent activities 
+      and parallelism as an implementation device for making programs run faster.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: ghc-users-guide#c01076
+        source_id: ghc-users-guide
+        locator: §6.15
+      - chunk_id: vanroy-haridi-2003#c00582
+        source_id: vanroy-haridi-2003
+        locator: §4.7.4
+      - chunk_id: ghc-users-guide#c00297
+        source_id: ghc-users-guide
+        locator: §5.5
+    aliases: []
+  - key: concurrent-parallel-distributed
+    name: Concurrent, parallel and distributed systems
+    gloss: Layered taxonomy where a concurrent system is parallel if tasks are physically 
+      simultaneous, and parallel systems are distributed when processors are physically separated.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00791
+        source_id: scott-plp
+        locator: pp. 833–834
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+    aliases: []
+  - key: interleaving-semantics
+    name: Interleaving semantics of threads
+    gloss: Language-level account in which concurrent threads take turns performing atomic 
+      computation steps, so any parallel execution is observationally equivalent to some 
+      interleaving.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00450
+        source_id: vanroy-haridi-2003
+        locator: §4.1.1
+      - chunk_id: scott-plp#c00791
+        source_id: scott-plp
+        locator: pp. 833–834
+    aliases:
+      - label: quasiparallelism
+        chunk_id: scott-plp#c00791
+  - key: thread
+    name: Thread
+    gloss: An independently executing instruction sequence inside a program, created by a language 
+      construct, that shares the surrounding store with sibling threads.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00097
+        source_id: vanroy-haridi-2003
+        locator: §1.10
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03197
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: thread of control
+        chunk_id: sebesta-copl#c01078
+      - label: locus of control
+        chunk_id: vanroy-haridi-2003#c00512
+  - key: heavyweight-vs-lightweight-process
+    name: Heavyweight versus lightweight process
+    gloss: Contrast between operating-system processes owning a private address space and lighter 
+      execution entities that share one address space.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+      - chunk_id: vanroy-haridi-2003#c00480
+        source_id: vanroy-haridi-2003
+        locator: §4.2.5
+      - chunk_id: sebesta-copl#c01078
+        source_id: sebesta-copl
+        locator: §13.10.1
+    aliases: []
+  - key: process-isolation
+    name: Process isolation
+    gloss: Design in which activities share no mutable resources, so a failure or error inside one 
+      activity cannot propagate directly into another.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00060
+        source_id: armstrong-2003-thesis
+        locator: §3.1
+      - chunk_id: armstrong-2003-thesis#c00057
+        source_id: armstrong-2003-thesis
+        locator: §2.10
+      - chunk_id: pep-684#c00005
+        source_id: pep-684
+        locator: § Other Isolation Considerations
+    aliases:
+      - label: strongly isolated processes
+        chunk_id: armstrong-2003-thesis#c00060
+  - key: cooperative-vs-competitive-concurrency
+    name: Cooperative versus competitive concurrency
+    gloss: Threads inside one trusted application work toward a shared goal, whereas 
+      operating-system processes from different applications compete for resources with conflicting 
+      goals.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00480
+        source_id: vanroy-haridi-2003
+        locator: §4.2.5
+    aliases: []
+  - key: cooperative-multithreading
+    name: Cooperative multithreading
+    gloss: Scheduling discipline in which a thread surrenders the processor only by an explicit 
+      yield to a scheduler, rather than by an asynchronous interrupt.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: harper-pfpl#c00503
+        source_id: harper-pfpl
+        locator: §31.3
+      - chunk_id: sebesta-copl#c01037
+        source_id: sebesta-copl
+        locator: §13.7.1
+    aliases:
+      - label: nonpreemptive thread
+        chunk_id: vanroy-haridi-2003#c00512
+  - key: preemption-and-context-switch
+    name: Preemption and context switching
+    gloss: Involuntary removal of a running activity from a processor by the scheduler, with its 
+      state saved so execution can resume later.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+      - chunk_id: sebesta-copl#c01037
+        source_id: sebesta-copl
+        locator: §13.7.1
+      - chunk_id: rtsj-1-0-2-spec#c00192
+        source_id: rtsj-1-0-2-spec
+        locator: p. 104
+    aliases: []
+  - key: coroutine
+    name: Coroutine
+    gloss: Subprogram with multiple entry points and retained state that transfers control 
+      symmetrically to a partner by resuming it rather than calling and returning.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00771
+        source_id: sebesta-copl
+        locator: §9.13
+      - chunk_id: vanroy-haridi-2003#c00512
+        source_id: vanroy-haridi-2003
+        locator: §4.4.2
+      - chunk_id: harper-pfpl#c00498
+        source_id: harper-pfpl
+        locator: §31.3
+    aliases:
+      - label: symmetric unit control model
+        chunk_id: sebesta-copl#c00771
+  - key: quasi-concurrency
+    name: Quasi-concurrency
+    gloss: Apparent concurrency obtained by interleaved coroutine execution on one processor, where 
+      exactly one coroutine is running at any moment.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c00772
+        source_id: sebesta-copl
+        locator: §9.13
+      - chunk_id: scott-plp#c00791
+        source_id: scott-plp
+        locator: pp. 833–834
+    aliases: []
+  - key: generator-as-coroutine
+    name: Generators and iterators as coroutines
+    gloss: Producer abstraction that suspends at a yield, retains all local state, and resumes where
+      it left off when the consumer asks for the next element.
+    kind_hint: feature
+    origin: prior
+    evidence:
+      - chunk_id: python-langref-3#c00208
+        source_id: python-langref-3
+        locator: § 6.2.10. Yield expressions
+      - chunk_id: turbak-gifford-dcpl#c00791
+        source_id: turbak-gifford-dcpl
+        locator: §9.5
+      - chunk_id: turbak-gifford-dcpl#c00796
+        source_id: turbak-gifford-dcpl
+        locator: §9.5
+    aliases:
+      - label: iterator
+        chunk_id: turbak-gifford-dcpl#c00791
+      - label: generator
+        chunk_id: turbak-gifford-dcpl#c00791
+  - key: coroutines-from-continuations
+    name: Coroutines from first-class continuations
+    gloss: Implementation technique where each partner passes a seized continuation to the other, so
+      control can be ceded back symmetrically.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00499
+        source_id: harper-pfpl
+        locator: §31.3
+      - chunk_id: krishnamurthi-plai#c00281
+        source_id: krishnamurthi-plai
+        locator: pp. 210–211
+      - chunk_id: turbak-gifford-dcpl#c00796
+        source_id: turbak-gifford-dcpl
+        locator: §9.5
+    aliases: []
+  - key: virtual-threads
+    name: Virtual threads
+    gloss: Lightweight threads provided and scheduled by the language runtime, mounted onto a 
+      smaller pool of operating-system carrier threads and unmounted when they block.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jep-491#c00003
+        source_id: jep-491
+        locator: '#Motivation'
+    aliases:
+      - label: platform thread (contrast)
+        chunk_id: jep-491#c00003
+      - label: carrier thread
+        chunk_id: jep-491#c00003
+  - key: thread-pool
+    name: Thread pool
+    gloss: Fixed set of worker threads to which units of work are submitted, decoupling the number 
+      of activities from the number of underlying threads.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: openmp-api-6-0#c00053
+        source_id: openmp-api-6-0
+        locator: §1.2
+      - chunk_id: swift-se-0304#c00005
+        source_id: swift-se-0304
+        locator: '#structured-concurrency'
+      - chunk_id: blumofe-leiserson-1999#c00021
+        source_id: blumofe-leiserson-1999
+        locator: p. 10
+    aliases:
+      - label: OpenMP thread pool
+        chunk_id: openmp-api-6-0#c00053
+      - label: centralized thread pool
+        chunk_id: blumofe-leiserson-1999#c00021
+  - key: work-stealing
+    name: Work stealing
+    gloss: Distributed scheduling strategy in which an idle processor picks a victim at random and 
+      removes a ready unit of work from the victim's deque.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: blumofe-leiserson-1999#c00023
+        source_id: blumofe-leiserson-1999
+        locator: p. 11
+      - chunk_id: blumofe-leiserson-1999#c00021
+        source_id: blumofe-leiserson-1999
+        locator: p. 10
+      - chunk_id: mohr-kranz-halstead-1990#c00005
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 2
+    aliases:
+      - label: task stealing
+        chunk_id: mohr-kranz-halstead-1990#c00005
+  - key: work-sharing-vs-work-stealing
+    name: Work sharing versus work stealing
+    gloss: Contrast between pushing excess work out from busy workers and letting idle workers pull 
+      it, with stealing shown to be more communication efficient.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: blumofe-leiserson-1999#c00001
+        source_id: blumofe-leiserson-1999
+        locator: p. 1
+      - chunk_id: blumofe-leiserson-1999#c00005
+        source_id: blumofe-leiserson-1999
+        locator: p. 3
+    aliases: []
+  - key: work-and-span-cost-model
+    name: Work and span cost model
+    gloss: Characterising a parallel computation by its total work and its critical-path length, 
+      from which speedup and available parallelism are derived.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: blumofe-leiserson-1999#c00014
+        source_id: blumofe-leiserson-1999
+        locator: pp. 6–7
+      - chunk_id: frigo-leiserson-randall-1998#c00010
+        source_id: frigo-leiserson-randall-1998
+        locator: pp. 3–4
+    aliases:
+      - label: critical-path length
+        chunk_id: blumofe-leiserson-1999#c00014
+      - label: work and critical path
+        chunk_id: frigo-leiserson-randall-1998#c00010
+  - key: greedy-scheduling-bound
+    name: Greedy scheduling bound
+    gloss: Result that any schedule executing all ready instructions when processors are free 
+      finishes within work-over-processors plus critical-path time.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: blumofe-leiserson-1999#c00014
+        source_id: blumofe-leiserson-1999
+        locator: pp. 6–7
+      - chunk_id: frigo-leiserson-randall-1998#c00010
+        source_id: frigo-leiserson-randall-1998
+        locator: pp. 3–4
+    aliases:
+      - label: greedy schedule
+        chunk_id: blumofe-leiserson-1999#c00014
+      - label: linear speedup
+        chunk_id: blumofe-leiserson-1999#c00014
+  - key: space-bound-of-parallel-schedule
+    name: Space bound of a parallel schedule
+    gloss: Guarantee that a scheduler uses at most the serial stack space times the processor count,
+      by keeping every leaf of the spawn tree busy.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: blumofe-leiserson-1999#c00019
+        source_id: blumofe-leiserson-1999
+        locator: p. 9
+      - chunk_id: blumofe-leiserson-1999#c00027
+        source_id: blumofe-leiserson-1999
+        locator: p. 13
+    aliases:
+      - label: busy-leaves property
+        chunk_id: blumofe-leiserson-1999#c00019
+  - key: granularity-of-parallelism
+    name: Granularity of parallelism
+    gloss: How much work each spawned activity performs, trading creation overhead against load 
+      balance and available parallelism.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: mohr-kranz-halstead-1990#c00006
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 2
+      - chunk_id: mohr-kranz-halstead-1990#c00031
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 11
+      - chunk_id: ghc-users-guide#c01079
+        source_id: ghc-users-guide
+        locator: §6.15.1
+    aliases:
+      - label: source granularity
+        chunk_id: mohr-kranz-halstead-1990#c00031
+  - key: lazy-task-creation
+    name: Lazy task creation
+    gloss: Provisionally inlining a potential fork into the current activity while retaining enough 
+      state that an idle processor can later steal its continuation.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: mohr-kranz-halstead-1990#c00005
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 2
+      - chunk_id: mohr-kranz-halstead-1990#c00021
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 7
+      - chunk_id: mohr-kranz-halstead-1990#c00033
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 11
+    aliases:
+      - label: lazy futures
+        chunk_id: mohr-kranz-halstead-1990#c00006
+      - label: eager task creation (contrast)
+        chunk_id: mohr-kranz-halstead-1990#c00006
+  - key: load-based-inlining
+    name: Load-based inlining of spawns
+    gloss: Deciding at each potential fork whether to create a separate activity by testing a 
+      runtime load indicator such as work-queue length.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: mohr-kranz-halstead-1990#c00005
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 2
+      - chunk_id: mohr-kranz-halstead-1990#c00008
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 3
+    aliases: []
+  - key: future
+    name: Future
+    gloss: Placeholder for the eventual value of a computation that may proceed concurrently; any 
+      attempt to use the value before it exists suspends the user.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: mohr-kranz-halstead-1990#c00005
+        source_id: mohr-kranz-halstead-1990
+        locator: p. 2
+      - chunk_id: harper-pfpl#c00639
+        source_id: harper-pfpl
+        locator: §39.3
+      - chunk_id: lavender-schmidt-1996-active-object#c00016
+        source_id: lavender-schmidt-1996-active-object
+        locator: p. 3
+    aliases:
+      - label: placeholder
+        chunk_id: mohr-kranz-halstead-1990#c00005
+      - label: fcell
+        chunk_id: harper-pfpl#c00639
+  - key: single-assignment-variable
+    name: Single-assignment variable
+    gloss: Mutable cell that may be assigned exactly once, used to let a producer and a consumer of 
+      a value run concurrently.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00621
+        source_id: vanroy-haridi-2003
+        locator: §4.9.5
+    aliases:
+      - label: I-structure
+        chunk_id: vanroy-haridi-2003#c00621
+  - key: dataflow-variable
+    name: Dataflow variable
+    gloss: Variable whose binding is monotonic and whose readers block until it is bound, giving 
+      implicit synchronisation between concurrent activities.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00148
+        source_id: vanroy-haridi-2003
+        locator: §2.2.8
+      - chunk_id: vanroy-haridi-2003#c00620
+        source_id: vanroy-haridi-2003
+        locator: §4.9.5
+      - chunk_id: vanroy-haridi-2003#c00619
+        source_id: vanroy-haridi-2003
+        locator: §4.9.5
+    aliases:
+      - label: declarative variable
+        chunk_id: vanroy-haridi-2003#c00140
+      - label: logic variable
+        chunk_id: vanroy-haridi-2003#c00620
+  - key: dataflow-synchronization
+    name: Dataflow synchronization
+    gloss: Blocking an operation until its arguments become available, replacing programmer-chosen 
+      static order with data-determined dynamic dependencies.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00619
+        source_id: vanroy-haridi-2003
+        locator: §4.9.5
+      - chunk_id: vanroy-haridi-2003#c00209
+        source_id: vanroy-haridi-2003
+        locator: §2.5.3
+    aliases:
+      - label: dataflow execution
+        chunk_id: vanroy-haridi-2003#c00209
+  - key: declarative-concurrency
+    name: Declarative concurrency
+    gloss: Concurrency model in which adding threads cannot change a program's result, only make it 
+      computable incrementally, because communication is through monotonic variables.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00444
+        source_id: vanroy-haridi-2003
+        locator: pp. 280–281
+      - chunk_id: vanroy-haridi-2003#c00529
+        source_id: vanroy-haridi-2003
+        locator: §4.5.2
+      - chunk_id: vanroy-haridi-2003#c01422
+        source_id: vanroy-haridi-2003
+        locator: p. 891
+    aliases:
+      - label: data-driven concurrent model
+        chunk_id: vanroy-haridi-2003#c00532
+  - key: demand-driven-concurrency
+    name: Demand-driven concurrency
+    gloss: Model combining laziness with concurrency, where a consumer's demand triggers evaluation 
+      and arguments must be evaluated concurrently to avoid deadlock.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00533
+        source_id: vanroy-haridi-2003
+        locator: §4.5.2
+      - chunk_id: vanroy-haridi-2003#c00529
+        source_id: vanroy-haridi-2003
+        locator: §4.5.2
+    aliases: []
+  - key: stream-objects
+    name: Stream objects and stream communication
+    gloss: Activities connected by potentially infinite monotonic lists, each reading from a known 
+      producer, giving declarative producer-consumer pipelines.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00533
+        source_id: vanroy-haridi-2003
+        locator: §4.5.2
+      - chunk_id: vanroy-haridi-2003#c00636
+        source_id: vanroy-haridi-2003
+        locator: p. 396
+      - chunk_id: vanroy-haridi-2003#c00802
+        source_id: vanroy-haridi-2003
+        locator: §6.7.2
+    aliases:
+      - label: streams
+        chunk_id: vanroy-haridi-2003#c00802
+  - key: stream-merger-limitation
+    name: Fixed read pattern limitation of streams
+    gloss: Structural limit whereby a declarative stream reader must know which producer sends next,
+      so two independent clients cannot feed one server.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00577
+        source_id: vanroy-haridi-2003
+        locator: §4.7.3
+      - chunk_id: vanroy-haridi-2003#c00578
+        source_id: vanroy-haridi-2003
+        locator: §4.7.3
+      - chunk_id: vanroy-haridi-2003#c00716
+        source_id: vanroy-haridi-2003
+        locator: §5.7.1
+    aliases: []
+  - key: observable-nondeterminism
+    name: Observable nondeterminism
+    gloss: Property that a program's externally visible result can differ between runs because the 
+      order in which independent activities interact is undetermined.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00576
+        source_id: vanroy-haridi-2003
+        locator: §4.7.3
+      - chunk_id: vanroy-haridi-2003#c00639
+        source_id: vanroy-haridi-2003
+        locator: §5.1
+      - chunk_id: vanroy-haridi-2003#c00701
+        source_id: vanroy-haridi-2003
+        locator: §5.5.4
+    aliases: []
+  - key: nondeterministic-choice
+    name: Nondeterministic wait and choice
+    gloss: Primitive that waits on several pending events at once and returns when any one occurs, 
+      indicating which, so independent senders can be served.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00721
+        source_id: vanroy-haridi-2003
+        locator: §5.7.1
+      - chunk_id: vanroy-haridi-2003#c00716
+        source_id: vanroy-haridi-2003
+        locator: §5.7.1
+      - chunk_id: vanroy-haridi-2003#c00577
+        source_id: vanroy-haridi-2003
+        locator: §4.7.3
+    aliases:
+      - label: WaitTwo
+        chunk_id: vanroy-haridi-2003#c00721
+  - key: port-asynchronous-channel
+    name: Port as asynchronous channel
+    gloss: 'Named channel with an associated stream: any activity may send to it, and sent messages appear
+      on the stream in an undetermined order.'
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00639
+        source_id: vanroy-haridi-2003
+        locator: §5.1
+      - chunk_id: vanroy-haridi-2003#c00636
+        source_id: vanroy-haridi-2003
+        locator: p. 396
+      - chunk_id: vanroy-haridi-2003#c00637
+        source_id: vanroy-haridi-2003
+        locator: pp. 396–397
+    aliases: []
+  - key: port-object
+    name: Port object
+    gloss: Internally sequential activity paired with one incoming channel, so that interleaving is 
+      confined to the arrival order of its messages.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00637
+        source_id: vanroy-haridi-2003
+        locator: pp. 396–397
+      - chunk_id: vanroy-haridi-2003#c00995
+        source_id: vanroy-haridi-2003
+        locator: §8.2.1
+      - chunk_id: vanroy-haridi-2003#c00703
+        source_id: vanroy-haridi-2003
+        locator: §5.6.1
+    aliases: []
+  - key: message-passing
+    name: Message passing
+    gloss: Interaction discipline in which activities share nothing and communicate only by sending 
+      and receiving values, so no explicit mutual exclusion is needed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00041
+        source_id: armstrong-2003-thesis
+        locator: §2.4.5
+      - chunk_id: vanroy-haridi-2003#c00703
+        source_id: vanroy-haridi-2003
+        locator: §5.6.1
+      - chunk_id: sebesta-copl#c01017
+        source_id: sebesta-copl
+        locator: §13.5.1
+    aliases: []
+  - key: mailbox
+    name: Mailbox
+    gloss: Per-activity queue into which incoming messages are placed, from which the owner removes 
+      them when it chooses to receive.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00703
+        source_id: vanroy-haridi-2003
+        locator: §5.6.1
+      - chunk_id: armstrong-2003-thesis#c00093
+        source_id: armstrong-2003-thesis
+        locator: §3.4
+      - chunk_id: swift-se-0306#c00007
+        source_id: swift-se-0306
+        locator: '#actor-isolation'
+    aliases:
+      - label: message queue
+        chunk_id: erlang-erts-processes#c00014
+      - label: concurrent mailbox
+        chunk_id: vanroy-haridi-2003#c00802
+  - key: selective-receive
+    name: Selective receive
+    gloss: Receive operation that uses pattern matching to extract the first matching message from a
+      mailbox, leaving non-matching messages in place.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00710
+        source_id: vanroy-haridi-2003
+        locator: §5.6.3
+      - chunk_id: armstrong-2003-thesis#c00093
+        source_id: armstrong-2003-thesis
+        locator: §3.4
+      - chunk_id: vanroy-haridi-2003#c00703
+        source_id: vanroy-haridi-2003
+        locator: §5.6.1
+    aliases:
+      - label: receive with guards
+        chunk_id: armstrong-2003-thesis#c00093
+  - key: receive-timeout
+    name: Receive timeout
+    gloss: Optional deadline on a blocking receive after which an alternative body runs; a zero 
+      deadline makes the receive non-blocking.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00711
+        source_id: vanroy-haridi-2003
+        locator: §5.6.3
+      - chunk_id: armstrong-2003-thesis#c00093
+        source_id: armstrong-2003-thesis
+        locator: §3.4
+      - chunk_id: vanroy-haridi-2003#c00714
+        source_id: vanroy-haridi-2003
+        locator: §5.6.3
+    aliases:
+      - label: after clause
+        chunk_id: vanroy-haridi-2003#c00711
+  - key: spawn-and-process-identity
+    name: Spawn and process identity
+    gloss: Creating a new activity that runs a given function and returning a unique identifier 
+      usable as a send destination and embeddable in data.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00093
+        source_id: armstrong-2003-thesis
+        locator: §3.4
+      - chunk_id: vanroy-haridi-2003#c00703
+        source_id: vanroy-haridi-2003
+        locator: §5.6.1
+      - chunk_id: go-lang-spec#c00167
+        source_id: go-lang-spec
+        locator: '#Go_statements'
+    aliases:
+      - label: process identifier
+        chunk_id: vanroy-haridi-2003#c00708
+  - key: message-ordering-guarantee
+    name: Pairwise message ordering guarantee
+    gloss: Specification that messages sent from one activity to one destination arrive in send 
+      order, while no order holds across different senders.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00041
+        source_id: armstrong-2003-thesis
+        locator: §2.4.5
+      - chunk_id: erlang-erts-processes#c00020
+        source_id: erlang-erts-processes
+        locator: '#delivery-of-signals'
+      - chunk_id: go-lang-spec#c00043
+        source_id: go-lang-spec
+        locator: '#Channel_types'
+    aliases:
+      - label: signal ordering guarantee
+        chunk_id: erlang-erts-processes#c00020
+      - label: FIFO order
+        chunk_id: vanroy-haridi-2003#c00703
+  - key: asynchronous-signals-between-processes
+    name: Asynchronous signals as the sole interaction
+    gloss: Model where every interaction, including apparently synchronous calls, is decomposed into
+      asynchronous signals with unspecified but positive delivery delay.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: erlang-erts-processes#c00006
+        source_id: erlang-erts-processes
+        locator: '#signals'
+      - chunk_id: erlang-erts-processes#c00020
+        source_id: erlang-erts-processes
+        locator: '#delivery-of-signals'
+    aliases: []
+  - key: priority-messages
+    name: Priority messages in a mailbox
+    gloss: Opt-in facility letting accepted priority messages be inserted ahead of ordinary ones, 
+      changing queue order without violating signal delivery order.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: erlang-erts-processes#c00014
+        source_id: erlang-erts-processes
+        locator: § Adding Messages to the Message Queue
+      - chunk_id: erlang-erts-processes#c00015
+        source_id: erlang-erts-processes
+        locator: § Adding Messages to the Message Queue
+    aliases: []
+  - key: unreliable-send-semantics
+    name: Unreliable send semantics
+    gloss: Treating a send as giving no delivery or action guarantee, so confirmation must be 
+      obtained by an explicit reply message.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00041
+        source_id: armstrong-2003-thesis
+        locator: §2.4.5
+      - chunk_id: armstrong-2007-hopl#c00055
+        source_id: armstrong-2007-hopl
+        locator: p. 13
+    aliases:
+      - label: send and pray semantics
+        chunk_id: armstrong-2003-thesis#c00041
+  - key: process-link-error-propagation
+    name: Links as error-propagation channels
+    gloss: Bidirectional association between activities such that the death of one sends an exit 
+      signal to the other, grouping failures together.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2007-hopl#c00028
+        source_id: armstrong-2007-hopl
+        locator: pp. 6–7
+      - chunk_id: erlang-erts-processes#c00023
+        source_id: erlang-erts-processes
+        locator: '#links'
+      - chunk_id: armstrong-2003-thesis#c00103
+        source_id: armstrong-2003-thesis
+        locator: §3.5.6
+    aliases:
+      - label: link set
+        chunk_id: armstrong-2003-thesis#c00103
+  - key: exit-signal-trapping
+    name: Exit signals and trapping exits
+    gloss: Out-of-band notification sent when an activity dies, which normally kills the receiver 
+      unless it has elected to convert such signals into ordinary messages.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00104
+        source_id: armstrong-2003-thesis
+        locator: §3.5.6
+      - chunk_id: erlang-erts-processes#c00025
+        source_id: erlang-erts-processes
+        locator: '#sending-exit-signals'
+      - chunk_id: armstrong-2010-cacm#c00015
+        source_id: armstrong-2010-cacm
+        locator: p. 5
+    aliases:
+      - label: system process
+        chunk_id: armstrong-2003-thesis#c00104
+  - key: asymmetric-process-monitor
+    name: Asymmetric process monitoring
+    gloss: One-directional failure watch, used where a client should learn of a server's death 
+      without the server dying when a client does.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00105
+        source_id: armstrong-2003-thesis
+        locator: §3.5.6
+      - chunk_id: erlang-erts-processes#c00023
+        source_id: erlang-erts-processes
+        locator: '#links'
+    aliases:
+      - label: monitors
+        chunk_id: erlang-erts-processes#c00023
+  - key: supervision-hierarchy
+    name: Supervision hierarchy
+    gloss: Tree of activities in which supervisors do no work but detect worker failures and restart
+      or repair them.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: armstrong-2010-cacm#c00015
+        source_id: armstrong-2010-cacm
+        locator: p. 5
+      - chunk_id: erlang-erts-processes#c00024
+        source_id: erlang-erts-processes
+        locator: '#error-handling'
+      - chunk_id: armstrong-2003-thesis#c00105
+        source_id: armstrong-2003-thesis
+        locator: §3.5.6
+    aliases:
+      - label: supervision tree
+        chunk_id: erlang-erts-processes#c00024
+  - key: fail-fast-crash-only
+    name: Fail-fast, crash-only activities
+    gloss: Policy that an activity unable to meet its specification should terminate immediately and
+      let another activity correct the error, rather than defend locally.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2010-cacm#c00015
+        source_id: armstrong-2010-cacm
+        locator: p. 5
+      - chunk_id: armstrong-2003-thesis#c00057
+        source_id: armstrong-2003-thesis
+        locator: §2.10
+      - chunk_id: armstrong-2003-thesis#c00060
+        source_id: armstrong-2003-thesis
+        locator: §3.1
+    aliases:
+      - label: let it crash
+        chunk_id: armstrong-2010-cacm#c00015
+  - key: non-local-error-handling
+    name: Non-local error handling
+    gloss: Principle that an error detected in one activity is corrected by a different, physically 
+      or logically separate activity rather than in place.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00060
+        source_id: armstrong-2003-thesis
+        locator: §3.1
+      - chunk_id: armstrong-2003-thesis#c00148
+        source_id: armstrong-2003-thesis
+        locator: §5.1
+    aliases: []
+  - key: actor-isolation
+    name: Actor isolation
+    gloss: Rule confining an object's mutable state to its own isolation domain, so outside code may
+      only reach it through asynchronous, serialised requests.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: swift-se-0306#c00007
+        source_id: swift-se-0306
+        locator: '#actor-isolation'
+      - chunk_id: swift-se-0306#c00013
+        source_id: swift-se-0306
+        locator: '#cross-actor-references-and-sendable-types'
+      - chunk_id: swift-se-0306#c00014
+        source_id: swift-se-0306
+        locator: '#closures'
+    aliases:
+      - label: isolation domain
+        chunk_id: swift-se-0306#c00007
+      - label: nonisolated
+        chunk_id: swift-se-0306#c00046
+  - key: actor-serial-message-processing
+    name: Serial message processing by an actor
+    gloss: Guarantee that an actor executes messages from its mailbox one at a time, so no two of 
+      its isolated bodies run concurrently.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0306#c00007
+        source_id: swift-se-0306
+        locator: '#actor-isolation'
+      - chunk_id: swift-se-0306#c00012
+        source_id: swift-se-0306
+        locator: '#cross-actor-references-and-sendable-types'
+    aliases: []
+  - key: actor-reentrancy
+    name: Actor reentrancy
+    gloss: Whether an actor may interleave other messages at a suspension point inside an 
+      in-progress message, trading deadlock risk against interleaving hazards.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: swift-se-0306#c00049
+        source_id: swift-se-0306
+        locator: '#revision-history'
+    aliases: []
+  - key: sendable-types
+    name: Concurrency-safe (Sendable) types
+    gloss: Type-level marker restricting which values may cross between concurrently executing 
+      domains, so no reference to shared mutable state escapes.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: swift-se-0306#c00012
+        source_id: swift-se-0306
+        locator: '#cross-actor-references-and-sendable-types'
+      - chunk_id: swift-se-0306#c00013
+        source_id: swift-se-0306
+        locator: '#cross-actor-references-and-sendable-types'
+      - chunk_id: swift-se-0306#c00014
+        source_id: swift-se-0306
+        locator: '#closures'
+    aliases:
+      - label: Sendable
+        chunk_id: swift-se-0306#c00012
+      - label: '@Sendable closure'
+        chunk_id: swift-se-0306#c00014
+  - key: send-and-sync-marker-traits
+    name: Send and Sync marker traits
+    gloss: Automatically derived type properties stating that values may be transferred between 
+      threads, or shared by several threads at once, without data races.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-fls#c00395
+        source_id: rust-fls
+        locator: § 17.1. Send and Sync¶
+      - chunk_id: rust-reference#c00653
+        source_id: rust-reference
+        locator: p. 495
+      - chunk_id: rust-reference#c00654
+        source_id: rust-reference
+        locator: p. 495
+    aliases:
+      - label: send type
+        chunk_id: rust-fls#c01048
+      - label: sync type
+        chunk_id: rust-fls#c01105
+      - label: auto trait
+        chunk_id: rust-reference#c00656
+  - key: static-data-race-prevention
+    name: Static data-race prevention
+    gloss: Using the type system or isolation rules to reject programs that could race, instead of 
+      relying on programmer discipline and dynamic detection.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-fls#c00395
+        source_id: rust-fls
+        locator: § 17.1. Send and Sync¶
+      - chunk_id: rust-fls#c00394
+        source_id: rust-fls
+        locator: § 17. Concurrency¶
+      - chunk_id: swift-se-0306#c00013
+        source_id: swift-se-0306
+        locator: '#cross-actor-references-and-sendable-types'
+    aliases: []
+  - key: scoped-threads
+    name: Scoped threads
+    gloss: Threads spawned within a lexical scope that are all joined before the scope ends, so they
+      may safely borrow non-static local data.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: rust-rfc-3151#c00000
+        source_id: rust-rfc-3151
+        locator: '#summary'
+      - chunk_id: rust-std-thread-scope#c00003
+        source_id: rust-std-thread-scope
+        locator: '#lifetimes'
+      - chunk_id: rust-rfc-3151#c00002
+        source_id: rust-rfc-3151
+        locator: '#guide-level-explanation'
+    aliases:
+      - label: thread::scope
+        chunk_id: rust-std-thread-scope#c00000
+  - key: structured-concurrency
+    name: Structured concurrency
+    gloss: Organising concurrent work into a hierarchy of tasks and child tasks so priority, 
+      deadlines, cancellation and errors flow naturally along the hierarchy.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00005
+        source_id: swift-se-0304
+        locator: '#structured-concurrency'
+      - chunk_id: swift-se-0304#c00006
+        source_id: swift-se-0304
+        locator: '#structured-concurrency'
+      - chunk_id: swift-se-0304#c00010
+        source_id: swift-se-0304
+        locator: '#child-tasks'
+    aliases: []
+  - key: task-as-unit-of-concurrency
+    name: Task as the unit of concurrency
+    gloss: 'Making a schedulable task, rather than a thread, the primary concurrency entity: every asynchronous
+      function runs in a task that itself has no internal concurrency.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00008
+        source_id: swift-se-0304
+        locator: '#tasks'
+      - chunk_id: swift-se-0304#c00009
+        source_id: swift-se-0304
+        locator: '#tasks'
+      - chunk_id: openmp-api-6-0#c00791
+        source_id: openmp-api-6-0
+        locator: §14.1
+    aliases: []
+  - key: child-task
+    name: Child task
+    gloss: Task created inside a parent's scope that may run concurrently with it but whose lifetime
+      is bounded by the parent's, enabling local reasoning.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00010
+        source_id: swift-se-0304
+        locator: '#child-tasks'
+      - chunk_id: swift-se-0317#c00006
+        source_id: swift-se-0317
+        locator: '#proposed-solution'
+    aliases: []
+  - key: task-group
+    name: Task group
+    gloss: Scope in which an arbitrary number of child tasks can be added programmatically and from 
+      which none may outlive the scope.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00016
+        source_id: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+      - chunk_id: swift-se-0304#c00018
+        source_id: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+    aliases: []
+  - key: async-let-binding
+    name: Implicit child task from a binding
+    gloss: Declaration form that starts a concurrent child task computing a value, where reading the
+      bound name becomes a potential suspension point.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0317#c00006
+        source_id: swift-se-0317
+        locator: '#proposed-solution'
+      - chunk_id: swift-se-0317#c00035
+        source_id: swift-se-0317
+        locator: '#requiring-an-awaiton-any-execution-path-that-waits-for-an-async-let'
+    aliases:
+      - label: async let
+        chunk_id: swift-se-0317#c00006
+  - key: cooperative-cancellation
+    name: Cooperative cancellation
+    gloss: Cancellation that only takes effect where code checks for it, so it introduces no hidden 
+      control-flow paths into asynchronous functions.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: swift-se-0304#c00022
+        source_id: swift-se-0304
+        locator: '#cancellation'
+      - chunk_id: swift-se-0317#c00018
+        source_id: swift-se-0317
+        locator: '#cancellation-and-async-let-child-tasks'
+      - chunk_id: openmp-api-6-0#c00954
+        source_id: openmp-api-6-0
+        locator: §18.2
+    aliases:
+      - label: cancellation point
+        chunk_id: openmp-api-6-0#c00954
+  - key: cancellation-propagation
+    name: Downward cancellation propagation
+    gloss: Rule that cancelling a task recursively cancels its descendants, and that tasks created 
+      inside a cancelled scope start out cancelled.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0317#c00018
+        source_id: swift-se-0317
+        locator: '#cancellation-and-async-let-child-tasks'
+      - chunk_id: swift-se-0304#c00061
+        source_id: swift-se-0304
+        locator: '#task-group-cancellation'
+      - chunk_id: swift-se-0304#c00018
+        source_id: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+    aliases: []
+  - key: priority-inheritance-escalation
+    name: Task priority propagation and escalation
+    gloss: Carrying scheduling priority from parent to child activities and raising a lower-priority
+      activity's priority when a higher-priority one waits on it.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00006
+        source_id: swift-se-0304
+        locator: '#structured-concurrency'
+      - chunk_id: swift-se-0304#c00005
+        source_id: swift-se-0304
+        locator: '#structured-concurrency'
+      - chunk_id: rtsj-1-0-2-spec#c00617
+        source_id: rtsj-1-0-2-spec
+        locator: p. 325
+    aliases:
+      - label: priority inheritance protocol
+        chunk_id: rtsj-1-0-2-spec#c00617
+  - key: executor
+    name: Executor
+    gloss: Service that owns the decision of when and on which thread a submitted unit of 
+      asynchronous work runs.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00001
+        source_id: swift-se-0304
+        locator: '#table-of-contents'
+      - chunk_id: swift-se-0304#c00008
+        source_id: swift-se-0304
+        locator: '#tasks'
+    aliases: []
+  - key: async-await
+    name: async/await
+    gloss: Language mechanism letting a function give up its thread at marked points and resume 
+      later, writing asynchronous code in direct style.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: swift-se-0304#c00002
+        source_id: swift-se-0304
+        locator: '#introduction'
+      - chunk_id: ecma-334-7th#c00489
+        source_id: ecma-334-7th
+        locator: §12.9
+      - chunk_id: rust-fls#c00243
+        source_id: rust-fls
+        locator: § 6.20. Await Expressions¶
+    aliases:
+      - label: await expression
+        chunk_id: rust-fls#c00243
+      - label: await operator
+        chunk_id: ecma-334-7th#c00489
+  - key: suspension-point
+    name: Suspension point
+    gloss: Syntactically marked place where an asynchronous function may stop running and later 
+      resume, possibly on a different execution context.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00002
+        source_id: swift-se-0304
+        locator: '#introduction'
+      - chunk_id: swift-se-0304#c00009
+        source_id: swift-se-0304
+        locator: '#tasks'
+      - chunk_id: rust-fls#c00243
+        source_id: rust-fls
+        locator: § 6.20. Await Expressions¶
+    aliases: []
+  - key: poll-based-future
+    name: Poll-based future
+    gloss: Future that is driven by repeatedly polling it with a task context, yielding when it 
+      reports that it is not yet ready.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00243
+        source_id: rust-fls
+        locator: § 6.20. Await Expressions¶
+      - chunk_id: rust-fls#c00531
+        source_id: rust-fls
+        locator: § B.64. await expression¶
+    aliases: []
+  - key: async-state-machine-lowering
+    name: Async function as a compiled state machine
+    gloss: Implementing suspension and resumption by generating a state machine plus a builder that 
+      records results, exceptions and awaiter completions.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00834
+        source_id: ecma-334-7th
+        locator: §15.15
+      - chunk_id: ecma-334-7th#c00836
+        source_id: ecma-334-7th
+        locator: §15.15
+      - chunk_id: ecma-334-7th#c00488
+        source_id: ecma-334-7th
+        locator: §12.9
+    aliases:
+      - label: task builder
+        chunk_id: ecma-334-7th#c00834
+      - label: awaitable
+        chunk_id: ecma-334-7th#c00489
+  - key: voluntary-suspension
+    name: Voluntary suspension and sleep
+    gloss: Operations by which a long-running activity explicitly offers the processor to others, or
+      waits for a stated duration.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: swift-se-0304#c00046
+        source_id: swift-se-0304
+        locator: '#voluntary-suspension'
+      - chunk_id: sebesta-copl#c01037
+        source_id: sebesta-copl
+        locator: §13.7.1
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03207
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: yield
+        chunk_id: sebesta-copl#c01037
+  - key: goroutine
+    name: Goroutine statement
+    gloss: Statement that starts a function call as an independent concurrent thread of control in 
+      the same address space, discarding its results.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00167
+        source_id: go-lang-spec
+        locator: '#Go_statements'
+      - chunk_id: go-memory-model#c00011
+        source_id: go-memory-model
+        locator: '#chan'
+    aliases: []
+  - key: channel
+    name: Channel
+    gloss: First-class typed conduit by which concurrently executing functions communicate by 
+      sending and receiving element values, behaving as a FIFO queue.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00042
+        source_id: go-lang-spec
+        locator: '#Channel_types'
+      - chunk_id: go-lang-spec#c00043
+        source_id: go-lang-spec
+        locator: '#Channel_types'
+      - chunk_id: harper-pfpl#c00648
+        source_id: harper-pfpl
+        locator: p. 403
+    aliases: []
+  - key: buffered-vs-unbuffered-channel
+    name: Buffered versus unbuffered channel
+    gloss: Capacity choice determining whether communication requires both parties to be ready or 
+      merely room in, or data in, the buffer.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00042
+        source_id: go-lang-spec
+        locator: '#Channel_types'
+      - chunk_id: go-lang-spec#c00146
+        source_id: go-lang-spec
+        locator: '#Send_statements'
+      - chunk_id: go-memory-model#c00012
+        source_id: go-memory-model
+        locator: '#chan'
+    aliases: []
+  - key: channel-direction-types
+    name: Directional channel types
+    gloss: Typing a channel endpoint as send-only or receive-only so that the permitted direction of
+      communication is statically enforced.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00042
+        source_id: go-lang-spec
+        locator: '#Channel_types'
+      - chunk_id: go-lang-spec#c00128
+        source_id: go-lang-spec
+        locator: '#Receive_operator'
+    aliases: []
+  - key: channel-close
+    name: Channel closing
+    gloss: Operation recording that no further values will be sent, after which receives complete 
+      immediately with a zero value and a closed indication.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00181
+        source_id: go-lang-spec
+        locator: '#Close'
+      - chunk_id: go-lang-spec#c00128
+        source_id: go-lang-spec
+        locator: '#Receive_operator'
+      - chunk_id: go-memory-model#c00011
+        source_id: go-memory-model
+        locator: '#chan'
+    aliases: []
+  - key: select-statement
+    name: Select over communications
+    gloss: Statement choosing among several ready send or receive operations, picking 
+      pseudo-randomly when more than one can proceed and blocking when none can.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: go-lang-spec#c00168
+        source_id: go-lang-spec
+        locator: '#Select_statements'
+      - chunk_id: go-lang-spec#c00169
+        source_id: go-lang-spec
+        locator: '#Select_statements'
+    aliases: []
+  - key: channel-as-counting-semaphore
+    name: Channel used as a counting semaphore
+    gloss: Idiom limiting concurrency by sending into a bounded channel to acquire a slot and 
+      receiving from it to release one.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: go-memory-model#c00012
+        source_id: go-memory-model
+        locator: '#chan'
+    aliases: []
+  - key: csp-synchronous-communication
+    name: Synchronous communication (CSP rendezvous)
+    gloss: Matched input and output commands in two processes that complete together with no 
+      buffering, each delaying until the partner is ready.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: hoare-1978-csp#c00004
+        source_id: hoare-1978-csp
+        locator: pp. 1–2
+      - chunk_id: hoare-1978-csp#c00014
+        source_id: hoare-1978-csp
+        locator: p. 4
+      - chunk_id: vanroy-haridi-2003#c01068
+        source_id: vanroy-haridi-2003
+        locator: §8.7
+    aliases:
+      - label: rendezvous semantics
+        chunk_id: vanroy-haridi-2003#c01068
+  - key: parallel-command
+    name: Parallel command
+    gloss: Composition that starts its constituent processes simultaneously at arbitrary relative 
+      speeds and terminates only when all have terminated successfully.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: hoare-1978-csp#c00009
+        source_id: hoare-1978-csp
+        locator: p. 3
+      - chunk_id: hoare-1978-csp#c00003
+        source_id: hoare-1978-csp
+        locator: p. 1
+    aliases:
+      - label: parbegin
+        chunk_id: hoare-1978-csp#c00003
+  - key: guarded-command-input-guard
+    name: Guarded commands with input guards
+    gloss: Alternative construct whose branches are selected only when a named partner is ready to 
+      communicate, making nondeterminism explicit and arbitrary.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: hoare-1978-csp#c00004
+        source_id: hoare-1978-csp
+        locator: pp. 1–2
+      - chunk_id: hoare-1978-csp#c00014
+        source_id: hoare-1978-csp
+        locator: p. 4
+      - chunk_id: sebesta-copl#c01017
+        source_id: sebesta-copl
+        locator: §13.5.1
+    aliases:
+      - label: alternative command
+        chunk_id: hoare-1978-csp#c00014
+  - key: repetitive-command-termination
+    name: Termination of a repetitive command on source termination
+    gloss: Rule that a loop over input guards terminates when all the processes named in those 
+      guards have themselves terminated.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: hoare-1978-csp#c00004
+        source_id: hoare-1978-csp
+        locator: pp. 1–2
+      - chunk_id: hoare-1978-csp#c00038
+        source_id: hoare-1978-csp
+        locator: pp. 11–12
+    aliases: []
+  - key: ada-rendezvous
+    name: Task entry and accept rendezvous
+    gloss: Synchronous interaction where a caller invokes a named entry and the owning task executes
+      the matching accept body while the caller is suspended.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c01022
+        source_id: sebesta-copl
+        locator: §13.6.1
+      - chunk_id: sebesta-copl#c01024
+        source_id: sebesta-copl
+        locator: §13.6.1
+      - chunk_id: sebesta-copl#c01074
+        source_id: sebesta-copl
+        locator: §13.10.1
+    aliases:
+      - label: accept clause
+        chunk_id: sebesta-copl#c01022
+      - label: entry queue
+        chunk_id: sebesta-copl#c01023
+  - key: guarded-accept-select
+    name: Guarded accept with nondeterministic select
+    gloss: Selection among several entry queues whose guards are re-evaluated each pass, choosing 
+      nondeterministically among open alternatives with waiting callers.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c01028
+        source_id: sebesta-copl
+        locator: §13.6.2
+      - chunk_id: sebesta-copl#c01026
+        source_id: sebesta-copl
+        locator: §13.6.1
+      - chunk_id: sebesta-copl#c01031
+        source_id: sebesta-copl
+        locator: §13.6.3
+    aliases:
+      - label: open and closed accept clause
+        chunk_id: sebesta-copl#c01028
+  - key: actor-task-vs-server-task
+    name: Actor task versus server task
+    gloss: Distinction between a task that initiates work without waiting for a rendezvous and one 
+      that only reacts to incoming entry calls.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c01024
+        source_id: sebesta-copl
+        locator: §13.6.1
+    aliases: []
+  - key: protected-object
+    name: Protected object
+    gloss: Passive encapsulated data with functions, procedures and guarded entries, under an 
+      implicit reader-writer lock, offering monitor-like exclusion without rendezvous.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c01032
+        source_id: sebesta-copl
+        locator: §13.6.4
+      - chunk_id: scott-plp#c00864
+        source_id: scott-plp
+        locator: pp. 902–903
+      - chunk_id: sebesta-copl#c01033
+        source_id: sebesta-copl
+        locator: §13.6.4
+    aliases: []
+  - key: monitor
+    name: Monitor
+    gloss: Encapsulated shared data whose operations automatically exclude one another in time, 
+      collecting synchronisation and access in one abstraction.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00857
+        source_id: scott-plp
+        locator: pp. 896–897
+      - chunk_id: vanroy-haridi-2003#c01029
+        source_id: vanroy-haridi-2003
+        locator: §8.4.2
+      - chunk_id: jls-se25#c01099
+        source_id: jls-se25
+        locator: §17.1
+    aliases:
+      - label: synchronized method
+        chunk_id: jls-se25#c00420
+  - key: condition-variable
+    name: Condition variable
+    gloss: Queue associated with a monitor on which a thread can wait and be signalled; unlike a 
+      semaphore it has no memory of unobserved signals.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00857
+        source_id: scott-plp
+        locator: pp. 896–897
+      - chunk_id: vanroy-haridi-2003#c01033
+        source_id: vanroy-haridi-2003
+        locator: §8.4.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03243
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: cnd_wait
+        chunk_id: c23-n3220#c00842
+  - key: signal-semantics-hoare-vs-mesa
+    name: Signals as absolutes versus hints
+    gloss: Choice between immediately switching to the signalled thread and merely making it ready, 
+      which forces the waiter to recheck its condition in a loop.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00859
+        source_id: scott-plp
+        locator: pp. 898–899
+      - chunk_id: vanroy-haridi-2003#c01032
+        source_id: vanroy-haridi-2003
+        locator: §8.4.4
+      - chunk_id: scott-plp#c00870
+        source_id: scott-plp
+        locator: pp. 907–908
+    aliases:
+      - label: urgent queue
+        chunk_id: scott-plp#c00857
+      - label: notifyAll
+        chunk_id: vanroy-haridi-2003#c01029
+  - key: monitor-invariant
+    name: Monitor invariant
+    gloss: Predicate expressing that the encapsulated state is consistent, required to hold 
+      initially, at exit, and at each wait or signal.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00858
+        source_id: scott-plp
+        locator: pp. 897–898
+    aliases: []
+  - key: guarded-method
+    name: Guarded method / conditional critical section
+    gloss: Operation whose body runs only once a boolean guard holds, implemented by waiting in a 
+      loop that rechecks the guard after each notification.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01029
+        source_id: vanroy-haridi-2003
+        locator: §8.4.2
+      - chunk_id: scott-plp#c00862
+        source_id: scott-plp
+        locator: pp. 900–901
+    aliases:
+      - label: conditional critical region
+        chunk_id: scott-plp#c00862
+  - key: nested-monitor-problem
+    name: Nested monitor problem
+    gloss: Deadlock hazard arising from whether exclusion on outer monitors is retained or released 
+      while a thread waits inside an inner one.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00862
+        source_id: scott-plp
+        locator: pp. 900–901
+      - chunk_id: scott-plp#c00895
+        source_id: scott-plp
+        locator: pp. 928–929
+    aliases: []
+  - key: semaphore
+    name: Semaphore
+    gloss: Counter with wait and release operations that blocks callers when the count is exhausted 
+      and wakes one waiter when the count is replenished.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c01006
+        source_id: sebesta-copl
+        locator: §13.3.2
+      - chunk_id: scott-plp#c00855
+        source_id: scott-plp
+        locator: pp. 892–894
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03259
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: P and V operations
+        chunk_id: scott-plp#c00855
+      - label: counting_semaphore
+        chunk_id: iso-iec-14882-cpp20-n4861#c03259
+  - key: binary-vs-counting-semaphore
+    name: Binary versus counting semaphore
+    gloss: Contrast between a semaphore used purely for mutual exclusion and a general one counting 
+      available instances of a resource.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00855
+        source_id: scott-plp
+        locator: pp. 892–894
+      - chunk_id: sebesta-copl#c01041
+        source_id: sebesta-copl
+        locator: §13.7.3
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03259
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases: []
+  - key: semaphore-monitor-equivalence
+    name: Equivalent expressive power of semaphores and monitors
+    gloss: Result that each of these synchronisation abstractions can implement the other, so 
+      neither expresses synchronisation the other cannot.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00858
+        source_id: scott-plp
+        locator: pp. 897–898
+      - chunk_id: scott-plp#c00859
+        source_id: scott-plp
+        locator: pp. 898–899
+      - chunk_id: scott-plp#c00895
+        source_id: scott-plp
+        locator: pp. 928–929
+    aliases: []
+  - key: mutual-exclusion
+    name: Mutual exclusion
+    gloss: Requirement that at most one activity executes a designated region of code, or holds a 
+      resource, at any point in time.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+      - chunk_id: jones-hosking-moss-2012#c00691
+        source_id: jones-hosking-moss-2012
+        locator: §13.6
+      - chunk_id: jls-se25#c01099
+        source_id: jls-se25
+        locator: §17.1
+    aliases:
+      - label: Peterson's algorithm
+        chunk_id: jones-hosking-moss-2012#c00691
+  - key: critical-section
+    name: Critical section
+    gloss: Region of code that transforms shared data from one consistent state to another and must 
+      therefore not be executed concurrently with itself.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+      - chunk_id: scott-plp#c00862
+        source_id: scott-plp
+        locator: pp. 900–901
+    aliases:
+      - label: critical region
+        chunk_id: scott-plp#c00862
+  - key: atomicity-vs-condition-synchronization
+    name: Atomicity versus condition synchronization
+    gloss: Distinction between making an operation indivisible and delaying it until a required 
+      precondition on shared state becomes true.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+      - chunk_id: scott-plp#c00855
+        source_id: scott-plp
+        locator: pp. 892–894
+      - chunk_id: sebesta-copl#c01006
+        source_id: sebesta-copl
+        locator: §13.3.2
+    aliases:
+      - label: competition and cooperation synchronization
+        chunk_id: sebesta-copl#c01074
+  - key: lock-mutex
+    name: Lock / mutex
+    gloss: Synchronisation object owned by at most one activity at a time, acquired before and 
+      released after accesses to the resource it protects.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03210
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: jones-hosking-moss-2012#c01200
+        source_id: jones-hosking-moss-2012
+        locator: pp. 527–528
+      - chunk_id: vanroy-haridi-2003#c01015
+        source_id: vanroy-haridi-2003
+        locator: §8.3.1
+    aliases: []
+  - key: recursive-mutex
+    name: Recursive (reentrant) lock
+    gloss: Lock whose owner may acquire additional levels of ownership and must release one level 
+      per acquisition before others can take it.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03214
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: jls-se25#c00779
+        source_id: jls-se25
+        locator: §14.19
+    aliases: []
+  - key: timed-and-try-lock
+    name: Try-lock and timed lock
+    gloss: Non-blocking or deadline-bounded attempts to acquire a lock that report failure instead 
+      of waiting indefinitely.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03215
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03210
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases: []
+  - key: reader-writer-lock
+    name: Reader-writer lock
+    gloss: Lock with a shared mode allowing concurrent readers and an exclusive mode for writers, 
+      exploiting the harmlessness of simultaneous reads.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00837
+        source_id: scott-plp
+        locator: pp. 875–876
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03220
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: scott-plp#c00864
+        source_id: scott-plp
+        locator: pp. 902–903
+    aliases:
+      - label: shared mutex
+        chunk_id: iso-iec-14882-cpp20-n4861#c03222
+      - label: shared lock ownership
+        chunk_id: iso-iec-14882-cpp20-n4861#c03220
+  - key: scoped-lock-ownership
+    name: Scope-bound lock ownership
+    gloss: Object holding a reference to a lockable and releasing it on destruction, so exclusion is
+      relinquished on both normal and exceptional exit.
+    kind_hint: feature
+    origin: prior
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03225
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03209
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03235
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: lock_guard
+        chunk_id: iso-iec-14882-cpp20-n4861#c03209
+  - key: spin-lock
+    name: Spin lock
+    gloss: Lock acquired by repeatedly executing an atomic read-modify-write in a loop, so the 
+      waiter burns processor cycles rather than blocking.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00659
+        source_id: jones-hosking-moss-2012
+        locator: pp. 285–286
+      - chunk_id: scott-plp#c00836
+        source_id: scott-plp
+        locator: p. 875
+    aliases:
+      - label: test-and-set lock
+        chunk_id: jones-hosking-moss-2012#c00659
+      - label: busy-waiting
+        chunk_id: scott-plp#c00832
+  - key: test-and-test-and-set
+    name: Test-and-test-and-set
+    gloss: Refinement that spins on ordinary cached reads and attempts the atomic operation only 
+      when the lock looks free, cutting interconnect traffic.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00660
+        source_id: jones-hosking-moss-2012
+        locator: p. 286
+      - chunk_id: scott-plp#c00836
+        source_id: scott-plp
+        locator: p. 875
+      - chunk_id: jones-hosking-moss-2012#c00661
+        source_id: jones-hosking-moss-2012
+        locator: pp. 286–287
+    aliases: []
+  - key: contention-backoff
+    name: Contention and backoff
+    gloss: Overdemand for a shared location by competing activities, mitigated by waiting a growing,
+      often randomised, interval before retrying.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00836
+        source_id: scott-plp
+        locator: p. 875
+      - chunk_id: jones-hosking-moss-2012#c00682
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: jones-hosking-moss-2012#c00660
+        source_id: jones-hosking-moss-2012
+        locator: p. 286
+    aliases:
+      - label: exponential back-off
+        chunk_id: jones-hosking-moss-2012#c00682
+  - key: barrier
+    name: Barrier
+    gloss: Reusable coordination point where an expected number of activities each block until all 
+      have arrived, after which a new phase begins.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03264
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03265
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: jones-hosking-moss-2012#c00700
+        source_id: jones-hosking-moss-2012
+        locator: p. 306
+    aliases:
+      - label: rendezvous barrier
+        chunk_id: jones-hosking-moss-2012#c00700
+      - label: phase synchronization point
+        chunk_id: iso-iec-14882-cpp20-n4861#c03265
+  - key: latch
+    name: Latch
+    gloss: Single-use counter on which any number of activities block until an expected number of 
+      arrivals has counted it down to zero.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03262
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03263
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases: []
+  - key: termination-detection
+    name: Termination detection
+    gloss: Problem of deciding that no activity in a cooperating pool has work left, complicated by 
+      workers that can hand each other new work.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00019
+        source_id: jones-hosking-moss-2012
+        locator: p. 13
+      - chunk_id: jones-hosking-moss-2012#c00034
+        source_id: jones-hosking-moss-2012
+        locator: p. 19
+      - chunk_id: jones-hosking-moss-2012#c00700
+        source_id: jones-hosking-moss-2012
+        locator: p. 306
+    aliases: []
+  - key: concurrent-composition-barrier
+    name: Concurrent composition
+    gloss: Abstraction that launches one activity per element of a collection and waits until all of
+      them have finished.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00701
+        source_id: vanroy-haridi-2003
+        locator: §5.5.4
+      - chunk_id: hoare-1978-csp#c00009
+        source_id: hoare-1978-csp
+        locator: p. 3
+    aliases:
+      - label: Barrier
+        chunk_id: vanroy-haridi-2003#c00701
+  - key: atomic-read-modify-write
+    name: Atomic read-modify-write primitive
+    gloss: Hardware instruction that reads, computes on and writes back a location indivisibly, so 
+      no other access to that location can interleave.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00669
+        source_id: jones-hosking-moss-2012
+        locator: §13.3
+      - chunk_id: scott-plp#c00836
+        source_id: scott-plp
+        locator: p. 875
+      - chunk_id: go-memory-model#c00002
+        source_id: go-memory-model
+        locator: '#overview'
+    aliases:
+      - label: test_and_set
+        chunk_id: scott-plp#c00836
+      - label: AtomicExchange
+        chunk_id: jones-hosking-moss-2012#c00669
+      - label: fetch-and-add
+        chunk_id: jones-hosking-moss-2012#c00675
+  - key: compare-and-swap
+    name: Compare-and-swap
+    gloss: Primitive that writes a new value to a location only if it still holds an expected value,
+      reporting whether the update occurred.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00670
+        source_id: jones-hosking-moss-2012
+        locator: pp. 290–291
+      - chunk_id: scott-plp#c00837
+        source_id: scott-plp
+        locator: pp. 875–876
+      - chunk_id: openmp-api-6-0#c00901
+        source_id: openmp-api-6-0
+        locator: §17.8.3.4
+    aliases:
+      - label: compare-and-exchange
+        chunk_id: jones-hosking-moss-2012#c00669
+      - label: weak compare-and-swap
+        chunk_id: openmp-api-6-0#c00901
+  - key: load-linked-store-conditional
+    name: Load-linked / store-conditional
+    gloss: Instruction pair that reserves a location and completes a later store only if the 
+      reservation has not been invalidated meanwhile.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00670
+        source_id: jones-hosking-moss-2012
+        locator: pp. 290–291
+      - chunk_id: jones-hosking-moss-2012#c01200
+        source_id: jones-hosking-moss-2012
+        locator: pp. 527–528
+      - chunk_id: scott-plp#c00892
+        source_id: scott-plp
+        locator: pp. 926–927
+    aliases:
+      - label: load-exclusive/store-exclusive
+        chunk_id: jones-hosking-moss-2012#c01200
+  - key: aba-problem
+    name: ABA problem
+    gloss: Hazard where a location is changed and restored between two reads, so a comparison 
+      succeeds although the structure's meaning has changed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00671
+        source_id: jones-hosking-moss-2012
+        locator: p. 291
+    aliases: []
+  - key: multi-word-atomic-update
+    name: Multi-word atomic update primitives
+    gloss: Primitives updating two or more, possibly non-adjacent, words atomically, generalising 
+      toward n-way compare-and-swap and transactional memory.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00679
+        source_id: jones-hosking-moss-2012
+        locator: p. 295
+      - chunk_id: jones-hosking-moss-2012#c00676
+        source_id: jones-hosking-moss-2012
+        locator: p. 294
+    aliases:
+      - label: double-compare-and-swap
+        chunk_id: jones-hosking-moss-2012#c00679
+      - label: CompareAndSwapWide
+        chunk_id: jones-hosking-moss-2012#c00676
+  - key: consensus-number
+    name: Consensus number of a primitive
+    gloss: "Measure of a synchronisation primitive's power: the largest number of activities for which
+      it can solve wait-free agreement on a proposed value."
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00675
+        source_id: jones-hosking-moss-2012
+        locator: pp. 293–294
+      - chunk_id: jones-hosking-moss-2012#c00691
+        source_id: jones-hosking-moss-2012
+        locator: §13.6
+      - chunk_id: jones-hosking-moss-2012#c00681
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+    aliases:
+      - label: consensus problem
+        chunk_id: jones-hosking-moss-2012#c00675
+  - key: wait-freedom
+    name: Wait-freedom
+    gloss: 'Strongest progress guarantee: every activity completes its operation in a bounded number of
+      its own steps whatever the others do.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00681
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: jones-hosking-moss-2012#c01220
+        source_id: jones-hosking-moss-2012
+        locator: pp. 535–536
+      - chunk_id: fraser-2004-thesis#c00022
+        source_id: fraser-2004-thesis
+        locator: pp. 14–15
+    aliases: []
+  - key: lock-freedom
+    name: Lock-freedom
+    gloss: System-wide progress guarantee that some activity always finishes in finitely many steps,
+      though an individual one may starve indefinitely.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00682
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: jones-hosking-moss-2012#c01200
+        source_id: jones-hosking-moss-2012
+        locator: pp. 527–528
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00206
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §6
+    aliases: []
+  - key: obstruction-freedom
+    name: Obstruction-freedom
+    gloss: 'Weak non-blocking property: an operation finishes in finitely many steps given a long enough
+      period without contention, leaving livelock to an outside mechanism.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: fraser-2004-thesis#c00022
+        source_id: fraser-2004-thesis
+        locator: pp. 14–15
+      - chunk_id: jones-hosking-moss-2012#c00682
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00206
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §6
+    aliases: []
+  - key: helping-mechanism
+    name: Helping in non-blocking algorithms
+    gloss: Technique where an activity about to disrupt another first advances the other's announced
+      operation, which is how wait-freedom is usually obtained.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00681
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: fraser-2004-thesis#c00022
+        source_id: fraser-2004-thesis
+        locator: pp. 14–15
+    aliases: []
+  - key: nonblocking-algorithm
+    name: Nonblocking algorithm
+    gloss: Algorithm in which an activity running alone always completes in finitely many steps, so 
+      no stalled participant can block the rest.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00841
+        source_id: scott-plp
+        locator: pp. 879–880
+      - chunk_id: scott-plp#c00840
+        source_id: scott-plp
+        locator: pp. 878–879
+      - chunk_id: jones-hosking-moss-2012#c00705
+        source_id: jones-hosking-moss-2012
+        locator: §13.8
+    aliases: []
+  - key: linearizability
+    name: Linearizability
+    gloss: Correctness condition requiring each concurrent operation to appear to take effect 
+      instantaneously at some instant between its invocation and its response.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: herlihy-1991-wait-free#c00013
+        source_id: herlihy-1991-wait-free
+        locator: pp. 5–6
+      - chunk_id: jones-hosking-moss-2012#c01199
+        source_id: jones-hosking-moss-2012
+        locator: p. 527
+    aliases: []
+  - key: linearization-point
+    name: Linearization point
+    gloss: The instant at which a concurrent operation appears to occur; in non-blocking designs 
+      usually one specific atomic update.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c01199
+        source_id: jones-hosking-moss-2012
+        locator: p. 527
+      - chunk_id: jones-hosking-moss-2012#c00705
+        source_id: jones-hosking-moss-2012
+        locator: §13.8
+    aliases: []
+  - key: race-condition
+    name: Race condition
+    gloss: Dependence of a program's outcome on the unpredictable relative timing of operations in 
+      different activities.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+      - chunk_id: iso-iec-14882-cpp20-n4861#c02128
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §25
+    aliases: []
+  - key: data-race
+    name: Data race
+    gloss: Two conflicting accesses to the same location from different activities, at least one a 
+      write, unordered by the language's synchronisation relation.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c01117
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: c23-n3220#c00091
+        source_id: c23-n3220
+        locator: §5.1.2
+      - chunk_id: openmp-api-6-0#c00120
+        source_id: openmp-api-6-0
+        locator: §2
+    aliases:
+      - label: read-write data race
+        chunk_id: go-memory-model#c00005
+      - label: conflicting accesses
+        chunk_id: jls-se25#c01111
+  - key: data-race-freedom-drf-sc
+    name: Data-race-free programs appear sequentially consistent
+    gloss: Guarantee that correctly synchronised programs behave as some interleaving, so 
+      programmers need not reason about compiler or hardware reordering.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c01117
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: go-memory-model#c00005
+        source_id: go-memory-model
+        locator: '#model'
+      - chunk_id: c23-n3220#c00091
+        source_id: c23-n3220
+        locator: §5.1.2
+    aliases:
+      - label: DRF-SC
+        chunk_id: go-memory-model#c00002
+      - label: correctly synchronized
+        chunk_id: jls-se25#c01117
+  - key: race-consequence-spectrum
+    name: Specified consequences of a race
+    gloss: Language choice between making any race wholly undefined and bounding its outcomes, for 
+      example requiring a read to see some written value.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: go-memory-model#c00002
+        source_id: go-memory-model
+        locator: '#overview'
+      - chunk_id: c23-n3220#c00091
+        source_id: c23-n3220
+        locator: §5.1.2
+      - chunk_id: rust-fls#c00394
+        source_id: rust-fls
+        locator: § 17. Concurrency¶
+    aliases:
+      - label: unspecified behavior
+        chunk_id: openmp-api-6-0#c00120
+  - key: synchronization-race-vs-data-race
+    name: Synchronization races versus data races
+    gloss: Distinction between races among ordinary loads and stores, treated as bugs, and races 
+      among ordered synchronisation operations, which may be normal behaviour.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00848
+        source_id: scott-plp
+        locator: p. 885
+    aliases: []
+  - key: memory-consistency-model
+    name: Memory consistency model
+    gloss: Specification of which language-level operations are guaranteed ordered across 
+      activities, mediating between hardware reordering and programmer reasoning.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00847
+        source_id: scott-plp
+        locator: pp. 884–885
+      - chunk_id: jones-hosking-moss-2012#c00667
+        source_id: jones-hosking-moss-2012
+        locator: p. 289
+      - chunk_id: jls-se25#c01111
+        source_id: jls-se25
+        locator: §17.4
+    aliases:
+      - label: memory model
+        chunk_id: scott-plp#c00847
+  - key: sequential-consistency
+    name: Sequential consistency
+    gloss: Model in which the global order of memory actions is some order consistent with each 
+      activity's own program order.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00667
+        source_id: jones-hosking-moss-2012
+        locator: p. 289
+      - chunk_id: jls-se25#c01114
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: c23-n3220#c00091
+        source_id: c23-n3220
+        locator: §5.1.2
+    aliases: []
+  - key: happens-before
+    name: Happens-before relation
+    gloss: Partial order, built from program order and synchronisation edges, that determines which 
+      writes a read may observe and where races exist.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c01116
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: jls-se25#c01121
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: scott-plp#c00847
+        source_id: scott-plp
+        locator: pp. 884–885
+    aliases:
+      - label: synchronized-before
+        chunk_id: go-memory-model#c00005
+  - key: synchronizes-with
+    name: Synchronizes-with edges
+    gloss: Specific pairings of operations, such as an unlock with a later lock or a volatile write 
+      with a later read, that create cross-activity ordering.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c01114
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: c23-n3220#c00648
+        source_id: c23-n3220
+        locator: §7.17.4
+      - chunk_id: go-memory-model#c00011
+        source_id: go-memory-model
+        locator: '#chan'
+    aliases:
+      - label: synchronization order
+        chunk_id: jls-se25#c01114
+  - key: causality-requirements
+    name: Causality requirements beyond happens-before
+    gloss: Extra constraints preventing values appearing out of thin air, because happens-before 
+      consistency alone admits unacceptable self-justifying executions.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c01124
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: jls-se25#c01121
+        source_id: jls-se25
+        locator: §17.4
+    aliases:
+      - label: committing actions
+        chunk_id: jls-se25#c01121
+  - key: volatile-variable
+    name: Volatile variable
+    gloss: Variable declared so that each access is an ordered synchronisation action visible 
+      consistently to all activities, without full locking.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00401
+        source_id: jls-se25
+        locator: §8.3
+      - chunk_id: jls-se25#c00400
+        source_id: jls-se25
+        locator: §8.3
+      - chunk_id: scott-plp#c00870
+        source_id: scott-plp
+        locator: pp. 907–908
+    aliases: []
+  - key: per-operation-memory-order
+    name: Per-operation memory ordering
+    gloss: Atomic operations annotated with an ordering strength, from fully unordered through 
+      acquire and release to a single sequentially consistent total order.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03119
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+      - chunk_id: c23-n3220#c00643
+        source_id: c23-n3220
+        locator: §7.17.3
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03121
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+    aliases:
+      - label: memory_order
+        chunk_id: c23-n3220#c00643
+  - key: memory-fence
+    name: Memory fence
+    gloss: Standalone synchronisation operation with acquire, release or both semantics, ordering 
+      surrounding accesses without itself touching a particular object.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00648
+        source_id: c23-n3220
+        locator: §7.17.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03178
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+      - chunk_id: c23-n3220#c00649
+        source_id: c23-n3220
+        locator: §7.17.4
+    aliases:
+      - label: atomic_thread_fence
+        chunk_id: c23-n3220#c00649
+      - label: signal fence
+        chunk_id: c23-n3220#c00649
+  - key: modification-order-and-coherence
+    name: Per-object modification order
+    gloss: Total order over modifications of each atomic object, respecting happens-before, with no 
+      requirement that separate objects' orders combine.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00085
+        source_id: c23-n3220
+        locator: §5.1.2
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03121
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+    aliases:
+      - label: release sequence
+        chunk_id: c23-n3220#c00085
+  - key: consistency-model-taxonomy
+    name: Consistency model taxonomy
+    gloss: Ladder of models from strict through sequential and causal to release and weak 
+      consistency, trading reasoning simplicity against implementable reordering.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00667
+        source_id: jones-hosking-moss-2012
+        locator: p. 289
+      - chunk_id: jones-hosking-moss-2012#c01220
+        source_id: jones-hosking-moss-2012
+        locator: pp. 535–536
+      - chunk_id: jones-hosking-moss-2012#c01332
+        source_id: jones-hosking-moss-2012
+        locator: pp. 589–590
+    aliases:
+      - label: relaxed consistency
+        chunk_id: jones-hosking-moss-2012#c00667
+      - label: release consistency
+        chunk_id: jones-hosking-moss-2012#c00667
+  - key: forward-progress-assumption
+    name: Forward-progress assumptions in a specification
+    gloss: Licence for an implementation to assume every activity eventually terminates, performs 
+      I/O, or executes a synchronisation or atomic operation.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00206
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §6
+      - chunk_id: jls-se25#c01111
+        source_id: jls-se25
+        locator: §17.4
+    aliases:
+      - label: thread divergence action
+        chunk_id: jls-se25#c01111
+  - key: weakly-parallel-forward-progress
+    name: Weakened progress for library-created agents
+    gloss: Execution policy under which element invocations may be interleaved on one thread with 
+      only weak progress guarantees, so spin-waiting between them deadlocks.
+    kind_hint: concept
+    origin: prior
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c02128
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §25
+    aliases: []
+  - key: cache-coherence
+    name: Cache coherence
+    gloss: Hardware protocol keeping cached copies of a memory line consistent by exchanging 
+      messages and granting exclusive state before updates.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00658
+        source_id: jones-hosking-moss-2012
+        locator: p. 285
+      - chunk_id: scott-plp#c00807
+        source_id: scott-plp
+        locator: pp. 848–849
+    aliases: []
+  - key: false-sharing
+    name: False sharing
+    gloss: Performance pathology where unrelated data in one cache line are updated by different 
+      processors, causing the line to ping-pong between caches.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00658
+        source_id: jones-hosking-moss-2012
+        locator: p. 285
+      - chunk_id: jones-hosking-moss-2012#c01192
+        source_id: jones-hosking-moss-2012
+        locator: p. 524
+      - chunk_id: lea-2000-forkjoin#c00011
+        source_id: lea-2000-forkjoin
+        locator: pp. 3–4
+    aliases: []
+  - key: deadlock
+    name: Deadlock
+    gloss: Situation where active entities each wait for a resource held by another in a cycle, so 
+      none can ever continue.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01044
+        source_id: vanroy-haridi-2003
+        locator: §8.5.2
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00114
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 68–69
+      - chunk_id: jls-se25#c01100
+        source_id: jls-se25
+        locator: §17.1
+    aliases: []
+  - key: wait-for-graph
+    name: Wait-for graph
+    gloss: Directed graph of active entities and the resources they hold or await, in which a cycle 
+      corresponds exactly to a deadlock.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01044
+        source_id: vanroy-haridi-2003
+        locator: §8.5.2
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00115
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: p. 69
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00114
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 68–69
+    aliases:
+      - label: waits-for graph
+        chunk_id: bernstein-hadzilacos-goodman-1987#c00114
+  - key: deadlock-avoidance
+    name: Deadlock avoidance
+    gloss: Refusing requests that could close a cycle, for instance by ordering entities by priority
+      or timestamp and aborting the younger one.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01044
+        source_id: vanroy-haridi-2003
+        locator: §8.5.2
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00207
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 120–121
+      - chunk_id: jls-se25#c01100
+        source_id: jls-se25
+        locator: §17.1
+    aliases:
+      - label: deadlock prevention
+        chunk_id: vanroy-haridi-2003#c01044
+      - label: Wound-Wait
+        chunk_id: bernstein-hadzilacos-goodman-1987#c00207
+  - key: deadlock-detection-and-resolution
+    name: Deadlock detection and resolution
+    gloss: Letting deadlocks happen, then finding cycles, or guessing by timeout, and breaking them 
+      by aborting a victim.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00114
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 68–69
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00115
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: p. 69
+      - chunk_id: vanroy-haridi-2003#c01044
+        source_id: vanroy-haridi-2003
+        locator: §8.5.2
+    aliases:
+      - label: detection and resolution
+        chunk_id: vanroy-haridi-2003#c01044
+  - key: phantom-deadlock
+    name: Phantom deadlock
+    gloss: False positive in which a detector believes a cycle exists although no deadlock really 
+      does, arising from stale or distributed information.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00158
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: p. 93
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00606
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 338–339
+    aliases: []
+  - key: distributed-deadlock-detection
+    name: Distributed deadlock detection
+    gloss: Detecting cycles in the union of per-site wait-for graphs, since a global cycle can exist
+      while every local graph is acyclic.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00154
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 90–91
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00207
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 120–121
+      - chunk_id: bernstein-hadzilacos-goodman-1987#c00209
+        source_id: bernstein-hadzilacos-goodman-1987
+        locator: pp. 121–122
+    aliases:
+      - label: path pushing
+        chunk_id: bernstein-hadzilacos-goodman-1987#c00606
+  - key: starvation
+    name: Starvation
+    gloss: Failure of an individual activity to make progress indefinitely even though the system as
+      a whole keeps completing operations.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00682
+        source_id: jones-hosking-moss-2012
+        locator: §13.4
+      - chunk_id: jones-hosking-moss-2012#c00675
+        source_id: jones-hosking-moss-2012
+        locator: pp. 293–294
+      - chunk_id: jones-hosking-moss-2012#c00705
+        source_id: jones-hosking-moss-2012
+        locator: §13.8
+    aliases: []
+  - key: livelock
+    name: Livelock
+    gloss: Two or more competing activities repeatedly undoing each other's work, so none ever 
+      completes despite continuous execution.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: fraser-2004-thesis#c00022
+        source_id: fraser-2004-thesis
+        locator: pp. 14–15
+      - chunk_id: jones-hosking-moss-2012#c01199
+        source_id: jones-hosking-moss-2012
+        locator: p. 527
+    aliases: []
+  - key: fairness-of-synchronization
+    name: Fairness of synchronization
+    gloss: Property that waiting activities are served in request order or at least all get an equal
+      chance, which can conflict with locality and preemption.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00837
+        source_id: scott-plp
+        locator: pp. 875–876
+      - chunk_id: sebesta-copl#c01017
+        source_id: sebesta-copl
+        locator: §13.5.1
+      - chunk_id: lamport-1978#c00010
+        source_id: lamport-1978
+        locator: p. 4
+    aliases: []
+  - key: priority-inversion
+    name: Priority inversion
+    gloss: Timing fault where a high-priority activity is delayed because a lower-priority one holds
+      a lock it needs, potentially for an unbounded time.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00086
+        source_id: rtsj-1-0-2-spec
+        locator: p. 49
+      - chunk_id: rtsj-1-0-2-spec#c00617
+        source_id: rtsj-1-0-2-spec
+        locator: p. 325
+      - chunk_id: rtsj-1-0-2-spec#c00074
+        source_id: rtsj-1-0-2-spec
+        locator: p. 43
+    aliases: []
+  - key: priority-inversion-avoidance-protocols
+    name: Priority inversion avoidance protocols
+    gloss: Mandated lock protocols such as priority inheritance or priority ceiling emulation that 
+      bound how long a high-priority activity can be blocked.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00617
+        source_id: rtsj-1-0-2-spec
+        locator: p. 325
+      - chunk_id: rtsj-1-0-2-spec#c00086
+        source_id: rtsj-1-0-2-spec
+        locator: p. 49
+      - chunk_id: rtsj-1-0-2-spec#c00100
+        source_id: rtsj-1-0-2-spec
+        locator: p. 57
+    aliases:
+      - label: priority ceiling emulation
+        chunk_id: rtsj-1-0-2-spec#c00617
+  - key: wait-free-queue-for-mixed-priorities
+    name: Wait-free queues for priority-disjoint activities
+    gloss: Providing non-blocking queues so activities that must not share a lock, such as a 
+      collector and a real-time thread, can still exchange data.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00617
+        source_id: rtsj-1-0-2-spec
+        locator: p. 325
+      - chunk_id: rtsj-1-0-2-spec#c00074
+        source_id: rtsj-1-0-2-spec
+        locator: p. 43
+    aliases: []
+  - key: priority-scheduling-policy
+    name: Priority-based scheduling policy
+    gloss: Specified dispatching of activities by execution eligibility, with documented queue 
+      placement on preemption, yield, blocking and priority change.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00190
+        source_id: rtsj-1-0-2-spec
+        locator: p. 103
+      - chunk_id: rtsj-1-0-2-spec#c00192
+        source_id: rtsj-1-0-2-spec
+        locator: p. 104
+      - chunk_id: rtsj-1-0-2-spec#c00223
+        source_id: rtsj-1-0-2-spec
+        locator: p. 120
+    aliases:
+      - label: base scheduler
+        chunk_id: rtsj-1-0-2-spec#c00190
+      - label: importance
+        chunk_id: rtsj-1-0-2-spec#c00297
+  - key: schedulable-object
+    name: Schedulable object
+    gloss: Abstraction broader than a thread that a scheduler can dispatch, carrying scheduling, 
+      release and memory parameters.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rtsj-1-0-2-spec#c00110
+        source_id: rtsj-1-0-2-spec
+        locator: p. 62
+      - chunk_id: rtsj-1-0-2-spec#c00226
+        source_id: rtsj-1-0-2-spec
+        locator: p. 121
+      - chunk_id: rtsj-1-0-2-spec#c00302
+        source_id: rtsj-1-0-2-spec
+        locator: p. 156
+    aliases: []
+  - key: transactional-memory
+    name: Transactional memory
+    gloss: Mechanism letting a block of shared-memory accesses either all take effect or none, with 
+      the system detecting conflicts and retrying.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00724
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: scott-plp#c00872
+        source_id: scott-plp
+        locator: pp. 909–910
+      - chunk_id: jones-hosking-moss-2012#c00721
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+    aliases:
+      - label: TM
+        chunk_id: scott-plp#c00872
+  - key: software-transactional-memory
+    name: Software transactional memory
+    gloss: Transactional memory realised in software, exposed to programmers as atomic blocks and 
+      transactional variables with composition operators.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c01080
+        source_id: ghc-users-guide
+        locator: §6.15.2
+      - chunk_id: scott-plp#c00873
+        source_id: scott-plp
+        locator: pp. 910–911
+    aliases:
+      - label: STM
+        chunk_id: ghc-users-guide#c01080
+  - key: atomic-block
+    name: Atomic block
+    gloss: Syntactic region labelled atomic whose contents the implementation runs in parallel where
+      possible, relieving the programmer of naming lock objects.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00873
+        source_id: scott-plp
+        locator: pp. 910–911
+      - chunk_id: jones-hosking-moss-2012#c00724
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: ghc-users-guide#c01080
+        source_id: ghc-users-guide
+        locator: §6.15.2
+    aliases: []
+  - key: retry-and-compose
+    name: Retry and alternative composition of transactions
+    gloss: Primitives letting a transaction abandon itself until a read location changes, or offer 
+      an alternative, making atomic abstractions composable.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00873
+        source_id: scott-plp
+        locator: pp. 910–911
+      - chunk_id: ghc-users-guide#c01080
+        source_id: ghc-users-guide
+        locator: §6.15.2
+      - chunk_id: scott-plp#c00872
+        source_id: scott-plp
+        locator: pp. 909–910
+    aliases:
+      - label: retry
+        chunk_id: scott-plp#c00873
+      - label: orElse
+        chunk_id: ghc-users-guide#c01080
+  - key: transaction-commit-and-abort
+    name: Commit and abort
+    gloss: Ending a transaction either by installing all its writes or by discarding them so that 
+      the situation appears as if it never ran.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00721
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: jones-hosking-moss-2012#c01218
+        source_id: jones-hosking-moss-2012
+        locator: p. 535
+      - chunk_id: vanroy-haridi-2003#c01050
+        source_id: vanroy-haridi-2003
+        locator: §8.5.3
+    aliases: []
+  - key: transaction-conflict-detection
+    name: Conflict detection between transactions
+    gloss: Recognising that two transactions access a common location with at least one write, so 
+      one of them must be ordered earlier or aborted.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00723
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: jones-hosking-moss-2012#c00724
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: jones-hosking-moss-2012#c00727
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+    aliases:
+      - label: read set and write set
+        chunk_id: jones-hosking-moss-2012#c00727
+  - key: write-buffering-versus-undo
+    name: Write buffering versus undo logging
+    gloss: "Two ways to make a transaction's writes atomic: accumulate them elsewhere and install on commit,
+      or write in place and roll back on abort."
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00724
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+    aliases: []
+  - key: transaction-isolation-property
+    name: Atomicity, consistency and isolation of memory transactions
+    gloss: Properties that a transaction's writes appear all or none, that it appears to execute at 
+      one instant, and that intermediate states are unobservable.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c00723
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+      - chunk_id: jones-hosking-moss-2012#c01217
+        source_id: jones-hosking-moss-2012
+        locator: pp. 534–535
+    aliases: []
+  - key: speculation-and-rollback
+    name: Speculation and rollback
+    gloss: Running work optimistically on the assumption it will be needed or will not conflict, 
+      with a mechanism to discard its effects if that fails.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00872
+        source_id: scott-plp
+        locator: pp. 909–910
+      - chunk_id: harper-pfpl#c00639
+        source_id: harper-pfpl
+        locator: §39.3
+      - chunk_id: frigo-leiserson-randall-1998#c00009
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 3
+    aliases:
+      - label: abort speculative work
+        chunk_id: frigo-leiserson-randall-1998#c00009
+      - label: speculation
+        chunk_id: harper-pfpl#c00639
+  - key: lock-composition-failure
+    name: Non-composability of lock-based abstractions
+    gloss: Problem that correctness depending on global lock acquisition order prevents safely 
+      calling existing locked abstractions inside a new critical section.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00872
+        source_id: scott-plp
+        locator: pp. 909–910
+    aliases: []
+  - key: global-interpreter-lock
+    name: Global interpreter lock
+    gloss: Single runtime-wide lock protecting interpreter state, which makes object access 
+      thread-safe but prevents interpreted code from using multiple cores.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: pep-684#c00003
+        source_id: pep-684
+        locator: § The GIL
+      - chunk_id: pep-684#c00001
+        source_id: pep-684
+        locator: § Abstract
+      - chunk_id: pep-703#c00016
+        source_id: pep-703
+        locator: § Reference Counting
+    aliases:
+      - label: GIL
+        chunk_id: pep-684#c00003
+  - key: per-interpreter-lock
+    name: Per-interpreter lock
+    gloss: Giving each interpreter instance its own runtime lock once its state is sufficiently 
+      isolated, so interpreters can run on separate cores.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: pep-684#c00018
+        source_id: pep-684
+        locator: § PyInterpreterConfig.own_gil
+      - chunk_id: pep-684#c00001
+        source_id: pep-684
+        locator: § Abstract
+      - chunk_id: pep-684#c00002
+        source_id: pep-684
+        locator: § High-Level Summary
+    aliases: []
+  - key: interpreter-isolation-as-concurrency-model
+    name: Interpreter isolation as a concurrency model
+    gloss: Using multiple strictly isolated interpreters within one process, each with its own 
+      modules and objects, as the unit of parallel execution.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pep-684#c00005
+        source_id: pep-684
+        locator: § Other Isolation Considerations
+      - chunk_id: pep-684#c00004
+        source_id: pep-684
+        locator: § CPython Runtime State
+      - chunk_id: pep-684#c00010
+        source_id: pep-684
+        locator: § PEP 554 (Multiple Interpreters in the Stdlib)
+    aliases:
+      - label: subinterpreter
+        chunk_id: pep-684#c00017
+  - key: biased-reference-counting
+    name: Biased reference counting
+    gloss: Thread-safe counting that splits a count into a non-atomic local part for the owning 
+      thread and an atomic shared part for others.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pep-703#c00016
+        source_id: pep-703
+        locator: § Reference Counting
+      - chunk_id: pep-703#c00019
+        source_id: pep-703
+        locator: § Biased Reference Counting
+      - chunk_id: pep-703#c00024
+        source_id: pep-703
+        locator: § Reference counting pseudo-code
+    aliases:
+      - label: BRC
+        chunk_id: pep-703#c00016
+  - key: deferred-reference-counting-for-contention
+    name: Deferred reference counting for contention
+    gloss: Skipping interpreter-stack count updates for widely shared objects so their true count is
+      only computable when all activities are paused.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pep-703#c00025
+        source_id: pep-703
+        locator: § Deferred Reference Counting
+      - chunk_id: pep-703#c00027
+        source_id: pep-703
+        locator: § Reference Counting Type Objects
+    aliases: []
+  - key: immortal-objects
+    name: Immortal objects
+    gloss: Marking program-lifetime objects so that counting operations on them are no-ops, removing
+      contention on their shared counter fields.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pep-703#c00018
+        source_id: pep-703
+        locator: § Immortalization
+      - chunk_id: pep-703#c00016
+        source_id: pep-703
+        locator: § Reference Counting
+    aliases: []
+  - key: optimistic-unlocked-container-access
+    name: Optimistic unlocked container access
+    gloss: Reading a container element and conditionally retaining it without a lock, by keeping the
+      element's header valid for the duration of the access.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: pep-703#c00045
+        source_id: pep-703
+        locator: § Optimistically Avoiding Locking
+    aliases:
+      - label: read-copy update
+        chunk_id: pep-703#c00045
+  - key: deferred-reclamation-epoch
+    name: Epoch-based deferred reclamation
+    gloss: Withholding reuse of removed memory until every activity has passed a point at which it 
+      can no longer hold a reference.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c01039
+        source_id: jones-hosking-moss-2012
+        locator: pp. 458–459
+      - chunk_id: jones-hosking-moss-2012#c01040
+        source_id: jones-hosking-moss-2012
+        locator: p. 459
+    aliases:
+      - label: hazard eras
+        chunk_id: jones-hosking-moss-2012#c01040
+      - label: interval-based reclamation
+        chunk_id: jones-hosking-moss-2012#c01040
+  - key: hazard-pointers
+    name: Hazard pointers
+    gloss: Pointer-based reclamation where an activity publishes the object it is about to use, and 
+      reclaimers skip any object a published pointer protects.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jones-hosking-moss-2012#c01039
+        source_id: jones-hosking-moss-2012
+        locator: pp. 458–459
+      - chunk_id: jones-hosking-moss-2012#c01041
+        source_id: jones-hosking-moss-2012
+        locator: p. 459
+    aliases:
+      - label: Pass The Buck
+        chunk_id: jones-hosking-moss-2012#c01039
+  - key: data-parallelism
+    name: Data parallelism
+    gloss: Applying the same operation across the elements of an aggregate, distributing elements 
+      rather than distinct tasks across processors.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00816
+        source_id: scott-plp
+        locator: pp. 856–857
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+      - chunk_id: openmp-api-6-0#c00197
+        source_id: openmp-api-6-0
+        locator: §2
+    aliases:
+      - label: task parallelism (contrast)
+        chunk_id: scott-plp#c00832
+  - key: parallel-loop-forall
+    name: Parallel loop with forall semantics
+    gloss: Loop whose iterations run concurrently with each reading its right-hand sides before any 
+      writes land, suited to vector execution.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00816
+        source_id: scott-plp
+        locator: pp. 856–857
+    aliases:
+      - label: forall
+        chunk_id: scott-plp#c00816
+  - key: worksharing-loop
+    name: Worksharing loop construct
+    gloss: Directive distributing the iterations of a loop nest among the threads of a team, with a 
+      clause controlling how iterations are scheduled.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00772
+        source_id: openmp-api-6-0
+        locator: §13.6.1
+      - chunk_id: openmp-api-6-0#c00774
+        source_id: openmp-api-6-0
+        locator: §13.6.2
+      - chunk_id: scott-plp#c00816
+        source_id: scott-plp
+        locator: pp. 856–857
+    aliases: []
+  - key: reduction-clause
+    name: Reduction across parallel activities
+    gloss: Declaring that private copies of a variable are combined by a commutative operator at the
+      end of a parallel region, with unspecified combining order.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00495
+        source_id: openmp-api-6-0
+        locator: §7.6.10
+      - chunk_id: openmp-api-6-0#c00488
+        source_id: openmp-api-6-0
+        locator: §7.6.7
+      - chunk_id: scott-plp#c00816
+        source_id: scott-plp
+        locator: pp. 856–857
+    aliases: []
+  - key: nonreproducible-floating-point-results
+    name: Non-reproducibility of parallel reductions
+    gloss: Consequence that changing the association of numeric operations across activities can 
+      yield results that are not bitwise identical between runs.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00488
+        source_id: openmp-api-6-0
+        locator: §7.6.7
+      - chunk_id: openmp-api-6-0#c00053
+        source_id: openmp-api-6-0
+        locator: §1.2
+    aliases: []
+  - key: simd-lane-parallelism
+    name: SIMD lane parallelism
+    gloss: Lock-step execution of a set of iterations by vector lanes of a single thread, exposed as
+      a distinct construct from thread parallelism.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00197
+        source_id: openmp-api-6-0
+        locator: §2
+      - chunk_id: scott-plp#c00816
+        source_id: scott-plp
+        locator: pp. 856–857
+    aliases:
+      - label: SIMD chunk
+        chunk_id: openmp-api-6-0#c00197
+  - key: data-sharing-attributes
+    name: Data-sharing attributes
+    gloss: Per-construct declarations stating whether a variable is shared among the activities of a
+      team or replicated privately in each.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00120
+        source_id: openmp-api-6-0
+        locator: §2
+      - chunk_id: openmp-api-6-0#c00065
+        source_id: openmp-api-6-0
+        locator: §1.3.1
+      - chunk_id: openmp-api-6-0#c00197
+        source_id: openmp-api-6-0
+        locator: §2
+    aliases:
+      - label: private and shared clauses
+        chunk_id: openmp-api-6-0#c00065
+  - key: explicit-task-construct
+    name: Explicit task construct with deferred execution
+    gloss: Directive packaging a block plus its data environment as a unit whose execution the 
+      encountering activity may defer to any thread of the binding set.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00791
+        source_id: openmp-api-6-0
+        locator: §14.1
+      - chunk_id: openmp-api-6-0#c00826
+        source_id: openmp-api-6-0
+        locator: §14.14
+    aliases:
+      - label: untied task
+        chunk_id: openmp-api-6-0#c00826
+  - key: task-dependences
+    name: Task dependences
+    gloss: Declaring in, out or mutually exclusive accesses to locations so the runtime derives a 
+      transitive ordering among sibling tasks.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00928
+        source_id: openmp-api-6-0
+        locator: §17.9.5
+      - chunk_id: openmp-api-6-0#c00929
+        source_id: openmp-api-6-0
+        locator: §17.9.5
+      - chunk_id: openmp-api-6-0#c00930
+        source_id: openmp-api-6-0
+        locator: §17.9.5
+    aliases:
+      - label: depend clause
+        chunk_id: openmp-api-6-0#c00928
+      - label: mutually exclusive tasks
+        chunk_id: openmp-api-6-0#c00930
+  - key: task-wait-synchronization
+    name: Task wait synchronization
+    gloss: Construct suspending the current activity until the child units of work it generated, or 
+      its declared predecessors, have completed.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00879
+        source_id: openmp-api-6-0
+        locator: §17.5
+      - chunk_id: openmp-api-6-0#c00880
+        source_id: openmp-api-6-0
+        locator: §17.5
+    aliases:
+      - label: taskwait
+        chunk_id: openmp-api-6-0#c00879
+  - key: task-scheduling-constraints
+    name: Task scheduling constraints
+    gloss: Rules limiting which deferred units a thread may start or resume at a scheduling point, 
+      which programs must not otherwise rely on.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00826
+        source_id: openmp-api-6-0
+        locator: §14.14
+      - chunk_id: openmp-api-6-0#c00791
+        source_id: openmp-api-6-0
+        locator: §14.1
+    aliases:
+      - label: task scheduling point
+        chunk_id: openmp-api-6-0#c00826
+  - key: cancellation-construct
+    name: Activated cancellation of a parallel region
+    gloss: Construct activating cancellation of a region or task group, where affected activities 
+      resume at the region end upon reaching a cancellation point.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00954
+        source_id: openmp-api-6-0
+        locator: §18.2
+    aliases: []
+  - key: thread-affinity-places
+    name: Thread affinity and places
+    gloss: Describing the hardware as an ordered list of processor sets and binding activities to 
+      them, so placement is programmer-controllable.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: openmp-api-6-0#c00249
+        source_id: openmp-api-6-0
+        locator: §4.1.6
+      - chunk_id: openmp-api-6-0#c00251
+        source_id: openmp-api-6-0
+        locator: §4.1.6
+      - chunk_id: openmp-api-6-0#c00180
+        source_id: openmp-api-6-0
+        locator: §2
+    aliases:
+      - label: place partition
+        chunk_id: openmp-api-6-0#c00181
+  - key: parallel-algorithm-execution-policy
+    name: Execution policy on a library algorithm
+    gloss: Tag selecting whether a standard algorithm's element accesses run sequentially, in 
+      parallel, or unsequenced, shifting race responsibility to the caller.
+    kind_hint: feature
+    origin: prior
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c02128
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §25
+    aliases: []
+  - key: spark-annotation-for-parallelism
+    name: Annotating pure code for parallelism
+    gloss: Combinator that sparks evaluation of an expression for possible parallel execution while 
+      returning another, with a companion forcing evaluation order.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c01078
+        source_id: ghc-users-guide
+        locator: §6.15.1
+      - chunk_id: ghc-users-guide#c01079
+        source_id: ghc-users-guide
+        locator: §6.15.1
+      - chunk_id: ghc-users-guide#c01472
+        source_id: ghc-users-guide
+        locator: §17.2.6
+    aliases:
+      - label: par and pseq
+        chunk_id: ghc-users-guide#c01078
+      - label: spark
+        chunk_id: ghc-users-guide#c01472
+  - key: synchronised-mutable-variable
+    name: Synchronised mutable variable (MVar)
+    gloss: Box that is either full or empty, where putting blocks while full and taking blocks while
+      empty, combining mutual exclusion with condition synchronisation.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c01077
+        source_id: ghc-users-guide
+        locator: §6.15.1
+      - chunk_id: vanroy-haridi-2003#c01067
+        source_id: vanroy-haridi-2003
+        locator: §8.7
+    aliases:
+      - label: MVar
+        chunk_id: ghc-users-guide#c01077
+  - key: fork-join
+    name: Fork/join
+    gloss: Explicit creation of a new activity as an executable operation, with a companion 
+      operation letting another activity wait for its completion.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00818
+        source_id: scott-plp
+        locator: pp. 858–859
+      - chunk_id: harper-pfpl#c00626
+        source_id: harper-pfpl
+        locator: §38.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03202
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: join
+        chunk_id: iso-iec-14882-cpp20-n4861#c03202
+  - key: co-begin-and-launch-at-elaboration
+    name: Co-begin and launch-at-elaboration
+    gloss: Constructs producing properly nested concurrency, either by a bracketed parallel block or
+      by starting an activity when its declaration is elaborated.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00818
+        source_id: scott-plp
+        locator: pp. 858–859
+      - chunk_id: hoare-1978-csp#c00009
+        source_id: hoare-1978-csp
+        locator: p. 3
+    aliases: []
+  - key: spawn-sync-call-return-parallelism
+    name: Spawn/sync call-return parallelism
+    gloss: Giving a procedure call parallel semantics so the parent continues, with a local barrier 
+      that must be reached before the child's results are used.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: frigo-leiserson-randall-1998#c00006
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 2
+      - chunk_id: frigo-leiserson-randall-1998#c00005
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 2
+      - chunk_id: harper-pfpl#c00626
+        source_id: harper-pfpl
+        locator: §38.4
+    aliases:
+      - label: cilk spawn and sync
+        chunk_id: frigo-leiserson-randall-1998#c00005
+  - key: implicit-atomicity-of-threads
+    name: Implicit atomicity between synchronisation points
+    gloss: Guaranteeing that the code between spawn, sync and return within one procedure instance 
+      runs atomically, so accumulating results needs no lock.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: frigo-leiserson-randall-1998#c00008
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 3
+      - chunk_id: frigo-leiserson-randall-1998#c00009
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 3
+    aliases:
+      - label: inlet
+        chunk_id: frigo-leiserson-randall-1998#c00008
+  - key: work-first-principle
+    name: Work-first principle
+    gloss: Design rule that scheduling overhead should be moved off the work term onto the 
+      critical-path term, since ample parallel slackness is assumed.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: frigo-leiserson-randall-1998#c00010
+        source_id: frigo-leiserson-randall-1998
+        locator: pp. 3–4
+      - chunk_id: frigo-leiserson-randall-1998#c00001
+        source_id: frigo-leiserson-randall-1998
+        locator: p. 1
+    aliases:
+      - label: parallel slackness
+        chunk_id: frigo-leiserson-randall-1998#c00010
+  - key: work-stealing-deque-protocol
+    name: Work-stealing deque protocol
+    gloss: Two-party synchronisation on a double-ended queue where the owner pushes and pops one end
+      lock-free and thieves take from the other under a lock.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: lea-2000-forkjoin#c00011
+        source_id: lea-2000-forkjoin
+        locator: pp. 3–4
+      - chunk_id: blumofe-leiserson-1999#c00021
+        source_id: blumofe-leiserson-1999
+        locator: p. 10
+      - chunk_id: jones-hosking-moss-2012#c00724
+        source_id: jones-hosking-moss-2012
+        locator: §13.9
+    aliases:
+      - label: THE protocol
+        chunk_id: lea-2000-forkjoin#c00011
+      - label: ready deque
+        chunk_id: blumofe-leiserson-1999#c00021
+  - key: active-object
+    name: Active object
+    gloss: Pattern decoupling method invocation from method execution by turning calls into queued 
+      request objects executed by the object's own thread.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: lavender-schmidt-1996-active-object#c00008
+        source_id: lavender-schmidt-1996-active-object
+        locator: §6
+      - chunk_id: lavender-schmidt-1996-active-object#c00015
+        source_id: lavender-schmidt-1996-active-object
+        locator: pp. 2–3
+      - chunk_id: vanroy-haridi-2003#c00995
+        source_id: vanroy-haridi-2003
+        locator: §8.2.1
+    aliases: []
+  - key: method-request-and-activation-queue
+    name: Method request and activation queue
+    gloss: Reified invocation carrying parameters and a guard, buffered in a queue whose scheduler 
+      decides which request becomes runnable next.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: lavender-schmidt-1996-active-object#c00015
+        source_id: lavender-schmidt-1996-active-object
+        locator: pp. 2–3
+      - chunk_id: lavender-schmidt-1996-active-object#c00016
+        source_id: lavender-schmidt-1996-active-object
+        locator: p. 3
+    aliases:
+      - label: servant
+        chunk_id: lavender-schmidt-1996-active-object#c00016
+      - label: method request guard
+        chunk_id: lavender-schmidt-1996-active-object#c00016
+  - key: tuple-space
+    name: Tuple space
+    gloss: Shared multiset of tuples with write, blocking read and non-blocking read operations, 
+      through which activities interact without knowing one another.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01016
+        source_id: vanroy-haridi-2003
+        locator: §8.3.2
+      - chunk_id: vanroy-haridi-2003#c00802
+        source_id: vanroy-haridi-2003
+        locator: §6.7.2
+    aliases:
+      - label: Linda
+        chunk_id: vanroy-haridi-2003#c01016
+  - key: coordination-model
+    name: Coordination model
+    gloss: Interaction style in which senders and receivers are mutually anonymous, communicating 
+      only through a shared medium at their interface.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01016
+        source_id: vanroy-haridi-2003
+        locator: §8.3.2
+      - chunk_id: vanroy-haridi-2003#c00802
+        source_id: vanroy-haridi-2003
+        locator: §6.7.2
+    aliases:
+      - label: coordination language
+        chunk_id: vanroy-haridi-2003#c01016
+  - key: process-calculus
+    name: Process calculus
+    gloss: Formal language of processes and events, closed under concurrent composition, replication
+      and channel declaration, abstracting interaction among independent agents.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00648
+        source_id: harper-pfpl
+        locator: p. 403
+    aliases: []
+  - key: logical-clock
+    name: Logical clock
+    gloss: Counter per activity, advanced on local events and on message receipt, assigning numbers 
+      to events consistently with the happened-before relation.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: lamport-1978#c00006
+        source_id: lamport-1978
+        locator: pp. 2–3
+      - chunk_id: lamport-1978#c00009
+        source_id: lamport-1978
+        locator: pp. 3–4
+      - chunk_id: lamport-1978#c00007
+        source_id: lamport-1978
+        locator: p. 3
+    aliases:
+      - label: timestamp
+        chunk_id: lamport-1978#c00009
+  - key: happened-before-partial-order
+    name: Happened-before as a partial order
+    gloss: Irreflexive transitive order generated by local sequence and message send-receive pairs, 
+      leaving unrelated events genuinely concurrent.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: lamport-1978#c00004
+        source_id: lamport-1978
+        locator: p. 2
+      - chunk_id: lamport-1978#c00002
+        source_id: lamport-1978
+        locator: p. 1
+      - chunk_id: lamport-1978#c00022
+        source_id: lamport-1978
+        locator: pp. 6–7
+    aliases: []
+  - key: total-order-from-logical-clocks
+    name: Extending a partial order to a total order
+    gloss: Breaking ties among equal timestamps by an arbitrary order on activities, yielding an 
+      agreed global sequence usable for synchronisation algorithms.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: lamport-1978#c00009
+        source_id: lamport-1978
+        locator: pp. 3–4
+      - chunk_id: lamport-1978#c00010
+        source_id: lamport-1978
+        locator: p. 4
+      - chunk_id: lamport-1978#c00012
+        source_id: lamport-1978
+        locator: p. 4
+    aliases: []
+  - key: vector-timestamp
+    name: Vector timestamps
+    gloss: Timestamping scheme capturing the whole happened-before partial order, so one can decide 
+      whether either of two events could have influenced the other.
+    kind_hint: concept
+    origin: prior
+    evidence:
+      - chunk_id: fidge-1988-timestamps#c00001
+        source_id: fidge-1988-timestamps
+        locator: p. 1
+    aliases: []
+  - key: distributed-mutual-exclusion-by-timestamps
+    name: Distributed mutual exclusion by timestamped requests
+    gloss: Granting a shared resource in request-timestamp order, using the agreed total order plus 
+      acknowledgements so every request is eventually granted.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: lamport-1978#c00010
+        source_id: lamport-1978
+        locator: p. 4
+      - chunk_id: lamport-1978#c00012
+        source_id: lamport-1978
+        locator: p. 4
+    aliases: []
+  - key: bounded-buffer-producer-consumer
+    name: Bounded buffer
+    gloss: Canonical shared structure requiring both mutual exclusion on its state and condition 
+      synchronisation against overflow and underflow.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00855
+        source_id: scott-plp
+        locator: pp. 892–894
+      - chunk_id: sebesta-copl#c01006
+        source_id: sebesta-copl
+        locator: §13.3.2
+      - chunk_id: vanroy-haridi-2003#c01033
+        source_id: vanroy-haridi-2003
+        locator: §8.4.4
+    aliases:
+      - label: producer-consumer
+        chunk_id: sebesta-copl#c01006
+  - key: concurrent-abstract-data-type
+    name: Concurrent abstract data type
+    gloss: Data abstraction usable as a shared resource by independent activities, built by making 
+      each of its operations atomic.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01015
+        source_id: vanroy-haridi-2003
+        locator: §8.3.1
+      - chunk_id: vanroy-haridi-2003#c01029
+        source_id: vanroy-haridi-2003
+        locator: §8.4.2
+      - chunk_id: jones-hosking-moss-2012#c00705
+        source_id: jones-hosking-moss-2012
+        locator: §13.8
+    aliases:
+      - label: concurrent data structure
+        chunk_id: jones-hosking-moss-2012#c00705
+  - key: shared-state-concurrency
+    name: Shared-state concurrency
+    gloss: Approach where activities update shared passive objects under coarse-grained atomic 
+      actions, limiting the number of possible interleavings.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00995
+        source_id: vanroy-haridi-2003
+        locator: §8.2.1
+      - chunk_id: scott-plp#c00832
+        source_id: scott-plp
+        locator: pp. 870–872
+    aliases: []
+  - key: interleaving-explosion
+    name: Combinatorial explosion of interleavings
+    gloss: 'Reason shared-state reasoning is hard: the number of possible orderings of operations grows
+      factorially with activities and steps.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01066
+        source_id: vanroy-haridi-2003
+        locator: §8.7
+      - chunk_id: vanroy-haridi-2003#c00995
+        source_id: vanroy-haridi-2003
+        locator: §8.2.1
+    aliases: []
+  - key: model-checking-for-races
+    name: Forcing interleavings to expose races
+    gloss: Testing technique that drives a program through different orderings of operations in 
+      different activities to surface timing-dependent faults.
+    kind_hint: concept
+    origin: prior
+    evidence:
+      - chunk_id: scott-plp#c01117
+        source_id: scott-plp
+        locator: pp. 1121–1122
+      - chunk_id: frigo-leiserson-randall-1998#c00010
+        source_id: frigo-leiserson-randall-1998
+        locator: pp. 3–4
+    aliases:
+      - label: determinacy race detector
+        chunk_id: frigo-leiserson-randall-1998#c00010
+  - key: atomic-lock-free-property-query
+    name: Lock-free property of an atomic type
+    gloss: Specified, queryable attribute of an atomic type stating whether its operations are 
+      implemented without locks, and width-dependent target support.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03110
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03119
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+      - chunk_id: rust-reference#c00112
+        source_id: rust-reference
+        locator: p. 83
+    aliases:
+      - label: target_has_atomic
+        chunk_id: rust-reference#c00112
+  - key: atomic-waiting-and-notifying
+    name: Atomic waiting and notifying
+    gloss: Operations letting an activity block on an atomic object until its value changes and 
+      letting others unblock one or all such waiters.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03178
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03118
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §31
+    aliases: []
+  - key: mutable-static-requires-unsafe
+    name: Unsafe access to mutable global state
+    gloss: Language rule requiring an explicit escape hatch to read or write a mutable global, since
+      such state is a large source of race conditions.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-reference#c00182
+        source_id: rust-reference
+        locator: p. 138
+      - chunk_id: rust-reference#c00192
+        source_id: rust-reference
+        locator: p. 145
+    aliases:
+      - label: unsafe trait
+        chunk_id: rust-reference#c00192
+  - key: thread-identity
+    name: Thread identity
+    gloss: Comparable, hashable value uniquely identifying a running activity and distinguishing 
+      handles that do not represent one.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03198
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03197
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: vanroy-haridi-2003#c00480
+        source_id: vanroy-haridi-2003
+        locator: §4.2.5
+    aliases: []
+  - key: stop-token-cooperative-interruption
+    name: Stop token and automatic join
+    gloss: Thread handle that carries a stop request channel to the new activity and joins it 
+      automatically when the handle is destroyed.
+    kind_hint: feature
+    origin: prior
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03202
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03207
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+    aliases:
+      - label: jthread
+        chunk_id: iso-iec-14882-cpp20-n4861#c03202
+  - key: hardware-concurrency-hint
+    name: Hardware concurrency hint
+    gloss: Query returning the number of hardware thread contexts, explicitly advisory rather than a
+      guarantee about achievable parallelism.
+    kind_hint: feature
+    origin: prior
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c03202
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §32
+      - chunk_id: openmp-api-6-0#c01613
+        source_id: openmp-api-6-0
+        locator: §36.7
+    aliases: []
+  - key: thread-start-and-join-ordering
+    name: Ordering created by thread start and join
+    gloss: Specification that actions before starting an activity precede everything it does, and 
+      everything it does precedes a successful join on it.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c01117
+        source_id: jls-se25
+        locator: §17.4
+      - chunk_id: go-memory-model#c00005
+        source_id: go-memory-model
+        locator: '#model'
+    aliases: []
+unevidenced:
+  - key: reproducible-parallel-rng-streams
+    name: Reproducible parallel random-number streams
+    gloss: Substreams of a pseudo-random generator assigned to parallel workers so results are 
+      reproducible independently of scheduling and worker count.
+    origin: seed-term
+    search_hint: "L'Ecuyer (1999) 'Good parameters and implementations for combined multiple recursive
+      random number generators', Operations Research 47(1); R documentation for the \"L'Ecuyer-CMRG\"\
+      \ kind and parallel::clusterSetRNGStream / nextRNGStream. [developer drop: Source material exists
+      (L'Ecuyer-CMRG docs referenced); retrieval did not surface a matching passage after multiple scout/run
+      rounds. Left for a future cycle.]"
+    disposition: dropped
+  - key: places-async-finish
+    name: Places, async and finish
+    gloss: Partitioned global address space model where activities are spawned at explicitly named 
+      places and a scope awaits all transitively spawned activities.
+    origin: finding-aid-gap
+    search_hint: "Charles et al. (2005), 'X10: an object-oriented approach to non-uniform cluster computing',
+      OOPSLA 2005, sections on places, async/finish and clocks (corpus id charles-et-al-2005-x10 returned
+      no passages for these queries). [developer drop: charles-et-al-2005-x10 is ingested but returned
+      no passages for places/async/finish queries after multiple rounds. Left for a future cycle.]"
+    disposition: dropped
+  - key: hyperobjects-and-reducers
+    name: Hyperobjects and reducers
+    gloss: Objects that present a separate view to each parallel strand and combine views 
+      deterministically at joins, letting parallel code update shared accumulators.
+    origin: finding-aid-gap
+    search_hint: "Frigo, Halpern, Leiserson, Lewin-Berlin (2009), 'Reducers and other Cilk++ hyperobjects',
+      SPAA 2009, sections defining views, splitters and reducers (corpus id frigo-et-al-2009-hyperobjects
+      returned no passages). [developer drop: frigo-et-al-2009-hyperobjects is ingested but returned no
+      passages for views/splitters/reducers queries after multiple rounds. Left for a future cycle.]"
+    disposition: dropped
+  - key: structured-task-scope
+    name: Structured task scope with shutdown policies
+    gloss: Library construct that forks subtasks in a scope and joins them as a unit, with policies 
+      that cancel remaining subtasks on first failure or first success.
+    origin: seed-term
+    search_hint: "JEP 453 and JEP 499 (Structured Concurrency, Java), sections 'Structured concurrency'
+      and 'Using StructuredTaskScope' describing ShutdownOnFailure and ShutdownOnSuccess. [developer drop:
+      jep-453 and jep-499 are both ingested but retrieval did not surface the StructuredTaskScope passages
+      after multiple rounds. Left for a future cycle.]"
+    disposition: dropped
+  - key: generic-server-behaviour
+    name: Generic server behaviour
+    gloss: Library-supplied actor skeleton separating a message-dispatch loop from user callbacks, 
+      standardising call, cast and state handling for supervised processes.
+    origin: prior
+    search_hint: 'Erlang/OTP design principles documentation for gen_server and supervisor behaviours;
+      Elixir GenServer and Supervisor module documentation. [developer drop: erlang-design-principles-gen-server
+      and elixir-genserver-docs are both ingested but retrieval did not surface matching passages after
+      multiple rounds. Left for a future cycle.]'
+    disposition: dropped
+  - key: deterministic-parallelism-by-construction
+    name: Deterministic parallelism by construction
+    gloss: Restricting a parallel language so that every program has a single possible result, 
+      removing schedule-dependent outcomes from the programming model.
+    origin: prior
+    search_hint: "Marlow, Newton & Peyton Jones (2011), 'A monad for deterministic parallelism', Haskell
+      Symposium; Bocchino et al. (2009), 'A type and effect system for Deterministic Parallel Java', OOPSLA.
+      [developer drop: marlow-newton-peytonjones-2011 and bocchino-et-al-2009-dpj are both ingested but
+      retrieval did not surface matching passages after multiple rounds. Left for a future cycle.]"
+    disposition: dropped
+theme_amendments:
+  - op: edit
+    slug: concurrency
+    summary: Models for concurrent and parallel execution, the activities they introduce (threads, 
+      processes, actors, tasks, coroutines), the communication and synchronization they imply 
+      (shared state with locks, monitors and transactions; message passing over ports, mailboxes and
+      channels; dataflow synchronization; anonymous coordination media), the ordering guarantees 
+      languages specify for them, and the correctness and progress hazards these mechanisms address 
+      (races, deadlock, starvation, liveness) together with the cost model of parallel execution.
+    seed_terms:
+      - ABA problem
+      - test-and-test-and-set and contention backoff
+      - atomicity versus condition synchronization
+      - competition versus cooperation synchronization
+      - process calculi
+      - vector timestamps and causal ordering
+      - composability of atomic abstractions
+      - data-sharing attributes (private, shared, firstprivate)
+      - execution policies for parallel library algorithms
+      - implicit atomicity between synchronisation points
+      - modification order and coherence
+      - spark-based speculative parallelism
+    rationale: 'The corpus substantively defines several ideas within this theme that the seed list does
+      not name, and which the ontologist would otherwise have no term hook for: the ABA problem and test-and-test-and-set
+      as named hazards/techniques around compare-and-swap (jones-hosking-moss-2012#c00671, #c00660); the
+      distinction between atomicity and condition synchronization, and between competition and cooperation
+      synchronization, which several textbooks use as the organising axis for the whole area (scott-plp#c00832,
+      sebesta-copl#c01074); process calculi as an abstract model of interaction alongside CSP and actors
+      (harper-pfpl#c00648); vector/causal timestamps as distinct from Lamport clocks (fidge-1988-timestamps#c00001);
+      non-composability of lock-based abstractions as the stated motivation for transactional memory (scott-plp#c00872);
+      declared data-sharing attributes (private/shared/firstprivate) as a first-class language mechanism
+      for avoiding races (openmp-api-6-0#c00065); and execution policies / weakly-parallel forward progress
+      for library algorithms (iso-iec-14882-cpp20-n4861#c02128).'
+    status: rejected
+scouting: []
