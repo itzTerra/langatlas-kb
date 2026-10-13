@@ -2,11 +2,11 @@ id: stroustrup-glossary-raii
 type: webpage
 title: Bjarne Stroustrup's C++ Glossary
 author:
-- family: Stroustrup
-  given: Bjarne
+  - family: Stroustrup
+    given: Bjarne
 issued:
   date-parts:
-  - - 2024
+    -   - 2024
 URL: https://www.stroustrup.com/glossary.html
 custom:
   tier: B

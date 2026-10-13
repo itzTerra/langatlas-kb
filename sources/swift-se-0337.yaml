@@ -2,13 +2,13 @@ id: swift-se-0337
 type: report
 title: 'SE-0337: Incremental Migration to Concurrency Checking'
 author:
-- family: Gregor
-  given: Doug
-- family: McCall
-  given: John
+  - family: Gregor
+    given: Doug
+  - family: McCall
+    given: John
 issued:
   date-parts:
-  - - 2021
+    -   - 2021
 URL: 
   https://github.com/swiftlang/swift-evolution/blob/main/proposals/0337-support-incremental-migration-to-concurrency-checking.md
 custom:

@@ -2,11 +2,11 @@ id: fidge-1988-timestamps
 type: paper-conference
 title: Timestamps in Message-Passing Systems That Preserve the Partial Ordering
 author:
-- family: Fidge
-  given: Colin J.
+  - family: Fidge
+    given: Colin J.
 issued:
   date-parts:
-  - - 1988
+    -   - 1988
 URL: https://fileadmin.cs.lth.se/cs/Personal/Amr_Ergawy/dist-algos-papers/4.pdf
 custom:
   tier: A

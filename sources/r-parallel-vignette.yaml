@@ -2,8 +2,8 @@ id: r-parallel-vignette
 type: report
 title: Package 'parallel'
 author:
-- family: R Core Team
-  given: ''
+  - family: R Core Team
+    given: ''
 URL: https://stat.ethz.ch/R-manual/R-devel/library/parallel/doc/parallel.pdf
 custom:
   tier: B

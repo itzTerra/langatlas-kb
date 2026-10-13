@@ -2,11 +2,11 @@ id: swipl-manual-memory
 type: webpage
 title: 'SWI-Prolog Reference Manual: Memory Management and Garbage Collection'
 author:
-- family: Wielemaker
-  given: Jan
+  - family: Wielemaker
+    given: Jan
 issued:
   date-parts:
-  - - 2025
+    -   - 2025
 URL: https://www.swi-prolog.org/pldoc/man?section=gc
 custom:
   tier: B

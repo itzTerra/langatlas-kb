@@ -2,11 +2,11 @@ id: swift-book-arc
 type: book
 title: 'The Swift Programming Language: Automatic Reference Counting'
 author:
-- family: Apple Inc.
-  given: ''
+  - family: Apple Inc.
+    given: ''
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: 
   https://docs.swift.org/swift-book/documentation/the-swift-programming-language/automaticreferencecounting/
 custom:

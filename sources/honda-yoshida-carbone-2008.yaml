@@ -2,15 +2,15 @@ id: honda-yoshida-carbone-2008
 type: paper-conference
 title: Multiparty Asynchronous Session Types
 author:
-- family: Honda
-  given: Kohei
-- family: Yoshida
-  given: Nobuko
-- family: Carbone
-  given: Marco
+  - family: Honda
+    given: Kohei
+  - family: Yoshida
+    given: Nobuko
+  - family: Carbone
+    given: Marco
 issued:
   date-parts:
-  - - 2008
+    -   - 2008
 URL: https://doi.org/10.1145/1328438.1328472
 DOI: 10.1145/1328438.1328472
 custom:

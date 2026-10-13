@@ -3,7 +3,7 @@ type: webpage
 title: gen_server — Erlang/OTP stdlib Reference Manual
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: https://www.erlang.org/doc/apps/stdlib/gen_server.html
 custom:
   tier: B

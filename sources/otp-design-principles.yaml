@@ -2,8 +2,8 @@ id: otp-design-principles
 type: webpage
 title: 'OTP Design Principles: Supervisor Behaviour'
 author:
-- family: Ericsson AB
-  given: ''
+  - family: Ericsson AB
+    given: ''
 URL: https://www.erlang.org/doc/system/sup_princ.html
 custom:
   tier: B

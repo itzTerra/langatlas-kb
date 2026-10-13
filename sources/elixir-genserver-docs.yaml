@@ -3,7 +3,7 @@ type: webpage
 title: GenServer — Elixir Documentation
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: https://hexdocs.pm/elixir/GenServer.html
 custom:
   tier: B

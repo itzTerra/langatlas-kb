@@ -2,11 +2,11 @@ id: stroustrup-de-cpp-1994
 type: book
 title: The Design and Evolution of C++
 author:
-- family: Stroustrup
-  given: Bjarne
+  - family: Stroustrup
+    given: Bjarne
 issued:
   date-parts:
-  - - 1994
+    -   - 1994
 URL: https://www.stroustrup.com/dne.html
 custom:
   tier: A

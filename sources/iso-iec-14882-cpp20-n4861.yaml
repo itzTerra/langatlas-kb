@@ -2,11 +2,11 @@ id: iso-iec-14882-cpp20-n4861
 type: standard
 title: Programming Languages — C++ (Working Draft, N4861, basis for ISO/IEC 14882:2020)
 author:
-- family: ISO/IEC JTC1/SC22/WG21
-  given: ''
+  - family: ISO/IEC JTC1/SC22/WG21
+    given: ''
 issued:
   date-parts:
-  - - 2020
+    -   - 2020
 URL: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2020/n4861.pdf
 custom:
   tier: A

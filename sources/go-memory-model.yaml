@@ -2,8 +2,8 @@ id: go-memory-model
 type: webpage
 title: The Go Memory Model
 author:
-- family: The Go Authors
-  given: ''
+  - family: The Go Authors
+    given: ''
 URL: https://go.dev/ref/mem
 custom:
   tier: B

@@ -2,13 +2,13 @@ id: carriero-gelernter-1989-linda-context
 type: article-journal
 title: Linda in Context
 author:
-- family: Carriero
-  given: Nicholas
-- family: Gelernter
-  given: David
+  - family: Carriero
+    given: Nicholas
+  - family: Gelernter
+    given: David
 issued:
   date-parts:
-  - - 1989
+    -   - 1989
 URL: https://dl.acm.org/doi/10.1145/65971.65974
 DOI: 10.1145/65971.65974
 custom:

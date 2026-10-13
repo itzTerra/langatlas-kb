@@ -2,15 +2,15 @@ id: bernstein-hadzilacos-goodman-1987
 type: book
 title: Concurrency Control and Recovery in Database Systems
 author:
-- family: Bernstein
-  given: Philip A.
-- family: Hadzilacos
-  given: Vassos
-- family: Goodman
-  given: Nathan
+  - family: Bernstein
+    given: Philip A.
+  - family: Hadzilacos
+    given: Vassos
+  - family: Goodman
+    given: Nathan
 issued:
   date-parts:
-  - - 1987
+    -   - 1987
 URL: 
   https://www.microsoft.com/en-us/research/publication/concurrency-control-and-recovery-in-database-systems/
 custom:

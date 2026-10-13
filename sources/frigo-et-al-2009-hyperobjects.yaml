@@ -2,17 +2,17 @@ id: frigo-et-al-2009-hyperobjects
 type: paper-conference
 title: Reducers and Other Cilk++ Hyperobjects
 author:
-- family: Frigo
-  given: Matteo
-- family: Halpern
-  given: Pablo
-- family: Leiserson
-  given: Charles E.
-- family: Lewin-Berlin
-  given: Stephen
+  - family: Frigo
+    given: Matteo
+  - family: Halpern
+    given: Pablo
+  - family: Leiserson
+    given: Charles E.
+  - family: Lewin-Berlin
+    given: Stephen
 issued:
   date-parts:
-  - - 2009
+    -   - 2009
 URL: https://doi.org/10.1145/1583991.1584017
 DOI: 10.1145/1583991.1584017
 custom:

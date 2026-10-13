@@ -2,11 +2,11 @@ id: trio-reference-core
 type: webpage
 title: Trio's Core Functionality (Nursery / open_nursery)
 author:
-- family: Smith
-  given: Nathaniel J.
+  - family: Smith
+    given: Nathaniel J.
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: https://trio.readthedocs.io/en/stable/reference-core.html
 custom:
   tier: B

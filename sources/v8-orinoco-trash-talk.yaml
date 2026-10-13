@@ -2,11 +2,11 @@ id: v8-orinoco-trash-talk
 type: webpage
 title: 'Trash Talk: The Orinoco Garbage Collector'
 author:
-- family: Marshall
-  given: Peter
+  - family: Marshall
+    given: Peter
 issued:
   date-parts:
-  - - 2019
+    -   - 2019
 URL: https://v8.dev/blog/trash-talk
 custom:
   tier: B

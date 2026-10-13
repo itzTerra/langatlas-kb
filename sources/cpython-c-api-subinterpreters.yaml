@@ -3,7 +3,7 @@ type: webpage
 title: Multiple interpreters in a Python process — Python/C API Reference Manual
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: https://docs.python.org/3/c-api/subinterpreters.html
 custom:
   tier: B

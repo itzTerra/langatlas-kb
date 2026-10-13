@@ -2,11 +2,11 @@ id: cwe-416-use-after-free
 type: report
 title: 'CWE-416: Use After Free'
 author:
-- family: MITRE Corporation
-  given: ''
+  - family: MITRE Corporation
+    given: ''
 issued:
   date-parts:
-  - - 2024
+    -   - 2024
 URL: https://cwe.mitre.org/data/definitions/416.html
 custom:
   tier: B

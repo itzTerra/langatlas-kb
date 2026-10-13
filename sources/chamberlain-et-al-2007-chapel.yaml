@@ -2,15 +2,15 @@ id: chamberlain-et-al-2007-chapel
 type: article-journal
 title: Parallel Programmability and the Chapel Language
 author:
-- family: Chamberlain
-  given: Bradford L.
-- family: Callahan
-  given: David
-- family: Zima
-  given: Hans P.
+  - family: Chamberlain
+    given: Bradford L.
+  - family: Callahan
+    given: David
+  - family: Zima
+    given: Hans P.
 issued:
   date-parts:
-  - - 2007
+    -   - 2007
 URL: https://doi.org/10.1177/1094342007078442
 DOI: 10.1177/1094342007078442
 custom:

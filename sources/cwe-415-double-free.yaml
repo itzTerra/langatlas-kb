@@ -2,11 +2,11 @@ id: cwe-415-double-free
 type: report
 title: 'CWE-415: Double Free'
 author:
-- family: MITRE Corporation
-  given: ''
+  - family: MITRE Corporation
+    given: ''
 issued:
   date-parts:
-  - - 2024
+    -   - 2024
 URL: https://cwe.mitre.org/data/definitions/415.html
 custom:
   tier: B

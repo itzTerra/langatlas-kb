@@ -2,13 +2,13 @@ id: swift-se-0316
 type: webpage
 title: 'SE-0316: Global Actors'
 author:
-- family: McCall
-  given: John
-- family: Gregor
-  given: Doug
+  - family: McCall
+    given: John
+  - family: Gregor
+    given: Doug
 issued:
   date-parts:
-  - - 2021
+    -   - 2021
 URL: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0316-global-actors.md
 custom:
   tier: B

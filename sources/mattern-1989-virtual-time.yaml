@@ -2,11 +2,11 @@ id: mattern-1989-virtual-time
 type: paper-conference
 title: Virtual Time and Global States of Distributed Systems
 author:
-- family: Mattern
-  given: Friedemann
+  - family: Mattern
+    given: Friedemann
 issued:
   date-parts:
-  - - 1989
+    -   - 1989
 URL: https://vs.inf.ethz.ch/publ/papers/VirtTimeGlobStates.pdf
 custom:
   tier: A

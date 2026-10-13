@@ -2,15 +2,15 @@ id: tene-iyengar-wolf-2011-c4
 type: paper-conference
 title: 'C4: The Continuously Concurrent Compacting Collector'
 author:
-- family: Tene
-  given: Gil
-- family: Iyengar
-  given: Balaji
-- family: Wolf
-  given: Michael
+  - family: Tene
+    given: Gil
+  - family: Iyengar
+    given: Balaji
+  - family: Wolf
+    given: Michael
 issued:
   date-parts:
-  - - 2011
+    -   - 2011
 DOI: 10.1145/1993478.1993491
 custom:
   tier: A

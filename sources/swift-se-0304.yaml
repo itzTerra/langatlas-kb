@@ -2,14 +2,14 @@ id: swift-se-0304
 type: webpage
 title: 'SE-0304: Structured Concurrency'
 author:
-- family: Lattner
-  given: Chris
-- family: Schmidt
-  given: Doug
-- family: Toste
-  given: Konrad
-- family: McCall
-  given: John
+  - family: Lattner
+    given: Chris
+  - family: Schmidt
+    given: Doug
+  - family: Toste
+    given: Konrad
+  - family: McCall
+    given: John
 URL: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0304-structured-concurrency.md
 custom:
   tier: B

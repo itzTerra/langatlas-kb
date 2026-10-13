@@ -2,17 +2,17 @@ id: wg21-n1450
 type: report
 title: A Proposal to Add General Purpose Smart Pointers to the Library Technical Report
 author:
-- family: Colvin
-  given: Greg
-- family: Dawes
-  given: Beman
-- family: Adler
-  given: Darin
-- family: Dimov
-  given: Peter
+  - family: Colvin
+    given: Greg
+  - family: Dawes
+    given: Beman
+  - family: Adler
+    given: Darin
+  - family: Dimov
+    given: Peter
 issued:
   date-parts:
-  - - 2003
+    -   - 2003
 URL: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2003/n1450.html
 custom:
   tier: B

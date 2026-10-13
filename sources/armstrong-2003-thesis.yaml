@@ -2,11 +2,11 @@ id: armstrong-2003-thesis
 type: book
 title: Making Reliable Distributed Systems in the Presence of Software Errors
 author:
-- family: Armstrong
-  given: Joe
+  - family: Armstrong
+    given: Joe
 issued:
   date-parts:
-  - - 2003
+    -   - 2003
 URL: https://erlang.org/download/armstrong_thesis_2003.pdf
 custom:
   tier: A

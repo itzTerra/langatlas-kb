@@ -2,19 +2,19 @@ id: choi-et-al-1999
 type: paper-conference
 title: Escape Analysis for Java
 author:
-- family: Choi
-  given: Jong-Deok
-- family: Gupta
-  given: Manish
-- family: Serrano
-  given: Mauricio
-- family: Sreedhar
-  given: Vugranam C.
-- family: Midkiff
-  given: Sam
+  - family: Choi
+    given: Jong-Deok
+  - family: Gupta
+    given: Manish
+  - family: Serrano
+    given: Mauricio
+  - family: Sreedhar
+    given: Vugranam C.
+  - family: Midkiff
+    given: Sam
 issued:
   date-parts:
-  - - 1999
+    -   - 1999
 URL: https://dl.acm.org/doi/10.1145/320384.320386
 DOI: 10.1145/320384.320386
 custom:

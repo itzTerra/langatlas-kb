@@ -2,13 +2,13 @@ id: jep-425
 type: report
 title: 'JEP 425: Virtual Threads (Preview)'
 author:
-- family: Pressler
-  given: Ron
-- family: Bateman
-  given: Alan
+  - family: Pressler
+    given: Ron
+  - family: Bateman
+    given: Alan
 issued:
   date-parts:
-  - - 2022
+    -   - 2022
 URL: https://openjdk.org/jeps/425
 custom:
   tier: B

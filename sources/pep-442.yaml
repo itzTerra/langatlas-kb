@@ -2,11 +2,11 @@ id: pep-442
 type: webpage
 title: PEP 442 – Safe object finalization
 author:
-- family: Pitrou
-  given: Antoine
+  - family: Pitrou
+    given: Antoine
 issued:
   date-parts:
-  - - 2013
+    -   - 2013
 URL: https://peps.python.org/pep-0442/
 custom:
   tier: B

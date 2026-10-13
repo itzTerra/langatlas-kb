@@ -2,13 +2,13 @@ id: rust-rfc-3151
 type: report
 title: 'RFC 3151: Scoped Threads'
 author:
-- family: Matsakis
-  given: Niko
-- family: Kaneda
-  given: Mara
+  - family: Matsakis
+    given: Niko
+  - family: Kaneda
+    given: Mara
 issued:
   date-parts:
-  - - 2021
+    -   - 2021
 URL: https://rust-lang.github.io/rfcs/3151-scoped-threads.html
 custom:
   tier: B

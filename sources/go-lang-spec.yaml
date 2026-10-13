@@ -2,8 +2,8 @@ id: go-lang-spec
 type: webpage
 title: The Go Programming Language Specification
 author:
-- family: The Go Authors
-  given: ''
+  - family: The Go Authors
+    given: ''
 URL: https://go.dev/ref/spec
 custom:
   tier: B

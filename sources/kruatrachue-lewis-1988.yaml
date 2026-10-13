@@ -2,13 +2,13 @@ id: kruatrachue-lewis-1988
 type: article-journal
 title: Grain Size Determination for Parallel Processing
 author:
-- family: Kruatrachue
-  given: Boontee
-- family: Lewis
-  given: Ted
+  - family: Kruatrachue
+    given: Boontee
+  - family: Lewis
+    given: Ted
 issued:
   date-parts:
-  - - 1988
+    -   - 1988
 URL: https://dl.acm.org/doi/10.1109/52.1991
 DOI: 10.1109/52.1991
 custom:

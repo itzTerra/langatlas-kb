@@ -2,15 +2,15 @@ id: swift-se-0414
 type: report
 title: 'SE-0414: Region Based Isolation'
 author:
-- family: McLellan
-  given: Joshua
-- family: Gregor
-  given: Doug
-- family: McCall
-  given: John
+  - family: McLellan
+    given: Joshua
+  - family: Gregor
+    given: Doug
+  - family: McCall
+    given: John
 issued:
   date-parts:
-  - - 2024
+    -   - 2024
 URL: https://github.com/swiftlang/swift-evolution/blob/main/proposals/0414-region-based-isolation.md
 custom:
   tier: B

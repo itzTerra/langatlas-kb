@@ -2,21 +2,21 @@ id: ocaml-manual-gc
 type: webpage
 title: 'The OCaml System: Memory Management and the Gc Module'
 author:
-- family: Leroy
-  given: Xavier
-- family: Doligez
-  given: Damien
-- family: Frisch
-  given: Alain
-- family: Garrigue
-  given: Jacques
-- family: Rémy
-  given: Didier
-- family: Vouillon
-  given: Jérôme
+  - family: Leroy
+    given: Xavier
+  - family: Doligez
+    given: Damien
+  - family: Frisch
+    given: Alain
+  - family: Garrigue
+    given: Jacques
+  - family: Rémy
+    given: Didier
+  - family: Vouillon
+    given: Jérôme
 issued:
   date-parts:
-  - - 2025
+    -   - 2025
 URL: https://ocaml.org/manual/5.4/moduleexamples.html
 custom:
   tier: B

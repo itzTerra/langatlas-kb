@@ -2,13 +2,13 @@ id: jep-189
 type: report
 title: 'JEP 189: Shenandoah: A Low-Pause-Time Garbage Collector (Experimental)'
 author:
-- family: Flood
-  given: Christine H.
-- family: Kennke
-  given: Roman
+  - family: Flood
+    given: Christine H.
+  - family: Kennke
+    given: Roman
 issued:
   date-parts:
-  - - 2014
+    -   - 2014
 URL: https://openjdk.org/jeps/189
 custom:
   tier: B

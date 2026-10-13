@@ -2,11 +2,11 @@ id: lamport-1978
 type: article-journal
 title: Time, Clocks, and the Ordering of Events in a Distributed System
 author:
-- family: Lamport
-  given: Leslie
+  - family: Lamport
+    given: Leslie
 issued:
   date-parts:
-  - - 1978
+    -   - 1978
 URL: https://dl.acm.org/doi/10.1145/359545.359563
 DOI: 10.1145/359545.359563
 custom:

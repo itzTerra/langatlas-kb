@@ -2,25 +2,25 @@ id: charles-et-al-2005-x10
 type: paper-conference
 title: 'X10: An Object-Oriented Approach to Non-Uniform Cluster Computing'
 author:
-- family: Charles
-  given: Philippe
-- family: Grothoff
-  given: Christian
-- family: Saraswat
-  given: Vijay
-- family: Donawa
-  given: Christopher
-- family: Kielstra
-  given: Allan
-- family: Ebcioglu
-  given: Kemal
-- family: von Praun
-  given: Christoph
-- family: Sarkar
-  given: Vivek
+  - family: Charles
+    given: Philippe
+  - family: Grothoff
+    given: Christian
+  - family: Saraswat
+    given: Vijay
+  - family: Donawa
+    given: Christopher
+  - family: Kielstra
+    given: Allan
+  - family: Ebcioglu
+    given: Kemal
+  - family: von Praun
+    given: Christoph
+  - family: Sarkar
+    given: Vivek
 issued:
   date-parts:
-  - - 2005
+    -   - 2005
 URL: https://doi.org/10.1145/1094811.1094852
 DOI: 10.1145/1094811.1094852
 custom:

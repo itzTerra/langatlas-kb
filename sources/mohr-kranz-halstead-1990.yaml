@@ -2,15 +2,15 @@ id: mohr-kranz-halstead-1990
 type: paper-conference
 title: 'Lazy task creation: a technique for increasing the granularity of parallel programs'
 author:
-- family: Mohr
-  given: Eric
-- family: Kranz
-  given: David A.
-- family: Halstead
-  given: Robert H.
+  - family: Mohr
+    given: Eric
+  - family: Kranz
+    given: David A.
+  - family: Halstead
+    given: Robert H.
 issued:
   date-parts:
-  - - 1990
+    -   - 1990
 URL: https://dl.acm.org/doi/10.1145/91556.91631
 DOI: 10.1145/91556.91631
 custom:

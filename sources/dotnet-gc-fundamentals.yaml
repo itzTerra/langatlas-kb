@@ -2,11 +2,11 @@ id: dotnet-gc-fundamentals
 type: webpage
 title: Fundamentals of Garbage Collection — .NET Documentation
 author:
-- family: Microsoft
-  given: ''
+  - family: Microsoft
+    given: ''
 issued:
   date-parts:
-  - - 2024
+    -   - 2024
 URL: https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/fundamentals
 custom:
   tier: B

@@ -2,11 +2,11 @@ id: python-gc-module-docs
 type: webpage
 title: gc — Garbage Collector interface — Python Documentation
 author:
-- family: Python Software Foundation
-  given: ''
+  - family: Python Software Foundation
+    given: ''
 issued:
   date-parts:
-  - - 2026
+    -   - 2026
 URL: https://docs.python.org/3/library/gc.html
 custom:
   tier: B
