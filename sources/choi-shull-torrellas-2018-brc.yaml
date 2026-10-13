@@ -2,17 +2,18 @@ id: choi-shull-torrellas-2018-brc
 type: paper-conference
 title: 'Biased Reference Counting: Minimizing Atomic Operations in Garbage Collection'
 author:
-  - family: Choi
-    given: Jiho
-  - family: Shull
-    given: Thomas
-  - family: Torrellas
-    given: Josep
+- family: Choi
+  given: Jiho
+- family: Shull
+  given: Thomas
+- family: Torrellas
+  given: Josep
 issued:
   date-parts:
-    -   - 2018
+  - - 2018
 URL: https://iacoma.cs.uiuc.edu/iacoma-papers/pact18.pdf
 DOI: 10.1145/3243176.3243195
 custom:
   tier: A
   grounding: formal-spec
+  acquisition_note: Author-hosted copy on the IACOMA group's own UIUC page, not the publisher (ACM).

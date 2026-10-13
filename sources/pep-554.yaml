@@ -2,12 +2,13 @@ id: pep-554
 type: webpage
 title: PEP 554 – Multiple Interpreters in the Stdlib
 author:
-  - family: Snow
-    given: Eric
+- family: Snow
+  given: Eric
 issued:
   date-parts:
-    -   - 2017
+  - - 2017
 URL: https://peps.python.org/pep-0554/
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true

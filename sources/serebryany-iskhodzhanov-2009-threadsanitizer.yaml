@@ -2,14 +2,16 @@ id: serebryany-iskhodzhanov-2009-threadsanitizer
 type: paper-conference
 title: 'ThreadSanitizer: Data Race Detection in Practice'
 author:
-  - family: Serebryany
-    given: Konstantin
-  - family: Iskhodzhanov
-    given: Timur
+- family: Serebryany
+  given: Konstantin
+- family: Iskhodzhanov
+  given: Timur
 issued:
   date-parts:
-    -   - 2009
+  - - 2009
 URL: https://research.google/pubs/threadsanitizer-data-race-detection-in-practice/
 custom:
   tier: A
   grounding: formal-spec
+  acquisition_note: research.google listing page had no extractable body text; PDF supplied by the 
+    developer.

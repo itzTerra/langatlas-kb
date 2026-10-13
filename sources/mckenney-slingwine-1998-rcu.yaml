@@ -2,14 +2,15 @@ id: mckenney-slingwine-1998-rcu
 type: paper-conference
 title: 'Read-Copy Update: Using Execution History to Solve Concurrency Problems'
 author:
-  - family: McKenney
-    given: Paul E.
-  - family: Slingwine
-    given: John D.
+- family: McKenney
+  given: Paul E.
+- family: Slingwine
+  given: John D.
 issued:
   date-parts:
-    -   - 1998
+  - - 1998
 URL: https://pdos.csail.mit.edu/6.828/2008/readings/rcu.pdf
 custom:
   tier: A
   grounding: formal-spec
+  acquisition_note: Hosted as a course reading on MIT 6.828's own site, not the original publisher.

@@ -2,12 +2,13 @@ id: pep-734
 type: webpage
 title: PEP 734 – Multiple Interpreters in the Stdlib
 author:
-  - family: Snow
-    given: Eric
+- family: Snow
+  given: Eric
 issued:
   date-parts:
-    -   - 2024
+  - - 2024
 URL: https://peps.python.org/pep-0734/
 custom:
   tier: B
   grounding: design-doc
+  canonical_source: true
