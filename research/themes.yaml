@@ -221,6 +221,15 @@ themes:
       - syntactic sugar and desugaring
       - grammar ambiguity and dangling else
       - s-expression notation
+      - BNF and EBNF grammar metanotation
+      - maximal munch / longest-match tokenizing
+      - logical versus physical lines and line splicing
+      - translation phases and preprocessing as a lexical layer
+      - raw and interpolated string literal forms
+      - digit separators and literal type suffixes
+      - derived forms and kernel languages
+      - operator sections and backquoted infix application
+      - program-alterable operator tables
   - slug: qualities-vocabulary
     label: Qualities vocabulary
     summary: >-

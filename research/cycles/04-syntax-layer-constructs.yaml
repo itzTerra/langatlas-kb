@@ -1,6 +1,6 @@
 cycle: 4
 theme: syntax-layer-constructs
-theme_digest: ffcb8468d4d7f58b
+theme_digest: e98741574da65b8c
 status: signed-off
 languages:
   - c
@@ -12,5 +12,5 @@ nodes_minted: []
 artifacts: {}
 signed_off:
   by: Michal Doležel
-  date: '2026-10-13'
-  theme_digest: ffcb8468d4d7f58b
+  date: '2026-10-14'
+  theme_digest: e98741574da65b8c
