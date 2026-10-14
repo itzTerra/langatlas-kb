@@ -1,0 +1,14 @@
+id: iso-iec-9899-1999-n1256
+type: standard
+title: ISO/IEC 9899:1999 — Programming Languages — C (N1256 Working Draft, incorporating TC1–TC3)
+author:
+  - family: ISO/IEC JTC1/SC22/WG14
+    given: ''
+issued:
+  date-parts:
+    -   - 2007
+URL: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: true

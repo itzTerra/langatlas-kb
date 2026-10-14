@@ -1,0 +1,14 @@
+id: erlang-ref-character-set
+type: webpage
+title: 'Erlang Reference Manual: Character Set and Source File Encoding'
+author:
+  - family: Ericsson AB
+    given: ''
+issued:
+  date-parts:
+    -   - 2026
+URL: https://www.erlang.org/doc/system/character_set.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true

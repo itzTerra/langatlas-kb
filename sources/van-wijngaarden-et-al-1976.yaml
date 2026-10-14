@@ -1,0 +1,29 @@
+id: van-wijngaarden-et-al-1976
+type: article-journal
+title: Revised Report on the Algorithmic Language ALGOL 68
+author:
+  - family: van Wijngaarden
+    given: Adriaan
+  - family: Mailloux
+    given: Barry J.
+  - family: Peck
+    given: John E. L.
+  - family: Koster
+    given: Cornelis H. A.
+  - family: Sintzoff
+    given: Michel
+  - family: Lindsey
+    given: Charles H.
+  - family: Meertens
+    given: Lambert G. L. T.
+  - family: Fisker
+    given: Richard G.
+issued:
+  date-parts:
+    -   - 1976
+URL: https://doi.org/10.1007/BF00265077
+DOI: 10.1007/BF00265077
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

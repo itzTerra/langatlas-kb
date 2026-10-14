@@ -1,0 +1,39 @@
+id: naur-1963-algol60
+type: article-journal
+title: Revised Report on the Algorithmic Language ALGOL 60
+author:
+  - family: Naur
+    given: Peter
+  - family: Backus
+    given: John W.
+  - family: Bauer
+    given: Friedrich L.
+  - family: Green
+    given: Julien
+  - family: Katz
+    given: Charles
+  - family: McCarthy
+    given: John
+  - family: Perlis
+    given: Alan J.
+  - family: Rutishauser
+    given: Heinz
+  - family: Samelson
+    given: Klaus
+  - family: Vauquois
+    given: Bernard
+  - family: Wegstein
+    given: Joseph H.
+  - family: van Wijngaarden
+    given: Adriaan
+  - family: Woodger
+    given: Michael
+issued:
+  date-parts:
+    -   - 1963
+URL: https://doi.org/10.1145/366193.366201
+DOI: 10.1145/366193.366201
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

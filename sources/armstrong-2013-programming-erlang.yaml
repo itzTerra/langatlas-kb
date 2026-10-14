@@ -1,0 +1,15 @@
+id: armstrong-2013-programming-erlang
+type: book
+title: 'Programming Erlang: Software for a Concurrent World, 2nd edition'
+author:
+  - family: Armstrong
+    given: Joe
+issued:
+  date-parts:
+    -   - 2013
+URL: https://pragprog.com/titles/jaerlang2/programming-erlang-second-edition/
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: Pragmatic Bookshelf's product page returned 404 to automated fetch; PDF supplied
+    by the developer.

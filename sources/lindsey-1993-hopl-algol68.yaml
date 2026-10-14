@@ -1,0 +1,16 @@
+id: lindsey-1993-hopl-algol68
+type: paper-conference
+title: A History of ALGOL 68
+author:
+  - family: Lindsey
+    given: Charles H.
+issued:
+  date-parts:
+    -   - 1993
+URL: https://doi.org/10.1145/155360.155365
+DOI: 10.1145/155360.155365
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); not acquired. van-wijngaarden-et-al-1976 
+    covers the ALGOL 68 gap.

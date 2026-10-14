@@ -1,0 +1,14 @@
+id: wg21-n4086
+type: report
+title: Removing trigraphs??!
+author:
+  - family: Smith
+    given: Richard
+issued:
+  date-parts:
+    -   - 2014
+URL: https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2014/n4086.html
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true

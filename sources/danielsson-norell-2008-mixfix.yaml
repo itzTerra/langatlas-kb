@@ -1,0 +1,18 @@
+id: danielsson-norell-2008-mixfix
+type: paper-conference
+title: Parsing Mixfix Operators
+author:
+  - family: Danielsson
+    given: Nils Anders
+  - family: Norell
+    given: Ulf
+issued:
+  date-parts:
+    -   - 2011
+URL: https://doi.org/10.1007/978-3-642-24452-0_5
+DOI: 10.1007/978-3-642-24452-0_5
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: Author-hosted copy, not the publisher (Springer LNCS); thin extraction (QA 
+    warn).

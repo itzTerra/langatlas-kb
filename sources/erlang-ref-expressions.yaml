@@ -1,0 +1,14 @@
+id: erlang-ref-expressions
+type: webpage
+title: 'Erlang Reference Manual: Expressions'
+author:
+  - family: Ericsson AB
+    given: ''
+issued:
+  date-parts:
+    -   - 2026
+URL: https://www.erlang.org/doc/system/expressions.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true

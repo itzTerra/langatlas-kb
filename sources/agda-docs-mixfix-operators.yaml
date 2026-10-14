@@ -1,0 +1,14 @@
+id: agda-docs-mixfix-operators
+type: webpage
+title: Mixfix Operators — Agda User Manual
+author:
+  - family: The Agda Team
+    given: ''
+issued:
+  date-parts:
+    -   - 2026
+URL: https://agda.readthedocs.io/en/latest/language/mixfix-operators.html
+custom:
+  tier: B
+  grounding: reference-implementation-docs
+  canonical_source: true
