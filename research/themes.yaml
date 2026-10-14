@@ -230,6 +230,14 @@ themes:
       - derived forms and kernel languages
       - operator sections and backquoted infix application
       - program-alterable operator tables
+      - string interpolation and replacement fields
+      - multi-line string literals and indentation stripping
+      - documentation comments
+      - automatic semicolon insertion
+      - layout rule / off-side rule
+      - adjacent string literal concatenation
+      - mixfix operators and argument holes
+      - contextual or soft keywords
   - slug: qualities-vocabulary
     label: Qualities vocabulary
     summary: >-
