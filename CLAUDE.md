@@ -33,6 +33,13 @@ language-to-language translators.
 - **feature instance** — a realisation of a feature in a specific system (a particular language)
 - **characteristic** — an observable property of a system or feature instance
 
+## Running the pipeline
+
+Before any `langatlas-research` / `langatlas-orchestrator` provider step, load the project
+environment in the same shell: `set -a; . ./.env; set +a`. The CLIs do not load `.env`; a missing
+`LANGATLAS_UNI_*` variable silently disables the sources-search tool inside agent sessions.
+See [docs/runbooks/theme-cycle.md](docs/runbooks/theme-cycle.md) §0.
+
 ## Developer constraints (bind every design choice)
 
 Solo developer; proof-of-concept MVP. Resources: Claude Code Pro (session/usage limits), no GPU

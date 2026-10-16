@@ -29,6 +29,16 @@ ORCH="uv --directory tools/orchestrator run langatlas-orchestrator"
 
 Postgres must be up (`docker compose up -d`) for every step that touches the corpus.
 
+**Load `.env` in the same shell, every session** — it carries the university API settings
+(`LANGATLAS_UNI_BASE_URL`, …). The CLI does not read it itself. Without it, `draft verify` crashes
+with `KeyError`, and worse, the ontologist's and debaters' sources-search tool errors *silently
+inside the Claude session*, so they run without search and the carves come out weaker:
+
+```bash
+set -a; . ./.env; set +a
+env | grep -c '^LANGATLAS_UNI'       # must be non-zero before any provider step
+```
+
 ## 1. Sign off — the hard checkpoint (D27)
 
 ```bash

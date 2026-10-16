@@ -75,19 +75,19 @@ draft:
     proposer:
       model: null
       max_turns: 20
-      max_claude_messages: 40
+      max_claude_messages: 80
       max_packet_terms: 20
       max_candidates: 1
     challenger:
       model: null
       max_turns: 20
-      max_claude_messages: 40
+      max_claude_messages: 80
       max_packet_terms: 20
       max_candidates: 3             # challenges raised in one message
     moderator:
       model: null
       max_turns: 20
-      max_claude_messages: 40
+      max_claude_messages: 80
       max_packet_terms: 20
       max_candidates: 1
   verification:
