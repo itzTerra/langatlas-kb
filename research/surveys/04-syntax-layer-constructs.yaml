@@ -1,0 +1,2892 @@
+cycle: 4
+theme: syntax-layer-constructs
+theme_digest: 356863098e13a19f
+generated_at: '2026-10-16T16:57:29Z'
+runs:
+  surveyor: 2026-10-16-r3-survey-04-syntax-layer-constructs-01
+tagging:
+  prompt: r3-tagger@v-f1961f62
+  models:
+    - glm
+  chunks_tagged: 931
+  chunks_relevant: 662
+pool:
+  digest: 5b24e9079d339f5c
+  chunk_count: 931
+  queries:
+    - Syntax-layer constructs
+    - 'Layer-1 surface constructs: lexical structure (tokens, whitespace, comments, identifiers, literals),
+      block and statement structure, operator notation and overloading, and the grammar-level choices
+      these encode — including abstract versus concrete syntax, ambiguity and disambiguation, and syntactic
+      sugar/desugaring between a surface and a core language.'
+    - significant whitespace
+    - block delimiter
+    - operator overloading
+    - literal syntax
+    - expression-oriented syntax
+    - operator precedence and associativity
+    - fixity declaration
+    - statement terminator versus separator
+    - comment forms
+    - reserved words and contextual keywords
+    - source character set and encoding
+    - abstract versus concrete syntax
+    - syntactic sugar and desugaring
+    - grammar ambiguity and dangling else
+    - s-expression notation
+    - BNF and EBNF grammar metanotation
+    - maximal munch / longest-match tokenizing
+    - logical versus physical lines and line splicing
+    - translation phases and preprocessing as a lexical layer
+    - raw and interpolated string literal forms
+    - digit separators and literal type suffixes
+    - derived forms and kernel languages
+    - operator sections and backquoted infix application
+    - program-alterable operator tables
+    - string interpolation and replacement fields
+    - multi-line string literals and indentation stripping
+    - documentation comments
+    - automatic semicolon insertion
+    - layout rule / off-side rule
+    - adjacent string literal concatenation
+    - mixfix operators and argument holes
+    - contextual or soft keywords
+checklist:
+  mirror_versions:
+    pldb: 00522ea57a40a0bca9f56b424556af6734634831
+    hyperpolyglot: 83a34e1ec620
+  gap_terms:
+    - BNF and EBNF grammar metanotation
+    - abstract versus concrete syntax
+    - adjacent string literal concatenation
+    - automatic semicolon insertion
+    - block delimiter
+    - comment forms
+    - contextual or soft keywords
+    - derived forms and kernel languages
+    - digit separators and literal type suffixes
+    - documentation comments
+    - expression-oriented syntax
+    - fixity declaration
+    - grammar ambiguity and dangling else
+    - layout rule / off-side rule
+    - literal syntax
+    - logical versus physical lines and line splicing
+    - maximal munch / longest-match tokenizing
+    - mixfix operators and argument holes
+    - multi-line string literals and indentation stripping
+    - operator overloading
+    - operator precedence and associativity
+    - operator sections and backquoted infix application
+    - program-alterable operator tables
+    - raw and interpolated string literal forms
+    - reserved words and contextual keywords
+    - s-expression notation
+    - significant whitespace
+    - source character set and encoding
+    - statement terminator versus separator
+    - string interpolation and replacement fields
+    - syntactic sugar and desugaring
+    - translation phases and preprocessing as a lexical layer
+candidates:
+  - key: lexical-analysis-phase
+    name: Lexical analysis (scanning)
+    gloss: The phase that reduces a character stream to a sequence of tokens, discarding comments 
+      and inter-token whitespace before parsing.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00343
+        source_id: sebesta-copl
+        locator: §4.2
+      - chunk_id: ecma-334-7th#c00117
+        source_id: ecma-334-7th
+        locator: §6.3
+      - chunk_id: pierce-tapl-2002#c00134
+        source_id: pierce-tapl-2002
+        locator: pp. 59–60
+    aliases:
+      - label: scanning
+        chunk_id: sebesta-copl#c00343
+      - label: tokenizer
+        chunk_id: vanroy-haridi-2003#c00122
+      - label: lexer
+        chunk_id: pierce-tapl-2002#c00134
+  - key: token-versus-lexeme
+    name: Token category versus lexeme
+    gloss: Distinction between a token as a syntactic category and a lexeme as the concrete 
+      character string instantiating it.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00256
+        source_id: sebesta-copl
+        locator: §3.2
+      - chunk_id: sebesta-copl#c00343
+        source_id: sebesta-copl
+        locator: §4.2
+      - chunk_id: kaijanaho-2015#c00057
+        source_id: kaijanaho-2015
+        locator: §2.3
+    aliases:
+      - label: lexeme
+        chunk_id: haskell-2010-report#c00252
+  - key: token-classes
+    name: Token classes of a language
+    gloss: The small fixed set of token kinds a language recognises, typically identifiers, 
+      keywords, literals, operators and separators.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00061
+        source_id: jls-se25
+        locator: §3.5
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: go-lang-spec#c00006
+        source_id: go-lang-spec
+        locator: '#Tokens'
+    aliases:
+      - label: input elements
+        chunk_id: jls-se25#c00061
+      - label: lexical elements
+        chunk_id: c23-n3220#c00173
+  - key: whitespace-as-token-separator
+    name: Whitespace as token separator only
+    gloss: Treating spaces, tabs and newlines as insignificant except where they prevent adjacent 
+      characters from forming one token.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00173
+        source_id: c23-n3220
+        locator: §6.4
+      - chunk_id: python-langref-3#c00017
+        source_id: python-langref-3
+        locator: § 2.1.9. Whitespace between tokens
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: white space
+        chunk_id: c23-n3220#c00173
+  - key: maximal-munch
+    name: Maximal munch tokenizing
+    gloss: Rule that at each point the scanner takes the longest character sequence forming a legal 
+      token.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00038
+        source_id: haskell-2010-report
+        locator: §2.2
+      - chunk_id: python-langref-3#c00019
+        source_id: python-langref-3
+        locator: § 2.2. Other tokens
+      - chunk_id: go-lang-spec#c00006
+        source_id: go-lang-spec
+        locator: '#Tokens'
+    aliases:
+      - label: longest possible lexeme
+        chunk_id: haskell-2010-report#c00038
+      - label: eager consumer rule
+        chunk_id: iso-iec-13211-1-1995#c00050
+  - key: tokenization-ambiguity-rules
+    name: Tokenization ambiguity resolution rules
+    gloss: Explicit spec rules choosing among competing ways to reduce input characters to tokens 
+      when the lexical grammar is ambiguous.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00061
+        source_id: jls-se25
+        locator: §3.5
+      - chunk_id: iso-iec-13211-1-1995#c00050
+        source_id: iso-iec-13211-1-1995
+        locator: p. 30
+    aliases: []
+  - key: comment-forms
+    name: Comment forms
+    gloss: Lexical constructs for text ignored by the translator, typically a to-end-of-line form 
+      and a delimited form.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: haskell-2010-report#c00252
+        source_id: haskell-2010-report
+        locator: §10.2
+      - chunk_id: ecma-334-7th#c01001
+        source_id: ecma-334-7th
+        locator: pp. 599–600
+    aliases:
+      - label: single-line comment
+        chunk_id: ecma-334-7th#c01001
+      - label: delimited comment
+        chunk_id: ecma-334-7th#c01001
+  - key: nestable-block-comments
+    name: Nestable versus non-nesting block comments
+    gloss: Whether a delimited comment may contain a further delimited comment, which changes how 
+      code can be commented out.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00252
+        source_id: haskell-2010-report
+        locator: §10.2
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: ecma-334-7th#c00121
+        source_id: ecma-334-7th
+        locator: §6.3
+    aliases:
+      - label: ncomment
+        chunk_id: haskell-2010-report#c00252
+  - key: documentation-comments
+    name: Documentation comments
+    gloss: Specially marked comment forms whose content is consumed by a documentation generator 
+      rather than merely ignored.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: ecma-334-7th#c01080
+        source_id: ecma-334-7th
+        locator: p. 675
+      - chunk_id: rust-reference#c00865
+        source_id: rust-reference
+        locator: p. 660
+      - chunk_id: rust-fls#c00646
+        source_id: rust-fls
+        locator: § B.185. doc comment¶
+    aliases:
+      - label: doc comment
+        chunk_id: rust-fls#c00646
+      - label: XML documentation comment
+        chunk_id: ecma-334-7th#c01080
+  - key: inner-versus-outer-doc-comments
+    name: Inner versus outer documentation comments
+    gloss: Doc comment variants that attach either to the enclosing item or to the following item, 
+      distinguished lexically.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-reference#c00865
+        source_id: rust-reference
+        locator: p. 660
+      - chunk_id: rust-fls#c00931
+        source_id: rust-fls
+        locator: § B.478. outer doc comment¶
+    aliases: []
+  - key: literate-source-convention
+    name: Literate source convention
+    gloss: Inverted source layout in which prose is the default and program lines are marked, so 
+      comments dominate the file.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00259
+        source_id: haskell-2010-report
+        locator: §10.4
+      - chunk_id: haskell-2010-report#c00260
+        source_id: haskell-2010-report
+        locator: §10.4
+    aliases:
+      - label: literate comments
+        chunk_id: haskell-2010-report#c00259
+  - key: identifier-lexical-syntax
+    name: Identifier lexical syntax
+    gloss: Rules fixing which character sequences may name entities, including start and 
+      continuation character sets and length limits.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00020
+        source_id: python-langref-3
+        locator: § 2.3. Names (identifiers and keywords)
+      - chunk_id: haskell-2010-report#c00041
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: r-lang-definition#c00127
+        source_id: r-lang-definition
+        locator: §10.3.2
+    aliases:
+      - label: names
+        chunk_id: python-langref-3#c00020
+  - key: identifier-case-sensitivity
+    name: Identifier case sensitivity
+    gloss: Whether letter case distinguishes identifiers, a lexical choice with large effects on 
+      naming conventions.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00041
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: python-langref-3#c00020
+        source_id: python-langref-3
+        locator: § 2.3. Names (identifiers and keywords)
+      - chunk_id: scott-plp#c00153
+        source_id: scott-plp
+        locator: p. 171
+    aliases: []
+  - key: case-signalled-name-classes
+    name: Case-signalled name classes
+    gloss: Using initial letter case lexically to separate namespaces such as variables from 
+      constructors, or variables from atoms.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00041
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: armstrong-2007-hopl#c00095
+        source_id: armstrong-2007-hopl
+        locator: p. 24
+      - chunk_id: vanroy-haridi-2003#c00706
+        source_id: vanroy-haridi-2003
+        locator: §5.6.2
+    aliases: []
+  - key: unicode-identifiers
+    name: Non-ASCII identifier characters
+    gloss: Permitting identifiers to contain letters outside ASCII, defined by Unicode character 
+      categories or locale.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00020
+        source_id: python-langref-3
+        locator: § 2.3. Names (identifiers and keywords)
+      - chunk_id: ecma-334-7th#c01003
+        source_id: ecma-334-7th
+        locator: p. 602
+      - chunk_id: r-lang-definition#c00127
+        source_id: r-lang-definition
+        locator: §10.3.2
+    aliases: []
+  - key: reserved-words
+    name: Reserved words
+    gloss: Special words that may never be used as identifiers, fixed by the lexical grammar of the 
+      language.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00021
+        source_id: python-langref-3
+        locator: § 2.3.1. Keywords
+      - chunk_id: c23-n3220#c00176
+        source_id: c23-n3220
+        locator: §6.4.1
+      - chunk_id: sebesta-copl#c00399
+        source_id: sebesta-copl
+        locator: §5.2.3
+    aliases:
+      - label: keywords
+        chunk_id: c23-n3220#c00176
+      - label: reserved keyword
+        chunk_id: rust-fls#c01032
+  - key: keyword-versus-reserved-word
+    name: Keyword that is not reserved
+    gloss: Special word with meaning in context that programmers may still redefine or use as a 
+      name, unlike a reserved word.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00399
+        source_id: sebesta-copl
+        locator: §5.2.3
+      - chunk_id: sebesta-copl#c00057
+        source_id: sebesta-copl
+        locator: §1.3.1
+    aliases: []
+  - key: contextual-soft-keywords
+    name: Contextual (soft) keywords
+    gloss: Words acting as keywords only in specified grammatical positions, remaining usable as 
+      identifiers elsewhere for compatibility.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00069
+        source_id: jls-se25
+        locator: §3.9
+      - chunk_id: python-langref-3#c00022
+        source_id: python-langref-3
+        locator: § 2.3.2. Soft Keywords
+      - chunk_id: ecma-334-7th#c00127
+        source_id: ecma-334-7th
+        locator: §6.4
+    aliases:
+      - label: soft keywords
+        chunk_id: python-langref-3#c00022
+      - label: weak keyword
+        chunk_id: rust-fls#c00034
+  - key: keyword-escape-prefix
+    name: Escaping a keyword for use as an identifier
+    gloss: Lexical device letting a reserved word serve as a name, such as an at-sign prefix or 
+      single quoting.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00127
+        source_id: ecma-334-7th
+        locator: §6.4
+      - chunk_id: ecma-335-6th#c00281
+        source_id: ecma-335-6th
+        locator: pp. 136–137
+    aliases: []
+  - key: reserved-identifier-namespace
+    name: Identifiers reserved to the implementation
+    gloss: Spelling patterns, such as double underscores, set aside for implementation use rather 
+      than user code.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00127
+        source_id: ecma-334-7th
+        locator: §6.4
+      - chunk_id: c23-n3220#c00182
+        source_id: c23-n3220
+        locator: §6.4.3
+    aliases: []
+  - key: wildcard-underscore-token
+    name: Underscore as a wildcard token
+    gloss: A reserved single-underscore lexeme standing for an unnamed or discarded binding rather 
+      than an ordinary identifier.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00041
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: go-lang-spec#c00055
+        source_id: go-lang-spec
+        locator: '#Blank_identifier'
+      - chunk_id: pierce-tapl-2002#c00277
+        source_id: pierce-tapl-2002
+        locator: §11.3.1
+    aliases:
+      - label: blank identifier
+        chunk_id: go-lang-spec#c00055
+      - label: wildcard binder
+        chunk_id: pierce-tapl-2002#c00277
+  - key: literal-kinds
+    name: Kinds of literal
+    gloss: The categories of source-level constants a language admits, such as integer, 
+      floating-point, character, string and boolean literals.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00073
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: haskell-2010-report#c00252
+        source_id: haskell-2010-report
+        locator: §10.2
+      - chunk_id: rust-fls#c00013
+        source_id: rust-fls
+        locator: § 2.2. Lexical Elements, Separators, and Punctuation¶
+    aliases: []
+  - key: integer-literal-radix-prefixes
+    name: Radix prefixes for integer literals
+    gloss: Lexical prefixes selecting a non-decimal base for an integer literal, typically binary, 
+      octal and hexadecimal markers.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00011
+        source_id: go-lang-spec
+        locator: '#Integer_literals'
+      - chunk_id: jls-se25#c00073
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: python-langref-3#c00044
+        source_id: python-langref-3
+        locator: § 2.6.1. Integer literals
+    aliases: []
+  - key: digit-separators
+    name: Digit separators in numeric literals
+    gloss: Permitting an ignored grouping character between digits of a numeric literal to aid 
+      readability.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00074
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: go-lang-spec#c00011
+        source_id: go-lang-spec
+        locator: '#Integer_literals'
+      - chunk_id: ghc-users-guide#c00965
+        source_id: ghc-users-guide
+        locator: §6.9.6
+    aliases:
+      - label: numeric underscores
+        chunk_id: ghc-users-guide#c00965
+  - key: literal-type-suffix
+    name: Literal type suffix
+    gloss: A trailing letter sequence on a numeric literal that fixes the literal's type rather than
+      its value.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00073
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: rust-fls#c00026
+        source_id: rust-fls
+        locator: § 2.4.4.1. Integer Literals¶
+      - chunk_id: ecma-334-7th#c00131
+        source_id: ecma-334-7th
+        locator: §6.4
+    aliases:
+      - label: integer type suffix
+        chunk_id: jls-se25#c00073
+      - label: integer suffix
+        chunk_id: rust-fls#c00026
+  - key: floating-literal-exponent-part
+    name: Exponent part of floating literals
+    gloss: Lexical structure of real literals combining whole, fraction, exponent and suffix parts.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00078
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: ecma-334-7th#c00131
+        source_id: ecma-334-7th
+        locator: §6.4
+      - chunk_id: haskell-2010-report#c00252
+        source_id: haskell-2010-report
+        locator: §10.2
+    aliases: []
+  - key: hexadecimal-floating-literal
+    name: Hexadecimal floating-point literal
+    gloss: Real literal written in base sixteen with a mandatory binary exponent marker.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00078
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: ghc-users-guide#c00584
+        source_id: ghc-users-guide
+        locator: §6.1.2
+    aliases: []
+  - key: character-literal
+    name: Character literal
+    gloss: Single-quoted lexical form denoting one character or code unit, distinct from a string 
+      literal.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00195
+        source_id: c23-n3220
+        locator: §6.4.4
+      - chunk_id: haskell-2010-report#c00045
+        source_id: haskell-2010-report
+        locator: §2.6
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00060
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: character constant
+        chunk_id: c23-n3220#c00195
+  - key: escape-sequences
+    name: Escape sequences
+    gloss: Backslash-introduced spellings inside quoted literals for characters that cannot or 
+      should not appear directly.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00092
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: c23-n3220#c00195
+        source_id: c23-n3220
+        locator: §6.4.4
+      - chunk_id: haskell-2010-report#c00045
+        source_id: haskell-2010-report
+        locator: §2.6
+    aliases:
+      - label: charesc
+        chunk_id: haskell-2010-report#c00045
+  - key: numeric-escape-sequences
+    name: Numeric escape sequences
+    gloss: Escapes naming a character by its octal, decimal or hexadecimal numeric value inside a 
+      literal.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00195
+        source_id: c23-n3220
+        locator: §6.4.4
+      - chunk_id: haskell-2010-report#c00045
+        source_id: haskell-2010-report
+        locator: §2.6
+      - chunk_id: ecma-334-7th#c00134
+        source_id: ecma-334-7th
+        locator: §6.4
+    aliases:
+      - label: octal escape
+        chunk_id: jls-se25#c00092
+  - key: unicode-code-point-escape
+    name: Unicode code point escape
+    gloss: Escape form naming a character by its Unicode scalar value, sometimes with braces or 
+      fixed digit counts.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-reference#c00349
+        source_id: rust-reference
+        locator: p. 265
+      - chunk_id: python-langref-3#c00036
+        source_id: python-langref-3
+        locator: § 2.5.4.6. Hexadecimal Unicode characters
+      - chunk_id: jls-se25#c00055
+        source_id: jls-se25
+        locator: §3.3
+    aliases: []
+  - key: unicode-escape-pre-lexing-phase
+    name: Unicode escapes processed before tokenizing
+    gloss: Translating escape spellings into characters in a phase preceding lexical analysis, so 
+      escapes can occur anywhere in source.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00055
+        source_id: jls-se25
+        locator: §3.3
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00046
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases: []
+  - key: universal-character-name
+    name: Universal character name
+    gloss: Spelling that designates a character by ISO 10646 code point, usable in identifiers and 
+      literals outside the basic set.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00182
+        source_id: c23-n3220
+        locator: §6.4.3
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00046
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases: []
+  - key: string-literal
+    name: String literal
+    gloss: Quoted lexical form denoting a sequence of characters, with its own rules for quotes, 
+      newlines and escapes.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00201
+        source_id: c23-n3220
+        locator: §6.4.5
+      - chunk_id: go-lang-spec#c00017
+        source_id: go-lang-spec
+        locator: '#String_literals'
+      - chunk_id: haskell-2010-report#c00045
+        source_id: haskell-2010-report
+        locator: §2.6
+    aliases: []
+  - key: raw-string-literal
+    name: Raw string literal
+    gloss: String form in which backslash escapes are not interpreted, so the content is taken 
+      literally.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: go-lang-spec#c00017
+        source_id: go-lang-spec
+        locator: '#String_literals'
+      - chunk_id: rust-fls#c00032
+        source_id: rust-fls
+        locator: § 2.4.6.2. Raw String Literals¶
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00066
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: interpreted versus raw string
+        chunk_id: go-lang-spec#c00017
+      - label: verbatim string literal
+        chunk_id: ecma-334-7th#c00136
+  - key: customisable-string-delimiters
+    name: Customisable string literal delimiters
+    gloss: Allowing the programmer to extend the quoting delimiter, e.g. with hashes or a delimiter 
+      word, so content may contain quotes.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00067
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: rust-fls#c00032
+        source_id: rust-fls
+        locator: § 2.4.6.2. Raw String Literals¶
+    aliases:
+      - label: d-char-sequence delimiter
+        chunk_id: iso-iec-14882-cpp20-n4861#c00066
+  - key: multi-line-string-literal
+    name: Multi-line string literal
+    gloss: Literal form permitting unescaped newlines in its content, usually via tripled or doubled
+      quoting delimiters.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00028
+        source_id: python-langref-3
+        locator: § 2.5.1. Triple-quoted strings
+      - chunk_id: jls-se25#c00086
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: ghc-users-guide#c00972
+        source_id: ghc-users-guide
+        locator: §6.9.9
+    aliases:
+      - label: triple-quoted string
+        chunk_id: python-langref-3#c00028
+      - label: text block
+        chunk_id: jls-se25#c00086
+  - key: incidental-indentation-stripping
+    name: Incidental indentation stripping
+    gloss: Removing the common leading whitespace of a multi-line literal so the literal can be 
+      indented with surrounding code.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00090
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: ghc-users-guide#c00972
+        source_id: ghc-users-guide
+        locator: §6.9.9
+    aliases:
+      - label: incidental white space
+        chunk_id: jls-se25#c00090
+  - key: string-gap-line-continuation
+    name: String continuation escape (string gap)
+    gloss: Escape that lets a literal span source lines by deleting the newline and surrounding 
+      whitespace from the value.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00045
+        source_id: haskell-2010-report
+        locator: §2.6
+      - chunk_id: rust-reference#c00350
+        source_id: rust-reference
+        locator: pp. 265–266
+      - chunk_id: jls-se25#c00092
+        source_id: jls-se25
+        locator: §3.10
+    aliases:
+      - label: gap
+        chunk_id: haskell-2010-report#c00045
+  - key: adjacent-string-concatenation
+    name: Adjacent string literal concatenation
+    gloss: Joining neighbouring string literal tokens into a single literal during translation 
+      rather than at run time.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00201
+        source_id: c23-n3220
+        locator: §6.4.5
+      - chunk_id: ecma-335-6th#c00280
+        source_id: ecma-335-6th
+        locator: p. 136
+    aliases: []
+  - key: string-literal-encoding-prefix
+    name: Encoding prefix on literals
+    gloss: Prefix letters on a character or string literal selecting the encoding and element type 
+      of the resulting value.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00201
+        source_id: c23-n3220
+        locator: §6.4.5
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00066
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: UTF-8 string literal
+        chunk_id: c23-n3220#c00201
+  - key: string-interpolation
+    name: String interpolation
+    gloss: Literal form whose embedded expressions are evaluated and substituted, making the literal
+      non-constant.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00040
+        source_id: python-langref-3
+        locator: § 2.5.7. f-strings
+      - chunk_id: ecma-334-7th#c00406
+        source_id: ecma-334-7th
+        locator: §12.8
+    aliases:
+      - label: f-string
+        chunk_id: python-langref-3#c00040
+      - label: interpolated string expression
+        chunk_id: ecma-334-7th#c00406
+  - key: replacement-field-syntax
+    name: Replacement field syntax
+    gloss: Brace-delimited holes in a format or interpolated string, with doubled braces as the 
+      escape for a literal brace.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c01544
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §2
+      - chunk_id: python-langref-3#c00040
+        source_id: python-langref-3
+        locator: § 2.5.7. f-strings
+    aliases: []
+  - key: interpolation-format-specifier
+    name: Format and alignment specifiers in interpolation
+    gloss: Optional trailing clauses inside a replacement field that control conversion, width and 
+      alignment of the substituted value.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00410
+        source_id: ecma-334-7th
+        locator: §12.8
+      - chunk_id: python-langref-3#c00041
+        source_id: python-langref-3
+        locator: § 2.5.7. f-strings
+      - chunk_id: iso-iec-14882-cpp20-n4861#c01545
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §2
+    aliases: []
+  - key: interpolation-desugars-to-format-call
+    name: Interpolation defined by translation to a format call
+    gloss: Specifying interpolated string meaning as a rewriting into a library formatting call with
+      a constructed format string.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00411
+        source_id: ecma-334-7th
+        locator: §12.8
+      - chunk_id: ecma-334-7th#c00412
+        source_id: ecma-334-7th
+        locator: §12.8
+    aliases: []
+  - key: source-character-set
+    name: Source character set
+    gloss: The set of characters a translator accepts in source text, often a small basic set plus a
+      mapping for extended characters.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00070
+        source_id: c23-n3220
+        locator: §5.1
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00046
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: basic source character set
+        chunk_id: iso-iec-14882-cpp20-n4861#c00046
+  - key: execution-character-set-mapping
+    name: Execution character set mapping
+    gloss: Implementation-defined mapping from source characters to the character set of the running
+      program's values.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00195
+        source_id: c23-n3220
+        locator: §6.4.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00060
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases: []
+  - key: unicode-source-text
+    name: Unicode as the source alphabet
+    gloss: Defining source text over Unicode and deriving lexical categories from Unicode character 
+      properties.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00037
+        source_id: haskell-2010-report
+        locator: §2.1
+      - chunk_id: ecma-334-7th#c01003
+        source_id: ecma-334-7th
+        locator: p. 602
+    aliases: []
+  - key: translation-phases
+    name: Ordered translation phases
+    gloss: A specification device fixing precedence among syntax rules by describing translation as 
+      a numbered sequence of conceptual phases.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00070
+        source_id: c23-n3220
+        locator: §5.1
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00041
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases:
+      - label: phases of translation
+        chunk_id: iso-iec-14882-cpp20-n4861#c00041
+  - key: line-splicing
+    name: Line splicing with backslash-newline
+    gloss: Deleting a backslash immediately before a newline so physical source lines combine into 
+      one logical source line.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: c23-n3220#c00070
+        source_id: c23-n3220
+        locator: §5.1
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00042
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: python-langref-3#c00011
+        source_id: python-langref-3
+        locator: § 2.1.5. Explicit line joining
+    aliases:
+      - label: explicit line joining
+        chunk_id: python-langref-3#c00011
+  - key: logical-versus-physical-line
+    name: Logical versus physical line
+    gloss: Distinction between a line of the source file and the line unit the grammar actually sees
+      after joining rules apply.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00011
+        source_id: python-langref-3
+        locator: § 2.1.5. Explicit line joining
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00042
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: python-langref-3#c00253
+        source_id: python-langref-3
+        locator: § 7. Simple statements
+    aliases: []
+  - key: implicit-line-joining
+    name: Implicit line joining inside brackets
+    gloss: Allowing an expression inside unclosed brackets to span physical lines with no 
+      continuation marker and no line token.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00012
+        source_id: python-langref-3
+        locator: § 2.1.6. Implicit line joining
+    aliases: []
+  - key: line-terminator-recognition
+    name: Line terminator recognition
+    gloss: Fixing which characters and sequences end a line, which matters for comments, layout and 
+      line-oriented rules.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00117
+        source_id: ecma-334-7th
+        locator: §6.3
+      - chunk_id: jls-se25#c00086
+        source_id: jls-se25
+        locator: §3.10
+      - chunk_id: haskell-2010-report#c00252
+        source_id: haskell-2010-report
+        locator: §10.2
+    aliases: []
+  - key: preprocessing-token
+    name: Preprocessing token
+    gloss: A coarser token category existing only in earlier translation phases, later converted 
+      into proper language tokens.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00173
+        source_id: c23-n3220
+        locator: §6.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00042
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+    aliases: []
+  - key: preprocessing-as-lexical-layer
+    name: Preprocessing as a lexical layer
+    gloss: A directive language operating on token lines before real translation, able to include 
+      files, skip text and replace macros.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00970
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §15
+      - chunk_id: iso-iec-9899-1999-n1256#c00257
+        source_id: iso-iec-9899-1999-n1256
+        locator: §6.10
+      - chunk_id: ecma-334-7th#c00117
+        source_id: ecma-334-7th
+        locator: §6.3
+    aliases:
+      - label: preprocessing directives
+        chunk_id: iso-iec-14882-cpp20-n4861#c00968
+  - key: macro-replacement-on-tokens
+    name: Macro replacement over token sequences
+    gloss: Textual substitution defined on preprocessing tokens, with rescanning and non-replacement
+      rules to avoid recursion.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00438
+        source_id: c23-n3220
+        locator: §6.10.5
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00984
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §15
+    aliases: []
+  - key: directive-line-syntax
+    name: Directive line syntax
+    gloss: Rules making a directive a whole-line construct introduced by a marker token and ended by
+      a newline.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00968
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §15
+      - chunk_id: c23-n3220#c00404
+        source_id: c23-n3220
+        locator: §6.10.1
+    aliases: []
+  - key: destringizing-pragma-operator
+    name: Destringizing pragma operator
+    gloss: Operator that converts a string literal back into preprocessing tokens so a directive can
+      be produced by macro expansion.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00453
+        source_id: c23-n3220
+        locator: §6.10.11
+    aliases: []
+  - key: significant-indentation
+    name: Significant indentation
+    gloss: Using leading whitespace of a line to determine the grouping of statements instead of 
+      explicit delimiters.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00014
+        source_id: python-langref-3
+        locator: § 2.1.8. Indentation
+      - chunk_id: haskell-2010-report#c00047
+        source_id: haskell-2010-report
+        locator: §2.7
+      - chunk_id: scott-plp#c00153
+        source_id: scott-plp
+        locator: p. 171
+    aliases: []
+  - key: indent-dedent-tokens
+    name: INDENT and DEDENT tokens
+    gloss: Synthesising bracket-like tokens from a stack of indentation levels so the parser sees 
+      explicit grouping.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00015
+        source_id: python-langref-3
+        locator: § 2.1.8. Indentation
+      - chunk_id: python-langref-3#c00019
+        source_id: python-langref-3
+        locator: § 2.2. Other tokens
+    aliases: []
+  - key: layout-rule-offside
+    name: Layout rule (off-side rule)
+    gloss: Inserting braces and semicolons determined by indentation so a laid-out program has an 
+      equivalent layout-insensitive form.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00047
+        source_id: haskell-2010-report
+        locator: §2.7
+      - chunk_id: haskell-2010-report#c00254
+        source_id: haskell-2010-report
+        locator: §10.3
+      - chunk_id: haskell-2010-report#c00256
+        source_id: haskell-2010-report
+        locator: §10.3
+    aliases:
+      - label: off-side rule
+        chunk_id: haskell-2010-report#c00047
+      - label: layout contexts
+        chunk_id: haskell-2010-report#c00255
+  - key: layout-parse-error-rule
+    name: Parse-error-driven layout closing
+    gloss: Closing an implicit layout group when the next token would otherwise be a parse error, 
+      coupling lexing to parsing.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00257
+        source_id: haskell-2010-report
+        locator: §10.3
+      - chunk_id: haskell-2010-report#c00258
+        source_id: haskell-2010-report
+        locator: §10.3
+    aliases: []
+  - key: mixing-explicit-and-implicit-layout
+    name: Mixing explicit braces with layout
+    gloss: Permitting layout-sensitive and layout-insensitive coding in one program, with explicit 
+      braces suspending layout processing.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00047
+        source_id: haskell-2010-report
+        locator: §2.7
+      - chunk_id: haskell-2010-report#c00048
+        source_id: haskell-2010-report
+        locator: §2.7
+    aliases: []
+  - key: tab-stop-column-convention
+    name: Tab stop and column conventions
+    gloss: Specified conversion of tab characters to column positions, required whenever indentation
+      or columns carry meaning.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00014
+        source_id: python-langref-3
+        locator: § 2.1.8. Indentation
+      - chunk_id: haskell-2010-report#c00255
+        source_id: haskell-2010-report
+        locator: §10.3
+    aliases: []
+  - key: inconsistent-indentation-error
+    name: Inconsistent indentation as an error
+    gloss: Rejecting source whose mixed tabs and spaces or unmatched dedent makes the intended 
+      grouping ambiguous.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00014
+        source_id: python-langref-3
+        locator: § 2.1.8. Indentation
+      - chunk_id: python-langref-3#c00016
+        source_id: python-langref-3
+        locator: § 2.1.8. Indentation
+    aliases:
+      - label: TabError
+        chunk_id: python-langref-3#c00014
+  - key: block-delimiter-choice
+    name: Block delimiter choice
+    gloss: Which surface device groups statements, such as brace pairs, keyword pairs or 
+      indentation.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: go-lang-spec#c00051
+        source_id: go-lang-spec
+        locator: '#Blocks'
+      - chunk_id: sebesta-copl#c00056
+        source_id: sebesta-copl
+        locator: §1.3.1
+      - chunk_id: turbak-gifford-dcpl#c00059
+        source_id: turbak-gifford-dcpl
+        locator: §2.2
+    aliases: []
+  - key: compound-statement-block
+    name: Compound statement (block)
+    gloss: Construct letting several statements stand where one is expected, usually also 
+      introducing a scope.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00371
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §8
+      - chunk_id: c23-n3220#c00382
+        source_id: c23-n3220
+        locator: §6.8.3
+      - chunk_id: jls-se25#c00709
+        source_id: jls-se25
+        locator: §14.2
+    aliases:
+      - label: block
+        chunk_id: go-lang-spec#c00051
+      - label: group of statements
+        chunk_id: r-lang-definition#c00034
+  - key: implicit-blocks
+    name: Implicit blocks
+    gloss: Grouping regions the language posits without surface delimiters, such as per-file, 
+      per-clause or per-statement blocks.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: go-lang-spec#c00051
+        source_id: go-lang-spec
+        locator: '#Blocks'
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00371
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §8
+    aliases: []
+  - key: statement-separator-versus-terminator
+    name: Statement separator versus terminator
+    gloss: Whether the punctuation between statements separates them or terminates each one, and 
+      whether newlines can do the job.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: python-langref-3#c00253
+        source_id: python-langref-3
+        locator: § 7. Simple statements
+      - chunk_id: r-lang-definition#c00130
+        source_id: r-lang-definition
+        locator: §10.3.5
+      - chunk_id: go-lang-spec#c00007
+        source_id: go-lang-spec
+        locator: '#Semicolons'
+    aliases: []
+  - key: automatic-semicolon-insertion
+    name: Automatic semicolon insertion
+    gloss: Letting the lexer or parser supply omitted statement terminators according to stated 
+      rules about line breaks and tokens.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: go-lang-spec#c00007
+        source_id: go-lang-spec
+        locator: '#Semicolons'
+      - chunk_id: ecma-262-16th#c00677
+        source_id: ecma-262-16th
+        locator: §12.10
+      - chunk_id: ecma-262-16th#c00678
+        source_id: ecma-262-16th
+        locator: §12.10.1
+    aliases: []
+  - key: restricted-production-no-line-break
+    name: Restricted productions forbidding a line break
+    gloss: Grammar annotations prohibiting a line terminator at a given point, interacting with 
+      automatic terminator insertion.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-262-16th#c00678
+        source_id: ecma-262-16th
+        locator: §12.10.1
+    aliases:
+      - label: no LineTerminator here
+        chunk_id: ecma-262-16th#c00678
+  - key: newline-terminates-complete-expression
+    name: Newline ends a syntactically complete expression
+    gloss: Treating a line break as a terminator only when the text so far parses, which suits 
+      interactive reading.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: r-lang-definition#c00130
+        source_id: r-lang-definition
+        locator: §10.3.5
+    aliases: []
+  - key: empty-statement
+    name: Empty statement
+    gloss: A statement consisting only of the terminator, useful for labels and null loop bodies.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00659
+        source_id: rust-fls
+        locator: § B.198. empty statement¶
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00371
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §8
+    aliases:
+      - label: null statement
+        chunk_id: iso-iec-14882-cpp20-n4861#c00371
+  - key: expression-statement
+    name: Expression statement
+    gloss: Statement form that evaluates an expression and discards its value, letting expressions 
+      appear where statements are required.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00604
+        source_id: ecma-334-7th
+        locator: §13.7
+      - chunk_id: rust-fls#c00261
+        source_id: rust-fls
+        locator: § 8.2. Expression Statements¶
+      - chunk_id: scott-plp#c00313
+        source_id: scott-plp
+        locator: pp. 329–330
+    aliases: []
+  - key: expression-oriented-syntax
+    name: Expression-oriented syntax
+    gloss: Design with no separate statement category, so every construct yields a value and may 
+      nest in any expression position.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: scott-plp#c00313
+        source_id: scott-plp
+        locator: pp. 329–330
+      - chunk_id: rust-reference#c00323
+        source_id: rust-reference
+        locator: p. 249
+      - chunk_id: kaijanaho-2015#c00063
+        source_id: kaijanaho-2015
+        locator: §2.4
+    aliases: []
+  - key: statement-expression-distinction
+    name: Statement versus expression distinction
+    gloss: Whether a construct returns a value, a distinction languages signal through separate 
+      syntactic categories.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00199
+        source_id: vanroy-haridi-2003
+        locator: §2.5.1
+      - chunk_id: rust-reference#c00324
+        source_id: rust-reference
+        locator: p. 250
+      - chunk_id: scott-plp#c00313
+        source_id: scott-plp
+        locator: pp. 329–330
+    aliases: []
+  - key: semicolon-elision-block-expression
+    name: Omitting the terminator after a block expression
+    gloss: Permitting a block or control-flow expression used as a statement to drop its trailing 
+      terminator, with a parsing tie-break rule.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-reference#c00328
+        source_id: rust-reference
+        locator: p. 252
+      - chunk_id: rust-fls#c00261
+        source_id: rust-fls
+        locator: § 8.2. Expression Statements¶
+    aliases: []
+  - key: explicit-end-markers
+    name: Explicit end markers for structured statements
+    gloss: Requiring a closing keyword per construct, which removes grouping ambiguity but makes 
+      terminators pile up.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00127
+        source_id: scott-plp
+        locator: pp. 138–140
+      - chunk_id: kaijanaho-2015#c00063
+        source_id: kaijanaho-2015
+        locator: §2.4
+    aliases:
+      - label: distinct closing syntax
+        chunk_id: sebesta-copl#c00056
+  - key: elsif-clause
+    name: elsif clause
+    gloss: Surface form added to languages with end markers so chained conditionals need only one 
+      closing marker.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00128
+        source_id: scott-plp
+        locator: pp. 140–142
+    aliases:
+      - label: elif
+        chunk_id: scott-plp#c00128
+  - key: dangling-else-ambiguity
+    name: Dangling else ambiguity
+    gloss: The classic grammar ambiguity over which conditional an optional else clause belongs to.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: jls-se25#c00718
+        source_id: jls-se25
+        locator: §14.5
+      - chunk_id: scott-plp#c00126
+        source_id: scott-plp
+        locator: pp. 137–138
+      - chunk_id: sebesta-copl#c00275
+        source_id: sebesta-copl
+        locator: §3.3.1
+    aliases: []
+  - key: grammar-stratification-disambiguation
+    name: Disambiguation by stratifying the grammar
+    gloss: Splitting a nonterminal into restricted variants so an ambiguous construct has exactly 
+      one parse.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: jls-se25#c00719
+        source_id: jls-se25
+        locator: §14.5
+      - chunk_id: sebesta-copl#c00277
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: scott-plp#c00152
+        source_id: scott-plp
+        locator: pp. 169–171
+    aliases:
+      - label: no short if
+        chunk_id: jls-se25#c00719
+      - label: matched and unmatched statements
+        chunk_id: sebesta-copl#c00277
+  - key: disambiguating-rule-over-ambiguous-grammar
+    name: Ambiguous grammar plus disambiguating rule
+    gloss: Keeping a natural ambiguous grammar and resolving conflicts by a stated preference such 
+      as first production wins.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00126
+        source_id: scott-plp
+        locator: pp. 137–138
+      - chunk_id: kaijanaho-2015#c00063
+        source_id: kaijanaho-2015
+        locator: §2.4
+    aliases: []
+  - key: grammar-ambiguity
+    name: Grammar ambiguity
+    gloss: Property of a grammar admitting two distinct parse trees for one sentential form, so 
+      meaning is underdetermined.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c00267
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: krishnamurthi-plai#c00053
+        source_id: krishnamurthi-plai
+        locator: p. 32
+      - chunk_id: vanroy-haridi-2003#c00122
+        source_id: vanroy-haridi-2003
+        locator: §2.1.1
+    aliases: []
+  - key: extends-as-far-right-meta-rule
+    name: Extends-as-far-right meta-rule
+    gloss: Prose rule resolving how far lambda, let and conditional bodies reach, instead of 
+      encoding it in the grammar.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00051
+        source_id: haskell-2010-report
+        locator: p. 36
+      - chunk_id: haskell-2010-report#c00251
+        source_id: haskell-2010-report
+        locator: §10.1
+      - chunk_id: pierce-tapl-2002#c00135
+        source_id: pierce-tapl-2002
+        locator: p. 60
+    aliases:
+      - label: let/lambda meta-rule
+        chunk_id: haskell-2010-report#c00057
+  - key: context-free-grammar-for-syntax
+    name: Context-free grammar as the syntax definition
+    gloss: Defining the legal programs of a language by production rules over terminals and 
+      nonterminals.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00077
+        source_id: scott-plp
+        locator: p. 80
+      - chunk_id: vanroy-haridi-2003#c00122
+        source_id: vanroy-haridi-2003
+        locator: §2.1.1
+      - chunk_id: sebesta-copl#c00256
+        source_id: sebesta-copl
+        locator: §3.2
+    aliases: []
+  - key: backus-naur-form
+    name: Backus-Naur Form
+    gloss: Metanotation writing each nonterminal's alternatives as productions, the standard way of 
+      presenting concrete syntax.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c00272
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: krishnamurthi-plai#c00073
+        source_id: krishnamurthi-plai
+        locator: p. 48
+      - chunk_id: iso-iec-13211-1-1995#c00036
+        source_id: iso-iec-13211-1-1995
+        locator: pp. 22–23
+    aliases:
+      - label: BNF
+        chunk_id: sebesta-copl#c00272
+  - key: extended-bnf
+    name: Extended BNF
+    gloss: BNF augmented with optionality, repetition and grouping metasymbols, at the cost of no 
+      longer encoding associativity.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: sebesta-copl#c00279
+        source_id: sebesta-copl
+        locator: §3.3.2
+      - chunk_id: go-lang-spec#c00001
+        source_id: go-lang-spec
+        locator: '#Notation'
+      - chunk_id: vanroy-haridi-2003#c00122
+        source_id: vanroy-haridi-2003
+        locator: §2.1.1
+    aliases:
+      - label: EBNF
+        chunk_id: go-lang-spec#c00001
+  - key: grammar-metanotation-conventions
+    name: Per-specification grammar notation conventions
+    gloss: The varying typographic and symbolic conventions a specification adopts for its own 
+      grammar, including metasymbol escaping.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00037
+        source_id: haskell-2010-report
+        locator: §2.1
+      - chunk_id: jls-se25#c00047
+        source_id: jls-se25
+        locator: §2.4
+      - chunk_id: jls-se25#c00049
+        source_id: jls-se25
+        locator: §2.4
+    aliases:
+      - label: metalanguage
+        chunk_id: sebesta-copl#c00279
+      - label: metasymbols
+        chunk_id: sebesta-copl#c00279
+  - key: lexical-versus-syntactic-grammar
+    name: Separate lexical and syntactic grammars
+    gloss: Splitting the definition into one grammar producing tokens and another whose terminals 
+      are those tokens.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00117
+        source_id: ecma-334-7th
+        locator: §6.3
+      - chunk_id: jls-se25#c00061
+        source_id: jls-se25
+        locator: §3.5
+      - chunk_id: python-langref-3#c00003
+        source_id: python-langref-3
+        locator: § 1.2. Notation
+    aliases: []
+  - key: peg-ordered-choice-grammar
+    name: PEG ordered choice in a grammar definition
+    gloss: Using parsing-expression-grammar semantics where alternation commits to the first 
+      matching alternative.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: python-langref-3#c00003
+        source_id: python-langref-3
+        locator: § 1.2. Notation
+    aliases: []
+  - key: grammar-production-with-side-conditions
+    name: Productions carrying side conditions
+    gloss: Attaching attributes or boolean conditions to productions so a context-free skeleton can 
+      express context-sensitive constraints.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-13211-1-1995#c00036
+        source_id: iso-iec-13211-1-1995
+        locator: pp. 22–23
+      - chunk_id: vanroy-haridi-2003#c01124
+        source_id: vanroy-haridi-2003
+        locator: §9.5.1
+      - chunk_id: vanroy-haridi-2003#c00122
+        source_id: vanroy-haridi-2003
+        locator: §2.1.1
+    aliases: []
+  - key: parse-tree
+    name: Parse tree
+    gloss: Tree whose internal nodes are nonterminals recording how a grammar derives a particular 
+      sentence.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00267
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: scott-plp#c00088
+        source_id: scott-plp
+        locator: pp. 90–91
+    aliases:
+      - label: concrete syntax tree
+        chunk_id: kaijanaho-2015#c00057
+  - key: derivation
+    name: Derivation and sentential forms
+    gloss: Sequence of replacements from the start symbol to a terminal string, ordered leftmost or 
+      rightmost.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00266
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: scott-plp#c00088
+        source_id: scott-plp
+        locator: pp. 90–91
+    aliases: []
+  - key: abstract-syntax-tree
+    name: Abstract syntax tree
+    gloss: Tree representation of program structure whose nodes are operators of given sort and 
+      arity, abstracting away notation.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: harper-pfpl#c00031
+        source_id: harper-pfpl
+        locator: §1.1
+      - chunk_id: pierce-tapl-2002#c00134
+        source_id: pierce-tapl-2002
+        locator: pp. 59–60
+      - chunk_id: krishnamurthi-plai#c00043
+        source_id: krishnamurthi-plai
+        locator: pp. 23–24
+    aliases:
+      - label: AST
+        chunk_id: krishnamurthi-plai#c00043
+  - key: concrete-versus-abstract-syntax
+    name: Concrete versus abstract syntax
+    gloss: Separation of the character strings programmers write from the structural representation 
+      semantics is defined over.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: harper-pfpl#c00029
+        source_id: harper-pfpl
+        locator: p. 23
+      - chunk_id: pierce-tapl-2002#c00134
+        source_id: pierce-tapl-2002
+        locator: pp. 59–60
+      - chunk_id: kaijanaho-2015#c00057
+        source_id: kaijanaho-2015
+        locator: §2.3
+    aliases:
+      - label: surface syntax
+        chunk_id: pierce-tapl-2002#c00134
+      - label: structural syntax
+        chunk_id: harper-pfpl#c00029
+  - key: notational-arbitrariness-of-concrete-syntax
+    name: Arbitrariness of concrete notation
+    gloss: Observation that one abstract structure admits many surface encodings differing in 
+      keywords, operand order and grouping devices.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00059
+        source_id: turbak-gifford-dcpl
+        locator: §2.2
+      - chunk_id: turbak-gifford-dcpl#c00031
+        source_id: turbak-gifford-dcpl
+        locator: pp. 29–30
+      - chunk_id: krishnamurthi-plai#c00046
+        source_id: krishnamurthi-plai
+        locator: pp. 26–27
+    aliases: []
+  - key: abstract-binding-tree
+    name: Abstract binding tree
+    gloss: Abstract syntax enriched with the binding and scope of identifiers, so variable structure
+      is part of the syntax.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: harper-pfpl#c00029
+        source_id: harper-pfpl
+        locator: p. 23
+      - chunk_id: harper-pfpl#c00031
+        source_id: harper-pfpl
+        locator: §1.1
+    aliases:
+      - label: abt
+        chunk_id: harper-pfpl#c00029
+  - key: source-location-metadata-on-ast
+    name: Source metadata attached to abstract syntax
+    gloss: Keeping links from abstract syntax back to source positions so diagnostics can point at 
+      the text the programmer wrote.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00046
+        source_id: krishnamurthi-plai
+        locator: pp. 26–27
+      - chunk_id: krishnamurthi-plai#c00047
+        source_id: krishnamurthi-plai
+        locator: p. 27
+    aliases: []
+  - key: s-expression-notation
+    name: S-expression notation
+    gloss: Fully parenthesized prefix notation representing trees as nested parenthesized token 
+      sequences.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00062
+        source_id: turbak-gifford-dcpl
+        locator: §2.3.1
+      - chunk_id: vanroy-haridi-2003#c01124
+        source_id: vanroy-haridi-2003
+        locator: §9.5.1
+      - chunk_id: sebesta-copl#c01165
+        source_id: sebesta-copl
+        locator: §15.4.2
+    aliases:
+      - label: symbolic expression
+        chunk_id: turbak-gifford-dcpl#c00062
+      - label: sexpr
+        chunk_id: harper-pfpl#c00518
+  - key: s-expression-grammar
+    name: S-expression grammar for specifying abstract syntax
+    gloss: Using parenthesized prefix grammar rules as a compact unambiguous way to define abstract 
+      syntax trees.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00061
+        source_id: turbak-gifford-dcpl
+        locator: §2.3
+      - chunk_id: turbak-gifford-dcpl#c00062
+        source_id: turbak-gifford-dcpl
+        locator: §2.3.1
+    aliases: []
+  - key: same-notation-for-code-and-data
+    name: One notation for code and data
+    gloss: Writing programs in the language's own data notation, so programs are directly 
+      manipulable values.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c01165
+        source_id: sebesta-copl
+        locator: §15.4.2
+      - chunk_id: harper-pfpl#c00047
+        source_id: harper-pfpl
+        locator: §1.3
+      - chunk_id: turbak-gifford-dcpl#c00358
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+    aliases: []
+  - key: quotation-notation
+    name: Quotation notation for literal structure
+    gloss: Surface shorthand turning a printed tree representation into the corresponding structured
+      value.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00358
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+      - chunk_id: harper-pfpl#c00518
+        source_id: harper-pfpl
+        locator: pp. 322–323
+      - chunk_id: scott-plp#c00288
+        source_id: scott-plp
+        locator: p. 305
+    aliases: []
+  - key: prefix-notation
+    name: Prefix (Cambridge Polish) notation
+    gloss: Writing the operator before its operands, including the variant placing the operator 
+      inside the parentheses.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00302
+        source_id: scott-plp
+        locator: pp. 318–319
+      - chunk_id: turbak-gifford-dcpl#c00031
+        source_id: turbak-gifford-dcpl
+        locator: pp. 29–30
+      - chunk_id: sebesta-copl#c01163
+        source_id: sebesta-copl
+        locator: §15.4.2
+    aliases:
+      - label: Cambridge Polish
+        chunk_id: sebesta-copl#c01163
+  - key: postfix-notation
+    name: Postfix notation
+    gloss: Writing the operator after its operands, which removes the need for parentheses and suits
+      stack evaluation.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00031
+        source_id: turbak-gifford-dcpl
+        locator: pp. 29–30
+      - chunk_id: scott-plp#c00288
+        source_id: scott-plp
+        locator: p. 305
+    aliases:
+      - label: reverse Polish
+        chunk_id: scott-plp#c00288
+  - key: infix-notation
+    name: Infix notation
+    gloss: Writing a binary operator between its operands, the default surface form for arithmetic 
+      in most languages.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00302
+        source_id: scott-plp
+        locator: pp. 318–319
+      - chunk_id: haskell-2010-report#c00053
+        source_id: haskell-2010-report
+        locator: §3.2
+      - chunk_id: deransart-prolog-1996#c00032
+        source_id: deransart-prolog-1996
+        locator: pp. 21–22
+    aliases: []
+  - key: operator-versus-call-notation
+    name: Operator notation versus function-call notation
+    gloss: Treating operator syntax as alternative surface spelling for an ordinary application of a
+      named function.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00302
+        source_id: scott-plp
+        locator: pp. 318–319
+      - chunk_id: r-lang-definition#c00136
+        source_id: r-lang-definition
+        locator: §10.4.2
+      - chunk_id: ecma-334-7th#c00350
+        source_id: ecma-334-7th
+        locator: §12.4
+    aliases: []
+  - key: operator-precedence
+    name: Operator precedence
+    gloss: Ranking of operators that determines grouping of an unparenthesized expression without 
+      extra parentheses.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: pierce-tapl-2002#c00134
+        source_id: pierce-tapl-2002
+        locator: pp. 59–60
+      - chunk_id: ecma-334-7th#c00348
+        source_id: ecma-334-7th
+        locator: §12.4
+      - chunk_id: r-lang-definition#c00136
+        source_id: r-lang-definition
+        locator: §10.4.2
+    aliases:
+      - label: priority
+        chunk_id: deransart-prolog-1996#c00737
+      - label: binding precedence
+        chunk_id: haskell-2010-report#c00115
+  - key: operator-associativity
+    name: Operator associativity
+    gloss: Rule grouping repeated same-precedence operators to the left or the right, or forbidding 
+      repetition.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: ecma-334-7th#c00348
+        source_id: ecma-334-7th
+        locator: §12.4
+      - chunk_id: vanroy-haridi-2003#c01405
+        source_id: vanroy-haridi-2003
+        locator: pp. 882–883
+      - chunk_id: haskell-2010-report#c00051
+        source_id: haskell-2010-report
+        locator: p. 36
+    aliases: []
+  - key: nonassociative-operator
+    name: Non-associative operator
+    gloss: Operator that may not be chained without parentheses, so repeated use is a syntax error.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00051
+        source_id: haskell-2010-report
+        locator: p. 36
+      - chunk_id: vanroy-haridi-2003#c01405
+        source_id: vanroy-haridi-2003
+        locator: pp. 882–883
+      - chunk_id: deransart-prolog-1996#c00737
+        source_id: deransart-prolog-1996
+        locator: §9.2
+    aliases: []
+  - key: precedence-level-table
+    name: Precedence and associativity table
+    gloss: Published table assigning each operator a level and associativity, the usual way a 
+      language fixes grouping.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00115
+        source_id: haskell-2010-report
+        locator: §4.4.2
+      - chunk_id: r-lang-definition#c00136
+        source_id: r-lang-definition
+        locator: §10.4.2
+      - chunk_id: vanroy-haridi-2003#c01405
+        source_id: vanroy-haridi-2003
+        locator: pp. 882–883
+    aliases: []
+  - key: associativity-encoded-by-recursion
+    name: Associativity encoded by grammar recursion
+    gloss: Using left or right recursive productions so the grammar itself forces an operator's 
+      associativity.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00275
+        source_id: sebesta-copl
+        locator: §3.3.1
+      - chunk_id: sebesta-copl#c00279
+        source_id: sebesta-copl
+        locator: §3.3.2
+    aliases: []
+  - key: parentheses-override-grouping
+    name: Parentheses as grouping override
+    gloss: Bracketing device that overrides default precedence, sometimes recorded in the syntax 
+      tree as its own operator.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c01405
+        source_id: vanroy-haridi-2003
+        locator: pp. 882–883
+      - chunk_id: iso-iec-13211-1-1995#c00045
+        source_id: iso-iec-13211-1-1995
+        locator: pp. 27–28
+      - chunk_id: r-lang-definition#c00136
+        source_id: r-lang-definition
+        locator: §10.4.2
+    aliases: []
+  - key: fixity-declaration
+    name: Fixity declaration
+    gloss: Declaration giving a named operator its associativity and precedence level in the program
+      source.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00115
+        source_id: haskell-2010-report
+        locator: §4.4.2
+      - chunk_id: ghc-users-guide#c00667
+        source_id: ghc-users-guide
+        locator: §6.4.3
+    aliases:
+      - label: infixl/infixr/infix
+        chunk_id: haskell-2010-report#c00115
+  - key: local-fixity-declaration
+    name: Local fixity declaration
+    gloss: Permitting a fixity declaration inside a local binding group, scoped like the binding it 
+      accompanies.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00631
+        source_id: ghc-users-guide
+        locator: §6.2.17
+      - chunk_id: haskell-2010-report#c00116
+        source_id: haskell-2010-report
+        locator: §4.4.2
+    aliases: []
+  - key: fixity-is-property-of-entity
+    name: Fixity as a property of the entity, not the name
+    gloss: 'Treating fixity like a type: attached to the particular binding, so differently imported operators
+      of one name differ.'
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00116
+        source_id: haskell-2010-report
+        locator: §4.4.2
+      - chunk_id: haskell-2010-report#c00115
+        source_id: haskell-2010-report
+        locator: §4.4.2
+    aliases: []
+  - key: default-fixity
+    name: Default fixity for undeclared operators
+    gloss: Fallback precedence and associativity applied to an operator lacking a fixity 
+      declaration.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00115
+        source_id: haskell-2010-report
+        locator: §4.4.2
+      - chunk_id: haskell-2010-report#c00053
+        source_id: haskell-2010-report
+        locator: §3.2
+    aliases: []
+  - key: fixity-resolution-algorithm
+    name: Fixity resolution as a separate pass
+    gloss: Resolving a flat operator-operand sequence into a tree by a specified algorithm after 
+      context-free parsing.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00266
+        source_id: haskell-2010-report
+        locator: §10.6
+      - chunk_id: haskell-2010-report#c00268
+        source_id: haskell-2010-report
+        locator: §10.6
+    aliases: []
+  - key: program-alterable-operator-table
+    name: Program-alterable operator table
+    gloss: Runtime or directive-level mutation of the parser's operator table, letting a program 
+      change its own surface syntax.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: deransart-prolog-1996#c00413
+        source_id: deransart-prolog-1996
+        locator: pp. 136–137
+      - chunk_id: iso-iec-13211-1-1995#c00217
+        source_id: iso-iec-13211-1-1995
+        locator: p. 110
+      - chunk_id: deransart-prolog-1996#c00727
+        source_id: deransart-prolog-1996
+        locator: §8.3
+    aliases:
+      - label: op/3
+        chunk_id: iso-iec-13211-1-1995#c00217
+  - key: operator-specifier-notation
+    name: Operator specifier notation
+    gloss: Compact mnemonic encoding an operator's arity, class and associativity in one symbol such
+      as xfy or yf.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: deransart-prolog-1996#c00737
+        source_id: deransart-prolog-1996
+        locator: §9.2
+      - chunk_id: iso-iec-13211-1-1995#c00045
+        source_id: iso-iec-13211-1-1995
+        locator: pp. 27–28
+    aliases: []
+  - key: operator-class-constraints
+    name: Constraints on coexisting operator classes
+    gloss: Validity rules forbidding, for example, an infix and a postfix operator of the same name 
+      in one table.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-13211-1-1995#c00219
+        source_id: iso-iec-13211-1-1995
+        locator: p. 111
+      - chunk_id: deransart-prolog-1996#c00415
+        source_id: deransart-prolog-1996
+        locator: pp. 137–138
+    aliases: []
+  - key: user-defined-infix-operators
+    name: User-defined infix operators
+    gloss: Letting programs introduce new infix operator names, sometimes via a reserved delimiting 
+      character class.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: r-lang-definition#c00129
+        source_id: r-lang-definition
+        locator: §10.3.4
+      - chunk_id: scott-plp#c00302
+        source_id: scott-plp
+        locator: pp. 318–319
+      - chunk_id: deransart-prolog-1996#c00032
+        source_id: deransart-prolog-1996
+        locator: pp. 21–22
+    aliases:
+      - label: special operators
+        chunk_id: r-lang-definition#c00129
+  - key: symbolic-operator-identifiers
+    name: Operator symbols as a separate identifier class
+    gloss: Lexical class of names formed from symbol characters, usable infix and belonging to its 
+      own namespace.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00041
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: haskell-2010-report#c00042
+        source_id: haskell-2010-report
+        locator: §2.4
+      - chunk_id: ghc-users-guide#c00667
+        source_id: ghc-users-guide
+        locator: §6.4.3
+    aliases: []
+  - key: backquoted-infix-application
+    name: Backquoted infix application
+    gloss: Surface device applying an alphanumeric function name infix by enclosing it in grave 
+      accents.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00053
+        source_id: haskell-2010-report
+        locator: §3.2
+      - chunk_id: ghc-users-guide#c00667
+        source_id: ghc-users-guide
+        locator: §6.4.3
+    aliases: []
+  - key: parenthesized-operator-name
+    name: Parenthesizing an operator to use it prefix
+    gloss: Converting an operator symbol into an ordinary identifier by enclosing it in parentheses.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00053
+        source_id: haskell-2010-report
+        locator: §3.2
+      - chunk_id: ghc-users-guide#c00667
+        source_id: ghc-users-guide
+        locator: §6.4.3
+    aliases: []
+  - key: operator-section
+    name: Operator section
+    gloss: Partially applied binary operator written by omitting one operand inside parentheses, 
+      with its own precedence legality rules.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00057
+        source_id: haskell-2010-report
+        locator: §3.5
+      - chunk_id: ghc-users-guide#c00625
+        source_id: ghc-users-guide
+        locator: §6.2.11
+    aliases:
+      - label: left section
+        chunk_id: haskell-2010-report#c00057
+      - label: right section
+        chunk_id: haskell-2010-report#c00057
+  - key: tuple-section
+    name: Tuple section
+    gloss: Notation partially applying a tuple constructor by leaving argument positions empty 
+      between commas.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00626
+        source_id: ghc-users-guide
+        locator: §6.2.12
+    aliases: []
+  - key: postfix-operator-support
+    name: Postfix operator support
+    gloss: Permitting operators that take their single operand on the left, often by relaxing the 
+      meaning of a left section.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00625
+        source_id: ghc-users-guide
+        locator: §6.2.11
+      - chunk_id: deransart-prolog-1996#c00737
+        source_id: deransart-prolog-1996
+        locator: §9.2
+    aliases: []
+  - key: prefix-negation-special-case
+    name: Prefix negation as a grammatical special case
+    gloss: Treating unary minus specially because its spelling collides with binary subtraction and 
+      with sections.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00056
+        source_id: haskell-2010-report
+        locator: §3.4
+      - chunk_id: haskell-2010-report#c00268
+        source_id: haskell-2010-report
+        locator: §10.6
+      - chunk_id: ecma-334-7th#c00131
+        source_id: ecma-334-7th
+        locator: §6.4
+    aliases: []
+  - key: whitespace-sensitive-operator-parsing
+    name: Whitespace-sensitive operator parsing
+    gloss: Using the presence or absence of surrounding space to decide whether a symbol is prefix 
+      or infix.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00656
+        source_id: ghc-users-guide
+        locator: §6.2.21
+      - chunk_id: r-lang-definition#c00130
+        source_id: r-lang-definition
+        locator: §10.3.5
+    aliases:
+      - label: lexical negation
+        chunk_id: ghc-users-guide#c00656
+  - key: mixfix-operators
+    name: Mixfix operators with argument holes
+    gloss: Operator names containing explicit holes so arguments interleave with name parts, 
+      generalising pre-, post- and infix forms.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: agda-docs-mixfix-operators#c00003
+        source_id: agda-docs-mixfix-operators
+        locator: § Closed, pre-, and postfix operators
+      - chunk_id: vanroy-haridi-2003#c01405
+        source_id: vanroy-haridi-2003
+        locator: pp. 882–883
+      - chunk_id: scott-plp#c00302
+        source_id: scott-plp
+        locator: pp. 318–319
+    aliases:
+      - label: mixfix
+        chunk_id: vanroy-haridi-2003#c01405
+  - key: closed-bracket-operators
+    name: Closed (bracket-like) operators
+    gloss: Operator names whose holes are all interior, forming matched delimiter pairs that need no
+      precedence declaration.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: agda-docs-mixfix-operators#c00003
+        source_id: agda-docs-mixfix-operators
+        locator: § Closed, pre-, and postfix operators
+    aliases: []
+  - key: operator-overloading
+    name: Operator overloading
+    gloss: Giving an existing operator symbol additional meanings for user-defined types, resolved 
+      by operand types.
+    kind_hint: feature
+    origin: seed-term
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00221
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §7
+      - chunk_id: ecma-334-7th#c00349
+        source_id: ecma-334-7th
+        locator: §12.4
+      - chunk_id: sebesta-copl#c00602
+        source_id: sebesta-copl
+        locator: §7.3
+    aliases:
+      - label: redefining built-in operators
+        chunk_id: scott-plp#c00210
+  - key: overloading-preserves-surface-shape
+    name: Overloading cannot change precedence or arity
+    gloss: Restriction that user operator definitions reuse the fixed syntax, precedence, 
+      associativity and operand count of the symbol.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00350
+        source_id: ecma-334-7th
+        locator: §12.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00757
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+    aliases: []
+  - key: overloadable-operator-set
+    name: Fixed set of overloadable operators
+    gloss: Enumerating which operator symbols may be given user meanings and which, such as 
+      assignment or member access, may not.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ecma-334-7th#c00349
+        source_id: ecma-334-7th
+        locator: §12.4
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00757
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+    aliases: []
+  - key: operator-expression-rewriting-to-call
+    name: Rewriting operator expressions to call notation
+    gloss: Specification technique transforming an operator use into an equivalent named function or
+      member call before resolution.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00712
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+      - chunk_id: scott-plp#c00210
+        source_id: scott-plp
+        locator: pp. 224–226
+      - chunk_id: r-lang-definition#c00136
+        source_id: r-lang-definition
+        locator: §10.4.2
+    aliases: []
+  - key: derived-operator-rewriting
+    name: Deriving one operator's meaning from another
+    gloss: Defining some operator spellings as rewrites of others, for example inequality from 
+      equality or compound from simple assignment.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00716
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+      - chunk_id: ecma-334-7th#c00349
+        source_id: ecma-334-7th
+        locator: §12.4
+    aliases: []
+  - key: explicit-operator-function-call
+    name: Calling an operator function explicitly
+    gloss: Naming the operator function directly in ordinary call syntax instead of using the 
+      operator spelling.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00757
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00763
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+    aliases: []
+  - key: prefix-postfix-increment-disambiguation
+    name: Distinguishing prefix and postfix forms of one symbol
+    gloss: Surface device, such as a dummy parameter, letting one operator spelling have separate 
+      prefix and postfix definitions.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00763
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §12
+      - chunk_id: ecma-334-7th#c00350
+        source_id: ecma-334-7th
+        locator: §12.4
+    aliases: []
+  - key: syntactic-sugar
+    name: Syntactic sugar
+    gloss: Surface constructs added for convenience whose meaning is given by translation into 
+      simpler existing constructs.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00101
+        source_id: krishnamurthi-plai
+        locator: p. 72
+      - chunk_id: haskell-2010-report#c00033
+        source_id: haskell-2010-report
+        locator: §1.2
+      - chunk_id: pierce-tapl-2002#c00277
+        source_id: pierce-tapl-2002
+        locator: §11.3.1
+    aliases:
+      - label: derived forms
+        chunk_id: pierce-tapl-2002#c00277
+  - key: desugaring
+    name: Desugaring
+    gloss: The translation removing sugar constructs, a restricted compilation from a surface 
+      language into its core sublanguage.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00101
+        source_id: krishnamurthi-plai
+        locator: p. 72
+      - chunk_id: turbak-gifford-dcpl#c00353
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+      - chunk_id: turbak-gifford-dcpl#c01563
+        source_id: turbak-gifford-dcpl
+        locator: §17.3
+    aliases:
+      - label: desugarer
+        chunk_id: krishnamurthi-plai#c00101
+  - key: kernel-language
+    name: Kernel language
+    gloss: Small core subset in which every other construct can be expressed, used as the basis for 
+      reasoning and semantics.
+    kind_hint: concept
+    origin: seed-term
+    evidence:
+      - chunk_id: haskell-2010-report#c00033
+        source_id: haskell-2010-report
+        locator: §1.2
+      - chunk_id: turbak-gifford-dcpl#c00336
+        source_id: turbak-gifford-dcpl
+        locator: §6.1
+      - chunk_id: vanroy-haridi-2003#c00199
+        source_id: vanroy-haridi-2003
+        locator: §2.5.1
+    aliases:
+      - label: core language
+        chunk_id: krishnamurthi-plai#c00101
+      - label: Haskell kernel
+        chunk_id: haskell-2010-report#c00033
+  - key: kernel-sugar-library-decomposition
+    name: Kernel, sugar and library decomposition
+    gloss: Describing a full language as a kernel plus syntactic sugar plus a standard library, 
+      easing both reasoning and programming.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00336
+        source_id: turbak-gifford-dcpl
+        locator: §6.1
+      - chunk_id: turbak-gifford-dcpl#c00337
+        source_id: turbak-gifford-dcpl
+        locator: §6.1
+    aliases:
+      - label: full language
+        chunk_id: turbak-gifford-dcpl#c00336
+  - key: sugar-must-be-local-transformation
+    name: Sugar restricted to local transformations
+    gloss: Requirement that desugaring use simple local rewrites with no global analysis, keeping it
+      distinct from compilation.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00337
+        source_id: turbak-gifford-dcpl
+        locator: §6.1
+      - chunk_id: turbak-gifford-dcpl#c00353
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+    aliases: []
+  - key: desugaring-contexts
+    name: Desugaring contexts
+    gloss: Restricting where rewrite rules may fire so that, for example, a parameter list is not 
+      mistaken for an application.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00373
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+      - chunk_id: turbak-gifford-dcpl#c00376
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+    aliases: []
+  - key: rewriting-based-desugaring
+    name: Rewriting-based specification of desugaring
+    gloss: Presenting desugaring as one-step rewrite rules with confluence and termination, rather 
+      than a recursive function.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00374
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+      - chunk_id: turbak-gifford-dcpl#c00376
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+    aliases: []
+  - key: equipotent-constructs
+    name: Equipotence of constructs
+    gloss: Relation holding when each of two constructs can be expressed as sugar for the other, so 
+      neither is more primitive.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00368
+        source_id: turbak-gifford-dcpl
+        locator: §6.2.2
+    aliases: []
+  - key: desugaring-diagnostics-problem
+    name: Error reporting across desugaring
+    gloss: Problem that diagnostics phrased in core terms mention constructs the programmer never 
+      wrote, requiring source tracking.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: krishnamurthi-plai#c00101
+        source_id: krishnamurthi-plai
+        locator: p. 72
+      - chunk_id: krishnamurthi-plai#c00047
+        source_id: krishnamurthi-plai
+        locator: p. 27
+    aliases: []
+  - key: translation-identities-in-specification
+    name: Translation identities in a language report
+    gloss: Specification style giving each sugared form's meaning as an equation rewriting it into 
+      kernel syntax.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00057
+        source_id: haskell-2010-report
+        locator: §3.5
+      - chunk_id: haskell-2010-report#c00055
+        source_id: haskell-2010-report
+        locator: §3.3
+      - chunk_id: haskell-2010-report#c00069
+        source_id: haskell-2010-report
+        locator: §3.14
+    aliases: []
+  - key: do-notation-desugaring
+    name: do-notation as sugar for chained binds
+    gloss: Statement-like surface notation for sequenced monadic code defined by translation into 
+      bind and sequencing operators.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: haskell-2010-report#c00069
+        source_id: haskell-2010-report
+        locator: §3.14
+      - chunk_id: turbak-gifford-dcpl#c00628
+        source_id: turbak-gifford-dcpl
+        locator: §8.2.3
+      - chunk_id: ghc-users-guide#c00599
+        source_id: ghc-users-guide
+        locator: §6.2.4
+    aliases: []
+  - key: comprehension-desugaring
+    name: Comprehension notation as sugar
+    gloss: Bracketed generator-and-guard notation whose meaning is given by translation into binds, 
+      guards and library calls.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00612
+        source_id: ghc-users-guide
+        locator: §6.2.8
+      - chunk_id: ghc-users-guide#c00613
+        source_id: ghc-users-guide
+        locator: §6.2.8
+      - chunk_id: krishnamurthi-plai#c00101
+        source_id: krishnamurthi-plai
+        locator: p. 72
+    aliases: []
+  - key: overloaded-literal-and-list-notation
+    name: Overloaded literal and bracket notation
+    gloss: Making built-in literal or list syntax desugar through user-visible conversion functions 
+      so other types can use it.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00616
+        source_id: ghc-users-guide
+        locator: §6.2.9
+      - chunk_id: ghc-users-guide#c00620
+        source_id: ghc-users-guide
+        locator: §6.2.10
+    aliases: []
+  - key: rebindable-syntax
+    name: Rebindable built-in syntax
+    gloss: Letting the functions that built-in notation desugars to be whatever is in scope rather 
+      than fixed library names.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00620
+        source_id: ghc-users-guide
+        locator: §6.2.10
+      - chunk_id: ghc-users-guide#c00621
+        source_id: ghc-users-guide
+        locator: §6.2.10
+    aliases: []
+  - key: punctuators-and-separators
+    name: Punctuators and separators
+    gloss: Token class of symbols with syntactic significance that are not operators, such as 
+      commas, semicolons and arrows.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: c23-n3220#c00204
+        source_id: c23-n3220
+        locator: §6.4.6
+      - chunk_id: jls-se25#c00094
+        source_id: jls-se25
+        locator: §3.11
+      - chunk_id: rust-fls#c00013
+        source_id: rust-fls
+        locator: § 2.2. Lexical Elements, Separators, and Punctuation¶
+    aliases:
+      - label: separators
+        chunk_id: jls-se25#c00094
+      - label: punctuation
+        chunk_id: rust-reference#c00051
+  - key: compound-punctuator-splitting
+    name: Compound punctuators and their splitting
+    gloss: Multi-character punctuators that may, in some contexts, be reread as two adjacent simple 
+      punctuators.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00013
+        source_id: rust-fls
+        locator: § 2.2. Lexical Elements, Separators, and Punctuation¶
+      - chunk_id: rust-fls#c00014
+        source_id: rust-fls
+        locator: § 2.2. Lexical Elements, Separators, and Punctuation¶
+    aliases:
+      - label: flexible compound punctuator
+        chunk_id: rust-fls#c00013
+  - key: delimiter-pairs
+    name: Matched delimiter pairs
+    gloss: Bracket characters that must nest properly, used for grouping expressions, blocks, 
+      indices and token trees.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: rust-fls#c00013
+        source_id: rust-fls
+        locator: § 2.2. Lexical Elements, Separators, and Punctuation¶
+      - chunk_id: go-lang-spec#c00051
+        source_id: go-lang-spec
+        locator: '#Blocks'
+      - chunk_id: rust-reference#c00875
+        source_id: rust-reference
+        locator: pp. 665–666
+    aliases: []
+  - key: alternative-token-spellings
+    name: Alternative token spellings
+    gloss: Secondary spellings of operators and punctuators for restricted character sets, behaving 
+      identically to the primary tokens.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        source_id: iso-iec-14882-cpp20-n4861
+        locator: §5
+      - chunk_id: c23-n3220#c00204
+        source_id: c23-n3220
+        locator: §6.4.6
+      - chunk_id: c23-n3220#c00176
+        source_id: c23-n3220
+        locator: §6.4.1
+    aliases:
+      - label: digraphs
+        chunk_id: c23-n3220#c00204
+      - label: alternate spellings of keywords
+        chunk_id: c23-n3220#c00176
+  - key: unicode-syntax-alternatives
+    name: Unicode alternatives for ASCII token sequences
+    gloss: Allowing single Unicode symbols to stand for multi-character ASCII token spellings.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: ghc-users-guide#c00591
+        source_id: ghc-users-guide
+        locator: §6.2.1
+    aliases: []
+  - key: quoted-atom-or-identifier
+    name: Quoted atoms and quoted identifiers
+    gloss: Quoting device letting a name contain characters or keywords the plain identifier syntax 
+      forbids.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: armstrong-2003-thesis#c00065
+        source_id: armstrong-2003-thesis
+        locator: §3.3.1
+      - chunk_id: ecma-335-6th#c00281
+        source_id: ecma-335-6th
+        locator: pp. 136–137
+      - chunk_id: iso-iec-13211-1-1995#c00050
+        source_id: iso-iec-13211-1-1995
+        locator: p. 30
+    aliases: []
+  - key: clause-terminating-period
+    name: Period as clause terminator
+    gloss: Using a dot token, distinguished from other uses of the character, to end a clause or 
+      read term.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: deransart-prolog-1996#c00032
+        source_id: deransart-prolog-1996
+        locator: pp. 21–22
+      - chunk_id: armstrong-2003-thesis#c00063
+        source_id: armstrong-2003-thesis
+        locator: §3.2
+      - chunk_id: iso-iec-13211-1-1995#c00050
+        source_id: iso-iec-13211-1-1995
+        locator: p. 30
+    aliases:
+      - label: end token
+        chunk_id: iso-iec-13211-1-1995#c00050
+  - key: layout-text-disambiguates-tokens
+    name: Layout text used to disambiguate tokens
+    gloss: Requiring whitespace in specified places to decide questions such as whether a dot ends a
+      term or a name begins a call.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-13211-1-1995#c00050
+        source_id: iso-iec-13211-1-1995
+        locator: p. 30
+      - chunk_id: r-lang-definition#c00130
+        source_id: r-lang-definition
+        locator: §10.3.5
+    aliases:
+      - label: layout text
+        chunk_id: iso-iec-13211-1-1995#c00050
+  - key: character-conversion-table
+    name: Character conversion table
+    gloss: Alterable mapping applied to source characters before tokenizing, letting a program 
+      adjust its own input alphabet.
+    kind_hint: feature
+    origin: corpus
+    evidence:
+      - chunk_id: deransart-prolog-1996#c00727
+        source_id: deransart-prolog-1996
+        locator: §8.3
+      - chunk_id: iso-iec-13211-1-1995#c00084
+        source_id: iso-iec-13211-1-1995
+        locator: p. 44
+    aliases:
+      - label: char_conversion/2
+        chunk_id: iso-iec-13211-1-1995#c00084
+  - key: abstract-syntax-as-semantic-basis
+    name: Abstract syntax as the basis of equivalence
+    gloss: Position that distinct token sequences with the same abstract reading mean the same 
+      thing, as in term-based languages.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: iso-iec-13211-1-1995#c00036
+        source_id: iso-iec-13211-1-1995
+        locator: pp. 22–23
+      - chunk_id: kaijanaho-2015#c00057
+        source_id: kaijanaho-2015
+        locator: §2.3
+    aliases: []
+  - key: syntax-design-for-readability
+    name: Syntax design for readability
+    gloss: Evaluating surface choices such as special words and statement grouping by how legible 
+      the resulting programs are.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: sebesta-copl#c00056
+        source_id: sebesta-copl
+        locator: §1.3.1
+      - chunk_id: sebesta-copl#c00057
+        source_id: sebesta-copl
+        locator: §1.3.1
+    aliases: []
+  - key: form-mirrors-content
+    name: Form mirrors content principle
+    gloss: Design principle that syntactic differences should track semantic ones and surface order 
+      should reflect evaluation order.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00946
+        source_id: vanroy-haridi-2003
+        locator: §7.5.4
+      - chunk_id: sebesta-copl#c00057
+        source_id: sebesta-copl
+        locator: §1.3.1
+    aliases: []
+  - key: uniform-syntax-tradeoff
+    name: Trade-off of a uniform syntax
+    gloss: Claim that making every construct share one surface form shifts richness into names and 
+      can hurt rather than help reading.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: vanroy-haridi-2003#c00946
+        source_id: vanroy-haridi-2003
+        locator: §7.5.4
+      - chunk_id: turbak-gifford-dcpl#c00059
+        source_id: turbak-gifford-dcpl
+        locator: §2.2
+    aliases: []
+  - key: syntactic-orthogonality
+    name: Syntactic orthogonality
+    gloss: Degree to which surface constructs combine freely without special cases, as pursued by 
+      expression-oriented designs.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: scott-plp#c00313
+        source_id: scott-plp
+        locator: pp. 329–330
+      - chunk_id: sebesta-copl#c00052
+        source_id: sebesta-copl
+        locator: §1.3.1
+      - chunk_id: sebesta-copl#c00059
+        source_id: sebesta-copl
+        locator: §1.3.2
+    aliases: []
+  - key: syntax-versus-semantics-emphasis
+    name: Relative weight of syntax in language study
+    gloss: Methodological stance that surface form, though necessary, has historically absorbed 
+      attention disproportionate to semantics.
+    kind_hint: concept
+    origin: corpus
+    evidence:
+      - chunk_id: turbak-gifford-dcpl#c00053
+        source_id: turbak-gifford-dcpl
+        locator: p. 44
+      - chunk_id: turbak-gifford-dcpl#c00054
+        source_id: turbak-gifford-dcpl
+        locator: pp. 44–45
+    aliases: []
+unevidenced:
+  - key: source-encoding-declaration
+    name: Source file encoding declaration
+    gloss: In-file comment or directive declaring the byte encoding of the source file so the lexer 
+      can decode it.
+    origin: prior
+    search_hint: "PEP 263 'Defining Python Source Code Encodings'; also the encoding comment convention
+      in Ruby and Emacs coding cookies. [developer drop: PEP 263/Ruby/Emacs coding-cookie convention;
+      no source registered this cycle. Left for a future cycle.]"
+    disposition: dropped
+  - key: trigraph-sequences
+    name: Trigraph sequences
+    gloss: Three-character spellings replaced in an early translation phase to represent punctuators
+      absent from some character sets.
+    origin: prior
+    search_hint: 'ISO/IEC 9899:1999 §5.2.1.1 Trigraph sequences, and WG14 N2940 proposal removing trigraphs
+      in C23. [developer drop: iso-iec-9899-1999-n1256 and wg14-n897-c-rationale are both ingested but
+      retrieval did not surface matching passages after multiple rounds. Left for a future cycle.]'
+    disposition: dropped
+  - key: shebang-line
+    name: Interpreter directive (shebang) line
+    gloss: A first line beginning with a hash-bang that the operating system reads and the language 
+      lexer treats as a comment.
+    origin: prior
+    search_hint: "POSIX execve rationale on '#!'; Rust reference section 'Shebang'; Python PEP 394 discussion
+      of script invocation. [developer drop: POSIX/Rust/PEP 394 shebang convention; no source registered
+      this cycle. Left for a future cycle.]"
+    disposition: dropped
+  - key: off-side-rule-origin
+    name: Original statement of the off-side rule
+    gloss: The formulation of indentation-based grouping as a general principle for programming 
+      notation.
+    origin: prior
+    search_hint: "Landin, P. J. (1966) 'The Next 700 Programming Languages', CACM 9(3), the section introducing
+      the off-side rule. [developer drop: landin-1966-next-700 is ingested but retrieval did not surface
+      the off-side-rule passage after multiple rounds. Left for a future cycle.]"
+    disposition: dropped
+  - key: whitespace-sensitive-operator-proposal
+    name: Whitespace-sensitive operator parsing proposal
+    gloss: A worked-out design making token spacing decide operator fixity across a whole language 
+      rather than one construct.
+    origin: prior
+    search_hint: "GHC Proposal #229 'Whitespace-sensitive ! and prefix operators' in the ghc-proposals
+      repository. [developer drop: GHC Proposal #229; no source registered this cycle. Left for a future
+      cycle.]"
+    disposition: dropped
+theme_amendments:
+  - op: edit
+    slug: syntax-layer-constructs
+    seed_terms:
+      - punctuators and separators
+      - matched delimiter pairs
+      - compound punctuator splitting
+      - parse tree versus derivation
+      - alternative token spellings and digraphs
+      - quoted atoms and quoted identifiers
+      - character conversion tables
+      - literate source conventions
+    rationale: Several corpus sources (C, Java, Rust FLS, Rust reference) devote dedicated sections 
+      to punctuators/separators/delimiter pairs and to compound-punctuator splitting, and textbooks 
+      (Sebesta, Scott) define parse trees and derivations as distinct from abstract syntax trees. 
+      Neither notion is named in the current seed list, yet both are substantively defined within 
+      this theme's literature.
+    status: rejected
+scouting: []
