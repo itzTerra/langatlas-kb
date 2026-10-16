@@ -175,6 +175,15 @@ def _bind_challenges(out: ChallengerOut, *, lookup: ChunkLookup, key: str) -> li
     return bound
 
 
+def _clean_revision(revision: dict | None, entry: dict) -> dict | None:
+    """Drop what a revision may not touch, so a moderator's stray identity or evidence field
+    costs the field and not the whole debate. `_check_revision` remains the backstop."""
+    if not revision:
+        return revision
+    return {field: value for field, value in revision.items()
+            if field in _REVISABLE and field in entry}
+
+
 def _check_revision(revision: dict, entry: dict) -> None:
     unknown = sorted(set(revision) - set(entry))
     if unknown:
@@ -325,6 +334,7 @@ def run_debate(ctx, cycle: Cycle, plan: dict, key: str, *, repo_root: Path | Non
         raise DebateIncomplete(f"{key}: {len(messages)} messages exceeds the configured cap"
                                f" of {debate_config.max_messages} (§7.2)")
 
+    revision = _clean_revision(verdict.revision, entry)
     record = {
         "id": next_debate_id(cycle.slug, repo_root=repo_root), "cycle": cycle.number,
         "theme": cycle.theme, "target": {"list": list_name, "key": key},
@@ -342,7 +352,7 @@ def run_debate(ctx, cycle: Cycle, plan: dict, key: str, *, repo_root: Path | Non
             "rationale": verdict.rationale},
     }
     record["resolution"]["rounds"] = rounds(record)
-    for field, value in (("revision", verdict.revision),
+    for field, value in (("revision", revision),
                          ("merge_into", verdict.merge_into),
                          ("drop_reason", verdict.drop_reason),
                          ("structure_element", verdict.structure_element)):

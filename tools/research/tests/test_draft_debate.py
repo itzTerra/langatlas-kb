@@ -149,10 +149,13 @@ def test_a_revision_may_not_smuggle_in_model_typed_evidence(
          "revision": {"summary": "Narrower.",
                       "evidence": [{"source": "made-up-source", "locator": "p. 1"}]}}))
     _script(fake_ctx, challenges_a=[], challenges_b=[], moderator=None)
-    with pytest.raises(DebateIncomplete):
-        run_debate(fake_ctx, signed_cycle, plan, "static-typing", repo_root=research_repo,
-                   config=config, lookup=fake_lookup, moderator_ctx=moderator_ctx,
-                   prompts=prompts)
+    before = find_entry(plan, "static-typing")[1]["evidence"]
+    updated, debate = run_debate(fake_ctx, signed_cycle, plan, "static-typing",
+                                 repo_root=research_repo, config=config, lookup=fake_lookup,
+                                 moderator_ctx=moderator_ctx, prompts=prompts)
+    entry = find_entry(updated, "static-typing")[1]
+    assert entry["summary"] == "Narrower." and entry["evidence"] == before
+    assert debate["resolution"]["revision"] == {"summary": "Narrower."}
 
 
 def test_a_drop_disposition_drops_the_carve(
