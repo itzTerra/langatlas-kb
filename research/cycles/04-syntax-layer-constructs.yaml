@@ -1,7 +1,7 @@
 cycle: 4
 theme: syntax-layer-constructs
 theme_digest: 356863098e13a19f
-status: signed-off
+status: r3-done
 languages:
   - c
   - java
@@ -9,7 +9,8 @@ languages:
   - haskell
   - erlang
 nodes_minted: []
-artifacts: {}
+artifacts:
+  survey: research/surveys/04-syntax-layer-constructs.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-10-14'
