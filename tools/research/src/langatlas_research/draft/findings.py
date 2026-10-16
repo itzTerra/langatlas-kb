@@ -24,11 +24,14 @@ class FindingOut(BaseModel):
 
     @model_validator(mode="after")
     def _only_friction_is_classified(self):
+        """A stray `area` / `element` on another kind is dropped: it means nothing there, and
+        refusing the whole role output over it throws away a full run."""
         friction = self.kind == "structure-friction"
         if friction and (self.area is None or self.element is None):
             raise ValueError("a structure-friction finding needs `area` and `element`")
-        if not friction and (self.area is not None or self.element is not None):
-            raise ValueError("only a structure-friction finding carries `area` / `element`")
+        if not friction:
+            self.area = None
+            self.element = None
         return self
 
     def as_entry(self) -> dict:

@@ -15,9 +15,9 @@ def test_a_friction_finding_must_name_its_area_and_element():
         FindingOut(kind="structure-friction", detail="d", area="ontology")
 
 
-def test_only_a_friction_finding_may_carry_area_or_element():
-    with pytest.raises(ValidationError):
-        FindingOut(kind="rule-candidate", detail="d", area="ontology")
+def test_only_a_friction_finding_keeps_area_or_element():
+    finding = FindingOut(kind="rule-candidate", detail="d", area="ontology", element="other")
+    assert finding.as_entry() == {"kind": "rule-candidate", "detail": "d", "keys": []}
 
 
 def test_an_element_outside_the_closed_vocabulary_is_refused():
