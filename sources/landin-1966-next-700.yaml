@@ -1,0 +1,15 @@
+id: landin-1966-next-700
+type: article-journal
+title: The next 700 programming languages
+author:
+  - family: Landin
+    given: Peter J.
+issued:
+  date-parts:
+    -   - 1966
+URL: https://dl.acm.org/doi/10.1145/365230.365257
+DOI: 10.1145/365230.365257
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

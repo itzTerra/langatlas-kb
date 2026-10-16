@@ -1,0 +1,15 @@
+id: visser-1997-sdf2
+type: book
+title: Syntax Definition for Language Prototyping
+author:
+  - family: Visser
+    given: Eelco
+issued:
+  date-parts:
+    -   - 1997
+URL: https://eelcovisser.org/post/167/syntax-definition-for-language-prototyping/
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: Author's personal site returned 404 to automated fetch; PDF supplied by the 
+    developer.

@@ -1,0 +1,14 @@
+id: wg14-n897-c-rationale
+type: report
+title: Rationale for International Standard — Programming Languages — C, Revision 5.10 (WG14 N897)
+author:
+  - family: ISO/IEC JTC1/SC22/WG14
+    given: ''
+issued:
+  date-parts:
+    -   - 2003
+URL: https://www.open-std.org/jtc1/sc22/wg14/www/C99RationaleV5.10.pdf
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true

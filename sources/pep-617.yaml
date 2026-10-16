@@ -1,0 +1,18 @@
+id: pep-617
+type: report
+title: PEP 617 – New PEG parser for CPython
+author:
+  - family: van Rossum
+    given: Guido
+  - family: Galindo Salgado
+    given: Pablo
+  - family: Nikolaou
+    given: Lysandros
+issued:
+  date-parts:
+    -   - 2020
+URL: https://peps.python.org/pep-0617/
+custom:
+  tier: B
+  grounding: design-doc
+  canonical_source: true

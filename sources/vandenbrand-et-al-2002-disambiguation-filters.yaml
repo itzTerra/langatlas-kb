@@ -1,0 +1,22 @@
+id: vandenbrand-et-al-2002-disambiguation-filters
+type: paper-conference
+title: Disambiguation Filters for Scannerless Generalized LR Parsers
+author:
+  - family: van den Brand
+    given: Mark G. J.
+  - family: Scheerder
+    given: Jeroen
+  - family: Vinju
+    given: Jurgen J.
+  - family: Visser
+    given: Eelco
+issued:
+  date-parts:
+    -   - 2002
+URL: https://link.springer.com/chapter/10.1007/3-540-45937-5_12
+DOI: 10.1007/3-540-45937-5_12
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: Springer LNCS chapter page served only a thin extract (QA warn); full text 
+    accessed via the same page.

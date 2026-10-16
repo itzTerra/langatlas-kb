@@ -1,0 +1,17 @@
+id: kats-visser-2010-spoofax
+type: paper-conference
+title: 'The Spoofax language workbench: rules for declarative specification of languages and IDEs'
+author:
+  - family: Kats
+    given: Lennart C. L.
+  - family: Visser
+    given: Eelco
+issued:
+  date-parts:
+    -   - 2010
+URL: https://dl.acm.org/doi/10.1145/1869459.1869497
+DOI: 10.1145/1869459.1869497
+custom:
+  tier: A
+  grounding: reference-implementation-docs
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

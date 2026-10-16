@@ -1,0 +1,16 @@
+id: iso-iec-646-1991
+type: standard
+title: ISO/IEC 646:1991 — Information technology — ISO 7-bit coded character set for information 
+  interchange
+author:
+  - family: International Organization for Standardization
+    given: ''
+issued:
+  date-parts:
+    -   - 1991
+URL: https://www.iso.org/standard/4777.html
+custom:
+  tier: A
+  grounding: formal-spec
+  acquisition_note: ISO's own page blocks automated fetches (403) and the standard is paywalled; PDF
+    supplied by the developer.

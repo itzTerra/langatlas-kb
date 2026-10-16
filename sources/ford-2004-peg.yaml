@@ -1,0 +1,15 @@
+id: ford-2004-peg
+type: paper-conference
+title: 'Parsing expression grammars: a recognition-based syntactic foundation'
+author:
+  - family: Ford
+    given: Bryan
+issued:
+  date-parts:
+    -   - 2004
+URL: https://dl.acm.org/doi/10.1145/964001.964011
+DOI: 10.1145/964001.964011
+custom:
+  tier: A
+  grounding: third-party-reference
+  acquisition_note: ACM paywall (403 to automated fetch); PDF supplied by the developer.

@@ -1,0 +1,14 @@
+id: ecma-262-16th
+type: standard
+title: 'ECMA-262: ECMAScript 2025 Language Specification, 16th edition'
+author:
+  - family: Ecma International
+    given: ''
+issued:
+  date-parts:
+    -   - 2025
+URL: https://tc39.es/ecma262/
+custom:
+  tier: A
+  grounding: formal-spec
+  canonical_source: true
