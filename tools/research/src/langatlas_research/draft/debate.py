@@ -360,7 +360,7 @@ def run_debate(ctx, cycle: Cycle, plan: dict, key: str, *, repo_root: Path | Non
             record["resolution"][field] = value
     if verdict.split_into:
         record["resolution"]["split_into"] = [
-            _split_entry(item, lookup=lookup, debate_id=record["id"])
+            _split_entry(item, lookup=lookup, debate_id=record["id"], parent=entry)
             for item in verdict.split_into]
     if verdict.contradiction:
         record["resolution"]["contradiction"] = verdict.contradiction.model_dump()
@@ -382,16 +382,19 @@ def add_debate_friction(plan: dict, debate: dict) -> dict:
     return {**plan, "findings": [*(plan.get("findings") or []), finding]}
 
 
-def _split_entry(item: SplitOut, *, lookup: ChunkLookup, debate_id: str) -> dict:
+def _split_entry(item: SplitOut, *, lookup: ChunkLookup, debate_id: str,
+                 parent: dict) -> dict:
     """A replacement carve, in plan shape. It arrives already debated: the debate that
-    produced it is the one that scrutinised it."""
+    produced it is the one that scrutinised it. A feature that names no layer takes the
+    carve it replaces."""
     evidence, _warnings = bind_evidence(item.evidence, lookup=lookup, what=item.key)
     entry = {"key": item.key, "from_candidates": list(item.from_candidates or [item.key]),
              "kind": item.kind, "id": item.id, "name": item.name, "summary": item.summary,
              "evidence": evidence, "contested": [], "debate_id": debate_id,
              "status": "debated", "verification": None, "note": item.note}
     if item.kind == "feature":
-        entry.update({"layer": item.layer, "dimension": item.dimension,
+        entry.update({"layer": item.layer if item.layer is not None else parent.get("layer"),
+                      "dimension": item.dimension,
                       "cross_cutting": item.cross_cutting, "aliases": list(item.aliases),
                       "realizes": list(item.realizes)})
     return entry

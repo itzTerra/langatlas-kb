@@ -204,6 +204,31 @@ def test_a_split_adds_the_replacement_carves_and_drops_the_original(
     assert debate["resolution"]["standing_dissent"] is True
 
 
+def test_a_split_feature_without_a_layer_takes_the_original_carves_layer(
+        fake_ctx, research_repo, signed_cycle, plan, config, prompts, fake_lookup):
+    moderator_ctx = type(fake_ctx)(run_id="mod-1")
+    moderator_ctx.claude_results.append(_result(
+        {"disposition": "split", "standing_dissent": False,
+         "upheld_challenges": ["wrong-atomization"], "rationale": "two ideas",
+         "split_into": [
+             {"key": "static-checking", "id": "static-checking", "kind": "feature",
+              "name": "Static checking", "summary": "Checked before the run.",
+              "from_candidates": ["static-typing"],
+              "evidence": [{"chunk_id": "scott-plp#c00310"}]},
+             {"key": "type-checking", "id": "type-checking", "kind": "concept",
+              "name": "Type checking", "summary": "Deciding whether a program is well typed.",
+              "from_candidates": ["type-checking"],
+              "evidence": [{"chunk_id": "pierce-tapl-2002#c00022"}]}]}))
+    _script(fake_ctx, challenges_a=[], challenges_b=[], moderator=None)
+
+    updated, _debate = run_debate(fake_ctx, signed_cycle, plan, "static-typing",
+                                  repo_root=research_repo, config=config, lookup=fake_lookup,
+                                  moderator_ctx=moderator_ctx, prompts=prompts)
+
+    original_layer = find_entry(plan, "static-typing")[1]["layer"]
+    assert find_entry(updated, "static-checking")[1]["layer"] == original_layer
+
+
 def test_the_moderator_never_sees_the_debates_own_session(
         fake_ctx, research_repo, signed_cycle, plan, config, prompts, fake_lookup):
     moderator_ctx = type(fake_ctx)(run_id="mod-1")
