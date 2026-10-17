@@ -66,7 +66,7 @@ draft:
     max_candidates: 60              # edges accepted from one run
   debate:
     max_messages: 6                 # §7.2's hard cap on a debate's message list
-    max_debates_per_cycle: 12       # cost bound; a waiver is the developer's, never an agent's
+    max_debates_per_cycle: 25       # cost bound; a waiver is the developer's, never an agent's
     personas:
       # Mild and real (§7.2) — no engineered biases. Configuration, so a theme can field
       # challengers who know its literature.
