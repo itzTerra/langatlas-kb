@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 from langatlas_research.cycle import CYCLE_STATUSES, advance, load_cycle, new_cycle, save_cycle, sign_off
-from langatlas_research.errors import ResearchError
+from langatlas_research.errors import DebateIncomplete, ResearchError
 from langatlas_research.paths import REPO_ROOT, ensure_layout
 from langatlas_research.rotation import plan_languages
 from langatlas_research.schema import validate_research_tree
@@ -529,36 +529,43 @@ def _dispatch_draft_online(args, cycle, repo: Path) -> int:
                       f" debate the most contested carves and waive the rest",
                       file=sys.stderr)
                 return 1
+            failed = 0
             for key in keys:
-                debate_id = None
-                with RunContext.start(kind="r4-debate", slug=f"{cycle.slug}-{key}",
-                                      budget=role_budget(config.draft.debate.proposer),
-                                      agents=[{"role": "proposer"},
-                                              {"role": "challenger-a"},
-                                              {"role": "challenger-b"}]) as ctx:
-                    servers, tools = ontologist_tools(ctx, conn)
-                    with RunContext.start(kind="r4-moderator",
-                                          slug=f"{cycle.slug}-{key}",
-                                          budget=role_budget(
-                                              config.draft.debate.moderator),
-                                          agents=[{"role": "moderator"}]) as moderator_ctx:
-                        plan, debate = run_debate(ctx, cycle, plan, key, repo_root=repo,
-                                                  config=config, lookup=lookup,
-                                                  moderator_ctx=moderator_ctx,
-                                                  mcp_servers=servers, allowed_tools=tools)
-                        debate_id = debate["id"]
-                        # Both contexts carry the debate id so the transcripts join up.
-                        ctx.manifest.debate_id = debate_id
-                        moderator_ctx.manifest.debate_id = debate_id
-                contradiction = (None if not mint_open(repo)
-                                 else mint_debate_contradiction(debate, repo_root=repo))
-                save_plan(plan, repo_root=repo)
-                resolution = debate["resolution"]
-                print(f"{debate_id}  {key}: {resolution['disposition']} ->"
-                      f" {resolution['outcome']}"
-                      f"{' (standing dissent)' if resolution['standing_dissent'] else ''}"
-                      f"{' contradiction ' + contradiction if contradiction else ''}")
-            return 0
+                try:
+                    debate_id = None
+                    with RunContext.start(kind="r4-debate", slug=f"{cycle.slug}-{key}",
+                                          budget=role_budget(config.draft.debate.proposer),
+                                          agents=[{"role": "proposer"},
+                                                  {"role": "challenger-a"},
+                                                  {"role": "challenger-b"}]) as ctx:
+                        servers, tools = ontologist_tools(ctx, conn)
+                        with RunContext.start(kind="r4-moderator",
+                                              slug=f"{cycle.slug}-{key}",
+                                              budget=role_budget(
+                                                  config.draft.debate.moderator),
+                                              agents=[{"role": "moderator"}]) as moderator_ctx:
+                            plan, debate = run_debate(ctx, cycle, plan, key, repo_root=repo,
+                                                      config=config, lookup=lookup,
+                                                      moderator_ctx=moderator_ctx,
+                                                      mcp_servers=servers, allowed_tools=tools)
+                            debate_id = debate["id"]
+                            # Both contexts carry the debate id so the transcripts join up.
+                            ctx.manifest.debate_id = debate_id
+                            moderator_ctx.manifest.debate_id = debate_id
+                    contradiction = (None if not mint_open(repo)
+                                     else mint_debate_contradiction(debate, repo_root=repo))
+                    save_plan(plan, repo_root=repo)
+                    resolution = debate["resolution"]
+                    print(f"{debate_id}  {key}: {resolution['disposition']} ->"
+                          f" {resolution['outcome']}"
+                          f"{' (standing dissent)' if resolution['standing_dissent'] else ''}"
+                          f"{' contradiction ' + contradiction if contradiction else ''}")
+                except DebateIncomplete as exc:
+                    # One carve's unusable ruling must not strand the independent debates
+                    # behind it; the carve stays open and the run exits non-zero.
+                    print(f"error: {exc}", file=sys.stderr)
+                    failed += 1
+            return 1 if failed else 0
 
         if args.draft_command == "verify":
             from langatlas_research.draft.gate import verify_plan
