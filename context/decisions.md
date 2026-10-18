@@ -2416,6 +2416,16 @@ schema (the `provenance` block, fact-id scheme, instance-level fields) never cha
 effect of an ontology review. Evidence that adjacent changes can be beneficial: D66 and D67 were
 corrections needed after ratification, and open topics 58 and 64 are unresolved adjacent gaps.
 
+### D71. R4 debate spend is bounded: a lone `single-source` is advisory, and the draft-only batch skips debates
+
+*[developer 2026-10-18 — ratified: the cost of debating cycles 1–4 does not fit Claude Pro.]*
+A lone `single-source` trigger no longer makes a carve contested (it still counts beside another
+trigger); the D24 verifier already gates each claim on its citations. In the draft-only batch
+(D70) cycles 2–4 run the ontologist and edge drafter only and waive their contested carves, since
+the batch is re-atomized after the structure review. After the review, debates cover carves with a
+structural trigger. The per-cycle cap is 25 (`max_debates_per_cycle`), and proposer and challengers
+may run on a cheaper model than the moderator.
+
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 
 1. **K1 Citation laundering** — mitigated by D4; extra load-bearing now that there is no human

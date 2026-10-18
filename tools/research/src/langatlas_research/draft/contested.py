@@ -15,6 +15,10 @@ from langatlas_research.draft.structure import is_blocked
 TRIGGERS = ("merged-candidates", "split-candidate", "new-dimension", "new-quality",
             "single-source", "id-collision", "ontologist-flagged")
 
+# A lone `single-source` is advisory: it costs a debate on nearly every edge, and the D24
+# verifier already gates each claim on its citations. It still counts beside another trigger.
+_ADVISORY = "single-source"
+
 _ORDER = {trigger: index for index, trigger in enumerate(TRIGGERS)}
 
 # An entry in one of these states is settled: it is in git, or it will never be. Recomputing
@@ -83,7 +87,7 @@ def contested_triggers(plan: dict, *, repo_root: Path | None = None,
             flag(key, "new-quality")
 
     return {key: tuple(sorted(triggers, key=_ORDER.__getitem__))
-            for key, triggers in sorted(found.items())}
+            for key, triggers in sorted(found.items()) if triggers != {_ADVISORY}}
 
 
 def mark_contested(plan: dict, *, repo_root: Path | None = None, store=None) -> dict:

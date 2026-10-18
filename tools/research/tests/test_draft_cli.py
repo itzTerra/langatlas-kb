@@ -18,10 +18,10 @@ def _plan(cycle, repo, nodes):
 
 
 def test_draft_contested_lists_triggers(research_repo, signed_cycle, capsys):
-    _plan(signed_cycle, research_repo, [_node()])
+    _plan(signed_cycle, research_repo, [_node(contested=["ontologist-flagged"])])
     assert main(["--repo-root", str(research_repo), "draft", "contested", "1"]) == 0
     out = capsys.readouterr().out
-    assert "type-system" in out and "single-source" in out
+    assert "type-system" in out and "ontologist-flagged" in out and "single-source" in out
 
 
 def test_draft_waive_records_the_reason(research_repo, signed_cycle, capsys):

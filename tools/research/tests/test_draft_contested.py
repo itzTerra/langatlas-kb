@@ -60,10 +60,17 @@ def test_a_node_leaning_on_a_dimension_this_plan_invents_is_contested(signed_cyc
     assert "new-dimension" in triggers["n"] and "new-dimension" in triggers["d"]
 
 
-def test_a_single_source_carve_is_contested(signed_cycle):
+def test_a_lone_single_source_trigger_is_advisory(signed_cycle):
     plan = _plan(signed_cycle, nodes=[_node("n", evidence=[{"source": "a", "locator": "§1"},
                                                            {"source": "a", "locator": "§9"}])])
-    assert contested_triggers(plan, store=EMPTY_STORE)["n"] == ("single-source",)
+    assert "n" not in contested_triggers(plan, store=EMPTY_STORE)
+
+
+def test_single_source_still_counts_beside_another_trigger(signed_cycle):
+    plan = _plan(signed_cycle, nodes=[_node("n", contested=["ontologist-flagged"],
+                                            evidence=[{"source": "a", "locator": "§1"}])])
+    assert contested_triggers(plan, store=EMPTY_STORE)["n"] == (
+        "single-source", "ontologist-flagged")
 
 
 def test_an_id_that_collides_with_a_committed_node_is_contested(signed_cycle):
