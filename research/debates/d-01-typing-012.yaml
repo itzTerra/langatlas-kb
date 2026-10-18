@@ -1,0 +1,316 @@
+id: d-01-typing-012
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: structural-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-structural-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-structural-typing-01
+triggers:
+  - split-candidate
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: structural-typing
+  from_candidates:
+    - structural-vs-nominal-typing
+  kind: feature
+  id: structural-typing
+  name: Structural Typing
+  summary: A discipline in which subtyping and type equivalence are decided by comparing the shape 
+    of type definitions, independent of any declared name.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §19.3
+      chunk_id: pierce-tapl-2002#c00525
+    - source: pierce-attapl-2004
+      locator: §8.2
+      chunk_id: pierce-attapl-2004#c00459
+      quote: Structural matching is based entirely on the requirements imposed by the signature, 
+        without requiring any declarations.
+  contested:
+    - split-candidate
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: Split out of the survey's single structural-vs-nominal-typing candidate into its own feature
+    node so it can stand as one value of the axis.
+  dimension: structural-vs-nominal-typing
+  cross_cutting: false
+  aliases:
+    - structural subtype relation
+  realizes:
+    - subtyping
+    - type-equivalence
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `structural-typing`**\n\nThe carve's defining criterion — \"subtyping and
+      type equivalence are decided by comparing the shape of type definitions, independent of any declared
+      name\" — is not a paraphrase invented for this ontology; it is close to verbatim from the source
+      that coined the terminology for exactly this axis:\n\n> \"Type systems like Java's, in which names
+      are significant and subtyping is explicitly declared, are called *nominal*. Type systems like most
+      of the ones in this book, in which names are inessential and subtyping is defined directly on the
+      structures of types are called *structural*.\" [pierce-tapl-2002#c00525]\n\nThree things follow
+      directly from this passage and support the carve as drafted:\n\n1. **The dimension is real and binary,
+      independently attested.** Pierce treats *nominal* and *structural* as two named disciplines, not
+      as a single scalar property described once. This licenses exactly the move the carve note describes:
+      splitting the survey's one `structural-vs-nominal-typing` candidate into standalone feature nodes,
+      one per value of the axis, with `dimension: structural-vs-nominal-typing` retained as the connecting
+      metadata. The split is not an artifact of this ontology's taste — Krishnamurthi independently gives
+      the same two-way split with the same name, \"structural typing\" ([krishnamurthi-plai#c00235]),
+      applied concretely to a record/method-signature comparison (`{size : (-> int)}`) that is judged
+      by shape alone, matching objects with no declared relationship — exactly the \"independent of any
+      declared name\" criterion in the summary.\n\n2. **The `realizes: [subtyping, type-equivalence]`
+      link is justified by the sources, not inflated.** Pierce's own passage covers subtyping (\"subtyping
+      is defined directly on the structures of types\"). Scott (scott-plp pp. 445–448) independently shows
+      the identical shape-vs-name criterion governing *type equivalence* specifically: \"Under structural
+      equivalence, all six of the variables shown have the same type... Both structural and name equivalence
+      can be tricky to implement...\" [scott-plp#c00423], and Sebesta frames it as one of the two textbook
+      approaches to defining type equivalence generally, \"Structure type equivalence means that two variables
+      have equivalent types if their types have identical structures\" [sebesta-copl#c00562]. So the same
+      structural-matching discipline is attested, by three independent authors, as cutting across *both*
+      subtyping and type-equivalence judgments — a single feature with two realizes-targets is the economical,
+      evidence-backed representation, not two separate nodes forced together.\n\n3. **The ATTAPL quote
+      nails the \"no declarations required\" framing.** \"Structural matching is based entirely on the
+      requirements imposed by the signature, without requiring any declarations\" (pierce-attapl-2004
+      §8.2) is precisely the duck-typing-adjacent behavioral criterion the summary states, and distinguishes
+      it cleanly from the nominal pole, where Krishnamurthi shows Java rejecting a structurally-identical
+      `empty` class purely because it wasn't declared as `mt` [krishnamurthi-plai#c00234] — the negative
+      case that confirms what structural typing is defined in contrast to.\n\nThe node's `layer: 3` placement
+      is also consistent with the evidence: structural typing is never presented in these sources as a
+      primitive concept in its own right, but as a *discipline realizing* the more fundamental notions
+      of subtyping and type equivalence (Pierce treats it as a modifier on an existing subtype-relation
+      machinery already built in Ch. 15–19; Sebesta treats it as one answer to the prior, more general
+      question \"how is type equivalence defined\").\n\nI'd flag one thing for the moderator rather than
+      let a challenger raise it first: Scott's distinction between \"structural equivalence\" and \"name
+      equivalence\" is presented as a question about *type equivalence specifically*, separate from his
+      subtyping discussion — so a fair challenge would be \"should type-equivalence-structural and subtyping-structural
+      be split further?\" I'd resist that split: Pierce's definitional passage (§19.3), which is the terminological
+      anchor for \"structural typing\" as a term of art, explicitly bundles both under one discipline
+      name, and no source in this set treats \"structural type equivalence\" and \"structural subtyping\"\
+      \ as independently nameable features — they are one discipline applied to two judgments, which is
+      exactly what `realizes: [subtyping, type-equivalence]` encodes.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "Reviewed the sourcing behind `structural-typing`'s `realizes: [subtyping, type-equivalence]`
+      link. One technical objection stands; everything else about the carve (the binary nominal/structural
+      axis itself, the layer-3 \"discipline over a prior relation\" framing, the no-declaration criterion)
+      is well attested and I don't contest it."
+    challenges:
+      - type: wrong-atomization
+        text: "The node treats 'comparing shape to decide subtyping' and 'comparing shape to decide type
+          equivalence' as one discipline with two realizes-targets, but the sources never unify these
+          as the same mechanism — they describe two different kinds of relations in two non-overlapping
+          traditions. Pierce's §19.3 definition, the terminological anchor cited for this node, is stated
+          purely in terms of subtyping: 'the subtype relation is now defined between type names... subtyping
+          is defined directly on the structures of types' [pierce-tapl-2002#c00525]. It never mentions
+          equivalence. Sebesta's §6.15, by contrast, is stated purely in terms of equivalence, explicitly
+          in languages/contexts where coercion/compatibility rather than subsumption is the issue: 'Structure
+          type equivalence means that two variables have equivalent types if their types have identical
+          structures' [sebesta-copl#c00562], and Scott frames it the same way as a symmetric sameness
+          judgment on aliased declarations with no subtype relation in sight: 'Under structural equivalence,
+          all six of the variables shown have the same type' [scott-plp#c00423]. Subtyping is a preorder
+          (reflexive+transitive, generally non-symmetric — this is exactly what licenses width/depth subtyping
+          on records, e.g. {x:Nat,y:Nat} <: {x:Nat} without the reverse, pierce-tapl-2002#c00385/c00386);
+          type equivalence as Sebesta and Scott define it is a symmetric sameness relation with no subsumption
+          at all. These aren't two applications of one shape-comparison rule to two 'judgments' — they're
+          structurally different relations (preorder vs. equivalence) that no cited source applies interchangeably.
+          Bundling them under one feature node via `realizes` manufactures a unity the sources don't assert:
+          Pierce's chapter never reaches for equivalence, and Sebesta/Scott's chapter never reaches for
+          subtyping or subsumption."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "No challenge. The carve holds up against the corpus.\n\nThe dimension itself is independently
+      and consistently attested as a real two-way split, not an artifact of this ontology: Pierce's definitional
+      passage names it directly (\"Type systems like Java's... are called nominal. Type systems like most
+      of the ones in this book... are called structural\", [pierce-tapl-2002#c00525]), and Krishnamurthi
+      gives the identical two-way split with a worked example of a structurally-identical-but-differently-named
+      class being rejected under the nominal pole and accepted under the structural one ([krishnamurthi-plai#c00234],
+      [krishnamurthi-plai#c00238]). That independently licenses splitting the survey's single `structural-vs-nominal-typing`
+      candidate into two feature nodes along that axis, which is exactly what this carve does.\n\nThe
+      contested part of the carve — bundling `realizes: [subtyping, type-equivalence]` into one feature
+      rather than two — is also well supported rather than invented. It would be a plausible wrong-atomization
+      objection if the \"structural\" discipline were only ever discussed by these authors as a subtyping-specific
+      mechanism, with type equivalence described under unrelated vocabulary elsewhere. That is not what
+      the corpus shows. ATTAPL itself uses \"structural\" across both judgments within the same book:
+      §8.2 calls subsignature matching \"structural\" vs \"nominal\" ([pierce-attapl-2004#c00459]), and
+      a later formal section is literally titled \"Structural Type Equivalence\" ([pierce-attapl-2004#c00573]),
+      applying the same discipline name to the equivalence judgment. Scott's and Sebesta's textbook treatments
+      (\"Structural equivalence is based on the content of type definitions... Name equivalence is based
+      on the lexical occurrence\" [scott-plp#c00419]; \"Structure type equivalence means that two variables
+      have equivalent types if their types have identical structures\" [sebesta-copl#c00562]) describe
+      the identical shape-vs-name criterion for type equivalence specifically, converging with Pierce's
+      subtyping-oriented definition on the same discriminating test. Three independent textbook lineages
+      treating one criterion as deciding two judgments is exactly what a single feature with two `realizes`
+      targets is meant to encode, not an inflation of the evidence.\n\nThe layer-3 placement is also consistent
+      with how the sources frame it: never as a primitive notion but as a discipline governing pre-existing
+      subtype/equivalence machinery (Pierce's chapter builds subtyping first and introduces the nominal/structural
+      choice as a modifier on it in §19.3; Sebesta frames structural equivalence as one of \"two approaches
+      to defining type equivalence\" after the general concept is introduced in §6.15 [sebesta-copl#c00562]).\n\
+      \nI did not find a source that treats \"structural type equivalence\" and \"structural subtyping\"\
+      \ as independently nameable features requiring separate nodes — the one place I looked for that
+      fault line (Harper's section header \"Structural Subtyping\" [harper-pfpl#c00375]) is about subtyping
+      alone and doesn't contradict the shared-discipline reading; it just documents the subtyping half
+      of the same discipline Pierce and Scott/Sebesta also name \"structural\" for equivalence. No wrong-layer,
+      wrong-structure, or scope problem turned up either. Raising a challenge here would be manufacturing
+      a disagreement the sources don't support."
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Conceding the core of this challenge. The evidence bears it out, including in the carve's own
+      citations.\n\nPierce's §19.3 terminological anchor [pierce-tapl-2002#c00525] is stated purely about
+      subtyping: \"the subtype relation is now defined between type names... subtyping is defined directly
+      on the structures of types.\" It never mentions equivalence, anywhere in that section's content
+      as retrieved. Checking further: [pierce-tapl-2002#c00470] and #c00390/#c00383 confirm subtyping
+      in that book is explicitly a preorder problem (reflexivity check as an *optimization*, not the definition)
+      built on subsumption — not a symmetric sameness judgment.\n\nMore damaging to the carve as drafted:
+      the second evidence line I cited, pierce-attapl-2004#c00459, is *also* about subtyping, not equivalence.
+      Re-reading it in context [pierce-attapl-2004#c00458–c00459]: \"structural matching\" there names
+      a style of *signature matching*, explicitly introduced as \"a subtyping relation between signatures,
+      called signature matching and written I<:J... this is the ordinary subsumption principle.\" The
+      quoted sentence (\"Structural matching is based entirely on the requirements imposed by the signature...\"\
+      ) describes how that subtyping-flavored preorder is decided — it is the direct module-system analogue
+      of TAPL §19.3's subtype relation, not an equivalence judgment. So neither of the two evidence lines
+      attached to this node actually supports `type-equivalence` as a realizes-target; I had mis-paired
+      the citation.\n\nThe genuinely distinct equivalence material is real and separately sourced: Sebesta
+      [sebesta-copl#c00562–c00564] frames \"structure type equivalence\" as substitutability without coercion,
+      a symmetric sameness relation, explicitly contrasted with name equivalence, with no subsumption/subtyping
+      language anywhere in the section. Scott [scott-plp#c00421–c00423] is even more explicit that this
+      is a different kind of relation — \"under structural equivalence, all six of the variables shown
+      have the same type\" is a flat equality statement over aliased declarations, not a preorder, and
+      Scott's running example (school vs. student, derived types vs. subtypes) is about whether two separately-declared
+      types count as *the same type*, never about one being safely usable where another is expected. I
+      found no source that applies one shape-comparison mechanism to both judgments at once or calls them
+      the same discipline.\n\nI withdraw the two-target `realizes: ['subtyping', 'type-equivalence']`
+      design. Recommended fix: keep this node scoped to structural *subtyping* only — `realizes: ['subtyping']`
+      — supported by pierce-tapl-2002#c00525 and (correctly re-described) pierce-attapl-2004#c00458–c00459
+      as the signature-matching analogue. Spin a sibling node, e.g. `structural-type-equivalence`, realizing
+      `type-equivalence`, evidenced by sebesta-copl#c00562–c00564 and scott-plp#c00421–c00423, as its
+      own value on a `name-vs-structural-equivalence` dimension distinct from `structural-vs-nominal-typing`.
+      That preserves everything the sources actually assert without manufacturing a unity between a preorder
+      and a symmetric relation that no cited text draws.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The wrong-atomization challenge is upheld on the proposer's own re-examination of the evidence,
+      not merely asserted: pierce-tapl-2002#c00525 (the terminological anchor for \"structural typing\"\
+      ) is stated purely in subtyping terms, and the proposer's second evidence line (pierce-attapl-2004#c00459)
+      turns out on closer reading to also be about subtyping (signature-matching-as-subsumption, pierce-attapl-2004#c00458-459),
+      not equivalence — so neither citation attached to the original carve actually supports `type-equivalence`
+      as a realizes-target. The genuinely separate equivalence material (sebesta-copl#c00562-564, scott-plp#c00421-423)
+      describes a symmetric sameness judgment with no subsumption/preorder structure, independently and
+      consistently distinguished by both authors from subtyping. No source in the debate unifies \"structural
+      subtyping\" and \"structural type equivalence\" as one mechanism; ATTAPL's \"Structural Type Equivalence\"\
+      \ section (pierce-attapl-2004#c00573), raised by challenger-b, documents the equivalence-side use
+      of the word \"structural\" but doesn't bridge the two into a single discipline either — it instead
+      confirms they are separately-named phenomena under a shared adjective. The binary nominal/structural
+      axis itself, the no-declaration framing, and the layer-3 (discipline-over-existing-relation) placement
+      are all well attested and unchallenged, so the fix is a clean split rather than a drop: keep structural-typing
+      scoped to subtyping alone, and spin off a sibling structural-type-equivalence node on its own dimension,
+      exactly as the proposer's concession recommends."
+resolution:
+  outcome: converged-after-revision
+  disposition: split
+  standing_dissent: false
+  rounds: 1
+  upheld_challenges:
+    - wrong-atomization
+  rationale: "The wrong-atomization challenge is upheld on the proposer's own re-examination of the evidence,
+    not merely asserted: pierce-tapl-2002#c00525 (the terminological anchor for \"structural typing\"\
+    ) is stated purely in subtyping terms, and the proposer's second evidence line (pierce-attapl-2004#c00459)
+    turns out on closer reading to also be about subtyping (signature-matching-as-subsumption, pierce-attapl-2004#c00458-459),
+    not equivalence — so neither citation attached to the original carve actually supports `type-equivalence`
+    as a realizes-target. The genuinely separate equivalence material (sebesta-copl#c00562-564, scott-plp#c00421-423)
+    describes a symmetric sameness judgment with no subsumption/preorder structure, independently and
+    consistently distinguished by both authors from subtyping. No source in the debate unifies \"structural
+    subtyping\" and \"structural type equivalence\" as one mechanism; ATTAPL's \"Structural Type Equivalence\"\
+    \ section (pierce-attapl-2004#c00573), raised by challenger-b, documents the equivalence-side use
+    of the word \"structural\" but doesn't bridge the two into a single discipline either — it instead
+    confirms they are separately-named phenomena under a shared adjective. The binary nominal/structural
+    axis itself, the no-declaration framing, and the layer-3 (discipline-over-existing-relation) placement
+    are all well attested and unchallenged, so the fix is a clean split rather than a drop: keep structural-typing
+    scoped to subtyping alone, and spin off a sibling structural-type-equivalence node on its own dimension,
+    exactly as the proposer's concession recommends."
+  split_into:
+    - key: structural-typing
+      from_candidates:
+        - structural-vs-nominal-typing
+      kind: feature
+      id: structural-typing
+      name: Structural Typing
+      summary: A subtyping discipline in which the subtype relation between types is decided by 
+        comparing the shape of type (or signature) definitions, independent of any declared name.
+      evidence:
+        - source: pierce-tapl-2002
+          locator: §19.3
+          chunk_id: pierce-tapl-2002#c00525
+        - source: pierce-attapl-2004
+          locator: §8.2
+          chunk_id: pierce-attapl-2004#c00458
+        - source: pierce-attapl-2004
+          locator: §8.2
+          chunk_id: pierce-attapl-2004#c00459
+          quote: Structural matching is based entirely on the requirements imposed by the signature,
+            without requiring any declarations.
+      contested: []
+      debate_id: d-01-typing-012
+      status: debated
+      verification:
+      note: 'Narrowed from the original two-target carve after the proposer withdrew the type-equivalence
+        realizes-target on re-reading the cited evidence: both pierce-tapl-2002#c00525 and pierce-attapl-2004#c00458-459
+        are stated purely in terms of subtyping/signature-subsumption, never equivalence.'
+      layer: 3
+      dimension: structural-vs-nominal-typing
+      cross_cutting: false
+      aliases:
+        - structural subtype relation
+      realizes:
+        - subtyping
+    - key: structural-type-equivalence
+      from_candidates:
+        - structural-vs-nominal-typing
+      kind: feature
+      id: structural-type-equivalence
+      name: Structural Type Equivalence
+      summary: A type-equivalence discipline in which two separately declared types are judged the 
+        same type by comparing the shape of their definitions, a symmetric sameness relation 
+        independent of declared name and with no subsumption/preorder structure.
+      evidence:
+        - source: sebesta-copl
+          locator: §6.15
+          chunk_id: sebesta-copl#c00562
+          quote: Structure type equivalence means that two variables have equivalent types if their 
+            types have identical structures.
+        - source: scott-plp
+          locator: pp. 445–446
+          chunk_id: scott-plp#c00421
+        - source: scott-plp
+          locator: pp. 447–448
+          chunk_id: scott-plp#c00423
+      contested: []
+      debate_id: d-01-typing-012
+      status: debated
+      verification:
+      note: "Spun off as a sibling to structural-typing per the proposer's concession: type equivalence
+        (a symmetric sameness judgment, per Scott and Sebesta) is a distinct relation from subtyping (a
+        preorder), attested by sources that never unify the two under one mechanism. Sits on its own name-vs-structural-equivalence
+        dimension, separate from structural-vs-nominal-typing. Additional evidence: sebesta-copl#c00564."
+      layer: 3
+      dimension: name-vs-structural-equivalence
+      cross_cutting: false
+      aliases:
+        - structural equivalence
+      realizes:
+        - type-equivalence
