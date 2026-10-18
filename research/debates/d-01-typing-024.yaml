@@ -1,0 +1,235 @@
+id: d-01-typing-024
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: parametric-polymorphism--requires--generic-parameters
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-parametric-polymorphism--requires--generic-parameters-01
+  moderator: 
+    2026-10-17-r4-moderator-01-typing-parametric-polymorphism--requires--generic-parameters-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: parametric-polymorphism--requires--generic-parameters
+  type: requires
+  from: parametric-polymorphism
+  to: generic-parameters
+  polarity:
+  statement: Parametric polymorphism is realized through generic type parameters that stand in for 
+    the actual type at each use site.
+  evidence:
+    - source: sebesta-copl
+      locator: §9.10
+      chunk_id: sebesta-copl#c00758
+      quote: Parametric polymorphism is provided by a subprogram that takes generic parameters that 
+        are used in type expressions that describe the types of the parameters of the subprogram.
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "The \"single-source\" flag is fair as drafted, but easily cured — the claim itself is well-supported
+      once we look beyond Sebesta, and I'd amend the evidence list rather than the edge.\n\n**The relationship
+      is not idiosyncratic to Sebesta.** Cardelli & Wegner (1985), the foundational theoretical source
+      for this whole taxonomy, state it just as directly: \"a polymorphic function has an implicit or
+      explicit type parameter, which determines the type of the argument for each application of that
+      function... The functions that exhibit parametric polymorphism are also called generic functions\"\
+      \ [cardelli-wegner-1985#c00012], and later: \"a parametric function is applicable to lists of arbitrary
+      type we really mean that it may be specialized by (implicitly or explicitly) providing a type parameter
+      T\" [cardelli-wegner-1985#c00031].\n\nScott (PLP) corroborates from the practitioner-textbook side:
+      \"Most languages that envision such an implementation... also provide explicit parametric polymorphism
+      (generics), which allow the programmer to define classes with type parameters\" [scott-plp#c00400],
+      and explicitly equates the mechanism with the feature: \"Explicit parametric polymorphism is also
+      known as genericity... Generic facilities appear in Ada, C++, Clu, Eiffel, Modula-3, Java, and C#\"\
+      \ [scott-plp#c00213]. Scott even gives the implementation contrast directly: \"generics (explicit
+      parametric polymorphism) are usually implemented by creating multiple copies of the polymorphic
+      code\" [scott-plp#c00682].\n\nFormal specs confirm the mechanism independently across language families:
+      JLS defines parameterized types built from generic type parameters [jls-se25#c00118]; ECMA-335 (CLI)
+      defines generic parameters/arguments as the binding mechanism for generic type/method instantiation
+      [ecma-335-6th#c00314]; the Go spec describes instantiation as substituting type arguments for type
+      parameters [go-lang-spec#c00105]; Rust's FLS defines \"type argument\" the same way [rust-fls#c01142].\n\
+      \n**On the `requires` typing**: Cardelli & Wegner's distinction matters here — they note implicit
+      parametric polymorphism (ML-style inference) blurs the parameter but doesn't eliminate it: \"type
+      parameters omitted by the user are automatically reintroduced by the type inference mechanism\"\
+      \ [cardelli-wegner-1985#c00031]. So even in languages that elide explicit generic-parameter syntax,
+      the feature is realized by an (implicit) type parameter standing for the use-site type — exactly
+      the carve's statement. That's consistent with `requires` as a structural/semantic dependency, not
+      merely \"co-occurs in C++/Java.\"\n\nI'd resolve the single-source flag by adding cardelli-wegner-1985#c00012
+      and #c00031, plus scott-plp#c00213/#c00400, as corroborating evidence alongside the Sebesta citation,
+      keeping the carve's type and direction unchanged."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The single-source flag is fairly cured by the proposer's amendment. Cardelli & Wegner, 
+      Scott, the JLS, ECMA-335, the Go spec, and the Rust FLS all independently converge on the same
+      mechanism — a type parameter standing in for the use-site type — so "requires 
+      generic-parameters" is not an idiosyncrasy of Sebesta's wording. I have one residual objection
+      about the scope of what "generic-parameters" as the target feature can mean, given how the 
+      same corroborating sources carve the space.
+    challenges:
+      - type: scope
+        text: "The amended evidence set documents that parametric polymorphism splits into two mechanisms
+          the sources treat as distinct, not as variants of one realization: Scott states explicit parametric
+          polymorphism (genericity) and implicit parametric polymorphism (Lisp/ML-family, via type inference)
+          are different things. Every formal-spec citation added to cure the single-source flag — JLS
+          §4.5, ECMA-335 II.9, the Go spec's Instantiations section, Rust FLS §12.3 — defines 'generic
+          parameter'/'generic argument' as the explicit syntactic construct used by Java/C#/Go/Rust-style
+          generics specifically; none of them describe ML/Lisp-style implicit parametric polymorphism,
+          whose type parameter is instead 'automatically reintroduced by the type inference mechanism'
+          per Cardelli & Wegner. As drafted, the edge states as a universal truth about parametric-polymorphism-the-feature
+          that it 'is realized through generic type parameters ... at each use site,' but on the sources'
+          own taxonomy that is only true of the explicit branch; the implicit branch is realized through
+          type inference, a different mechanism. The requires edge should be scoped to explicit parametric
+          polymorphism (or paired with a separate requires-type-inference edge for the implicit branch)
+          rather than stated as unconditional for the feature as a whole."
+        evidence:
+          - source: scott-plp
+            locator: p. 228
+            chunk_id: scott-plp#c00213
+          - source: cardelli-wegner-1985
+            locator: p. 9
+            chunk_id: cardelli-wegner-1985#c00031
+            quote: type parameters omitted by the user are automatically reintroduced by the type 
+              inference mechanism
+          - source: jls-se25
+            locator: §4.5
+            chunk_id: jls-se25#c00118
+          - source: go-lang-spec
+            locator: '#Instantiations'
+            chunk_id: go-lang-spec#c00105
+            quote: A generic function, method, or type is instantiated by substituting type 
+              arguments for the type parameters
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The amended evidence set does cure the single-source flag — Cardelli & Wegner and Scott independently
+      corroborate that parametric polymorphism works via a type parameter standing in for the use-site
+      type. But the corroborating sources themselves surface a real atomization problem with the edge
+      as stated, which I'm raising as a challenge rather than letting the single-source fix paper over
+      it.\n\nScott (PLP) does not say \"parametric polymorphism requires generic parameters.\" He explicitly
+      splits the feature into two mechanisms with different parameter behavior: \"In parametric polymorphism
+      the code takes a type (or set of types) as a parameter, either explicitly or implicitly\" [scott-plp#c00213],
+      then: \"Explicit parametric polymorphism is also known as genericity... Generic facilities appear
+      in Ada, C++, Clu, Eiffel, Modula-3, Java, and C#\" [scott-plp#c00213], contrasted with \"Implicit
+      parametric polymorphism appears in the Lisp and ML families of languages, and in the various scripting
+      languages\" [scott-plp#c00213]. Later Scott ties generic parameters specifically to the explicit
+      branch: \"generic subroutines and modules (classes)... support explicit parametric polymorphism...
+      generic parameters allow it to operate on data of many different types\" [scott-plp#c00537]. Cardelli
+      & Wegner make the same split: \"type parameters omitted by the user are automatically reintroduced
+      by the type inference mechanism\" [cardelli-wegner-1985#c00031] — i.e. implicit realizations (Scheme,
+      ML, Haskell per scott-plp#c00216) have no generic-parameter syntax at all; the compiler infers the
+      binding instead.\n\nSo the sources consistently atomize this feature into two mechanisms (explicit
+      generics with syntactic type parameters, vs. implicit inference with no such parameter), and `requires
+      generic-parameters` is true of only one of them. Pinning the edge to the general `parametric-polymorphism`
+      node overclaims: Lisp/Scheme/pre-generics-ML realize the feature with zero generic-parameter construct,
+      contradicting a `requires` edge from the general node. The fix isn't more citations on the existing
+      edge, it's splitting the `from` node (or retargeting the edge to an explicit-parametric-polymorphism
+      feature) so the requires relation matches what every cited source actually asserts."
+    challenges:
+      - type: wrong-atomization
+        text: 'Scott and Cardelli & Wegner both split parametric polymorphism into an explicit mechanism
+          (generic parameters/genericity: Ada, C++, Java, C#) and an implicit mechanism (type inference:
+          Lisp, ML, Scheme, Haskell) that realizes the same feature with no generic-parameter construct
+          at all. A `requires` edge from the general `parametric-polymorphism` node to `generic-parameters`
+          is falsified by every implicit realization the sources name; the edge is only true of the explicit
+          branch, so the carve needs the `from` node split rather than more corroborating citations on
+          the current edge.'
+        evidence:
+          - source: scott-plp
+            locator: p. 228
+            chunk_id: scott-plp#c00213
+          - source: scott-plp
+            locator: pp. 552–553
+            chunk_id: scott-plp#c00537
+          - source: cardelli-wegner-1985
+            locator: p. 9
+            chunk_id: cardelli-wegner-1985#c00031
+            quote: type parameters omitted by the user are automatically reintroduced by the type 
+              inference mechanism
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I conceded. Evidence from cardelli-wegner-1985#c00031 and scott-plp#c00216 independently confirms
+      that parametric polymorphism is realized by two genuinely distinct mechanisms — explicit generic-parameter
+      syntax (Ada/C++/Java/C#-style genericity) and implicit type-inference-based polymorphism (Lisp/ML/Scheme/Haskell),
+      where \"type parameters omitted by the user are automatically reintroduced by the type inference
+      mechanism\" and \"the programmer need not specify a type parameter\" at all. Every additional formal-spec
+      citation gathered to cure the original single-source flag (JLS §4.5/18, ECMA-335, Go's Instantiations,
+      Rust FLS) only documents the explicit branch more thoroughly — none of them touch the implicit branch,
+      so more citations cannot rescue the edge's current universal scope.\n\nThe current edge states `parametric-polymorphism
+      --requires--> generic-parameters` as an unconditional truth about the feature. That is falsified
+      by every implicit realization the sources name (ML's `length` function, Haskell's `min`, Scheme's
+      `min`), which have no generic-parameter construct at use sites at all — the parameter is inferred,
+      not supplied. Both challengers are right that this is a wrong-atomization/scope problem, not an
+      evidence-sufficiency problem.\n\nI agree with the proposed remediation: split the `from` node (e.g.,
+      `explicit-parametric-polymorphism` vs. `implicit-parametric-polymorphism`, matching Scott's and
+      Cardelli & Wegner's own taxonomy) and scope this `requires` edge to the explicit branch only, pairing
+      it with a separate `requires → type-inference` edge for the implicit branch. The statement should
+      then read as true of explicit/generic-parameter-based parametric polymorphism specifically, not
+      of the feature as a whole."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The single-source flag is cured — Cardelli & Wegner (1985), Scott (PLP), and four independent
+      formal specs (JLS, ECMA-335, Go spec, Rust FLS) all corroborate that the explicit branch of parametric
+      polymorphism works via a type parameter standing in for the use-site type. But both challengers,
+      using the same corroborating sources the proposer brought in to cure that flag, show the edge as
+      drafted overclaims: Scott (p. 228, pp. 552–553) and Cardelli & Wegner (p. 9) explicitly split parametric
+      polymorphism into an explicit mechanism (generic parameters/genericity — Ada, C++, Java, C#) and
+      an implicit mechanism (type inference — Lisp, ML, Scheme, Haskell) that realizes the same feature
+      with no generic-parameter construct at use sites at all. A `requires` edge from the general `parametric-polymorphism`
+      node to `generic-parameters` is directly falsified by every implicit realization these sources name.
+      The proposer conceded on both points and agreed the fix is to split the `from` node into explicit/implicit
+      parametric-polymorphism sub-features and retarget this edge to the explicit branch (pairing it with
+      a separate `requires → type-inference` edge for the implicit branch).\n\nI'm upholding both challenges
+      — the evidence genuinely supports them and the proposer does not contest it. But resolving them
+      is not something I can do by revising this edge's fields alone: it requires introducing new feature
+      nodes (explicit-/implicit-parametric-polymorphism) and rewiring every edge currently anchored to
+      the general `parametric-polymorphism` node, which has consequences for the ontology well beyond
+      this one carve (other existing edges off that node would need the same reconsideration). That is
+      a structural decision about how parametric-polymorphism is atomized in the feature model, not a
+      single-edge judgment call, so I'm escalating rather than mechanically revising or splitting a carve
+      whose schema (concept/feature nodes, not edges) isn't built to express the fix the debate actually
+      converged on. The developer should rule on whether/how to split the `parametric-polymorphism` feature
+      before this edge (and any sibling edges off that node) can be correctly re-scoped."
+resolution:
+  outcome: escalated
+  disposition: escalate
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - scope
+    - wrong-atomization
+  rationale: "The single-source flag is cured — Cardelli & Wegner (1985), Scott (PLP), and four independent
+    formal specs (JLS, ECMA-335, Go spec, Rust FLS) all corroborate that the explicit branch of parametric
+    polymorphism works via a type parameter standing in for the use-site type. But both challengers, using
+    the same corroborating sources the proposer brought in to cure that flag, show the edge as drafted
+    overclaims: Scott (p. 228, pp. 552–553) and Cardelli & Wegner (p. 9) explicitly split parametric polymorphism
+    into an explicit mechanism (generic parameters/genericity — Ada, C++, Java, C#) and an implicit mechanism
+    (type inference — Lisp, ML, Scheme, Haskell) that realizes the same feature with no generic-parameter
+    construct at use sites at all. A `requires` edge from the general `parametric-polymorphism` node to
+    `generic-parameters` is directly falsified by every implicit realization these sources name. The proposer
+    conceded on both points and agreed the fix is to split the `from` node into explicit/implicit parametric-polymorphism
+    sub-features and retarget this edge to the explicit branch (pairing it with a separate `requires →
+    type-inference` edge for the implicit branch).\n\nI'm upholding both challenges — the evidence genuinely
+    supports them and the proposer does not contest it. But resolving them is not something I can do by
+    revising this edge's fields alone: it requires introducing new feature nodes (explicit-/implicit-parametric-polymorphism)
+    and rewiring every edge currently anchored to the general `parametric-polymorphism` node, which has
+    consequences for the ontology well beyond this one carve (other existing edges off that node would
+    need the same reconsideration). That is a structural decision about how parametric-polymorphism is
+    atomized in the feature model, not a single-edge judgment call, so I'm escalating rather than mechanically
+    revising or splitting a carve whose schema (concept/feature nodes, not edges) isn't built to express
+    the fix the debate actually converged on. The developer should rule on whether/how to split the `parametric-polymorphism`
+    feature before this edge (and any sibling edges off that node) can be correctly re-scoped."
