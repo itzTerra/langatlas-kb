@@ -1,0 +1,364 @@
+id: d-01-typing-019
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: kind-polymorphism
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-kind-polymorphism-01
+  moderator: 2026-10-17-r4-moderator-01-typing-kind-polymorphism-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: kind-polymorphism
+  from_candidates:
+    - kind-polymorphism
+  kind: feature
+  id: kind-polymorphism
+  name: Kind Polymorphism / Higher-Kinded Types
+  summary: Generalizing polymorphism one level up so that type constructors, not just ordinary 
+    types, can themselves be abstracted over kinds.
+  evidence:
+    - source: ghc-users-guide
+      locator: §6.4.14
+      chunk_id: ghc-users-guide#c00766
+      quote: 'inferred kind: Compose :: (b -> Type) -> (a -> b) -> a -> Type'
+    - source: ghc-users-guide
+      locator: §6.4.14
+      chunk_id: ghc-users-guide#c00763
+  contested:
+    - single-source
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-bcf12bdda971
+    verdict: verified
+    admissible: true
+    pairs: 2
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: Related to, but one level removed from, the polymorphism-variety dimension, so marked 
+    cross-cutting rather than added as a fourth variety.
+  dimension:
+  cross_cutting: true
+  aliases:
+    - higher-kinded types
+  realizes:
+    - polymorphism
+    - kind
+  layer: 2
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Defending the kind-polymorphism / higher-kinded-types carve**\n\nThe \"single-source\" flag
+      is the only thing actually in question here, and the corpus search already answers it: this concept
+      is not GHC-user-guide-idiosyncratic. It is a textbook-level, cross-formalism concept with its own
+      established name in the type-theory literature, independent of Haskell's particular syntax.\n\n\
+      **1. The concept generalizes far beyond GHC's PolyKinds extension.**\nHarper's *Practical Foundations
+      for Programming Languages* devotes a dedicated section (ch. 19, \"Constructors and Kinds\") to exactly
+      this generalization — quantifying over type constructors rather than types — introducing System
+      F-ω explicitly as \"the language F enriches... with universal and existential quantification over
+      kinds\" [harper-pfpl#c00294], built on the premise that \"quantification naturally leads to the
+      consideration of quantification over type constructors... which may be thought of as functions mapping
+      types to types\" [harper-pfpl#c00293]. This is independent textbook treatment of the same concept
+      the carve describes, decades of literature before GHC's PolyKinds.\n\n**2. Other foundational/pedagogical
+      sources corroborate both the mechanism and its naming as a kind-level phenomenon.**\n- Pierce's
+      ATTAPL treats types as \"classified using kinds,\" where a type constructor's full \"signature\"\
+      \ (not just arity) governs what kinds of arguments it takes and produces [pierce-attapl-2004#c00609]
+      — the same kind-indexed-type-constructor idea, in an ML-typed-constructor context.\n- Turbak & Gifford's
+      DCPL gives explicit kind-checking rules for a typed lambda calculus (FLEX/SPDK) where type constructors
+      like `cellof`, `seqof`, `pairof`, and even higher-order ones like `mapperof` (kind `(•⇒•)⇒•`) are
+      kind-annotated and kind-checked exactly as the GHC examples are [turbak-gifford-dcpl#c01167] — again,
+      independent of Haskell.\n- Bruce & Longo (1990) formalize \"kind expressions\" including \"functions
+      from one kind to another and functions from types to kinds\" [bruce-longo-1990#c00022] — this is
+      the historical type-theoretic root of exactly the \"polymorphism one level up\" idea the carve summary
+      states.\n\n**3. The GHC evidence itself is not thin or edge-case — it's the worked example that
+      matches the carve's summary precisely.**\nGHC's own documentation frames this as generalized polymorphism:
+      inferring `App :: forall k. (k -> Type) -> k -> Type` is explicitly motivated as using \"App at
+      a variety of kinds\" [ghc-users-guide#c00742], and the `Compose :: (b -> Type) -> (a -> b) -> a
+      -> Type` example cited in the carve [ghc-users-guide#c00766] is a canonical higher-kinded-type illustration
+      (a type constructor parameterized over another type constructor's kind).\n\n**4. The `cross_cutting`
+      + `layer: 2` + \"one level removed from the polymorphism-variety dimension\" framing is well supported.**\n\
+      The carve correctly avoids conflating this with the three standard polymorphism varieties (parametric/ad-hoc/subtype)
+      — the harper-pfpl and bruce-longo sources show this is a *kind*-level abstraction orthogonal to
+      those varieties, operating on type constructors rather than ordinary values/types, which justifies
+      `realizes: ['polymorphism', 'kind']` as a cross-cutting composite rather than a sibling of the variety
+      dimension.\n\n**Conclusion:** The \"single-source\" flag reflects the evidence list attached to
+      this particular carve record, not the actual evidentiary breadth of the concept. Independent corroboration
+      exists across Harper (PFPL), Pierce (ATTAPL), Turbak & Gifford (DCPL), and Bruce & Longo in the
+      corpus — spanning foundational type theory, not just one compiler's extension manual. I'd recommend
+      adding at least `harper-pfpl#c00293`/`#c00294` and `turbak-gifford-dcpl#c01167` as additional evidence
+      citations to resolve the single-source flag, but the carve's name, summary, and placement (cross-cutting,
+      layer 2, realizing both `polymorphism` and `kind`) are accurate and should stand.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The proposer's additional citations (harper-pfpl#c00293/#c00294, pierce-attapl-2004#c00609
+      region, bruce-longo-1990#c00022) check out against the corpus and genuinely resolve the \"single-source\"\
+      \ flag as far as evidentiary breadth goes — this is not a GHC-idiosyncratic notion. I'm not challenging
+      that part. But pulling Harper's treatment into evidence surfaces a different, structural problem
+      the single-source flag was masking: the carve's *layer placement*, not its evidence count.\n\nHarper
+      (PFPL p.189, harper-pfpl#c00293) introduces this as a theory-level generalization — \"the concept
+      of type quantification naturally leads to the consideration of quantification over type constructors...
+      which may be thought of as functions mapping types to types\" — stated with zero reference to any
+      concrete language, purely as an extension of the quantification principle itself (F→Fω). That is
+      a textbook concept-level move, exactly matching this ontology's own definition of \"concept\" as
+      \"any idea or principle, often grounded in theory.\"\n\nGHC's own documentation (ghc-users-guide#c00741)
+      in turn treats \"GHC's kind system\" as the standing theoretical apparatus (\"always in effect,
+      with or without extensions\") and treats PolyKinds as the specific extension/switch that \"allow[s]
+      kind polymorphic types\" within it — i.e., GHC itself separates the general kind-quantification
+      apparatus from the concrete, language-specific mechanism that exposes it to programmers.\n\nThe
+      carve collapses both into one `kind: feature, layer: 2` node named \"Kind Polymorphism / Higher-Kinded
+      Types,\" with `realizes: ['polymorphism', 'kind']` treating polymorphism and kind as the concepts
+      it realizes. But per Harper, kind-quantification *is* the concept (the generalization of quantification
+      to the kind T→T, independent of any language), and GHC's PolyKinds/kind-inference behavior is the
+      feature — a realization of that concept within Haskell specifically. Folding the concept itself
+      into a feature node, with \"polymorphism\" and \"kind\" demoted to the things it merely \"realizes,\"\
+      \ inverts the concept/feature split this ontology relies on, rather than modeling kind-quantification
+      as its own concept with GHC's PolyKinds as a feature instance under it."
+    challenges:
+      - type: wrong-layer
+        text: Harper (PFPL) presents quantification over type constructors (kind T→T) as a 
+          theory-level generalization of the quantification principle itself, independent of any 
+          language — i.e. concept-level content per this ontology's own concept/feature definitions.
+          GHC's user guide likewise separates its standing 'kind system' from the PolyKinds 
+          extension that exposes it. The carve instead places the whole generalization at 
+          kind:feature/layer:2 and relegates 'polymorphism'/'kind' to things it merely realizes, 
+          inverting the concept/feature split rather than modeling kind-quantification as the 
+          concept with GHC's PolyKinds as its feature-level realization.
+        evidence:
+          - source: harper-pfpl
+            locator: p. 189
+            chunk_id: harper-pfpl#c00293
+          - source: ghc-users-guide
+            locator: §6.4.14
+            chunk_id: ghc-users-guide#c00741
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The single-source flag is resolved: harper-pfpl, pierce-attapl/tapl, and (per the proposer,
+      unverified by me but plausible) turbak-gifford and bruce-longo independently treat type-constructor
+      quantification as a textbook concept, not a GHC idiosyncrasy. I verified harper-pfpl#c00293/#c00294/#c00295/#c00298
+      directly and they do describe exactly the \"quantify over type constructors classified by kinds\"\
+      \ mechanism. So I'm not raising missing-source.\n\nHowever, verifying those same passages surfaced
+      a real atomization problem the proposer's rebuttal glosses over: the carve's two aliases (\"kind
+      polymorphism\" and \"higher-kinded types\") name two mechanisms the sources keep at different levels,
+      and the node's single summary/evidence list silently picks the GHC one while citing Harper as if
+      it supports both.\n\nHarper's F-omega kind grammar is closed and variable-free: \"Kind κ ::= Type
+      T | Unit 1 | Prod(κ1;κ2) | Arr(κ1;κ2)\" [harper-pfpl#c00295] — there is no kind-variable form. \"\
+      Higher kinds\" there means quantifying over *constructors* of some fixed, concrete kind (e.g. ∃q::T→T.σ)
+      [harper-pfpl#c00293/#c00294]; the kind T→T itself is never itself a bound/polymorphic variable.
+      GHC's \"kind polymorphism,\" by contrast, is explicitly the further step of quantifying over the
+      kind *variable* k itself — \"GHC infers the kind forall k. (k -> Type) -> k -> Type for App... the
+      chief benefit of kind polymorphism is that we can now... use App at a variety of kinds\" [ghc-users-guide#c00742],
+      with k itself ranging over kinds and explicitly instantiable (\"k is instantiated to Type\", \"\
+      k is instantiated to (Type -> Type)\") [ghc-users-guide#c00742], and GHC even separately documents
+      \"kind variables... quantified in visible positions\" [ghc-users-guide#c00759] and higher-rank *kinds*
+      via rank-n quantification over k [ghc-users-guide#c00762] — mechanisms with no counterpart in Harper's
+      closed kind grammar at all.\n\nSo \"higher-kinded types\" (Harper/Pierce: fixed-kind quantification
+      over constructors) and \"kind polymorphism\" (GHC: quantification over kind variables themselves,
+      one level higher than that) are not the same generalization step — the carve's own summary phrase
+      \"abstracted over kinds\" straddles both without distinguishing them, and treats Harper's evidence
+      as corroborating a GHC-specific mechanism (polymorphic kind variables) that Harper's cited passages
+      don't actually contain. This is a wrong-atomization risk: two distinguishable mechanisms at adjacent
+      levels of the same hierarchy are being merged into one node/alias pair under evidence that only
+      supports one of them."
+    challenges:
+      - type: wrong-atomization
+        text: "The carve aliases 'kind polymorphism' and 'higher-kinded types' as one mechanism, but the
+          cited sources place them at different generalization levels: Harper's F-omega 'higher kinds'
+          is quantification over type constructors of a fixed, concrete kind (the kind grammar itself
+          is closed, with no kind-variable form), whereas GHC's 'kind polymorphism' is specifically quantification
+          over the kind variable k itself (a further level up), with its own distinct machinery (visible
+          kind variables, higher-rank kinds). Folding both under one summary ('abstracted over kinds')
+          and citing Harper as supporting the GHC-specific mechanism invents an equivalence the sources
+          don't establish."
+        evidence:
+          - source: harper-pfpl
+            locator: §19.1
+            chunk_id: harper-pfpl#c00295
+          - source: harper-pfpl
+            locator: p. 189
+            chunk_id: harper-pfpl#c00293
+            quote: The existential type quantiﬁes over the kind T → T of type constructors, which 
+              map types to types.
+          - source: ghc-users-guide
+            locator: §6.4.14
+            chunk_id: ghc-users-guide#c00742
+          - source: ghc-users-guide
+            locator: §6.4.14
+            chunk_id: ghc-users-guide#c00759
+            quote: Kind variables can also be quantified in visible positions.
+          - source: ghc-users-guide
+            locator: §6.4.14
+            chunk_id: ghc-users-guide#c00762
+            quote: In concert with RankNTypes (page 464), GHC supports higher-rank kinds.
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Having reread the exact cited passages, both challenges land, and the honest move is to concede
+      rather than defend the carve as drafted.\n\n**On wrong-atomization (the working language implementer):**
+      this is clearly right. [harper-pfpl#c00295] gives F-ω's kind grammar as closed — `Kind κ ::= Type
+      | Unit | Prod(κ1;κ2) | Arr(κ1;κ2)` — with no kind-variable production at all. F-ω's \"higher kinds\"\
+      \ ([harper-pfpl#c00293], [harper-pfpl#c00298]) is quantification over *constructors* at a fixed,
+      already-concrete kind like `T → T`; there is no way in the grammar to quantify over the kind itself.
+      GHC's \"kind polymorphism,\" by contrast, is explicitly quantification over the kind variable `k`
+      — [ghc-users-guide#c00762]'s own worked example (`data Proxy a = P -- inferred kind: Proxy :: k
+      -> Type`) and [ghc-users-guide#c00741]'s `App`/`forall k. (k -> Type) -> k -> Type` example are
+      both about generalizing a kind-position variable, which F-ω's closed grammar structurally cannot
+      express. These are one level apart, exactly as charged, and the carve's `aliases: ['higher-kinded
+      types']` plus a single Harper+GHC evidence list under one summary erases that gap rather than modeling
+      it. I concede this: the two belong in separate nodes, not one aliased pair.\n\n**On wrong-layer
+      (the type theorist):** also right, and the GHC source makes the split explicit in its own words
+      at [ghc-users-guide#c00741]: \"This section describes GHC's kind system... The kind system as described
+      here is always in effect, with or without extensions... The extensions above simply enable syntax
+      and tweak the inference algorithm to allow users to take advantage of the extra expressiveness of
+      GHC's kind system.\" That is GHC itself distinguishing a standing, language-independent kind-quantification
+      structure from PolyKinds as the syntax/inference-exposing extension — concept vs. feature, in this
+      ontology's own terms. Harper's treatment ([harper-pfpl#c00293]–[c00295]) is likewise presented as
+      a generalization of the quantification principle (F → F-ω) independent of any concrete implementation.
+      Placing the whole thing at `kind:feature/layer:2` with 'polymorphism'/'kind' demoted to `realizes`
+      targets inverts that.\n\n**Proposed amendment**, rather than a flat \"carve rejected\": split into
+      (a) a concept-level `kind-quantification` node capturing Harper's F-ω generalization (quantifying
+      a fixed-kind type constructor) as theory content, with GHC's standing kind system as its cross-language
+      illustration, and (b) a feature-level `ghc-kind-polymorphism` (or similarly scoped) node for PolyKinds
+      specifically — quantification over the kind variable itself, with its own machinery (visible kind
+      variables [ghc-users-guide#c00760], higher-rank kinds [ghc-users-guide#c00762]) — realizing that
+      concept. The current single node conflates both the levels and the layers, and I don't think that
+      conflation survives the cited text, so I'm conceding the carve needs this split rather than defending
+      it as-is.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The single-source flag that triggered this debate is resolved on the merits (harper-pfpl, pierce-attapl,
+      turbak-gifford-dcpl, bruce-longo-1990 independently treat type-constructor/kind quantification as
+      a textbook concept, not a GHC idiosyncrasy) — but that resolution surfaced two deeper, well-evidenced
+      problems that the proposer itself conceded after rereading the cited passages, so the carve cannot
+      simply stand with added citations.\n\nwrong-atomization (challenger-b) is upheld: the cited texts
+      show two distinguishable mechanisms conflated under one summary/alias pair. Harper's F-ω kind grammar
+      is closed and variable-free (harper-pfpl#c00295: \"Kind κ ::= Type | Unit | Prod(κ1;κ2) | Arr(κ1;κ2)\"\
+      ) — its \"higher kinds\" (harper-pfpl#c00293/#c00298) is quantification over constructors at a fixed,
+      already-concrete kind (e.g. T→T), never over the kind itself. GHC's \"kind polymorphism\" (ghc-users-guide#c00741/#c00742/#c00762)
+      is explicitly quantification over the kind *variable* k, a further level up, with its own machinery
+      (visible kind variables, higher-rank kinds) that has no counterpart in Harper's closed grammar.
+      One node/alias pair with a single evidence list erases that gap.\n\nwrong-layer (challenger-a) is
+      upheld for the same underlying reason: Harper presents kind-quantification as a theory-level generalization
+      of the quantification principle (F→F-ω), stated independent of any language — concept-level content
+      per this ontology's own concept/feature definitions — while GHC's own documentation (ghc-users-guide#c00741)
+      explicitly separates its standing, always-in-effect kind system from PolyKinds as the specific extension
+      exposing kind-variable quantification to programmers. Collapsing both into one kind:feature/layer:2
+      node, with 'polymorphism'/'kind' demoted to mere `realizes` targets, inverts the concept/feature
+      split rather than modeling the concept with GHC's PolyKinds as a feature-level realization of it.\n\
+      \nThe proposer's own proposed remedy — split into a concept-level node capturing Harper's fixed-kind
+      quantification over constructors (aliased \"higher-kinded types\"), and a feature-level node for
+      GHC's PolyKinds specifically (quantification over the kind variable itself, aliased \"kind polymorphism\"\
+      ), with the feature realizing the concept — directly answers both challenges using only evidence
+      already verified on the record. I'm adopting that split rather than escalating, since the two resulting
+      nodes, their levels, and their evidence are already settled by the debate text itself."
+resolution:
+  outcome: converged-after-revision
+  disposition: split
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - wrong-layer
+    - wrong-atomization
+  rationale: "The single-source flag that triggered this debate is resolved on the merits (harper-pfpl,
+    pierce-attapl, turbak-gifford-dcpl, bruce-longo-1990 independently treat type-constructor/kind quantification
+    as a textbook concept, not a GHC idiosyncrasy) — but that resolution surfaced two deeper, well-evidenced
+    problems that the proposer itself conceded after rereading the cited passages, so the carve cannot
+    simply stand with added citations.\n\nwrong-atomization (challenger-b) is upheld: the cited texts
+    show two distinguishable mechanisms conflated under one summary/alias pair. Harper's F-ω kind grammar
+    is closed and variable-free (harper-pfpl#c00295: \"Kind κ ::= Type | Unit | Prod(κ1;κ2) | Arr(κ1;κ2)\"\
+    ) — its \"higher kinds\" (harper-pfpl#c00293/#c00298) is quantification over constructors at a fixed,
+    already-concrete kind (e.g. T→T), never over the kind itself. GHC's \"kind polymorphism\" (ghc-users-guide#c00741/#c00742/#c00762)
+    is explicitly quantification over the kind *variable* k, a further level up, with its own machinery
+    (visible kind variables, higher-rank kinds) that has no counterpart in Harper's closed grammar. One
+    node/alias pair with a single evidence list erases that gap.\n\nwrong-layer (challenger-a) is upheld
+    for the same underlying reason: Harper presents kind-quantification as a theory-level generalization
+    of the quantification principle (F→F-ω), stated independent of any language — concept-level content
+    per this ontology's own concept/feature definitions — while GHC's own documentation (ghc-users-guide#c00741)
+    explicitly separates its standing, always-in-effect kind system from PolyKinds as the specific extension
+    exposing kind-variable quantification to programmers. Collapsing both into one kind:feature/layer:2
+    node, with 'polymorphism'/'kind' demoted to mere `realizes` targets, inverts the concept/feature split
+    rather than modeling the concept with GHC's PolyKinds as a feature-level realization of it.\n\nThe
+    proposer's own proposed remedy — split into a concept-level node capturing Harper's fixed-kind quantification
+    over constructors (aliased \"higher-kinded types\"), and a feature-level node for GHC's PolyKinds
+    specifically (quantification over the kind variable itself, aliased \"kind polymorphism\"), with the
+    feature realizing the concept — directly answers both challenges using only evidence already verified
+    on the record. I'm adopting that split rather than escalating, since the two resulting nodes, their
+    levels, and their evidence are already settled by the debate text itself."
+  split_into:
+    - key: kind-quantification
+      from_candidates:
+        - kind-polymorphism
+      kind: concept
+      id: kind-quantification
+      name: Kind Quantification (Higher-Kinded Types)
+      summary: "Generalizing the quantification principle from types to kinds: quantifying over type constructors
+        classified by a fixed, concrete kind (e.g. an existential over constructors of kind T→T), independent
+        of any particular language's syntax — the F→F-omega move."
+      evidence:
+        - source: harper-pfpl
+          locator: p. 189
+          chunk_id: harper-pfpl#c00293
+        - source: harper-pfpl
+          locator: §19.1
+          chunk_id: harper-pfpl#c00295
+        - source: harper-pfpl
+          locator: §19.3
+          chunk_id: harper-pfpl#c00298
+      contested: []
+      debate_id: d-01-typing-019
+      status: debated
+      verification:
+      note: "Concept-level per the ontology's own concept/feature definitions: stated theory-independent
+        of any implementation. F-omega's kind grammar is closed (no kind-variable production), so this
+        is quantification over constructors of a fixed kind, not over kind variables themselves. realizes
+        the standing polymorphism/kind concepts; GHC's standing (always-in-effect) kind system, per ghc-users-guide#c00741,
+        is a cross-language illustration of this concept rather than evidence for the sibling feature
+        below."
+    - key: ghc-kind-polymorphism
+      from_candidates:
+        - kind-polymorphism
+      kind: feature
+      id: ghc-kind-polymorphism
+      name: GHC Kind Polymorphism (PolyKinds)
+      summary: GHC's PolyKinds extension and kind-inference behavior quantifying over the kind 
+        variable k itself (e.g. inferring forall k. (k -> Type) -> k -> Type for App), one level 
+        beyond fixed-kind quantification over constructors, with its own machinery (visible kind 
+        variables, higher-rank kinds).
+      evidence:
+        - source: ghc-users-guide
+          locator: §6.4.14
+          chunk_id: ghc-users-guide#c00741
+        - source: ghc-users-guide
+          locator: §6.4.14
+          chunk_id: ghc-users-guide#c00742
+        - source: ghc-users-guide
+          locator: §6.4.14
+          chunk_id: ghc-users-guide#c00766
+          quote: 'inferred kind: Compose :: (b -> Type) -> (a -> b) -> a -> Type'
+      contested: []
+      debate_id: d-01-typing-019
+      status: debated
+      verification:
+      note: "Feature-level realization of kind-quantification specific to GHC/Haskell: quantifies over
+        the kind variable k itself, which F-omega's closed kind grammar structurally cannot express. Also
+        draws on ghc-users-guide#c00759 (visible kind variables) and #c00762 (higher-rank kinds) as supporting
+        machinery."
+      layer: 2
+      dimension:
+      cross_cutting: false
+      aliases:
+        - kind polymorphism
+      realizes:
+        - kind-quantification
