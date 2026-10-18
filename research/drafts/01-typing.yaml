@@ -1,0 +1,3054 @@
+cycle: 1
+theme: typing
+theme_digest: a04b8d252d28be19
+generated_at: '2026-10-16T21:55:03Z'
+survey: research/surveys/01-typing.yaml
+runs:
+  ontologist: 2026-10-16-r4-atomize-01-typing-04
+  edge_drafter: 2026-10-17-r4-edges-01-typing-01
+dimensions:
+  - key: polymorphism-variety
+    slug: polymorphism-variety
+    label: Variety of Polymorphism
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-001
+    status: debated
+    verification:
+    note: "Strachey's classification (via Cardelli & Wegner, via Pierce) of parametric, subtype/inclusion,
+      and ad-hoc polymorphism as mutually comparable but freely combinable mechanisms a language may adopt
+      — with ad-hoc polymorphism itself resolved, per Cardelli & Wegner's explicit sub-division (independently
+      corroborated by Scott), into its two source-attested kinds: overloading (syntactic, compile-time-resolvable)
+      and coercion (semantic, possibly run-time). The dimension therefore has four independently combinable
+      options: parametric, overloading, coercion, and subtype (inclusion) polymorphism."
+  - key: structural-vs-nominal-typing
+    slug: structural-vs-nominal-typing
+    label: Structural vs. Nominal Typing
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-013
+    status: debated
+    verification:
+    note: The axis deciding whether subtyping and type equivalence are judged by comparing type 
+      shape or by explicit, declared names; Pierce explicitly treats a language's choice here as 
+      exclusive.
+  - key: static-dynamic-typing-discipline
+    slug: static-dynamic-typing-discipline
+    label: Static/Dynamic Typing Discipline
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-010
+    status: debated
+    verification:
+    note: "The classic axis of when type checking happens, treated here as a binary design commitment
+      between static and dynamic typing (Van Roy & Haridi; Turbak & Gifford's 'source of great debate').
+      Narrowed from an earlier four-value draft: gradual typing (Krishnamurthi's micro/macro annotation-mixing
+      or sibling-language migration) and hybrid typing (Harper's dyn-type embedding within an otherwise
+      static language) are not peer disciplines alongside static/dynamic — Harper's own cited chapter
+      treats dynamic-in-static (hybrid) as subsumption, not opposition — and belong in their own concept-level
+      carve(s) rather than as exclusive co-equal values here. Mixed/hard-to-classify languages (e.g. Java's
+      load-time checks, reflection, downcasts) are not assumed to have a home on this axis and should
+      get their own characteristic."
+  - key: recursive-type-formation
+    slug: recursive-type-formation
+    label: Recursive Type Formation (Iso vs. Equi)
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Pierce's and Turbak & Gifford's explicit dichotomy for how a type theory relates a 
+      recursive type to its own unfolding.
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+qualities: []
+nodes:
+  - key: type-system
+    from_candidates:
+      - type-system
+    kind: concept
+    id: type-system
+    name: Type System
+    summary: The part of a language that defines what types exist, what counts as a type error, and 
+      what checking of those errors is mandatory.
+    evidence:
+      - source: jordan-et-al-2015
+        locator: p. 5
+        chunk_id: jordan-et-al-2015#c00016
+        quote: a value is known as a type error, which may be detected either at compile time or 
+          runtime
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9a814b55e56f
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Kept as the umbrella concept because every other typing node (checking discipline, 
+      inference, polymorphism, subtyping) is a part or instance of it.
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: type-checking
+    from_candidates:
+      - type-checking
+    kind: concept
+    id: type-checking
+    name: Type Checking
+    summary: Language-mandated verification that operations are applied only to values for which 
+      they are meaningful, carried out statically, dynamically, or both.
+    evidence:
+      - source: jordan-et-al-2015
+        locator: p. 5
+        chunk_id: jordan-et-al-2015#c00016
+        quote: Type information may be checked for errors at compile time (‘static’ typing), at 
+          runtime (‘dynamic’ typing), or both
+      - source: sebesta-copl
+        locator: §6.13
+        chunk_id: sebesta-copl#c00558
+        quote: Type checking is the activity of ensuring that the operands of an operator are of 
+          compatible types.
+      - source: turbak-gifford-dcpl
+        locator: §11.3.1
+        chunk_id: turbak-gifford-dcpl#c00958
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9b2df97f4e44
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Distinguished from type-system because it names the activity/process, not the whole 
+      language subsystem.
+  - key: type-error
+    from_candidates:
+      - type-error
+    kind: concept
+    id: type-error
+    name: Type Error
+    summary: A violation where an operator or operation is applied to a value for which it is not 
+      meaningful or allowed, which type checking exists to rule out.
+    evidence:
+      - source: jordan-et-al-2015
+        locator: p. 5
+        chunk_id: jordan-et-al-2015#c00016
+        quote: a value is known as a type error, which may be detected either at compile time or 
+          runtime
+      - source: sebesta-copl
+        locator: §6.13
+        chunk_id: sebesta-copl#c00558
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d4024e7f65df
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Kept distinct from type-checking as the condition being checked for, not the act of 
+      checking.
+  - key: static-typing
+    from_candidates:
+      - static-typing
+    kind: feature
+    id: static-typing
+    name: Static Typing
+    summary: A typing discipline in which the type of every expression is determined and checked 
+      before the program runs, typically at compile time.
+    evidence:
+      - source: cardelli-wegner-1985
+        locator: §1
+        chunk_id: cardelli-wegner-1985#c00009
+      - source: turbak-gifford-dcpl
+        locator: §11.3.1
+        chunk_id: turbak-gifford-dcpl#c00958
+      - source: stroustrup-de-cpp-1994
+        locator: § Review
+        chunk_id: stroustrup-de-cpp-1994#c00002
+        quote: committed to the concept of static (as opposed to dynamic) type checking as being 
+          inherently safer
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-014
+    status: verified
+    verification:
+      fact_id: f-b72623f63af9
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: A design choice on the when-is-typing-checked axis, so carved at layer 3 with a dimension 
+      rather than as a bare semantic property. The dimension admits a third hybrid/mixed value 
+      alongside the static and dynamic poles (languages that mix both, e.g. Java), per Van Roy & 
+      Haridi's explicit three-way framing ("dynamically typed, statically typed, or some mixture of 
+      both") and Turbak & Gifford's discussion of intermediate cases — this carve is one pole of 
+      that axis, not an exhaustive binary. Scott (PLP) instead bundles static typing with strong 
+      typing by strict definition ("statically typed if it is strongly typed and type checking can 
+      be performed at compile time"), a documented alternative usage flagged here for readers 
+      checking edge cases (e.g. Pascal's untagged variant records) against the KB; Scott's own 
+      practical usage retreats to the clean checked-before-execution criterion, which is why the 
+      carve follows the majority atomization used elsewhere in the corpus (Cardelli & Wegner, Turbak
+      & Gifford, Pierce, Van Roy & Haridi) rather than folding strength into this node. Separately, 
+      Harper (PFPL) argues dynamic typing is better modeled as a restricted mode of use of static 
+      typing (subsumption) rather than a symmetric opposed pole — a foundational caveat on the 
+      theoretical relationship between the two poles that the dimension's practical design-axis 
+      framing does not resolve; it is noted rather than adopted, since Harper's own classificatory 
+      prose, like the rest of the corpus, continues to use "statically typed"/"dynamically typed" as
+      alternatives when classifying real languages.
+    dimension: static-dynamic-typing-discipline
+    cross_cutting: false
+    aliases:
+      - statically typed
+      - static type system
+    realizes:
+      - type-checking
+    layer: 3
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: dynamic-typing
+    from_candidates:
+      - dynamic-typing
+    kind: feature
+    id: dynamic-typing
+    name: Dynamic Typing
+    summary: "A typing discipline in which values are tagged with type/class information inspected at
+      run time, with type errors checked only when an operation is about to occur; type errors thus surface
+      at run time rather than compile time. The value-vs-phrase boundary used here is itself contested
+      in the corpus: Harper (PFPL §24.4) argues this criterion does not cleanly distinguish dynamic from
+      static typing, since tagging values with classes 'amounts to a use of recursive sum types within
+      a statically typed language.'"
+    evidence:
+      - source: turbak-gifford-dcpl
+        locator: §11.3.1
+        chunk_id: turbak-gifford-dcpl#c00958
+      - source: harper-pfpl
+        locator: §23.3
+        chunk_id: harper-pfpl#c00355
+      - source: scott-plp
+        locator: pp. 425–426
+        chunk_id: scott-plp#c00398
+        quote: Dynamic (run-time) type checking is a form of late binding
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-015
+    status: verified
+    verification:
+      fact_id: f-85e88d2d41cd
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: Historically paired with static-typing, but the corpus does not support modeling the two 
+      as symmetric, mutually exclusive poles of one axis. Van Roy & Haridi describe a continuum 
+      rather than an either/or ('the choice... does not have to be all or nothing... a bit of the 
+      other can be added'), and Harper formally argues dynamic typing is a restricted/degenerate 
+      mode of use of static typing (a uni-typed language built on one recursive sum type), not an 
+      independent alternative value ('dynamic typing is a mode of use of static typing'). The 
+      dimension relationship should be read as permitting subsumption/coexistence, not strict 
+      exclusivity; this is a modeling concern for the dimension structure generally, not unique to 
+      this node.
+    dimension: static-dynamic-typing-discipline
+    cross_cutting: false
+    aliases:
+      - dynamically typed
+      - latently typed
+    realizes:
+      - type-checking
+    layer: 3
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: type-inference
+    from_candidates:
+      - type-inference
+    kind: concept
+    id: type-inference
+    name: Type Inference
+    summary: Automatically determining the type of an expression from context, so the programmer 
+      need not write explicit type annotations.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 147
+        chunk_id: krishnamurthi-plai#c00202
+      - source: pierce-attapl-2004
+        locator: §10.1
+        chunk_id: pierce-attapl-2004#c00619
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c76d651d8a4f
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Kept as a general concept distinct from the specific unification-based algorithm family 
+      that implements it.
+  - key: unification-based-inference
+    from_candidates:
+      - unification-based-inference
+    kind: concept
+    id: unification-based-inference
+    name: Unification-Based Type Inference
+    summary: An inference algorithm family, exemplified by Algorithm W and Hindley-Milner, that 
+      solves type equations by unifying type variables under generated constraints.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §22.8
+        chunk_id: pierce-tapl-2002#c00718
+        quote: A number of type reconstruction algorithms have been proposed, notably the classic 
+          Algorithm W (Damas and Milner)
+      - source: krishnamurthi-plai
+        locator: p. 147
+        chunk_id: krishnamurthi-plai#c00202
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-f6f83543daeb
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Separated from type-inference because it names a specific algorithmic technique rather 
+      than the general phenomenon.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: principal-type
+    from_candidates:
+      - principal-type
+    kind: concept
+    id: principal-type
+    name: Principal Type
+    summary: The most general type an inference algorithm can assign to a term, from which every 
+      other valid typing is obtainable by substitution or instantiation.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §22.8
+        chunk_id: pierce-tapl-2002#c00718
+        quote: Notions of principal types for the lambda-calculus go back at least to the work of 
+          Curry
+      - source: pierce-attapl-2004
+        locator: §10.1
+        chunk_id: pierce-attapl-2004#c00619
+      - source: haskell-2010-report
+        locator: §4.1.4
+        chunk_id: haskell-2010-report#c00094
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-20625642004d
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: A property of inference results, distinct enough from the inference process itself to 
+      warrant its own node.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: subtyping
+    from_candidates:
+      - subtyping
+    kind: concept
+    id: subtyping
+    name: Subtyping
+    summary: A relation allowing one type to be used safely wherever another was expected, letting 
+      values of the subtype substitute for the supertype.
+    evidence:
+      - source: jordan-et-al-2015
+        locator: p. 5
+        chunk_id: jordan-et-al-2015#c00016
+        quote: Subtyping allows two types to be compatible, without being the same
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00527
+        quote: checking whether one type is a subtype of another
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c715921dea56
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Kept as the general relation concept, with the nominal/structural question carved 
+      separately as a layer-3 design-choice dimension.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: structural-typing
+    from_candidates:
+      - structural-vs-nominal-typing
+    kind: feature
+    id: structural-typing
+    name: Structural Typing
+    summary: A discipline in which subtyping and type equivalence are decided by comparing the shape
+      of type definitions, independent of any declared name.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00525
+      - source: pierce-attapl-2004
+        locator: §8.2
+        chunk_id: pierce-attapl-2004#c00459
+        quote: Structural matching is based entirely on the requirements imposed by the signature, 
+          without requiring any declarations.
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id: d-01-typing-012
+    status: verified
+    verification: &id001
+      fact_id: f-9429acaa4472
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Split out of the survey's single structural-vs-nominal-typing candidate into its own 
+      feature node so it can stand as one value of the axis.
+    dimension: structural-vs-nominal-typing
+    cross_cutting: false
+    aliases:
+      - structural subtype relation
+    realizes:
+      - subtyping
+      - type-equivalence
+    layer: 3
+    drop_reason: "split into structural-typing, structural-type-equivalence: The wrong-atomization challenge
+      is upheld on the proposer's own re-examination of the evidence, not merely asserted: pierce-tapl-2002#c00525
+      (the terminological anchor for \"structural typing\") is stated purely in subtyping terms, and the
+      proposer's second evidence line (pierce-attapl-2004#c00459) turns out on closer reading to also
+      be about subtyping (signature-matching-as-subsumption, pierce-attapl-2004#c00458-459), not equivalence
+      — so neither citation attached to the original carve actually supports `type-equivalence` as a realizes-target.
+      The genuinely separate equivalence material (sebesta-copl#c00562-564, scott-plp#c00421-423) describes
+      a symmetric sameness judgment with no subsumption/preorder structure, independently and consistently
+      distinguished by both authors from subtyping. No source in the debate unifies \"structural subtyping\"\
+      \ and \"structural type equivalence\" as one mechanism; ATTAPL's \"Structural Type Equivalence\"\
+      \ section (pierce-attapl-2004#c00573), raised by challenger-b, documents the equivalence-side use
+      of the word \"structural\" but doesn't bridge the two into a single discipline either — it instead
+      confirms they are separately-named phenomena under a shared adjective. The binary nominal/structural
+      axis itself, the no-declaration framing, and the layer-3 (discipline-over-existing-relation) placement
+      are all well attested and unchallenged, so the fix is a clean split rather than a drop: keep structural-typing
+      scoped to subtyping alone, and spin off a sibling structural-type-equivalence node on its own dimension,
+      exactly as the proposer's concession recommends."
+  - key: nominal-typing
+    from_candidates:
+      - structural-vs-nominal-typing
+    kind: feature
+    id: nominal-typing
+    name: Nominal Typing
+    summary: A discipline, as in Java, in which subtyping and type equivalence require explicit, 
+      name-based declaration rather than structural comparison.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00525
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00527
+      - source: pierce-attapl-2004
+        locator: §8.2
+        chunk_id: pierce-attapl-2004#c00459
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id: d-01-typing-009
+    status: dropped
+    verification:
+      fact_id: f-65df31f4f591
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: The other half of the same split; the two features together are the dimension's two 
+      exclusive values.
+    dimension: structural-vs-nominal-typing
+    cross_cutting: false
+    aliases:
+      - nominal type systems
+      - nominal subtype relation
+    realizes:
+      - subtyping
+    layer: 3
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: duck-typing
+    from_candidates:
+      - duck-typing
+    kind: feature
+    id: duck-typing
+    name: Duck Typing
+    summary: An informal, colloquial name for checking at run time whether an object supports the 
+      operations used on it, loosely related to but not formally identical with structural typing 
+      theory.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 167
+        chunk_id: krishnamurthi-plai#c00232
+      - source: scott-plp
+        locator: pp. 425–426
+        chunk_id: scott-plp#c00398
+        quote: fully dynamic typing allows the programmer to apply arbitrary operations to arbitrary
+          objects. Only at run time does the language implementation check to see that the objects 
+          actually implement the requested operations.
+    contested:
+      - ontologist-flagged
+    debate_id: d-01-typing-002
+    status: dropped
+    verification:
+    note: Kept off the structural-vs-nominal dimension because sources call it an informal, not 
+      formally equivalent, runtime notion rather than a type-theoretic discipline. Uncertain whether
+      this deserves its own node versus being folded as an alias/informal-name note under 
+      structural-typing or dynamic-typing; sources treat it as colloquial, not a rigorous design 
+      point.
+    dimension:
+    cross_cutting: true
+    aliases: []
+    realizes:
+      - subtyping
+    layer: 2
+    drop_reason: "merged into structural-typing: Both missing-source challenges and the wrong-atomization
+      challenge are upheld; the proposer conceded all three after re-checking the passages, and the record
+      bears this out.\n\n(1) The carve's listed evidence chunk krishnamurthi-plai#c00232 is a 'Do Now'/exercise
+      prompt about representing a tree method in Java — it never mentions duck typing or structural typing,
+      so the carve's primary citation does not support its own summary. The sentence that actually motivates
+      the carve (\"the Internet appears to have decided to call this 'duck' typing... there is no actual
+      theory of duck typing to compare against well-defined theories of structural typing\") is krishnamurthi-plai#c00235,
+      which the carve never cites.\n\n(2) The second evidence item, scott-plp pp. 425–426 (#c00398, and
+      the related #c00680), never uses \"duck typing\" or any synonym anywhere — it is Scott's general
+      treatment of dynamic type checking and late-bound polymorphism. The proposer's \"straddles two literatures\"\
+      \ argument — the load-bearing reason given for minting a standalone, dual-rooted node rather than
+      folding the term under one parent — rested on pairing this passage with the duck-typing summary
+      by thematic analogy (both are runtime checks), not on any source that calls this mechanism \"duck
+      typing.\" That manufactured second anchor is exactly what justified `cross_cutting: True` and the
+      refusal to pick a parent; with it gone, the sourced claim collapses to a single anchor.\n\n(3) With
+      only krishnamurthi-plai#c00235 standing, the sole source that actually names the term explicitly
+      denies it has a corresponding theory (\"no actual theory of duck typing to compare against well-defined
+      theories of structural typing\") and scopes it exclusively to structural typing. Per the project's
+      own feature definition (\"a realisation of a concept within a family of related systems\"), a term
+      whose only citing source denies it has a theory of its own is not a second feature realization —
+      it is a colloquial alias for the feature structural-typing already names. The carve's own note flagged
+      this exact doubt and resolved it the wrong way, propped up by the now-refuted scott-plp anchor.\n\
+      \nResolution, per the converged position of proposer and both challengers: fold \"duck typing\"\
+      \ into `structural-typing` as an alias/informal-name fact, citing only krishnamurthi-plai#c00235,
+      with text close to the source (an informal/colloquial Internet name, with no attendant theory, used
+      loosely for structural typing). Drop the scott-plp#c00398 citation and the cross_cutting/dual-realizes
+      framing that depended on it. No standing dissent — all three debate participants agree on this outcome
+      after inspecting the primary sources."
+  - key: variance
+    from_candidates:
+      - variance
+    kind: concept
+    id: variance
+    name: Variance
+    summary: "How the subtyping of a generic type's argument propagates to the subtyping of the whole
+      generic type: covariantly, contravariantly, or invariantly."
+    evidence:
+      - source: rust-reference
+        locator: pp. 455–456
+        chunk_id: rust-reference#c00595
+        quote: F<T> is covariant over T if T being a subtype of U implies that F<T> is a subtype of 
+          F<U>
+      - source: rust-fls
+        locator: § 4.14.2. Subtyping and Variance¶
+        chunk_id: rust-fls#c00099
+        quote: Variance is a property of lifetime parameters and type parameters that describes the 
+          circumstances under which a generic type is a subtype of an instantiation of itself
+      - source: ecma-335-6th
+        locator: p. 158
+        chunk_id: ecma-335-6th#c00323
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-22cecf02e702
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Kept as a single concept rather than three features because the survey supplied no 
+      independent evidence treating covariant/contravariant/invariant as separately realized 
+      language features.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: array-covariance-unsoundness
+    from_candidates:
+      - array-covariance-unsoundness
+    kind: feature
+    id: array-covariance-unsoundness
+    name: Unsound Array Covariance With Dynamic Check
+    summary: A design choice, notably in Java, that makes arrays covariant despite the unsoundness 
+      this introduces, compensated by a mandatory runtime store-type check on every array write.
+    evidence:
+      - source: ecma-335-6th
+        locator: p. 158
+        chunk_id: ecma-335-6th#c00323
+        quote: Suppose we have a generic interface, which is covariant in its one generic parameter
+      - source: rust-reference
+        locator: pp. 455–456
+        chunk_id: rust-reference#c00595
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-aa60ba282755
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Could not be made a layer-3 dimension member because no second, independently-evidenced 
+      value (e.g. sound invariant arrays) was supplied in this cycle's candidates.
+    dimension:
+    cross_cutting: true
+    aliases:
+      - ArrayStoreException check
+    realizes:
+      - variance
+      - subsumption
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: polymorphism
+    from_candidates:
+      - polymorphism
+    kind: concept
+    id: polymorphism
+    name: Polymorphism
+    summary: The property of a type system that lets a single piece of code, or a single value, be 
+      used at more than one type.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00726
+        quote: Type systems that allow a single piece of code to be used with multiple types are 
+          collectively known as polymorphic systems
+      - source: cardelli-wegner-1985
+        locator: p. 5
+        chunk_id: cardelli-wegner-1985#c00013
+      - source: scott-plp
+        locator: p. 228
+        chunk_id: scott-plp#c00213
+        quote: It is applied to code—both data structures and subroutines—that can work with values 
+          of multiple types.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-abca6e069538
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Umbrella concept over the varieties, kept separate from the design-choice dimension that 
+      classifies its mutually-comparable realizations.
+  - key: parametric-polymorphism
+    from_candidates:
+      - parametric-polymorphism
+    kind: feature
+    id: parametric-polymorphism
+    name: Parametric Polymorphism (Generics)
+    summary: Polymorphism where code is written generically using type variables and instantiated at
+      particular types, with every instance behaving uniformly.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00726
+      - source: sebesta-copl
+        locator: §9.10
+        chunk_id: sebesta-copl#c00758
+        quote: Parametric polymorphism is provided by a subprogram that takes generic parameters
+      - source: scott-plp
+        locator: p. 228
+        chunk_id: scott-plp#c00213
+        quote: In parametric polymorphism the code takes a type (or set of types) as a parameter
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-016
+    status: verified
+    verification:
+      fact_id: f-d56742e0b37a
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: One of the mutually comparable varieties of polymorphism Strachey/Cardelli-Wegner/Pierce 
+      classify, hence a dimension member.
+    dimension: polymorphism-variety
+    cross_cutting: false
+    aliases:
+      - generics
+      - generic functions
+      - genericity
+    realizes:
+      - polymorphism
+    layer: 3
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: ad-hoc-polymorphism
+    from_candidates:
+      - ad-hoc-polymorphism
+    kind: feature
+    id: ad-hoc-polymorphism
+    name: Ad Hoc Polymorphism (Overloading)
+    summary: Polymorphism where a function symbol has multiple, potentially unrelated 
+      implementations chosen per call site based on argument number or type.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00726
+      - source: cardelli-wegner-1985
+        locator: p. 5
+        chunk_id: cardelli-wegner-1985#c00013
+        quote: In overloading the same variable name is used to denote different functions, and the 
+          context is used to decide which function is denoted
+      - source: sebesta-copl
+        locator: §9.10
+        chunk_id: sebesta-copl#c00758
+    contested:
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-242ed7839389
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Second value of the polymorphism-variety axis.
+    dimension: polymorphism-variety
+    cross_cutting: false
+    aliases:
+      - overloading
+    realizes:
+      - polymorphism
+    layer: 3
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: subtype-polymorphism
+    from_candidates:
+      - subtype-polymorphism
+    kind: feature
+    id: subtype-polymorphism
+    name: Subtype Polymorphism (Inclusion Polymorphism)
+    summary: Polymorphism where a value of a subtype can be used wherever a value of a non-disjoint 
+      supertype is expected, via the rule of subsumption.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00728
+      - source: sebesta-copl
+        locator: §9.10
+        chunk_id: sebesta-copl#c00758
+        quote: Subtype polymorphism means that a variable of type T can access any object of type T 
+          or any type derived from T.
+    contested:
+      - new-dimension
+    debate_id: d-01-typing-017
+    status: verified
+    verification:
+      fact_id: f-dfbba61695c2
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: Third value of the polymorphism-variety axis; exclusivity is multi because sources 
+      explicitly note languages mix varieties (e.g. Java has subtyping+overloading, ML has 
+      parametric+overloading).
+    dimension: polymorphism-variety
+    cross_cutting: false
+    aliases:
+      - inclusion polymorphism
+    realizes:
+      - polymorphism
+      - subtyping
+    layer: 3
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: let-polymorphism
+    from_candidates:
+      - let-polymorphism
+    kind: concept
+    id: let-polymorphism
+    name: Let-Polymorphism (ML-Style)
+    summary: A restricted form of parametric polymorphism confined to top-level let-bindings, 
+      trading first-class polymorphism for automatic, decidable type reconstruction.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00726
+      - source: pierce-tapl-2002
+        locator: §22.7
+        chunk_id: pierce-tapl-2002#c00715
+    contested: []
+    debate_id: d-01-typing-018
+    status: verified
+    verification:
+      fact_id: f-fb85d56d9804
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: Kept as a concept (a restriction/variant on parametric polymorphism as a theoretical 
+      device) rather than forced into the polymorphism-variety dimension, since it specializes an 
+      existing value rather than naming a new one.
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: bounded-quantification
+    from_candidates:
+      - bounded-quantification
+    kind: concept
+    id: bounded-quantification
+    name: Bounded Quantification
+    summary: A form of parametric polymorphism in which a type variable is constrained to range only
+      over subtypes of some given bound type.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00726
+      - source: pierce-tapl-2002
+        locator: §22.8
+        chunk_id: pierce-tapl-2002#c00718
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7a65adb3941e
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: A concept combining parametric polymorphism with subtyping, kept at concept level since it
+      is a theoretical refinement rather than an independently exclusive design choice.
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: type-classes
+    from_candidates:
+      - type-classes
+    kind: feature
+    id: type-classes
+    name: Type Classes
+    summary: A structured mechanism, as in Haskell, for introducing named groups of overloaded 
+      operations that types can be declared instances of, with inference deciding which instance 
+      applies.
+    evidence:
+      - source: haskell-2010-report
+        locator: §4.1.4
+        chunk_id: haskell-2010-report#c00094
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c1a827a4c2ba
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: A specific structured realization of ad-hoc polymorphism rather than an independent value 
+      of the polymorphism-variety axis, so marked cross-cutting instead of given its own dimension 
+      slot.
+    dimension:
+    cross_cutting: true
+    aliases: []
+    realizes:
+      - polymorphism
+    layer: 2
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: existential-types
+    from_candidates:
+      - existential-types
+      - abstract-data-type-via-existentials
+    kind: concept
+    id: existential-types
+    name: Existential Types
+    summary: A type formed by pairing a hidden representation type with operations on it, giving 
+      formal grounding to data abstraction and information hiding as found in abstract data types. 
+      The connection often drawn to ML-style module systems is analogical rather than a full formal 
+      foundation (Pierce TAPL §24.4; ATTAPL §8.5).
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §24.1
+        chunk_id: pierce-tapl-2002#c00777
+        quote: a value {*S,t} of type {$X,T} as a simple form of package or module with one (hidden)
+          type component and one term component
+      - source: pierce-tapl-2002
+        locator: p. 350
+        chunk_id: pierce-tapl-2002#c00786
+        quote: the typing rules for existential packages ensure that the rest of the program cannot 
+          depend on the ADT's internal representation
+      - source: cardelli-wegner-1985
+        locator: §4.2
+        chunk_id: cardelli-wegner-1985#c00058
+    contested:
+      - merged-candidates
+    debate_id: d-01-typing-005
+    status: verified
+    verification:
+      fact_id: f-86d480d346db
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Merged the survey's abstract-data-type-via-existentials candidate into this node since 
+      both describe the same construct at different levels of abstraction, not two distinct things.
+  - key: type-soundness
+    from_candidates:
+      - type-soundness
+    kind: concept
+    id: type-soundness
+    name: Type Soundness
+    summary: The property that well-typed programs cannot go wrong, established by combining 
+      preservation (well-typedness survives reduction) with progress (well-typed terms are never 
+      stuck).
+    evidence:
+      - source: pierce-attapl-2004
+        locator: §10.5
+        chunk_id: pierce-attapl-2004#c00673
+      - source: turbak-gifford-dcpl
+        locator: §11.6.1
+        chunk_id: turbak-gifford-dcpl#c01018
+      - source: pierce-attapl-2004
+        locator: §10.5
+        chunk_id: pierce-attapl-2004#c00681
+        quote: Well-typed source programs do not go wrong.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d6cdd5be22ee
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Single concept uniting the two named sub-lemmas, which sources never treat as 
+      independently realized features.
+  - key: subsumption
+    from_candidates:
+      - subsumption
+    kind: concept
+    id: subsumption
+    name: Subsumption
+    summary: The typing rule that lets a term of a subtype be used wherever a term of one of its 
+      supertypes is expected, without changing the term's identity.
+    evidence:
+      - source: harper-pfpl
+        locator: p. 248
+        chunk_id: harper-pfpl#c00382
+        quote: Subsumption is used to weaken the type to dyn in those cases where no accurate static
+          prediction can be made
+      - source: pierce-tapl-2002
+        locator: §23.2
+        chunk_id: pierce-tapl-2002#c00728
+        quote: gives a single term many types using the rule of subsumption, allowing us to 
+          selectively "forget" information about the term's behavior
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b52366463247
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: The rule underlying subtype-polymorphism, kept distinct since it is a typing-judgment 
+      mechanism rather than the polymorphism phenomenon itself.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: algebraic-data-types
+    from_candidates:
+      - algebraic-data-types
+    kind: feature
+    id: algebraic-data-types
+    name: Algebraic Data Types
+    summary: A type defined as a sum of variants, each a product of fields, typically supporting 
+      recursive definitions and deconstruction by pattern matching.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.9
+        chunk_id: ghc-users-guide#c00693
+      - source: haskell-2010-report
+        locator: §4.1.4
+        chunk_id: haskell-2010-report#c00094
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-1f8fb505fb39
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: No single already-minted concept captures what sum-of-products typing contributes on its 
+      own, so realizes is left empty rather than forced onto an ill-fitting target.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - sum of products
+      - tagged union
+      - variant type
+    realizes: []
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: gadt
+    from_candidates:
+      - gadt
+    kind: feature
+    id: gadt
+    name: Generalized Algebraic Data Types (GADTs)
+    summary: An extension of algebraic data types where constructors may return more specific, 
+      non-uniform instantiations of the type, driving type refinement on pattern match.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.9
+        chunk_id: ghc-users-guide#c00693
+        quote: The key point about GADTs is that pattern matching causes type refinement.
+      - source: ghc-users-guide
+        locator: §6.4.9
+        chunk_id: ghc-users-guide#c00695
+      - source: ghc-users-guide
+        locator: §6.4.8
+        chunk_id: ghc-users-guide#c00683
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c2843897b021
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Specializes the algebraic-data-types feature rather than realizing a concept directly; see
+      structure-friction finding on feature-specializes-feature.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - GADT-style syntax
+    realizes:
+      - type-refinement
+    layer: 2
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: type-refinement
+    from_candidates:
+      - type-refinement
+    kind: concept
+    id: type-refinement
+    name: Type Refinement
+    summary: Narrowing a type variable to a more specific type within a branch of code, driven 
+      either by pattern matching on a GADT or by explicit runtime predicate checks.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.9
+        chunk_id: ghc-users-guide#c00693
+      - source: krishnamurthi-plai
+        locator: pp. 158–159
+        chunk_id: krishnamurthi-plai#c00218
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-95b3d47f205a
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Spans both the GADT and the union-types/if-splitting mechanisms, justifying a single 
+      shared concept node.
+  - key: union-types
+    from_candidates:
+      - union-types
+    kind: feature
+    id: union-types
+    name: Union Types
+    summary: A type formed as a collection of pre-existing types, more flexible than algebraic 
+      datatypes since a type may join several unions, but correspondingly harder to infer.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: pp. 158–159
+        chunk_id: krishnamurthi-plai#c00218
+      - source: krishnamurthi-plai
+        locator: p. 160
+        chunk_id: krishnamurthi-plai#c00220
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9ea8c3eb1738
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Realizes type-refinement because the chapter's main payoff for union types is exactly the 
+      if-splitting narrowing mechanism.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - type-refinement
+    layer: 2
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: isorecursive-types
+    from_candidates:
+      - recursive-types
+    kind: feature
+    id: isorecursive-types
+    name: Iso-Recursive Types
+    summary: A formalization of recursive types in which a recursive type and its one-step unfolding
+      are distinct but isomorphic, requiring explicit fold/unfold conversions.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §20.2
+        chunk_id: pierce-tapl-2002#c00574
+      - source: pierce-tapl-2002
+        locator: §20.2
+        chunk_id: pierce-tapl-2002#c00575
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id: d-01-typing-008
+    status: dropped
+    verification:
+      fact_id: f-eb0c4ea89d0c
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Split out of the single recursive-types candidate because sources (Pierce, Turbak & 
+      Gifford) present iso- vs equi- as a genuine two-valued design choice for how recursive types 
+      are formalized.
+    dimension: recursive-type-formation
+    cross_cutting: false
+    aliases:
+      - isorecursive types
+    realizes: []
+    layer: 3
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: equirecursive-types
+    from_candidates:
+      - recursive-types
+    kind: feature
+    id: equirecursive-types
+    name: Equi-Recursive Types
+    summary: A formalization of recursive types in which a recursive type is definitionally equal to
+      its own unfolding, with equivalence checked by the typechecker rather than witnessed by 
+      conversions.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §20.2
+        chunk_id: pierce-tapl-2002#c00574
+        quote: The equi-recursive approach takes these two type expressions as definitionally equal 
+          — interchangeable in all contexts
+      - source: turbak-gifford-dcpl
+        locator: §11.8.6
+        chunk_id: turbak-gifford-dcpl#c01066
+      - source: pierce-tapl-2002
+        locator: §20.2
+        chunk_id: pierce-tapl-2002#c00575
+        quote: The equi-recursive style is arguably more intuitive, but places stronger demands on 
+          the typechecker
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id: d-01-typing-003
+    status: verified
+    verification:
+      fact_id: f-56724e5664a8
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Other exclusive value of the recursive-type-formation axis.
+    dimension: recursive-type-formation
+    cross_cutting: false
+    aliases:
+      - equirecursive types
+    realizes:
+      - type-soundness
+    layer: 3
+  - key: dependent-types
+    from_candidates:
+      - dependent-types
+    kind: feature
+    id: dependent-types
+    name: Dependent Types
+    summary: A type system in which types can be indexed by, and depend on, ordinary program values,
+      generalizing the function arrow type to a dependent product.
+    evidence:
+      - source: pierce-attapl-2004
+        locator: §2.7
+        chunk_id: pierce-attapl-2004#c00118
+      - source: pierce-tapl-2002
+        locator: §30.5.1
+        chunk_id: pierce-tapl-2002#c00980
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-4dd90267a97c
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Not placed at layer 3 because the natural axis it belongs to is the lambda cube's three 
+      orthogonal dimensions, which this cycle's candidates cannot fully populate; see 
+      structure-friction finding.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - pure-type-systems
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: pure-type-systems
+    from_candidates:
+      - pure-type-systems
+    kind: concept
+    id: pure-type-systems
+    name: Pure Type Systems / Lambda Cube
+    summary: A uniform classification framework, exemplified by the Barendregt cube, organizing 
+      calculi by whether they add polymorphism, type operators, and/or dependent types to simple 
+      typed lambda-calculus.
+    evidence:
+      - source: pierce-attapl-2004
+        locator: §2.7
+        chunk_id: pierce-attapl-2004#c00118
+      - source: pierce-tapl-2002
+        locator: §30.5.1
+        chunk_id: pierce-tapl-2002#c00980
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c5b64a8bf9a2
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Kept as a concept describing the classification scheme itself, not forced into the 
+      dimension model which cannot yet express a three-axis cube.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: kind
+    from_candidates:
+      - kind
+    kind: concept
+    id: kind
+    name: Kind
+    summary: A classifier one level above types, describing the arity and shape of type constructors
+      so that higher-order type operators can themselves be well-formed.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00763
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00766
+        quote: 'inferred kind: Proxy :: k -> Type'
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3d179286e2a0
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Kept as a concept parallel to, and one level above, 'type'.
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: kind-polymorphism
+    from_candidates:
+      - kind-polymorphism
+    kind: feature
+    id: kind-polymorphism
+    name: Kind Polymorphism / Higher-Kinded Types
+    summary: Generalizing polymorphism one level up so that type constructors, not just ordinary 
+      types, can themselves be abstracted over kinds.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00766
+        quote: 'inferred kind: Compose :: (b -> Type) -> (a -> b) -> a -> Type'
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00763
+    contested:
+      - single-source
+    debate_id: d-01-typing-019
+    status: dropped
+    verification:
+      fact_id: f-bcf12bdda971
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Related to, but one level removed from, the polymorphism-variety dimension, so marked 
+      cross-cutting rather than added as a fourth variety.
+    dimension:
+    cross_cutting: true
+    aliases:
+      - higher-kinded types
+    realizes:
+      - polymorphism
+      - kind
+    layer: 2
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: "split into kind-quantification, ghc-kind-polymorphism: The single-source flag that triggered
+      this debate is resolved on the merits (harper-pfpl, pierce-attapl, turbak-gifford-dcpl, bruce-longo-1990
+      independently treat type-constructor/kind quantification as a textbook concept, not a GHC idiosyncrasy)
+      — but that resolution surfaced two deeper, well-evidenced problems that the proposer itself conceded
+      after rereading the cited passages, so the carve cannot simply stand with added citations.\n\nwrong-atomization
+      (challenger-b) is upheld: the cited texts show two distinguishable mechanisms conflated under one
+      summary/alias pair. Harper's F-ω kind grammar is closed and variable-free (harper-pfpl#c00295: \"\
+      Kind κ ::= Type | Unit | Prod(κ1;κ2) | Arr(κ1;κ2)\") — its \"higher kinds\" (harper-pfpl#c00293/#c00298)
+      is quantification over constructors at a fixed, already-concrete kind (e.g. T→T), never over the
+      kind itself. GHC's \"kind polymorphism\" (ghc-users-guide#c00741/#c00742/#c00762) is explicitly
+      quantification over the kind *variable* k, a further level up, with its own machinery (visible kind
+      variables, higher-rank kinds) that has no counterpart in Harper's closed grammar. One node/alias
+      pair with a single evidence list erases that gap.\n\nwrong-layer (challenger-a) is upheld for the
+      same underlying reason: Harper presents kind-quantification as a theory-level generalization of
+      the quantification principle (F→F-ω), stated independent of any language — concept-level content
+      per this ontology's own concept/feature definitions — while GHC's own documentation (ghc-users-guide#c00741)
+      explicitly separates its standing, always-in-effect kind system from PolyKinds as the specific extension
+      exposing kind-variable quantification to programmers. Collapsing both into one kind:feature/layer:2
+      node, with 'polymorphism'/'kind' demoted to mere `realizes` targets, inverts the concept/feature
+      split rather than modeling the concept with GHC's PolyKinds as a feature-level realization of it.\n\
+      \nThe proposer's own proposed remedy — split into a concept-level node capturing Harper's fixed-kind
+      quantification over constructors (aliased \"higher-kinded types\"), and a feature-level node for
+      GHC's PolyKinds specifically (quantification over the kind variable itself, aliased \"kind polymorphism\"\
+      ), with the feature realizing the concept — directly answers both challenges using only evidence
+      already verified on the record. I'm adopting that split rather than escalating, since the two resulting
+      nodes, their levels, and their evidence are already settled by the debate text itself."
+  - key: gradual-typing
+    from_candidates:
+      - gradual-typing
+    kind: feature
+    id: gradual-typing
+    name: Gradual Typing
+    summary: A discipline in which a program is made progressively more statically typed over time, 
+      either by freely intermixing typed and untyped code within one language (micro gradual typing)
+      or by migrating code between sibling typed/dynamic languages at import boundaries (macro 
+      gradual typing).
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 173
+        chunk_id: krishnamurthi-plai#c00240
+      - source: krishnamurthi-plai
+        locator: p. 174
+        chunk_id: krishnamurthi-plai#c00241
+        quote: In gradual typing, we are going to add annotations to programs and then type-check 
+          the program.
+    contested:
+      - new-dimension
+      - single-source
+    debate_id: d-01-typing-006
+    status: verified
+    verification:
+      fact_id: f-a901fd98ce9e
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Third exclusive value on the typing-discipline-time axis alongside static and dynamic.
+    dimension: static-dynamic-typing-discipline
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - type-checking
+    layer: 3
+  - key: hybrid-typing
+    from_candidates:
+      - hybrid-typing
+    kind: feature
+    id: hybrid-typing
+    name: Hybrid Typing
+    summary: A static type system enriched with a single designated type `dyn`, described by Harper 
+      as embedding dynamic typing within static typing rather than opposing it; `dyn`'s values carry
+      run-time class tags via explicit new/cast/inst operations.
+    evidence:
+      - source: harper-pfpl
+        locator: §24.1
+        chunk_id: harper-pfpl#c00362
+      - source: harper-pfpl
+        locator: §23.3
+        chunk_id: harper-pfpl#c00355
+    contested:
+      - new-dimension
+      - single-source
+    debate_id: d-01-typing-007
+    status: dropped
+    verification:
+    note: "Not a sibling discipline-value: Harper's own argument (harper-pfpl#c00361, #c00399, #c00346)
+      is that hybrid typing dissolves the static/dynamic opposition by embedding dyn as one type within
+      an otherwise static system, which the discipline axis's exclusive-value model cannot represent.
+      The prior contrast with gradual typing is removed pending a source that actually compares the two
+      mechanisms."
+    dimension:
+    cross_cutting: false
+    aliases:
+      - hybrid language
+    realizes:
+      - type-checking
+    layer: 3
+    drop_reason: 'Structure misfit for the D70 review: a layer-3 feature that the debate ruled belongs
+      to no dimension, but the feature schema requires a dimension at layer 3. Re-atomize after the structure
+      review.'
+  - key: retrofitted-type-system
+    from_candidates:
+      - retrofitted-type-system
+    kind: feature
+    id: retrofitted-type-system
+    name: Retrofitted Type System
+    summary: A static type system added after the fact onto a previously dynamic language, designed 
+      around that language's existing idiomatic code patterns such as flow-sensitive tag checks.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 160
+        chunk_id: krishnamurthi-plai#c00220
+        quote: This idea was invented by Typed Racket by studying how programmers write code in 
+          Scheme and Racket programs. It has later proved to be relevant to many real-world 
+          retrofitted type systems.
+      - source: krishnamurthi-plai
+        locator: pp. 162–163
+        chunk_id: krishnamurthi-plai#c00225
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-aaf45c42c887
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Describes a design strategy that typically delivers gradual typing in practice, but is not
+      itself a value on the discipline axis, so kept cross-cutting rather than a dimension member.
+    dimension:
+    cross_cutting: true
+    aliases:
+      - Typed Racket
+    realizes:
+      - type-checking
+    layer: 2
+    waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: type-coercion
+    from_candidates:
+      - type-coercion
+    kind: feature
+    id: type-coercion
+    name: Type Coercion
+    summary: An implicit, compiler- or runtime-inserted conversion of a value from one type to 
+      another at a restricted set of program locations, distinct from an explicit cast.
+    evidence:
+      - source: cardelli-wegner-1985
+        locator: p. 5
+        chunk_id: cardelli-wegner-1985#c00013
+      - source: sebesta-copl
+        locator: §6.14
+        chunk_id: sebesta-copl#c00561
+      - source: scott-plp
+        locator: p. 228
+        chunk_id: scott-plp#c00213
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-70c1b28770c2
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Kept distinct from ad-hoc-polymorphism/overloading because sources explicitly contrast the
+      two as different resolutions of apparent type mismatch.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - type conversion
+      - implicit conversion
+    realizes:
+      - type-checking
+    layer: 2
+  - key: type-equivalence
+    from_candidates:
+      - type-equivalence
+    kind: concept
+    id: type-equivalence
+    name: Type Equivalence (Name vs. Structure)
+    summary: 'The rule deciding when two type expressions denote the same type: by declared name identity,
+      or by comparing their structural definitions.'
+    evidence:
+      - source: sebesta-copl
+        locator: §6.15
+        chunk_id: sebesta-copl#c00567
+        quote: Ada uses a highly restrictive form of name type equivalence.
+      - source: scott-plp
+        locator: pp. 461–463
+        chunk_id: scott-plp#c00439
+        quote: Discuss the comparative advantages of structural and name equivalence for types.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-052c778032ab
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Named as the open question that the structural-vs-nominal-typing dimension's two features 
+      answer, both for subtyping and for plain equivalence.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: strong-weak-typing
+    from_candidates:
+      - strong-weak-typing
+    kind: concept
+    id: strong-weak-typing
+    name: Strong vs. Weak Typing
+    summary: A contested discourse axis judging a language by how reliably it detects or disallows 
+      type misuses, defined inconsistently and sometimes operationally incompatibly across sources —
+      ranging from graded, enforcement/loophole-based accounts (Cardelli & Wegner, Scott, Sebesta) 
+      to a binary, proof-theoretic criterion (Harper's Preservation+Progress safety theorem). 
+      Treated here as a terminological node documenting the disagreement, not as a concept with one 
+      agreed identity criterion.
+    evidence:
+      - source: cardelli-wegner-1985
+        locator: §1
+        chunk_id: cardelli-wegner-1985#c00009
+      - source: scott-plp
+        locator: pp. 538–539
+        chunk_id: scott-plp#c00518
+    contested:
+      - ontologist-flagged
+    debate_id: d-01-typing-011
+    status: verified
+    verification:
+      fact_id: f-046797bce879
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: "Kept as a single terminological concept node rather than split per source tradition, because
+      the sources jointly document one named, widely-invoked discourse axis rather than several unrelated
+      ideas sharing a name by accident (Kaijanaho explicitly frames it this way; Harper's formal safety-theorem
+      treatment and the folk strong/weak vocabulary point at the same underlying concern from different
+      formality levels). However, the sources give operationally incompatible classifiers, not just differently-worded
+      versions of one test: type-consistency-of-expressions (Cardelli & Wegner), graded enforcement/loophole
+      coverage (Scott), all-errors-always-detected (Sebesta), enforcement-exists-at-all lumping static+dynamic
+      (Van Roy & Haridi), and a binary proved syntactic theorem (Harper) — these can disagree on the same
+      language. This concept therefore has no single stable criterion for feature instances to realize.
+      Any future feature-instance or feature work authored against this concept must explicitly name which
+      source's criterion it is satisfying; it must not treat the node as a shared yardstick. Whether this
+      eventually warrants a per-tradition split is an open design question, not resolved by this note."
+  - key: runtime-type-tag
+    from_candidates:
+      - runtime-type-tag
+    kind: concept
+    id: runtime-type-tag
+    name: Runtime Type Tag / Class
+    summary: A run-time marker attached to a dynamically-typed value recording which class or kind 
+      it belongs to, checked before an operation on it may proceed.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: pp. 165–166
+        chunk_id: krishnamurthi-plai#c00230
+      - source: harper-pfpl
+        locator: p. 248
+        chunk_id: harper-pfpl#c00382
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9e301c5a25fd
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: Distinguished explicitly by sources from a 'type' proper, so kept as its own concept 
+      rather than merged into type-checking.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: value-restriction
+    from_candidates:
+      - value-restriction
+    kind: concept
+    id: value-restriction
+    name: Value Restriction
+    summary: A restriction in ML-style type inference that denies polymorphic generalization to 
+      non-value (expansive) expressions, preserving type soundness in the presence of mutable 
+      references.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §22.7
+        chunk_id: pierce-tapl-2002#c00715
+      - source: pierce-attapl-2004
+        locator: §10.5
+        chunk_id: pierce-attapl-2004#c00678
+      - source: pierce-attapl-2004
+        locator: §10.5
+        chunk_id: pierce-attapl-2004#c00680
+        quote: the value restriction states that only values may be generalized
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-403223d4d33c
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: Kept as a concept rather than a feature since it is a soundness-preserving restriction on 
+      let-polymorphism's theory, not an independently adopted language feature.
+  - key: generic-parameters
+    from_candidates:
+      - generic-parameters
+    kind: feature
+    id: generic-parameters
+    name: Generic Parameters (Type, Const, Lifetime)
+    summary: The formal, scoped parameters of a generic declaration, which may range over types, 
+      compile-time constants, or lifetimes depending on the language.
+    evidence:
+      - source: rust-reference
+        locator: pp. 166–167
+        chunk_id: rust-reference#c00221
+      - source: rust-fls
+        locator: § 12.1. Generic Parameters¶
+        chunk_id: rust-fls#c00273
+        quote: A generic parameter is a placeholder for a constant, a lifetime, or a type, whose 
+          constant, lifetime, or type is supplied statically by a generic argument.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-6406f0706d30
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: The concrete surface syntax that realizes parametric-polymorphism; the realizes link 
+      targets the broader concept because the feature-to-feature specialization cannot be expressed 
+      directly.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - type parameter
+      - generic argument
+    realizes:
+      - polymorphism
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: inferred-type-placeholder
+    from_candidates:
+      - inferred-type-placeholder
+    kind: feature
+    id: inferred-type-placeholder
+    name: Inferred Type Placeholder
+    summary: A syntactic placeholder, such as an underscore, written in a type position to instruct 
+      the compiler to infer the concrete type from context instead of requiring it be written out.
+    evidence:
+      - source: rust-fls
+        locator: § 4.9.1. Inferred Types¶
+        chunk_id: rust-fls#c00061
+        quote: An inferred type is a placeholder for a type deduced by type inference.
+      - source: ghc-users-guide
+        locator: §6.11.7
+        chunk_id: ghc-users-guide#c01017
+        quote: the programmer can choose which parts of a type to annotate and which to leave over 
+          to the type-checker to infer
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ff13ef6b7ffc
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: A pure surface-syntax device realizing the type-inference concept directly, with no 
+      feature-realizes-feature issue.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - inferred type
+      - typed hole
+    realizes:
+      - type-inference
+    layer: 1
+  - key: structural-typing
+    from_candidates:
+      - structural-vs-nominal-typing
+    kind: feature
+    id: structural-typing
+    name: Structural Typing
+    summary: A subtyping discipline in which the subtype relation between types is decided by 
+      comparing the shape of type (or signature) definitions, independent of any declared name.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00525
+      - source: pierce-attapl-2004
+        locator: §8.2
+        chunk_id: pierce-attapl-2004#c00458
+      - source: pierce-attapl-2004
+        locator: §8.2
+        chunk_id: pierce-attapl-2004#c00459
+        quote: Structural matching is based entirely on the requirements imposed by the signature, 
+          without requiring any declarations.
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id: d-01-typing-012
+    status: verified
+    verification: *id001
+    note: 'Narrowed from the original two-target carve after the proposer withdrew the type-equivalence
+      realizes-target on re-reading the cited evidence: both pierce-tapl-2002#c00525 and pierce-attapl-2004#c00458-459
+      are stated purely in terms of subtyping/signature-subsumption, never equivalence.'
+    layer: 3
+    dimension: structural-vs-nominal-typing
+    cross_cutting: false
+    aliases:
+      - structural subtype relation
+    realizes:
+      - subtyping
+  - key: structural-type-equivalence
+    from_candidates:
+      - structural-vs-nominal-typing
+    kind: feature
+    id: structural-type-equivalence
+    name: Structural Type Equivalence
+    summary: A type-equivalence discipline in which two separately declared types are judged the 
+      same type by comparing the shape of their definitions, a symmetric sameness relation 
+      independent of declared name and with no subsumption/preorder structure.
+    evidence:
+      - source: sebesta-copl
+        locator: §6.15
+        chunk_id: sebesta-copl#c00562
+        quote: Structure type equivalence means that two variables have equivalent types if their 
+          types have identical structures.
+      - source: scott-plp
+        locator: pp. 445–446
+        chunk_id: scott-plp#c00421
+      - source: scott-plp
+        locator: pp. 447–448
+        chunk_id: scott-plp#c00423
+    contested:
+      - split-candidate
+    debate_id: d-01-typing-012
+    status: verified
+    verification:
+      fact_id: f-dc13afcc7ec8
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-17-r4-verify-01-typing-04
+    note: "Spun off as a sibling to structural-typing per the proposer's concession: type equivalence
+      (a symmetric sameness judgment, per Scott and Sebesta) is a distinct relation from subtyping (a
+      preorder), attested by sources that never unify the two under one mechanism. Sits on its own name-vs-structural-equivalence
+      dimension, separate from structural-vs-nominal-typing. Additional evidence: sebesta-copl#c00564."
+    layer: 3
+    dimension: name-vs-structural-equivalence
+    cross_cutting: false
+    aliases:
+      - structural equivalence
+    realizes:
+      - type-equivalence
+  - key: kind-quantification
+    from_candidates:
+      - kind-polymorphism
+    kind: concept
+    id: kind-quantification
+    name: Kind Quantification (Higher-Kinded Types)
+    summary: "Generalizing the quantification principle from types to kinds: quantifying over type constructors
+      classified by a fixed, concrete kind (e.g. an existential over constructors of kind T→T), independent
+      of any particular language's syntax — the F→F-omega move."
+    evidence:
+      - source: harper-pfpl
+        locator: p. 189
+        chunk_id: harper-pfpl#c00293
+      - source: harper-pfpl
+        locator: §19.1
+        chunk_id: harper-pfpl#c00295
+      - source: harper-pfpl
+        locator: §19.3
+        chunk_id: harper-pfpl#c00298
+    contested:
+      - split-candidate
+      - single-source
+    debate_id: d-01-typing-019
+    status: verified
+    verification:
+      fact_id: f-50ea1f08037b
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: "Concept-level per the ontology's own concept/feature definitions: stated theory-independent
+      of any implementation. F-omega's kind grammar is closed (no kind-variable production), so this is
+      quantification over constructors of a fixed kind, not over kind variables themselves. realizes the
+      standing polymorphism/kind concepts; GHC's standing (always-in-effect) kind system, per ghc-users-guide#c00741,
+      is a cross-language illustration of this concept rather than evidence for the sibling feature below."
+  - key: ghc-kind-polymorphism
+    from_candidates:
+      - kind-polymorphism
+    kind: feature
+    id: ghc-kind-polymorphism
+    name: GHC Kind Polymorphism (PolyKinds)
+    summary: GHC's PolyKinds extension and kind-inference behavior quantifying over the kind 
+      variable k itself (e.g. inferring forall k. (k -> Type) -> k -> Type for App), one level 
+      beyond fixed-kind quantification over constructors, with its own machinery (visible kind 
+      variables, higher-rank kinds).
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00741
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00742
+      - source: ghc-users-guide
+        locator: §6.4.14
+        chunk_id: ghc-users-guide#c00766
+        quote: 'inferred kind: Compose :: (b -> Type) -> (a -> b) -> a -> Type'
+    contested:
+      - split-candidate
+      - single-source
+    debate_id: d-01-typing-019
+    status: verified
+    verification:
+      fact_id: f-7a0c5f9ca383
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: "Feature-level realization of kind-quantification specific to GHC/Haskell: quantifies over the
+      kind variable k itself, which F-omega's closed kind grammar structurally cannot express. Also draws
+      on ghc-users-guide#c00759 (visible kind variables) and #c00762 (higher-rank kinds) as supporting
+      machinery."
+    layer: 2
+    dimension:
+    cross_cutting: false
+    aliases:
+      - kind polymorphism
+    realizes:
+      - kind-quantification
+edges:
+  - key: inferred-type-placeholder--requires--static-typing
+    type: requires
+    from: inferred-type-placeholder
+    to: static-typing
+    polarity:
+    statement: An inferred-type placeholder leaves the type unwritten at a position where the 
+      language still fixes it before execution — whether by local deduction from an initializer or 
+      by whole-term reconstruction — so the feature presupposes a compile-time typing discipline. 
+      Scoped to a token written in a type position (Rust `_`, GHC wildcards, C/C++ `auto`, C#/Java 
+      `var`); a wholly omitted annotation is a distinct feature, not this one.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: p. 302
+        chunk_id: pierce-tapl-2002#c00669
+        quote: capable of calculating a principal type for a term in which some or all of these 
+          annotations are left unspecified
+    contested: []
+    debate_id: d-01-typing-029
+    status: dropped
+    verification:
+      fact_id: f-d1f32ac429a1
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: dynamic-typing--alternative-to--static-typing
+    type: alternative-to
+    from: dynamic-typing
+    to: static-typing
+    polarity:
+    statement: Static and dynamic typing are the two poles of when and how a language checks that 
+      operations are applied to compatible types; most languages are classifiable as predominantly 
+      one or the other, but the choice is not all-or-nothing, and hybrid/gradual designs (e.g., 
+      Typed Racket, TypeScript) deliberately occupy the middle.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2.7.3
+        chunk_id: vanroy-haridi-2003#c00236
+        quote: 'There are two major families of strong typing: dynamic typing and static typing.'
+    contested: []
+    debate_id: d-01-typing-020
+    status: verified
+    verification:
+      fact_id: f-67f114b3e8a0
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: gradual-typing--requires--static-typing
+    type: requires
+    from: gradual-typing
+    to: static-typing
+    polarity:
+    statement: Gradual typing requires a static type-checking discipline to be applied to the typed 
+      portion of the program — whether realized as in-line checking of annotated code commingled 
+      with untyped code (the micro variant) or as a fully statically typed sibling language whose 
+      values cross a run-time contract boundary into an untyped sibling (the macro variant, e.g. 
+      Typed Racket).
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 173
+        chunk_id: krishnamurthi-plai#c00240
+    contested: []
+    debate_id: d-01-typing-021
+    status: verified
+    verification:
+      fact_id: f-c03fc01c509a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: gradual-typing--requires--dynamic-typing
+    type: requires
+    from: gradual-typing
+    to: dynamic-typing
+    polarity:
+    statement: 'Micro gradual typing requires that the unannotated parts of the same program remain dynamically
+      typed: annotations may be added to any subset of variables, so statically and dynamically typed
+      parts commingle within one language, down to a single expression.'
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 174
+        chunk_id: krishnamurthi-plai#c00241
+    contested: []
+    debate_id: d-01-typing-026
+    status: verified
+    verification:
+      fact_id: f-9d59766d131d
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: "Narrowed from `gradual-typing` to the micro branch. The macro branch of Krishnamurthi's \"\
+      Micro Versus Macro\" split (p. 174) is deliberately not recorded as a feature-to-feature edge: its
+      bearer is a pair of sibling languages (\"it's the combination of Racket and Typed Racket that is
+      gradually typed—Typed Racket itself is fully typed\"), which the current record kinds cannot host.
+      Deferred to structure review. Evidence remains one source (krishnamurthi-plai, one continuous section);
+      the single-source flag is NOT discharged."
+  - key: retrofitted-type-system--requires--dynamic-typing
+    type: requires
+    from: retrofitted-type-system
+    to: dynamic-typing
+    polarity:
+    statement: A retrofitted type system is by definition added onto a pre-existing 
+      dynamically-typed language.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 156
+        chunk_id: krishnamurthi-plai#c00215
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-541a306207f5
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: retrofitted-type-system--enables--gradual-typing
+    type: enables
+    from: retrofitted-type-system
+    to: gradual-typing
+    polarity:
+    statement: Retrofitting a dynamic language with a sibling typed language is the mechanism that 
+      macro gradual typing uses, making gradual typing practical without requiring it.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 174
+        chunk_id: krishnamurthi-plai#c00242
+      - source: krishnamurthi-plai
+        locator: p. 156
+        chunk_id: krishnamurthi-plai#c00215
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-8f3f55473218
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: array-covariance-unsoundness--requires--subtype-polymorphism
+    type: requires
+    from: array-covariance-unsoundness
+    to: subtype-polymorphism
+    polarity:
+    statement: Unsound array covariance presupposes a subtyping relation between element types that 
+      is then unsoundly lifted to array types.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: p. 190
+        chunk_id: pierce-tapl-2002#c00419
+      - source: ecma-334-7th
+        locator: §17.6
+        chunk_id: ecma-334-7th#c00866
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ecb9d3727ee1
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: gadt--requires--algebraic-data-types
+    type: requires
+    from: gadt
+    to: algebraic-data-types
+    polarity:
+    statement: Generalized algebraic data types generalize ordinary algebraic data types by letting 
+      constructors declare richer, non-uniform return types.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.9
+        chunk_id: ghc-users-guide#c00693
+    contested: []
+    debate_id: d-01-typing-027
+    status: verified
+    verification:
+      fact_id: f-a15149d45712
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: ad-hoc-polymorphism--alternative-to--parametric-polymorphism
+    type: alternative-to
+    from: ad-hoc-polymorphism
+    to: parametric-polymorphism
+    polarity:
+    statement: Parametric and ad-hoc polymorphism are the two historically distinguished, mutually 
+      distinct answers to how a single piece of code can take many types.
+    evidence:
+      - source: cardelli-wegner-1985
+        locator: pp. 4–5
+        chunk_id: cardelli-wegner-1985#c00011
+    contested:
+      - single-source
+    debate_id: d-01-typing-022
+    status: dropped
+    verification:
+    note: ''
+    drop_reason: "The single source cited does not support parametric-vs-ad-hoc as a mutually distinct
+      top-level pair at any level: C&W's own refined taxonomy makes the top-level alternative-to pair
+      universal-polymorphism vs ad-hoc-polymorphism (with parametric and inclusion as siblings under universal),
+      and the concrete, feature-realizable mechanisms are generics/parametric-types, overloading, coercion,
+      and subtyping, one layer below the taxonomy labels this carve uses. The proposer concedes this and
+      recommends retiring the carve in favor of differently-keyed replacement edges that require fresh
+      sourcing/KB checks rather than a mechanical fix to this one."
+  - key: type-classes--requires--ad-hoc-polymorphism
+    type: requires
+    from: type-classes
+    to: ad-hoc-polymorphism
+    polarity:
+    statement: Type class methods change behavior per type-class instance rather than behaving 
+      uniformly, which is the defining trait of ad hoc polymorphism.
+    evidence:
+      - source: ghc-users-guide
+        locator: §6.4.10
+        chunk_id: ghc-users-guide#c00700
+        quote: Parametric polymorphic functions behave the same at all type instances, whereas class
+          methods can change their behaviour in dependence on the class type parameters.
+    contested:
+      - single-source
+    debate_id: d-01-typing-023
+    status: dropped
+    verification:
+    note: ''
+    drop_reason: Ad hoc polymorphism is, in every cited source (Cardelli & Wegner, Pierce TAPL 
+      §23.2, Turbak & Gifford, and the Haskell Report that frames it as "ad hoc polymorphism, or 
+      overloading"), a branch of a theoretical taxonomy of polymorphism — a concept per LangAtlas's 
+      own vocabulary — not a feature with independent functional criteria. Type classes 
+      realize/instantiate it; they do not "require" it as a dependency the way one feature requires 
+      another to function. A feature-to-feature `requires` edge cannot correctly express a 
+      concept-realization relationship, and the proposer concedes this after re-reading their own 
+      corroborating citations. The edge should be retracted and the relationship remodeled as a 
+      concept→feature realizes/is-a-kind-of relation (with `ad-hoc-polymorphism` recast as a concept
+      node), not patched within the current feature-feature edge type.
+  - key: parametric-polymorphism--requires--generic-parameters
+    type: requires
+    from: parametric-polymorphism
+    to: generic-parameters
+    polarity:
+    statement: Parametric polymorphism is realized through generic type parameters that stand in for
+      the actual type at each use site.
+    evidence:
+      - source: sebesta-copl
+        locator: §9.10
+        chunk_id: sebesta-copl#c00758
+        quote: Parametric polymorphism is provided by a subprogram that takes generic parameters 
+          that are used in type expressions that describe the types of the parameters of the 
+          subprogram.
+    contested: []
+    debate_id: d-01-typing-024
+    status: verified
+    verification:
+      fact_id: f-87b6d231e64e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: nominal-typing--alternative-to--structural-typing
+    type: alternative-to
+    from: nominal-typing
+    to: structural-typing
+    polarity:
+    statement: Nominal and structural typing are the two named conventions for defining the subtype 
+      relation between types — by declared name (nominal) versus by structural comparison 
+      (structural).
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §19.3
+        chunk_id: pierce-tapl-2002#c00525
+    contested: []
+    debate_id: d-01-typing-025
+    status: verified
+    verification:
+      fact_id: f-91c9ae3aa311
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: equirecursive-types--alternative-to--isorecursive-types
+    type: alternative-to
+    from: equirecursive-types
+    to: isorecursive-types
+    polarity:
+    statement: The two basic approaches in the literature to relating a recursive type to its 
+      unfolding; they give different type-equivalence verdicts, and a type system applies one or the
+      other to any given judgement.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: §20.2
+        chunk_id: pierce-tapl-2002#c00574
+    contested: []
+    debate_id: d-01-typing-028
+    status: verified
+    verification:
+      fact_id: f-955f3c8604fa
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: "single-source applies to the first clause only: Pierce's unfolding axis is attested by pierce-tapl-2002
+      alone. turbak-gifford-dcpl is cited only for divergence of equivalence verdicts, not for the unfolding
+      axis (its \"isorecursive\" regime answers Pierce's question with *equal*, i.e. Pierce's equi-recursive
+      answer). pierce-attapl-2004 supports per-judgement rather than per-system application."
+quality_edges:
+  - key: array-covariance-unsoundness--affects-quality--safety
+    from: array-covariance-unsoundness
+    to: safety
+    assessments:
+      - key: array-cov-safety
+        polarity: hurts
+        strength: strong
+        statement: Covariant array subtyping is unsound on its own and is now generally regarded as 
+          a design flaw that must be patched with run-time checks.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: p. 190
+            chunk_id: pierce-tapl-2002#c00419
+            quote: is now generally considered a flaw in the language design
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-52729e25a572
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: array-covariance-unsoundness--affects-quality--performance
+    from: array-covariance-unsoundness
+    to: performance
+    assessments:
+      - key: array-cov-perf
+        polarity: hurts
+        strength: moderate
+        statement: Compensating for unsound array covariance with a mandatory dynamic check on every
+          array store seriously affects performance of array-heavy programs.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: p. 190
+            chunk_id: pierce-tapl-2002#c00419
+            quote: seriously affects the performance of programs involving arrays
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-60f9c23ef92d
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: gadt--affects-quality--expressiveness
+    from: gadt
+    to: expressiveness
+    assessments:
+      - key: gadt-expr
+        polarity: improves
+        strength: strong
+        statement: Allowing constructors to declare richer, non-uniform return types lets GADTs 
+          express well-typed interpreters and other programs ordinary ADTs cannot type.
+        evidence:
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00693
+            quote: This generality allows us to write a well-typed eval function for these Terms
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9230d06425ef
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: type-coercion--affects-quality--safety
+    from: type-coercion
+    to: safety
+    assessments:
+      - key: coerce-safety
+        polarity: hurts
+        strength: moderate
+        statement: Implicit coercion between mismatched operand types silently masks the kind of 
+          mistake static type checking would otherwise catch, weakening strong typing's 
+          error-detection value.
+        evidence:
+          - source: sebesta-copl
+            locator: §6.14
+            chunk_id: sebesta-copl#c00561
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3b5801404d5e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: type-coercion--affects-quality--ease-of-use
+    from: type-coercion
+    to: ease-of-use
+    assessments:
+      - key: coerce-ease
+        polarity: improves
+        strength: weak
+        statement: Allowing mixed-mode expressions via coercion spares programmers from writing 
+          explicit conversions for common numeric mixing, at the cost of the flexibility/safety 
+          tradeoff language designers debate.
+        evidence:
+          - source: sebesta-copl
+            locator: §7.4.1
+            chunk_id: sebesta-copl#c00606
+            quote: Those who would rather include a wide range of coercions are more concerned with 
+              the loss in flexibility that results from restrictions.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-73dc717fc118
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: static-typing--affects-quality--performance
+    from: static-typing
+    to: performance
+    assessments:
+      - key: static-perf
+        polarity: improves
+        strength: moderate
+        statement: Because the compiler knows a variable's type in advance, static typing allows a 
+          more efficient representation and implementation than dynamic typing's generic value 
+          slots.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00238
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-0e3f642f072c
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: static-typing--affects-quality--safety
+    from: static-typing
+    to: safety
+    assessments:
+      - key: static-safety
+        polarity: improves
+        strength: strong
+        statement: Static type checking catches a surprisingly broad range of programming errors at 
+          compile time, including deep conceptual mistakes that manifest as type inconsistencies.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: p. 19
+            chunk_id: pierce-tapl-2002#c00027
+            quote: static typechecking exposes a surprisingly broad range of errors
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5c1f584e8600
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: static-typing--affects-quality--expressiveness
+    from: static-typing
+    to: expressiveness
+    assessments:
+      - key: static-expr
+        polarity: hurts
+        strength: weak
+        statement: Static typing restricts which programs can be written in exchange for its 
+          error-catching, efficiency, and verification benefits, reducing expressiveness relative to
+          dynamic typing.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00236
+            quote: static typing puts restrictions on what programs one can write, reducing 
+              expressiveness of the language
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-880099ce0243
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: dynamic-typing--affects-quality--expressiveness
+    from: dynamic-typing
+    to: expressiveness
+    assessments:
+      - key: dyn-expr
+        polarity: improves
+        strength: moderate
+        statement: Dynamic typing gives programmers expressive freedom and rapid turnaround that a 
+          static discipline forecloses.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00236
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8c9c11f76b4f
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: dynamic-typing--affects-quality--safety
+    from: dynamic-typing
+    to: safety
+    assessments:
+      - key: dyn-safety
+        polarity: hurts
+        strength: moderate
+        statement: Because dynamic typing permits only run-time type checking, type errors surface 
+          later than they would under static checking, which is worse for reliability since 
+          later-caught errors are costlier to fix.
+        evidence:
+          - source: sebesta-copl
+            locator: §6.13
+            chunk_id: sebesta-copl#c00558
+            quote: It is better to detect errors at compile time than at run time, because the 
+              earlier correction is usually less costly.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9692ebb9264e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: retrofitted-type-system--affects-quality--safety
+    from: retrofitted-type-system
+    to: safety
+    assessments:
+      - key: retrofit-safety
+        polarity: improves
+        strength: moderate
+        statement: The explicit goal of a retrofitted type system is to convert what would be 
+          run-time errors in the original dynamic language into static type errors.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 156
+            chunk_id: krishnamurthi-plai#c00215
+            quote: The goal of a retrofitted type system is to turn run-time errors into static type
+              errors.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8085d070d553
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: retrofitted-type-system--affects-quality--ease-of-use
+    from: retrofitted-type-system
+    to: ease-of-use
+    assessments:
+      - key: retrofit-ease
+        polarity: hurts
+        strength: moderate
+        statement: Retrofitted type systems must rely on growing heuristics to accept idiomatic 
+          existing code, and programs that fall outside those heuristics are rejected in ways that 
+          feel arbitrary to programmers.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 165
+            chunk_id: krishnamurthi-plai#c00229
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-21e88767a949
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+  - key: gradual-typing--affects-quality--ease-of-use
+    from: gradual-typing
+    to: ease-of-use
+    assessments:
+      - key: gradual-ease
+        polarity: improves
+        strength: moderate
+        statement: Micro gradual typing lets programmers annotate only the parts of a program they 
+          care about, which is ergonomically convenient.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-4989b1f62a04
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: every citation tops out at `partial`; narrow the claim to what the
+        cited text actually supports and resubmit'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: gradual-typing--affects-quality--safety
+    from: gradual-typing
+    to: safety
+    assessments:
+      - key: gradual-safety
+        polarity: hurts
+        strength: moderate
+        statement: Allowing static and dynamic code to freely commingle in micro gradual typing 
+          destroys the clean soundness guarantee a fully typed program would have.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: previously we had a clean and simple soundness result for the typed program; now 
+              it is rather unclear what soundness means
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3ff33d78358c
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+  - key: dependent-types--affects-quality--expressiveness
+    from: dependent-types
+    to: expressiveness
+    assessments:
+      - key: dep-expr
+        polarity: improves
+        strength: strong
+        statement: Dependent types let the type of a phrase depend on the value of an expression, 
+          expanding what can be precisely expressed and statically checked well beyond simple type 
+          systems.
+        evidence:
+          - source: turbak-gifford-dcpl
+            locator: §11.3.3
+            chunk_id: turbak-gifford-dcpl#c00965
+            quote: Systems with dependent types allow the type of a phrase to depend on the value of
+              an expression.
+          - source: pierce-attapl-2004
+            locator: §2.8
+            chunk_id: pierce-attapl-2004#c00119
+            quote: Given the expressivity of dependent types as illustrated in previous sections it 
+              is natural and tempting to add them to a programming language.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8083ee3e21a5
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-18-r4-verify-01-typing-01
+    note: ''
+  - key: dependent-types--affects-quality--compilation-speed
+    from: dependent-types
+    to: compilation-speed
+    assessments:
+      - key: dep-compile
+        polarity: hurts
+        strength: strong
+        statement: Typechecking dependent types requires deciding term equality, which becomes 
+          undecidable once the underlying language has general recursion, as most practical 
+          languages do.
+        evidence:
+          - source: pierce-attapl-2004
+            locator: §2.8
+            chunk_id: pierce-attapl-2004#c00119
+            quote: Simply adding dependent types to a Turing-complete term language invariably leads
+              to undecidable typechecking.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-72bba647b587
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+    waiver: 'Developer waiver: single-source edge, over the per-cycle debate cap of 25; draft-only batch
+      (D70) is re-atomized after the structure review.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: nominal-typing--affects-quality--interoperability
+    from: nominal-typing
+    to: interoperability
+    assessments:
+      - key: nominal-interop
+        polarity: improves
+        strength: weak
+        statement: Because nominal systems tag run-time objects with their type name, those tags are
+          directly reusable for marshaling data into binary forms for storage or transmission across
+          process/network boundaries.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §19.3
+            chunk_id: pierce-tapl-2002#c00525
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-aa875c1b0ec4
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-18-r4-verify-01-typing-02
+    note: ''
+findings:
+  - kind: rule-candidate
+    detail: Unsound array covariance is only safe in combination with a mandatory runtime store-type
+      check on every array write; neither covariant arrays alone nor the check alone captures the 
+      design — this is a two-feature interaction (variance + a runtime subsumption-weakening check),
+      not a single node.
+    keys:
+      - array-covariance-unsoundness
+      - variance
+      - subsumption
+  - kind: structure-friction
+    detail: 'Several features specialize another feature rather than realizing a concept: let-polymorphism
+      specializes parametric-polymorphism, type-classes specializes ad-hoc-polymorphism, gadt specializes
+      algebraic-data-types, retrofitted-type-system builds on gradual-typing, and generic-parameters is
+      the syntax of parametric-polymorphism. The realizes field can only target concept ids, so each of
+      these had to point at a broader concept (or, for let-polymorphism/bounded-quantification, be carved
+      as a concept) instead of expressing the tighter feature-to-feature specialization relation the sources
+      actually describe.'
+    keys:
+      - let-polymorphism
+      - type-classes
+      - gadt
+      - retrofitted-type-system
+      - generic-parameters
+      - parametric-polymorphism
+      - ad-hoc-polymorphism
+      - algebraic-data-types
+      - gradual-typing
+    area: ontology
+    element: realizes
+  - kind: structure-friction
+    detail: Pure type systems / the lambda cube organizes dependent types, polymorphism, and type 
+      operators as three orthogonal binary axes whose eight combinations are the cube's corners. The
+      dimension model supports only single-axis exclusive/multi groups, not a multi-axis product 
+      space, and this cycle's candidates only populate one of the three axes (dependent-types) well 
+      enough to carve, so dependent-types was left at layer 2 rather than forced into an artificial 
+      single-axis dimension.
+    keys:
+      - pure-type-systems
+      - dependent-types
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: Strong vs. weak typing is treated by the literature as an informally defined, non-binary
+      quality judgment about a language (every statically typed language is strongly typed but not 
+      conversely; sources disagree on the exact definition) rather than a set of mutually exclusive 
+      design-choice features, so it does not fit the layer-3 dimension model even though it is 
+      clearly a comparative axis in the literature.
+    keys:
+      - strong-weak-typing
+    area: ontology
+    element: qualities
+  - kind: cross-theme-edge
+    detail: Existential types are the formal basis for abstract data types and ML-style module 
+      signatures/information hiding, which plausibly belongs partly to an Abstraction/Modularity 
+      theme rather than purely Typing.
+    keys:
+      - existential-types
+  - kind: cross-theme-edge
+    detail: Type-classes' overloaded-method dispatch mechanism overlaps with ad-hoc method dispatch 
+      concerns that a future Object-Orientation/Dispatch theme may also claim.
+    keys:
+      - type-classes
+  - kind: structure-friction
+    detail: "Both challenges are upheld on the evidence, and the proposer concedes fully, so this is not
+      a case of defending the carve against an unsupported challenge. harper-pfpl#c00361 (p.235, the very
+      section the carve cites), restated at #c00399 (p.257) and #c00346 (pp.225-226), explicitly dissolves
+      the static/dynamic opposition rather than adding a sibling discipline: \"dynamic typing is a mode
+      of use of static typing... reconciling an apparent opposition.\" HPCF's safety theorem (#c00363)
+      is proved exactly as for a static language. Modeling hybrid-typing as a fourth coequal exclusive
+      value of `static-dynamic-typing-discipline` therefore forces the source's embedding claim into a
+      mutually-exclusive-axis-value slot that cannot represent it — the dimension-model structure has
+      no way to express \"this source collapses these axis values into an embedding relationship.\" That
+      is a genuine wrong-structure finding: the dimension model needs either a non-exclusive/embedding
+      relation type or this node needs to sit off the axis entirely as a feature realized within the static
+      side, not coordinate with static/dynamic/gradual. Separately, the note's gradual-typing contrast
+      (mediating-type vs. fragment-migration) is unsupported by either cited chunk and by a corpus-wide
+      search for \"gradual typing\" in harper-pfpl — upheld as missing-source. The underlying HPCF material
+      (dyn as a designated type with run-time class tags) remains well-sourced and carve-worthy on its
+      own technical merits; only its placement as a dimension value and the gradual-typing distinguishing
+      claim are unsupported. I revise rather than drop: remove the dimension assignment, rephrase the
+      summary to state the embedding relationship Harper actually argues (a static type system enriched
+      with one recursive type `dyn`), and strike the unsupported gradual-typing clause from the note until
+      a source comparing the two mechanisms is found."
+    keys:
+      - hybrid-typing
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: "Both challenges land on evidence the proposer accepts. missing-source is upheld on its face:
+      harper-pfpl#c00111 glosses \"strongly typed\" as synonymous with a binary, proof-theoretic safety
+      theorem (Preservation+Progress), which the original evidence list (Cardelli & Wegner, Scott) omits
+      — the carve's summary overstated \"informally and inconsistently defined\" by sampling only graded/informal
+      accounts. wrong-structure is also upheld: laid side by side, the sources don't give paraphrases
+      of one criterion but operationally incompatible tests (type-consistency-of-expressions vs. graded
+      enforcement-coverage vs. all-errors-always-detected vs. enforcement-exists-at-all vs. a proved syntactic
+      theorem) that can disagree on the same language. The ontology's concept→feature→feature-instance
+      structure presumes a concept has at least one stable, agreed criterion for instances to realize
+      against; this concept currently has none, so any future feature-instance authored against it risks
+      silently picking one source's test and misrepresenting the node as neutral across all of them.\n\
+      \nI don't think this motivates drop, merge, or an unplanned per-tradition split (challenger-b itself
+      declines to demand that, and the proposer's own counter-argument — that Harper's formal safety work
+      and the folk strong/weak vocabulary are pointing at the same underlying concern from different formality
+      levels — is a real reason not to fragment a single informally-named discourse axis into several
+      nodes prematurely). Escalation isn't warranted either: the proposer concedes the facts, and the
+      fix the challenge calls for (don't let the node imply a shared criterion it doesn't have) is already
+      specifiable without developer adjudication. So I revise rather than keep, split, or escalate: broaden
+      the evidence list to include the Harper and Scott-graded sources, reword the summary/note so the
+      node is explicit that it documents a *contested term* rather than one settled axis, and add an instruction
+      that any future feature-instance work against this concept must name which source's criterion it
+      is satisfying rather than treating the node as a shared yardstick.\n\nThe deeper fork challenger-b
+      raises — whether this should eventually become several per-tradition concept nodes once feature-instance
+      work actually needs to pick a criterion — is correctly identified by the proposer as real but not
+      resolved by this debate; it's deferred rather than settled, so I record a standing dissent even
+      though the carve survives as revised."
+    keys:
+      - strong-weak-typing
+    area: ontology
+    element: concept-feature-split
+  - kind: structure-friction
+    detail: "The underlying distinction is solid: Pierce (TAPL §19.3) names \"nominal\" and \"structural\"\
+      \ as the two terms for a type system's subtyping/equivalence judgment, and Sebesta's independently-sourced
+      \"type equivalence\" split (name vs. structure) corroborates it. Krishnamurthi's worked Java example
+      shows the choice has concrete, observable consequences. No participant contests that structural-vs-nominal
+      is a real, load-bearing axis in the domain, and challenger-b found no defect in the carve's sourcing,
+      layer placement, or atomization.\n\nThe challenge that is upheld is narrower and structural: the
+      carve's `exclusivity: exclusive` combined with `applies_to: ['general-purpose']` asserts one value
+      of the axis per whole language, but the cited evidence (Sebesta §6.15 on C: name equivalence for
+      struct/enum/union, structure equivalence for arrays, plus a file-boundary exception; Sebesta on
+      Ada: structure equivalence for unconstrained arrays alongside three different strictness levels
+      of name equivalence for derived types/subtypes/anonymous types) shows real languages mixing the
+      two mechanisms by type-construct category within a single language. The proposer, after searching,
+      could not locate a Pierce passage actually backing the language-level-exclusive framing attributed
+      to him in the note, which removes the strongest piece of support for that framing. This is a genuine
+      mismatch between what the ontology's per-language exclusive-value slot can express and the grain
+      at which the evidence actually varies — a dimension-model gap, not a flaw in the carve's identification
+      of the axis itself.\n\nPer the handling rule for upheld wrong-structure challenges, the carve is
+      kept on its own merits (the axis is real and well-evidenced) while the structural gap is flagged
+      for the structure review: the dimension-model needs either (a) a `mixed`/`combination` value usable
+      alongside `structural`/`nominal` for languages whose construct categories differ, or (b) a way to
+      scope `exclusivity` at a grain finer than \"per language\" — e.g., per type-construct category (record/struct,
+      array, enumeration, etc.) — since that is the granularity at which C and Ada's documented behavior
+      actually resolves to a clean exclusive choice. Until the dimension-model is extended with one of
+      these mechanisms, any carve using whole-language `exclusivity: exclusive` will misclassify languages,
+      like C and Ada, that mix rules by construct — so the challenger's underlying objection about accuracy
+      for those languages remains live even though the carve itself is not being altered here."
+    keys:
+      - structural-vs-nominal-typing
+    area: ontology
+    element: dimension-model
+  - kind: rule-candidate
+    detail: "Static typing's error-detection benefit is eroded specifically by the interaction of static
+      typing with type coercion: coercion silently converts a mistyped operand instead of flagging it,
+      so the safety loss only appears when both features are present together."
+    keys:
+      - static-typing
+      - type-coercion
+  - kind: rule-candidate
+    detail: Parametric polymorphism and subtype polymorphism combine to produce bounded 
+      quantification (F-bounded polymorphism) — an effect of the pair together that lands on the 
+      'bounded-quantification' concept node, which isn't a legal feature-to-feature edge endpoint.
+    keys:
+      - parametric-polymorphism
+      - subtype-polymorphism
+  - kind: structure-friction
+    detail: Cardelli & Wegner describe overloading and coercion as 'two major kinds of ad-hoc 
+      polymorphism' — i.e. type-coercion reads as a specialization/sub-kind of ad-hoc-polymorphism, 
+      not a requires/enables/influences/conflicts/alternative relationship. The current edge 
+      vocabulary has no 'specializes' relation to express this.
+    keys:
+      - ad-hoc-polymorphism
+      - type-coercion
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: structural-typing and structural-type-equivalence both turn on comparing types by shape 
+      rather than name, and the literature (e.g. Pierce's nominal/structural distinction) doesn't 
+      cleanly separate a 'structural subtyping' feature from a 'structural equivalence' feature the 
+      way these two nodes imply. No edge type captures whatever distinction the ontologist intends 
+      between them; flagging for review rather than drafting a forced edge.
+    keys:
+      - structural-typing
+      - structural-type-equivalence
+    area: ontology
+    element: other
+  - kind: cross-theme-edge
+    detail: Dependent types' undecidable typechecking is caused by requiring deciding term equality 
+      over a Turing-complete (non-strongly-normalizing) term language — i.e. general 
+      recursion/non-termination, which belongs to a Computation or Control-Flow theme, not Typing. 
+      No Typing node can serve as the 'to' side of this edge.
+    keys:
+      - dependent-types
+  - kind: structure-friction
+    detail: "Both challengers' citations check out against the record, and the proposer's own final-round
+      review (checking Van Roy & Haridi §2.3.2 directly) found the problem is worse than first alleged.
+      Three distinct, evidence-backed problems survive: (1) the carve's `note` asserts static/dynamic
+      typing are \"the other exclusive value of the same discipline-time axis,\" but Harper formally argues
+      the opposite — \"every dynamic language is inherently a static language in which we confine ourselves
+      to a (needlessly) restricted type discipline\" [harper-pfpl#c00346] and \"this traditional distinction
+      can hardly be considered an opposition\" [harper-pfpl#c00343], with Hybrid Typing (§24) building
+      a language where the two \"coexist harmoniously\" as containment (\"dynamic typing is a mode of
+      use of static typing\") rather than alternation. Van Roy & Haridi corroborate non-exclusivity independently,
+      though via a continuum framing rather than Harper's containment framing: \"the choice... does not
+      have to be all or nothing... a bit of the other can be added\" [vanroy-haridi-2003#c00239]. This
+      is a dimension-modeling problem, not a problem with the node's existence. (2) The carve's defining
+      criterion — \"values, not program phrases, carry type information\" — is the literal target of Harper's
+      §24.4 rebuttal of the three \"supposed distinctions,\" which argues value-tagging \"amounts to a
+      use of recursive sum types within a statically typed language, and hence cannot be seen as a distinguishing
+      feature\" [harper-pfpl#c00371]. Presenting this as settled textbook consensus rather than a contested
+      criterion from one of the carve's own cited authorities misstates the literature. (3) The evidence
+      trail is internally inconsistent: arguments made for this carve treat Van Roy & Haridi as confirming
+      the value-tagging formulation, but that source's own definition is binding-time-based — \"the variable
+      type is known only when the variable is bound\" [vanroy-haridi-2003#c00153] — which is exactly the
+      \"related but separate concept\" the note excludes. The node itself is sound and well-attested (Turbak/Gifford,
+      Scott, Harper's own DPCF operationalization all treat it as a real, nameable discipline even under
+      Harper's degenerate-case account), so this is a revise, not a drop or escalate — the disagreement
+      is about framing and boundary-drawing, which the evidence resolves clearly enough to act on now."
+    keys:
+      - dynamic-typing
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: "The parametric-polymorphism node itself is solidly evidenced: Pierce §23.2's definition of
+      uniform generic instantiation [pierce-tapl-2002#c00726] matches the carve's summary almost verbatim,
+      and Cardelli & Wegner, Sebesta, and Scott independently converge on the same definition and the
+      generics/generic-subprogram alias. `realizes: ['polymorphism']` is well supported and uncontested.
+      Neither challenger disputes the node's content — both target the `dimension: polymorphism-variety`
+      metadata, and the proposer explicitly conceded the point after reviewing the cited passages, so
+      this is not merely a confident-but-unevidenced challenge.\n\nThe `wrong-structure` challenge is
+      upheld on its merits. Two problems are independently sourced: (1) Cardelli & Wegner's own classification
+      is two-tiered — \"parametric and inclusion polymorphism are classified as the two major subcategories
+      of universal polymorphism, which is contrasted with nonuniversal or ad-hoc polymorphism\" [cardelli-wegner-1985#c00011]
+      — so a flat `dimension` with parametric/ad-hoc/inclusion as co-equal members drops the intermediate
+      \"universal polymorphism\" node that is the actual organizing move of the cited taxonomy. (2) Pierce
+      explicitly denies the exclusivity a single-select `dimension` axis implies: \"These categories are
+      not exclusive: different forms of polymorphism can be mixed in the same language. Standard ML offers
+      both parametric polymorphism and simple overloading... Java includes subtyping, overloading, and
+      simple ad-hoc polymorphism... but not... parametric polymorphism\" [pierce-tapl-2002#c00728]. A
+      dimension model that assumes one value per axis misrepresents a freely-combinable, hierarchical
+      classification as a partition.\n\nThis is a structural gap, not a defect in the node: the `dimension-model`
+      structural element currently has no way to express either (a) hierarchical/nested classification
+      axes, or (b) non-exclusive, co-occurring membership. To hold this carve's `dimension` assignment,
+      the structure would need to either support an intermediate dimension-bearing node (e.g., a `universal-polymorphism`
+      parent carrying `parametric-polymorphism` and `inclusion-polymorphism` as children, sibling to `ad-hoc-polymorphism`)
+      or abandon the single-select-axis semantics for this case and drop `dimension`/`cross_cutting` from
+      this node entirely, letting `realizes` alone carry the relationship. The proposer identified both
+      options but had no evidentiary basis to choose between them, so that choice belongs to the structure
+      review rather than to this node-level carve. The node's own fields (id, name, summary, evidence,
+      aliases, realizes) should stand as drafted pending that structural ruling."
+    keys:
+      - parametric-polymorphism
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: "The single-source flag that triggered this debate is resolved: five independent textbook
+      sources (Van Roy & Haridi, Turbak & Gifford, Scott, Sebesta, Jordan et al., plus Cardelli & Wegner)
+      converge on static/dynamic typing as a named design-time choice about when and how type-compatibility
+      is checked, at the same granularity the carve asserts. No participant disputes the underlying factual
+      content.\n\nHowever, challenger-b's wrong-structure challenge is upheld. The carve's statement frames
+      the alternative-to edge as a mutually exclusive either/or, but the same anchor source cited for
+      the carve immediately qualifies that: \"The choice between static or dynamic typing does not have
+      to be all or nothing... a bit of the other can be added\" (Van Roy & Haridi §2.7.3), and Harper
+      (PFPL) describes hybrid typing where the two \"coexist harmoniously,\" with dynamic typing characterized
+      as \"a mode of use of static typing\" (p. 235). Krishnamurthi documents this as a shipped, non-exclusive
+      design category (Typed Racket, TypeScript, Static Python; p. 174), not an edge case. The proposer
+      conceded this directly. This is a real disagreement about what the evidence shows, resolved in the
+      challenger's favor by the proposer's own anchor source — not merely a disagreement between agents.\n\
+      \nResolution at the carve level: reword the statement to drop the exclusive-choice framing while
+      preserving the legitimate \"two major families/poles\" classification that most languages still
+      fit, and broaden evidence beyond the single source. This keeps the edge's factual core (most languages
+      are classifiable as predominantly static or dynamic, and designers do treat it as a consequential
+      choice) without asserting strict mutual exclusivity the sources contradict.\n\nThis does not fully
+      resolve the deeper structural gap challenger-b identifies: the ontology currently has no node/edge
+      for gradual or hybrid typing as a first-class third design point distinct from either pole, so the
+      alternative-to relation is still being asked to carry a load (a clean binary) that the corpus shows
+      is populated in the middle for real shipped languages. That gap is a dimension-model / edge-types
+      question for the structure review, not something a statement reword fully discharges — hence standing
+      dissent remains live even after this revision."
+    keys:
+      - dynamic-typing--alternative-to--static-typing
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: "Missing-source is upheld, and the proposer conceded it. harper-pfpl#c00361 defines a *hybrid*
+      language — a static language enriched with a type `dyn` — and says nothing about annotation, incrementality,
+      or migration, the properties that make this a dependency rather than coexistence. The implementer's
+      reductio from #c00373 (Java, Haskell, OCaml, SML \"include a type similar to dyn\") is decisive:
+      if a dyn-like mode were evidence about gradual typing, Harper would be committed to SML being gradually
+      typed. Harper's #c00343/#c00346 also fix his \"dynamic typing\" as a restricted static discipline,
+      not the corpus sense (turbak-gifford-dcpl#c00958). The four Krishnamurthi chunks are one continuous
+      section run; they corroborate but do not multiply the source. Flag stands.\n\nWrong-atomization
+      is upheld on the cited passage's own face: #c00241 is titled \"Micro Versus Macro,\" opens \"there
+      are two schools of thought,\" and attaches materially different consequences to each (unclear soundness
+      and untypeable constructs in micro; a value-crossing import boundary and differing construct sets
+      in macro). A disjunction inside one statement records that split as wording rather than structure.
+      Both challengers and, on re-reading, the proposer converge here; the convergence is grounded in
+      the passage, not in deference.\n\nWrong-structure is also upheld on #c00242: under macro the bearer
+      of gradual typing is neither Racket nor Typed Racket but their combination, which is not \"a particular
+      language\" and therefore has no feature-instance slot. I keep the carve rather than dropping it
+      because the micro half is a genuine same-bearer feature-to-feature `requires` — #c00240 grounds
+      the dynamic remainder in the language lacking a static discipline, so the `to` side is a discipline
+      and not a mere absence of annotations. I reject the type theorist's framing of micro's remainder
+      as only \"an unannotated remainder\"; #c00240 does not support that reading.\n\nThe carve is therefore
+      narrowed to the micro branch. For the structure review: holding the macro claim would require a
+      record kind whose bearer is a language pair (or a cross-artifact edge type between two feature instances
+      in different languages, with the value-crossing boundary and divergent construct sets as its payload).
+      Until that exists, the macro dependency is unrecorded.\n\nStanding dissent is recorded: the macro
+      dependency, which the source treats as the canonical school, is left out of the knowledge base by
+      this decision, and the single-source flag on what remains is live."
+    keys:
+      - gradual-typing--requires--dynamic-typing
+    area: ontology
+    element: record-kinds
+  - kind: structure-friction
+    detail: "The carve's content is sound and its statement is a faithful paraphrase of its evidence:
+      [ghc-users-guide#c00693] says in the carve's own words that GADTs \"generalise ordinary algebraic
+      data types by allowing constructors to have richer return types,\" and [ghc-users-guide#c00689]
+      fixes the ordinary/generalised criterion on constructor result form. The endpoints are both attested
+      and the `algebraic-data-types` endpoint is independently grounded outside GHC's manual by the Haskell
+      2010 Report's uniform constructor typing rule (\"the type variables u_1 through u_k must be distinct\"\
+      , [haskell-2010-report#c00097]), with corroboration at [krishnamurthi-plai#c00209] and [pierce-attapl-2004#c00714].
+      The direction is uncontested by all three participants. So the carve is not what is wrong, and I
+      keep it rather than drop it, notwithstanding the proposer's own recommendation to drop — dropping
+      would discard a well-sourced, correctly-directed relation because the vocabulary cannot name it,
+      and the content would then survive only as an untyped feature-level note.\n\nBoth wrong-structure
+      challenges are upheld on their cited passages. The sources assert subsumption, not prerequisite
+      dependence: ordinary and generalised data types are two diagnoses of one declaration grammar ([ghc-users-guide#c00689]),
+      an ordinary ADT may be declared in GADT-style syntax ([ghc-users-guide#c00695]), and anything declarable
+      in Haskell 98 syntax is declarable in GADT syntax ([ghc-users-guide#c00683]). Decisively, where
+      the source does state GADTs' prerequisites it names other features — \"Implies MonoLocalBinds, GADTSyntax\"\
+      \ [ghc-users-guide#c00693], \"A GADT can only be declared using GADT-style syntax\" [ghc-users-guide#c00694],
+      and \"the combination of GADTSyntax and ExistentialQuantification is enough to define and use GADTs\"\
+      \ [ghc-users-guide#c00576] — and `algebraic-data-types` is absent from that list. Under `requires`-as-two-feature-dependency
+      the edge is vacuous or, read as \"ADTs are a separate component GADTs call into,\" contradicted
+      by [ghc-users-guide#c00695]. The proposer's \"definitional, not historical\" defence is itself an
+      argument for a subsumption relation. Swapping to `influences` would be a worse misreport, downgrading
+      definitional containment to a causal nudge.\n\nWhat the structure would need to hold this carve:
+      a generalises/specialises (or extends / special-case-of) edge type in the relation inventory, expressing
+      that one feature's mechanism contains another's as its degenerate case rather than depending on
+      it as a coexisting prerequisite. Until that slot exists, this edge is typed `requires` only because
+      `requires` is the nearest available slot, and its statement and its type report different things
+      to any consumer. The ADT/GADT pair is a clean motivating example for the structure review.\n\nThe
+      scope and wrong-atomization challenges against the proposer's unprompted amendment are also upheld,
+      and the amendment is withdrawn, so no revision is applied. [ghc-users-guide#c00695] uses \"include
+      contexts\" / \"bind existential variables\" as a diagnostic for whether a declaration is treated
+      as a GADT, not as a content inventory; [ghc-users-guide#c00683] attributes the existential generalisation
+      and the constructor-context behaviour to GADTSyntax, \"but not GADTs themselves,\" demonstrated
+      on an ordinary data type (`MkSet :: Eq a => [a] -> Set a`); and [ghc-users-guide#c00575]/[ghc-users-guide#c00576]
+      decompose the three axes across separately gated extensions. The unamended statement, scoped to
+      non-uniform constructor return types, is the better atom and stands unchanged.\n\nStanding dissent
+      is recorded on two live counts: (1) both challengers' type objection survives this keep — the edge
+      is retained with a type the sources do not support, pending an edge-type slot for subsumption; (2)
+      the single-source referral is not cured for the *relation* itself. The endpoint is multi-sourced,
+      but every passage asserting the GADT→ADT generalisation in this debate is `ghc-users-guide`; the
+      Report and textbook citations attest the baseline, not the relation. The proposer's offered replacement
+      edges (`gadt --requires--> gadt-syntax`, `gadt --requires--> mono-local-binds`) are genuine two-feature
+      dependencies and should be carved separately; they are not substitutes for this one and I make no
+      ruling on them here."
+    keys:
+      - gadt--requires--algebraic-data-types
+    area: ontology
+    element: edge-types
