@@ -1,0 +1,354 @@
+id: d-01-typing-015
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: dynamic-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-dynamic-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-dynamic-typing-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: dynamic-typing
+  from_candidates:
+    - dynamic-typing
+  kind: feature
+  id: dynamic-typing
+  name: Dynamic Typing
+  summary: A typing discipline in which values, not program phrases, carry type information at run 
+    time, and type errors are checked only when an operation is about to occur.
+  evidence:
+    - source: turbak-gifford-dcpl
+      locator: §11.3.1
+      chunk_id: turbak-gifford-dcpl#c00958
+    - source: harper-pfpl
+      locator: §23.3
+      chunk_id: harper-pfpl#c00355
+    - source: scott-plp
+      locator: pp. 425–426
+      chunk_id: scott-plp#c00398
+      quote: Dynamic (run-time) type checking is a form of late binding
+  contested:
+    - new-dimension
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-706a45267734
+    verdict: verified
+    admissible: true
+    pairs: 3
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: Paired with static-typing as the other exclusive value of the same discipline-time axis.
+  dimension: static-dynamic-typing-discipline
+  cross_cutting: false
+  aliases:
+    - dynamically typed
+    - latently typed
+  realizes:
+    - type-checking
+  layer: 3
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `dynamic-typing`**\n\nThe carve is well-supported and the definitional wording
+      is nearly verbatim consensus across the corpus's core PL-theory texts, not a single author's idiosyncratic
+      framing.\n\n**1. The \"values carry type information, checked only when an operation is about to
+      occur\" formulation is textbook-standard, independently stated by multiple sources.**\n\n- Turbak
+      & Gifford state the carve almost word for word: \"Languages in which all values conceptually carry
+      type annotations that can be inspected at run time are said to be dynamically typed… The process
+      of inspecting type information at run time is called dynamic type checking.\" [turbak-gifford-dcpl#c00958]\n\
+      - Kaijanaho gives the \"checked only when about to occur\" clause explicitly, and flags it as the
+      commonly accepted definition across multiple independent authorities (Sheil 1981; Cardelli & Wegner
+      1985; Harper 2014, etc.): \"Dynamic typing… type errors are checked for during each execution, concentrating
+      only on type errors that actually are about to occur during the execution. … Definitions like these
+      are fairly commonly accepted.\" [kaijanaho-2015#c00071]\n- Harper's PFPL operationalizes exactly
+      this mechanism: DPCF's dynamics \"must check for errors that would never arise\" via per-operation
+      \"dynamic class checking\" on *values* (num/fun tags), not phrases [harper-pfpl#c00348], and his
+      critique chapter frames dynamic vs. static typing as the governing dichotomy for where/when type
+      errors surface [harper-pfpl#c00355].\n- Scott-PLP corroborates the run-time-checking characterization
+      and usefully links it to a second axis (late binding) without collapsing the two: \"Dynamic (run-time)
+      type checking is a form of late binding\" [scott-plp#c00398].\n\n**2. The carve is correctly scoped
+      as one pole of a genuine two-valued, mutually exclusive axis — justifying `dimension: static-dynamic-typing-discipline`.**\n\
+      \nTurbak & Gifford present dynamic and static typing as the two exhaustive alternatives for *when*
+      type consistency is established — at values/run-time vs. at phrases/compile-time — with the same
+      chunk covering both poles symmetrically [turbak-gifford-dcpl#c00958]. Van Roy & Haridi frame it
+      as literally \"one of the major decisions to make... whether the language is to be dynamically typed,
+      statically typed, or some mixture of both,\" treating it as the single question a language designer
+      answers [vanroy-haridi-2003#c00236]. This supports `new-dimension` being the right call: the discipline-time
+      axis is a distinct, independently-motivated dimension, not an artifact of how this one feature was
+      carved.\n\n**3. The carve correctly distinguishes \"type carried by values, checked at use\" from
+      adjacent but separable notions, which the aliases and `realizes` link acknowledge rather than conflate.**\n\
+      \n- It is distinct from *strength* of typing: Scott-PLP explicitly notes Lisp/Smalltalk are \"dynamically
+      (though strongly) typed,\" and weak/untyped dynamic scoping languages are a different combination
+      entirely [scott-plp#c00398]. Van Roy & Haridi likewise treat \"strongly-typed\" as orthogonal, folding
+      dynamic typing under it as one of \"two major families of strong typing\" [vanroy-haridi-2003#c00236].
+      The carve's summary doesn't smuggle in strength, which is correct.\n- It is distinct from *variable
+      type-binding time* (Sebesta's §5.4.2 \"type bindings\" discussion of names being bound to types),
+      which is a related but separate concept about variables rather than values [sebesta-copl#c00410,
+      sebesta-copl#c00412] — again, the carve's \"values, not program phrases\" wording correctly anchors
+      on *value*-carried type tags rather than variable binding, matching Turbak/Gifford and Harper's
+      phrasing rather than Sebesta's.\n- The `realizes: ['type-checking']` edge is apt: the carve is explicitly
+      a *discipline of when type-checking happens*, not type-checking itself — Jordan et al. frame \"\
+      Type Checking\" as the broader category with static/dynamic as its two temporal values [jordan-et-al-2015#c00016],
+      matching the carve's own framing of itself as a \"typing discipline.\"\n\n**4. Aliases are evidenced.**
+      \"Dynamically typed\" and \"latently typed\" are both given as synonyms in the same defining sentence
+      of Turbak & Gifford [turbak-gifford-dcpl#c00958].\n\nOne nuance worth flagging for calibration,
+      not as a weakness: Harper's \"Critique of Dynamic Typing\" chapter argues the static/dynamic opposition
+      is \"illusory\" since every dynamic language is a uni-typed static language in disguise [harper-pfpl#c00346].
+      I read this as a documented *theoretical controversy about the ontological status* of the distinction,
+      not evidence against the carve — Harper still uses \"dynamically typed\" as a first-class, well-defined
+      category throughout (§23.1, §23.3), and the corpus consensus (Turbak/Gifford, Kaijanaho's survey
+      of accepted definitions, Scott, Van Roy/Haridi) treats it as a real, nameable, cross-language discipline.
+      The carve should stand, perhaps with a note pointing to the Harper critique as a philosophical caveat
+      rather than a reason to dissolve the node."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The carve's core definition and the Turbak/Gifford/Kaijanaho/Scott consensus cited for it 
+      are sound as far as they go, but two aspects don't survive contact with the rest of the 
+      corpus, specifically Harper's own cited source (which the proposer already flagged but 
+      under-weighted) and the gradual/hybrid-typing material.
+    challenges:
+      - type: wrong-structure
+        text: "The note asserts dynamic-typing is 'the other exclusive value of the same discipline-time
+          axis' as static-typing, i.e. the ontology's `dimension` field is being used to model a two-valued,
+          mutually exclusive choice. But the sources describe this axis as neither exclusive nor binary:
+          Van Roy & Haridi list the designer's choice as 'dynamically typed, statically typed, or some
+          mixture of both' (a third option, not a spectrum endpoint), and Harper's own Hybrid Typing chapter
+          states plainly that 'Static and dynamic types are not opposed to one another, but may coexist
+          harmoniously' within a single language via a `dyn` type, concluding 'dynamic typing is a mode
+          of use of static typing.' Krishnamurthi's treatment of 'micro' gradual typing goes further,
+          showing static and dynamic portions commingling within a single program, even a single expression/line.
+          A `dimension` slot that records this as two exclusive poles has no room for the coexistence/subsumption
+          relationship these sources actually describe — the carve is being forced into an either/or axis
+          the literature doesn't support."
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00240
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: any parts of a program can be static and any other parts dynamic, and they can 
+              freely commingle in the same body of code
+      - type: wrong-atomization
+        text: "The carve's defining boundary ('values, not program phrases, carry type information at
+          run time') is precisely the criterion Harper's §24.4 critique names and rebuts as a non-distinguishing
+          property: he argues dynamic languages 'associate classes, not types, to values by tagging them
+          with identifiers such as num and fun,' which 'amounts to a use of recursive sum types within
+          a statically typed language, and hence cannot be seen as a distinguishing feature of dynamic
+          languages' — and that static languages with sum types perform the identical run-time class check
+          'only as necessary' rather than 'always.' This isn't a vague philosophical caveat orthogonal
+          to the carve (as the proposer frames it); it is a direct, source-cited rebuttal of the exact
+          value-vs-phrase wording used as the node's defining criterion. The carve should either cite
+          this rebuttal alongside the definition or acknowledge that its chosen boundary condition is
+          contested by one of its own cited authorities, rather than treating the Turbak/Gifford formulation
+          as uncontroversial consensus."
+        evidence:
+          - source: harper-pfpl
+            locator: §24.4
+            chunk_id: harper-pfpl#c00371
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: The dynamic-typing carve has strong, convergent definitional support (Turbak/Gifford, 
+      Kaijanaho's survey, Harper's operational semantics, Scott-PLP), and its separation from 
+      "typing strength" is well-evidenced. But two structural problems surface once the full corpus 
+      is read rather than the hand-picked corroborating sentences.
+    challenges:
+      - type: wrong-structure
+        text: "The carve's `dimension: static-dynamic-typing-discipline` models dynamic and static typing
+          as two symmetric, mutually exclusive poles of one axis (an exhaustive either/or, as the proposer
+          argues from Turbak/Gifford and Van Roy & Haridi). But Harper's PFPL formally argues the relationship
+          is not symmetric opposition at all: dynamic typing is a *degenerate special case* of static
+          typing (a uni-typed static language with one recursive sum type `dyn`), not an independent alternative
+          value. He states this is 'so important it bears repeating: every dynamic language is inherently
+          a static language in which we confine ourselves to a (needlessly) restricted type discipline'
+          [harper-pfpl#c00346], and spells out the subset relation formally in the preceding chapter:
+          'so-called dynamically typed languages are, in fact, statically typed... this traditional distinction
+          can hardly be considered an opposition' [harper-pfpl#c00343]. He then rebuts each of the three
+          standard distinguishing criteria (value- vs phrase-based typing, run-time vs compile-time checking,
+          heterogeneous vs homogeneous collections) one by one as not actually distinguishing [harper-pfpl#c00371].
+          A 'dimension' node that encodes two co-equal exclusive values has no slot for a documented formal
+          position in which one 'pole' is proven to be a restricted instance of the other — treating this
+          as a mere note-worthy caveat (as the proposer does) buries a structural disagreement about whether
+          this is an axis of two values or a containment relation of one mechanism inside another."
+        evidence:
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+          - source: harper-pfpl
+            locator: §22.4
+            chunk_id: harper-pfpl#c00343
+          - source: harper-pfpl
+            locator: §24.4
+            chunk_id: harper-pfpl#c00371
+      - type: wrong-atomization
+        text: "The carve's note distinguishes dynamic typing ('values... carry type information') from
+          variable type-binding time, pointing to Sebesta §5.4.2 as the separate, excluded concept [sebesta-copl#c00410].
+          But Van Roy & Haridi — which the proposer cites as independent corroboration of the *same* dimension
+          — actually defines dynamic typing exactly in Sebesta's terms, not Turbak/Gifford's: 'In a dynamically-typed
+          language, variables can be bound to entities of any type, so in general their type is known
+          only at run time' [vanroy-haridi-2003#c00236]. That is a claim about when a variable acquires
+          a type (binding time), the very notion the carve's note says is a 'related but separate concept
+          about variables rather than values.' So one of the carve's own three cited corroborating sources
+          does not independently confirm the value-tagging formulation at all — it corroborates the formulation
+          the carve explicitly excludes as a different phenomenon. The corpus doesn't converge on one
+          mechanism under the name 'dynamic typing'; the carve's text picks the Turbak/Gifford/Harper
+          (value-tagging) formulation and silently treats the variable-binding-time formulation (Van Roy
+          & Haridi, Sebesta) as both confirming evidence and an excluded alternative, which can't both
+          be true."
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00236
+            quote: In a dynamically-typed language, variables can be bound to entities of any type, 
+              so in general their type is known only at run time
+          - source: sebesta-copl
+            locator: §5.4.2
+            chunk_id: sebesta-copl#c00410
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede the core of all four challenges; the evidence is clear and I should say so plainly
+      rather than defend positions the sources don't support.\n\n**On wrong-structure (both challengers).**
+      The passages confirm this directly. Harper calls the opposition \"illusory\" [harper-pfpl#c00346],
+      states \"every dynamic language is inherently a static language in which we confine ourselves to
+      a (needlessly) restricted type discipline\" [harper-pfpl#c00346], and in §22.4 goes further: \"\
+      so-called dynamically typed languages are, in fact, statically typed... this traditional distinction
+      can hardly be considered an opposition\" [harper-pfpl#c00343]. §24 (Hybrid Typing) then builds a
+      language where \"static and dynamic types are not opposed to one another, but may coexist harmoniously,\"\
+      \ concluding \"dynamic typing is a mode of use of static typing\" [harper-pfpl#c00361] — a containment
+      relation, not two poles of an axis. Van Roy & Haridi corroborate the non-binary framing independently:
+      \"the choice between static or dynamic typing does not have to be all or nothing. In each approach,
+      a bit of the other can be added\" [vanroy-haridi-2003#c00239]. A `dimension` field modeling two
+      co-equal exclusive values has no slot for \"mode of use\" / subsumption, and the note's claim of
+      mutual exclusivity is not what any of the three cited sources actually says once you read past the
+      summary chapters. This should be restructured — at minimum the note should drop \"exclusive,\" and
+      the `dimension` relationship itself should be reconsidered as asymmetric (subsumption) rather than
+      a bipolar axis, consistent with Harper's explicit formal result.\n\n**On wrong-atomization re: value-vs-phrase
+      criterion (type theorist).** Also conceded. §24.4 is not a tangential caveat — it is Harper naming
+      \"dynamic languages associate types with values... static languages associate types to variables\"\
+      \ as criterion #1 of exactly three \"supposed distinctions,\" and rebutting it: tagging values with
+      classes \"amounts to a use of recursive sum types within a statically typed language, and hence
+      cannot be seen as a distinguishing feature\" [harper-pfpl#c00371]. Since this is the carve's literal
+      defining sentence, presenting it as settled rather than as one side of a cited, direct rebuttal
+      from the carve's own authority misrepresents the state of the literature. The summary should name
+      this as a contested/critiqued boundary, not a clean criterion.\n\n**On wrong-atomization re: Van
+      Roy & Haridi corroboration (implementer).** Conceded outright, and worse than the challenge states
+      once I checked §2.3.2 directly: \"In dynamic typing, the variable type is known only when the variable
+      is bound\" [vanroy-haridi-2003#c00153] — this is the binding-time formulation, stated as Van Roy
+      & Haridi's own definition, not merely an echo of Sebesta. The carve's note claims variable-binding-time
+      is \"a related but separate concept\" excluded from this node, then cites a source that defines
+      dynamic typing exactly that way. That's an internal contradiction in the evidence list as written,
+      not a defensible choice of which formulation to foreground.\n\n**What I'd keep, narrowly:** the
+      node itself (a term for \"dynamic typing\" as commonly used) is well-attested and worth having —
+      Scott [scott-plp#c00398] and the DPCF formalization in Harper §23 [harper-pfpl#c00347] both show
+      it's a real, nameable thing languages do, even per Harper's own degenerate-case account. What doesn't
+      survive is (a) the exclusive-binary `dimension` framing, (b) presenting value-tagging as the uncontroversial
+      defining criterion, and (c) citing Van Roy & Haridi as confirming that same criterion when it actually
+      states the opposite (binding-time) formulation. I'd support amending the carve to: soften/restructure
+      the `dimension` relation to allow subsumption rather than exclusivity, add the Harper §24.4 rebuttal
+      as a cited counter-position in the definition itself rather than leaving it as an unstated gap,
+      and either drop the Van Roy & Haridi citation from this specific wording or add a clause acknowledging
+      it supports the binding-time variant.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challengers' citations check out against the record, and the proposer's own final-round
+      review (checking Van Roy & Haridi §2.3.2 directly) found the problem is worse than first alleged.
+      Three distinct, evidence-backed problems survive: (1) the carve's `note` asserts static/dynamic
+      typing are \"the other exclusive value of the same discipline-time axis,\" but Harper formally argues
+      the opposite — \"every dynamic language is inherently a static language in which we confine ourselves
+      to a (needlessly) restricted type discipline\" [harper-pfpl#c00346] and \"this traditional distinction
+      can hardly be considered an opposition\" [harper-pfpl#c00343], with Hybrid Typing (§24) building
+      a language where the two \"coexist harmoniously\" as containment (\"dynamic typing is a mode of
+      use of static typing\") rather than alternation. Van Roy & Haridi corroborate non-exclusivity independently,
+      though via a continuum framing rather than Harper's containment framing: \"the choice... does not
+      have to be all or nothing... a bit of the other can be added\" [vanroy-haridi-2003#c00239]. This
+      is a dimension-modeling problem, not a problem with the node's existence. (2) The carve's defining
+      criterion — \"values, not program phrases, carry type information\" — is the literal target of Harper's
+      §24.4 rebuttal of the three \"supposed distinctions,\" which argues value-tagging \"amounts to a
+      use of recursive sum types within a statically typed language, and hence cannot be seen as a distinguishing
+      feature\" [harper-pfpl#c00371]. Presenting this as settled textbook consensus rather than a contested
+      criterion from one of the carve's own cited authorities misstates the literature. (3) The evidence
+      trail is internally inconsistent: arguments made for this carve treat Van Roy & Haridi as confirming
+      the value-tagging formulation, but that source's own definition is binding-time-based — \"the variable
+      type is known only when the variable is bound\" [vanroy-haridi-2003#c00153] — which is exactly the
+      \"related but separate concept\" the note excludes. The node itself is sound and well-attested (Turbak/Gifford,
+      Scott, Harper's own DPCF operationalization all treat it as a real, nameable discipline even under
+      Harper's degenerate-case account), so this is a revise, not a drop or escalate — the disagreement
+      is about framing and boundary-drawing, which the evidence resolves clearly enough to act on now."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - wrong-structure
+    - wrong-atomization
+  rationale: "Both challengers' citations check out against the record, and the proposer's own final-round
+    review (checking Van Roy & Haridi §2.3.2 directly) found the problem is worse than first alleged.
+    Three distinct, evidence-backed problems survive: (1) the carve's `note` asserts static/dynamic typing
+    are \"the other exclusive value of the same discipline-time axis,\" but Harper formally argues the
+    opposite — \"every dynamic language is inherently a static language in which we confine ourselves
+    to a (needlessly) restricted type discipline\" [harper-pfpl#c00346] and \"this traditional distinction
+    can hardly be considered an opposition\" [harper-pfpl#c00343], with Hybrid Typing (§24) building a
+    language where the two \"coexist harmoniously\" as containment (\"dynamic typing is a mode of use
+    of static typing\") rather than alternation. Van Roy & Haridi corroborate non-exclusivity independently,
+    though via a continuum framing rather than Harper's containment framing: \"the choice... does not
+    have to be all or nothing... a bit of the other can be added\" [vanroy-haridi-2003#c00239]. This is
+    a dimension-modeling problem, not a problem with the node's existence. (2) The carve's defining criterion
+    — \"values, not program phrases, carry type information\" — is the literal target of Harper's §24.4
+    rebuttal of the three \"supposed distinctions,\" which argues value-tagging \"amounts to a use of
+    recursive sum types within a statically typed language, and hence cannot be seen as a distinguishing
+    feature\" [harper-pfpl#c00371]. Presenting this as settled textbook consensus rather than a contested
+    criterion from one of the carve's own cited authorities misstates the literature. (3) The evidence
+    trail is internally inconsistent: arguments made for this carve treat Van Roy & Haridi as confirming
+    the value-tagging formulation, but that source's own definition is binding-time-based — \"the variable
+    type is known only when the variable is bound\" [vanroy-haridi-2003#c00153] — which is exactly the
+    \"related but separate concept\" the note excludes. The node itself is sound and well-attested (Turbak/Gifford,
+    Scott, Harper's own DPCF operationalization all treat it as a real, nameable discipline even under
+    Harper's degenerate-case account), so this is a revise, not a drop or escalate — the disagreement
+    is about framing and boundary-drawing, which the evidence resolves clearly enough to act on now."
+  revision:
+    summary: "A typing discipline in which values are tagged with type/class information inspected at
+      run time, with type errors checked only when an operation is about to occur; type errors thus surface
+      at run time rather than compile time. The value-vs-phrase boundary used here is itself contested
+      in the corpus: Harper (PFPL §24.4) argues this criterion does not cleanly distinguish dynamic from
+      static typing, since tagging values with classes 'amounts to a use of recursive sum types within
+      a statically typed language.'"
+    note: Historically paired with static-typing, but the corpus does not support modeling the two 
+      as symmetric, mutually exclusive poles of one axis. Van Roy & Haridi describe a continuum 
+      rather than an either/or ('the choice... does not have to be all or nothing... a bit of the 
+      other can be added'), and Harper formally argues dynamic typing is a restricted/degenerate 
+      mode of use of static typing (a uni-typed language built on one recursive sum type), not an 
+      independent alternative value ('dynamic typing is a mode of use of static typing'). The 
+      dimension relationship should be read as permitting subsumption/coexistence, not strict 
+      exclusivity; this is a modeling concern for the dimension structure generally, not unique to 
+      this node.
+  structure_element: dimension-model
+  contradiction:
+    participants:
+      - citation:turbak-gifford-dcpl:c00958
+      - citation:harper-pfpl:c00343
+    detail: "Turbak & Gifford present dynamic and static typing as two exhaustive, symmetric alternatives
+      for when type consistency is established (the carve's original dimension framing). Harper's PFPL
+      formally argues this is not an opposition at all: dynamic typing is a degenerate special case (subsumed
+      instance) of static typing, not a co-equal alternative value on the same axis — 'this traditional
+      distinction can hardly be considered an opposition.' Nothing in either source dissolves the disagreement;
+      it is a genuine difference in how the two sources characterize the relationship between the two
+      typing disciplines."
