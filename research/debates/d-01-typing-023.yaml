@@ -1,0 +1,256 @@
+id: d-01-typing-023
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: type-classes--requires--ad-hoc-polymorphism
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-type-classes--requires--ad-hoc-polymorphism-01
+  moderator: 2026-10-17-r4-moderator-01-typing-type-classes--requires--ad-hoc-polymorphism-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: type-classes--requires--ad-hoc-polymorphism
+  type: requires
+  from: type-classes
+  to: ad-hoc-polymorphism
+  polarity:
+  statement: Type class methods change behavior per type-class instance rather than behaving 
+    uniformly, which is the defining trait of ad hoc polymorphism.
+  evidence:
+    - source: ghc-users-guide
+      locator: §6.4.10
+      chunk_id: ghc-users-guide#c00700
+      quote: Parametric polymorphic functions behave the same at all type instances, whereas class 
+        methods can change their behaviour in dependence on the class type parameters.
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Defending the carve.** The \"single-source\" flag is the only objection on the table, and
+      it no longer holds: independent canonical sources corroborate both halves of the claim.\n\n1. **Ad
+      hoc polymorphism's defining trait is per-type behavior variation**, independent of GHC:\n   - Pierce,
+      TAPL: \"Ad-hoc polymorphism… allows a polymorphic value to exhibit different behaviors when 'viewed'
+      at different types… associates a single function symbol with many implementations\" [pierce-tapl-2002#c00726].\n\
+      \   - Cardelli & Wegner (1985), the founding taxonomy cited by Pierce: \"a universally polymorphic
+      function will execute the same code for arguments of any admissible type, while an ad-hoc polymorphic
+      function may execute different code for each type of argument\" [cardelli-wegner-1985#c00011]; ad
+      hoc polymorphism is \"obtained when a function… may behave in unrelated ways for each type\" [cardelli-wegner-1985#c00011].\n\
+      \   - Turbak & Gifford, DCPL: for overloading, \"the program code that implements the + operator
+      is different for each of these types. The different operators just happen to share the same name\"\
+      \ [turbak-gifford-dcpl#c01148].\n\n   These three sources, all independent of the GHC manual, converge
+      exactly on the carve's statement: ad hoc polymorphism *means* code/behavior differs per type, as
+      opposed to uniform parametric behavior.\n\n2. **Type classes are the named mechanism realizing ad
+      hoc polymorphism**, again independent of GHC:\n   - Haskell 2010 Report §1.3: Haskell's type system
+      \"permits not only parametric polymorphism… but also ad hoc polymorphism, or overloading (using
+      type classes)\" [haskell-2010-report#c00034].\n   - Haskell 2010 Report §4.1 shows the mechanism
+      directly: a class like `Num` declares overloaded methods `(+)` and `negate`, and separate instances
+      for `Int` and `Float` supply *different* definitions (`addInt`/`addFloat`, etc.) [haskell-2010-report#c00087]
+      — i.e., behavior that changes per instance, not uniform behavior.\n\n   This is a second, independent
+      primary source (the language standard itself, not an implementation guide) stating in so many words
+      that type classes are how Haskell achieves ad hoc polymorphism/overloading, and showing concretely
+      that instance methods diverge by type.\n\n**Conclusion.** The GHC Users Guide passage was never
+      an isolated claim — it restates what the Haskell Report already says about the language's own type-class
+      mechanism, and both agree with the general PL-theory definition of ad hoc polymorphism from Cardelli
+      & Wegner, Pierce, and Turbak & Gifford. The `requires` edge direction is also correct: type classes
+      *presuppose* ad hoc polymorphism as the behavior they realize (per-type method variation is constitutive
+      of ad hoc polymorphism, not an optional add-on), matching the \"defining trait\" language in the
+      statement. I'd amend the evidence list to add haskell-2010-report#c00034 and #c00087 as corroborating
+      citations (removing the single-source flag basis), but the carve itself — key, direction, and statement
+      — should stand unchanged."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The proposer's source work is solid — Cardelli & Wegner, Pierce, and the Haskell Report all
+      corroborate the content of the claim, and the single-source flag is fairly answered. But fixing
+      the sourcing surfaces a deeper fit problem the sourcing review doesn't address: what kind of thing
+      \"ad hoc polymorphism\" is in this ontology."
+    challenges:
+      - type: wrong-layer
+        text: "Every corroborating source treats ad hoc polymorphism not as a feature a language either
+          has or lacks, but as a branch of Strachey/Cardelli & Wegner's theoretical taxonomy of polymorphism
+          — a classificatory concept under which overloading, type classes, and multi-method dispatch
+          are listed as separate concrete mechanisms exhibiting it. Cardelli & Wegner: 'Parametric and
+          inclusion polymorphism are classified as the two major subcategories of universal polymorphism,
+          which is contrasted with nonuniversal or ad-hoc polymorphism' [cardelli-wegner-1985#c00011]
+          — this is taxonomy language, defining a category, not describing a mechanism that other mechanisms
+          depend on. Pierce frames it the same way: 'Several varieties of polymorphism can be found in
+          modern languages (this classification comes from Strachey, 1967, and Cardelli and Wegner, 1985)...
+          Ad-hoc polymorphism... The most common example of ad-hoc polymorphism is overloading' [pierce-tapl-2002#c00726]
+          — type classes/overloading are presented as an *instance of* the category, not as something
+          that presupposes a separate co-existing feature called 'ad hoc polymorphism.' The carve's own
+          statement text ('which is the defining trait of ad hoc polymorphism') confirms this: it is asserting
+          a constitutive/classificatory relationship (type classes exemplify the category), not a dependency
+          where one feature needs another to function. By the project's own terminology, 'concept — any
+          idea or principle, often grounded in theory' is exactly what this taxonomic category is, while
+          'feature — a realisation of a concept' is what type classes are. Modeling 'ad-hoc-polymorphism'
+          as a feature node and using the feature-to-feature 'requires' relation forces a concept-realization
+          relationship into a dependency edge the relation vocabulary wasn't built for, because the ontology's
+          feature layer has no slot for 'is the defining instance of a polymorphism-taxonomy category.'"
+        evidence:
+          - source: cardelli-wegner-1985
+            locator: pp. 4–5
+            chunk_id: cardelli-wegner-1985#c00011
+          - source: pierce-tapl-2002
+            locator: §23.2
+            chunk_id: pierce-tapl-2002#c00726
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The missing-source objection is resolved — Pierce, Cardelli & Wegner, and the Haskell 2010
+      Report independently corroborate both halves of the statement, so I won't re-raise it. But reading
+      the proposer's own citations surfaces a different problem with the carve.\n\nEvery independent source
+      the proposer cites presents \"ad hoc polymorphism\" not as a realized mechanism within a family
+      of programming languages, but as one branch of a general theoretical taxonomy of polymorphism (Strachey's
+      classification, refined by Cardelli & Wegner, adopted by Pierce). Pierce's section is literally
+      titled \"23.2 Varieties of Polymorphism\" and opens: \"Several varieties of polymorphism can be
+      found in modern languages (this classification comes from Strachey, 1967, and Cardelli and Wegner,
+      1985). Parametric polymorphism... Ad-hoc polymorphism, by contrast, allows a polymorphic value to
+      exhibit different behaviors when 'viewed' at different types\" [pierce-tapl-2002#c00726]. Cardelli
+      & Wegner's own figure caption is \"Varieties of polymorphism,\" classifying ad-hoc as one of two
+      \"major kinds of polymorphism\" distinguished informally by Strachey [cardelli-wegner-1985#c00011][cardelli-wegner-1985#c00013].
+      This is squarely the LangAtlas sense of **concept** — \"any idea or principle, often... grounded
+      in theory\" — not **feature**, which the project defines as \"a realisation of a concept within
+      a family of related systems (here: programming languages).\" Ad hoc polymorphism is the theoretical
+      category; type classes are the Haskell-family mechanism that realizes it.\n\nBy modeling both ends
+      as features and connecting them with a feature-to-feature `requires` edge, the carve forces a concept
+      into the feature layer so it can sit in the typed feature-relationship graph (which per the project's
+      edge vocabulary only has requires/enables/influences/conflicts/alternative-to/quality edges, no
+      feature→concept relation). The sources support the *content* of the claim but not its layering:
+      nothing in Pierce, Cardelli & Wegner, or the Haskell Report treats ad hoc polymorphism as a feature
+      instantiated in specific language families the way type classes, overloading-via-functors, or multi-methods
+      are; they treat it as the classificatory concept those mechanisms instantiate. This looks like a
+      case where the ontology has no clean slot for \"feature realizes a taxonomic concept,\" and the
+      carve was bent into a `requires` feature-feature edge to compensate."
+    challenges:
+      - type: wrong-layer
+        text: Ad hoc polymorphism is presented in every cited source as a branch of a general 
+          theoretical taxonomy of polymorphism (Strachey's classification, per Cardelli & Wegner, 
+          adopted by Pierce), not as a feature realized within a family of programming languages. 
+          That matches LangAtlas's 'concept' definition, not 'feature.' Type classes are the 
+          feature; ad hoc polymorphism is the concept they realize, which the feature-to-feature 
+          `requires` edge cannot correctly express.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §23.2
+            chunk_id: pierce-tapl-2002#c00726
+          - source: cardelli-wegner-1985
+            locator: pp. 4–5
+            chunk_id: cardelli-wegner-1985#c00011
+          - source: cardelli-wegner-1985
+            locator: p. 5
+            chunk_id: cardelli-wegner-1985#c00013
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede this challenge.\n\nChecking the corroborating sources myself confirms what both challengers
+      argue: Cardelli & Wegner's own figure caption frames the relationship as taxonomic, not dependency-based
+      — \"Parametric and inclusion polymorphism are classified as the two major subcategories of universal
+      polymorphism, which is contrasted with nonuniversal or ad-hoc polymorphism\" [cardelli-wegner-1985#c00011].
+      Pierce follows the same classification verbatim, listing overloading, multi-method dispatch, and
+      intensional polymorphism as different concrete mechanisms that all fall under the single taxonomic
+      label \"ad-hoc polymorphism, by contrast [to parametric]\" [pierce-tapl-2002#c00726, #c00727]. Turbak
+      & Gifford make the equivalence explicit rather than a dependency: \"this is called ad hoc polymorphism
+      or overloading\" [turbak-gifford-dcpl#c01148] — the two terms name the same phenomenon at different
+      levels of abstraction, they don't gate one another.\n\nRe-reading the cited GHC passage itself [ghc-users-guide#c00700]
+      in that light, it's doing the identical move: contrasting class methods with parametric-polymorphic
+      functions to locate type classes within Strachey's taxonomy, not asserting that type classes depend
+      on a separate, independently-functioning feature called \"ad hoc polymorphism.\" Nothing in any
+      source suggests type classes could exist while \"lacking\" ad hoc polymorphism, or that ad hoc polymorphism
+      is a thing with its own criteria of correct function that type classes draw on — which is what a
+      `requires` edge between features is supposed to capture (one feature needing another to work). Instead
+      every source's claim is constitutive: type classes *are* (an implementation of) ad hoc polymorphism,
+      in the same way overloading and multi-method dispatch are.\n\nThat lines up exactly with the project's
+      own vocabulary split: \"concept — any idea or principle, often grounded in theory\" (Strachey/Cardelli
+      & Wegner's taxonomy of polymorphism) versus \"feature — a realisation of a concept\" (type classes,
+      overloading, multi-method dispatch as separate realizations). Modeling ad-hoc-polymorphism as a
+      feature node and connecting it to type-classes via `requires` forces a classification/realization
+      relationship into a dependency edge the feature-to-feature vocabulary wasn't built for, and no source
+      — including the single cited GHC passage — actually supports a dependency reading once its taxonomic
+      framing is made explicit.\n\nI'd recommend retracting this edge rather than re-sourcing it: either
+      remodel ad-hoc-polymorphism as a concept with a realizes/is-a-kind-of edge from type-classes (and
+      separately from overloading, multi-method dispatch), or drop the node pairing entirely if the ontology
+      has no concept-realization relation yet. Defending the `requires` edge as currently typed would
+      mean asserting something none of the cited literature — Strachey via Cardelli & Wegner, Pierce,
+      or Turbak & Gifford — actually claims."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challengers show, using sources independent of and including the single-source GHC passage,
+      that every corroborating citation (Cardelli & Wegner's taxonomy, Pierce's \"Varieties of Polymorphism\"\
+      \ §23.2, the Haskell Report, Turbak & Gifford) treats \"ad hoc polymorphism\" as a branch of Strachey/Cardelli
+      & Wegner's theoretical classification of polymorphism, with overloading, type classes, and multi-method
+      dispatch listed as separate concrete mechanisms that instantiate it — not as a feature with its
+      own independent criteria of correct function that another feature could \"require.\" Cardelli &
+      Wegner's own figure caption calls it a classification (\"Varieties of polymorphism\"); Pierce frames
+      type classes/overloading as instances of the ad-hoc category rather than things presupposing a co-existing
+      feature named \"ad hoc polymorphism.\" The proposer explicitly concedes on inspecting their own
+      corroborating sources: nothing in the literature supports a dependency reading, only a constitutive/classification
+      one. By the project's own fixed vocabulary, this makes \"ad hoc polymorphism\" a **concept** (an
+      idea/principle grounded in theory) and \"type classes\" the **feature** that realizes it — a concept-feature
+      relationship, not a feature-to-feature dependency. The feature-to-feature `requires` edge vocabulary
+      (per the context docs: requires/enables/influences/conflicts/alternative-to/quality edges) has no
+      slot for \"feature realizes a taxonomic concept,\" so the carve was bent into the wrong edge type
+      to force a fit. This is a structural layering problem, not a sourcing problem — the single-source
+      flag that triggered the debate is fully resolved, but resolving it exposed the deeper misfit. All
+      three debate participants converge on this reading with no surviving disagreement between the cited
+      sources themselves (Pierce, Cardelli & Wegner, Turbak & Gifford, and the Haskell Report all agree
+      with each other), so there is no sourced contradiction to record. The carve as a feature-to-feature
+      `requires` edge between `type-classes` and `ad-hoc-polymorphism` should not exist in this form;
+      the correct fix is to remodel `ad-hoc-polymorphism` as a concept node and express the relationship
+      via a realizes (concept-realization) edge from `type-classes`, parallel to how overloading and multi-method
+      dispatch would separately realize the same concept — not via this feature-feature carve."
+resolution:
+  outcome: converged-after-revision
+  disposition: drop
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - wrong-layer
+  rationale: "Both challengers show, using sources independent of and including the single-source GHC
+    passage, that every corroborating citation (Cardelli & Wegner's taxonomy, Pierce's \"Varieties of
+    Polymorphism\" §23.2, the Haskell Report, Turbak & Gifford) treats \"ad hoc polymorphism\" as a branch
+    of Strachey/Cardelli & Wegner's theoretical classification of polymorphism, with overloading, type
+    classes, and multi-method dispatch listed as separate concrete mechanisms that instantiate it — not
+    as a feature with its own independent criteria of correct function that another feature could \"require.\"\
+    \ Cardelli & Wegner's own figure caption calls it a classification (\"Varieties of polymorphism\"\
+    ); Pierce frames type classes/overloading as instances of the ad-hoc category rather than things presupposing
+    a co-existing feature named \"ad hoc polymorphism.\" The proposer explicitly concedes on inspecting
+    their own corroborating sources: nothing in the literature supports a dependency reading, only a constitutive/classification
+    one. By the project's own fixed vocabulary, this makes \"ad hoc polymorphism\" a **concept** (an idea/principle
+    grounded in theory) and \"type classes\" the **feature** that realizes it — a concept-feature relationship,
+    not a feature-to-feature dependency. The feature-to-feature `requires` edge vocabulary (per the context
+    docs: requires/enables/influences/conflicts/alternative-to/quality edges) has no slot for \"feature
+    realizes a taxonomic concept,\" so the carve was bent into the wrong edge type to force a fit. This
+    is a structural layering problem, not a sourcing problem — the single-source flag that triggered the
+    debate is fully resolved, but resolving it exposed the deeper misfit. All three debate participants
+    converge on this reading with no surviving disagreement between the cited sources themselves (Pierce,
+    Cardelli & Wegner, Turbak & Gifford, and the Haskell Report all agree with each other), so there is
+    no sourced contradiction to record. The carve as a feature-to-feature `requires` edge between `type-classes`
+    and `ad-hoc-polymorphism` should not exist in this form; the correct fix is to remodel `ad-hoc-polymorphism`
+    as a concept node and express the relationship via a realizes (concept-realization) edge from `type-classes`,
+    parallel to how overloading and multi-method dispatch would separately realize the same concept —
+    not via this feature-feature carve."
+  drop_reason: Ad hoc polymorphism is, in every cited source (Cardelli & Wegner, Pierce TAPL §23.2, 
+    Turbak & Gifford, and the Haskell Report that frames it as "ad hoc polymorphism, or 
+    overloading"), a branch of a theoretical taxonomy of polymorphism — a concept per LangAtlas's 
+    own vocabulary — not a feature with independent functional criteria. Type classes 
+    realize/instantiate it; they do not "require" it as a dependency the way one feature requires 
+    another to function. A feature-to-feature `requires` edge cannot correctly express a 
+    concept-realization relationship, and the proposer concedes this after re-reading their own 
+    corroborating citations. The edge should be retracted and the relationship remodeled as a 
+    concept→feature realizes/is-a-kind-of relation (with `ad-hoc-polymorphism` recast as a concept 
+    node), not patched within the current feature-feature edge type.
+  structure_element: concept-feature-split
