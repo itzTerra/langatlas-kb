@@ -1,0 +1,263 @@
+id: d-01-typing-013
+cycle: 1
+theme: typing
+target:
+  list: dimensions
+  key: structural-vs-nominal-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-structural-vs-nominal-typing-02
+  moderator: 2026-10-17-r4-moderator-01-typing-structural-vs-nominal-typing-02
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: structural-vs-nominal-typing
+  slug: structural-vs-nominal-typing
+  label: Structural vs. Nominal Typing
+  exclusivity: exclusive
+  applies_to:
+    - general-purpose
+  contested:
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: The axis deciding whether subtyping and type equivalence are judged by comparing type shape 
+    or by explicit, declared names; Pierce explicitly treats a language's choice here as exclusive.
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `structural-vs-nominal-typing`**\n\nThe carve is directly, explicitly, and
+      by name grounded in the primary source for this theme.\n\n**1. The axis is not my inference — it
+      is Pierce's named taxonomy.** TAPL §19.3, \"Nominal and Structural Type Systems,\" states the distinction
+      in exactly the terms the carve uses:\n\n> \"Type systems like Java's, in which names are significant
+      and subtyping is explicitly declared, are called *nominal*. Type systems like most of the ones in
+      this book, in which names are inessential and subtyping is defined directly on the structures of
+      types are called *structural*.\" [pierce-tapl-2002#c00525]\n\nThis is a binary classification of
+      *type systems themselves* (\"called nominal\" / \"called structural\"), not a spectrum of independently-tunable
+      knobs — which is exactly what `exclusivity: exclusive` is for in this ontology. Pierce's own index
+      reinforces that he treats it as a single named dichotomy, cross-referencing \"structural vs. nominal
+      type systems, 251–254\" as one entry [pierce-tapl-2002#c01317], and later discussing \"algorithmic
+      [subtyping], in nominal systems\" as a specifically contrasted case — i.e., the *same* subtyping
+      algorithm problem bifurcates depending on which side of this axis you're on.\n\n**2. The same binary
+      shows up independently in a second, unrelated lineage.** Sebesta frames essentially the identical
+      choice under a different name — \"type equivalence\" — and still lands on exactly two approaches:\n\
+      \n> \"There are two approaches to defining type equivalence: name type equivalence and structure
+      type equivalence. Name type equivalence means that two variables have equivalent types if they are
+      defined either in the same declaration or in declarations that use the same type name. Structure
+      type equivalence means that two variables have equivalent types if their types have identical structures.\"\
+      \ [sebesta-copl#c00562]\n\nThat two independent textbook traditions (Pierce's type-theoretic treatment
+      of subtyping, Sebesta's language-design treatment of type equivalence) converge on the same two-way
+      split is strong evidence this is a real, load-bearing carve in the domain rather than an artifact
+      of one author's taxonomy.\n\n**3. The axis has observable, concrete consequences — it's not merely
+      terminological.** Krishnamurthi gives the textbook demonstrating case: two Java classes (`mt`, `empty`)
+      identical in every structural respect (same method `size()`, same signature, same return value)
+      are *not* interchangeable, because Java's nominal discipline cares only \"which actual (named) class,
+      not what structure of class, created the value\" [krishnamurthi-plai#c00234]. Flip the discipline
+      to structural and the same two classes *would* be interchangeable. This is the cleanest possible
+      evidence that the choice is exclusive at the point of decision: for a given pair of types in a given
+      language, equivalence/subtyping is settled by name-comparison or by structure-comparison — never
+      genuinely both at once for the same check. Krishnamurthi's own chapter structure treats \"Nominal
+      Subtyping\" and \"Subtyping\" (structural) as separate sections built on separate mechanics [krishnamurthi-plai#c00238,
+      #c00013], not as two sliders on one continuum.\n\n**4. Pierce frames this as a *language-level*
+      design choice, matching the carve's scope.** The whole of Chapter 19 is about what a type system's
+      subtyping/equivalence judgment is *defined on* — names vs. structure — which is precisely what the
+      carve's note says (\"whether subtyping and type equivalence are judged by comparing type shape or
+      by explicit, declared names\"). The note is close to a direct paraphrase of the source, which is
+      the right outcome for a layer-3 dimension drafted from evidence.\n\n**Anticipating the obvious challenge,
+      so I can concede it if it's right rather than wait for it:** Sebesta adds that \"many languages
+      use combinations\" of the two approaches for type equivalence [sebesta-copl#c00564]. If a challenger
+      reads that as evidence against `exclusivity: exclusive`, I'll note now that this is weaker than
+      it looks: Sebesta's \"combinations\" point is about different *categories of type* within one language
+      being handled differently (e.g., scalars get one treatment, records another), not about a single
+      subtyping/equivalence judgment being simultaneously name-based and structure-based. The carve's
+      exclusivity claim is about the judgment for a given type relationship, matching Pierce's framing
+      exactly, and Pierce's text contains no hedge comparable to Sebesta's — he states the two-way \"\
+      called nominal / called structural\" split without qualification for the systems he's discussing.
+      I'm flagging this myself because if the moderator or an opponent reads Sebesta's \"combinations\"\
+      \ as undermining exclusivity at the *language* level rather than the per-judgment level, that's
+      a fair amendment to consider (e.g., scoping exclusivity explicitly to \"per subtyping/equivalence
+      judgment\" rather than \"per language\"), and I'd rather name that nuance than have it sprung on
+      me.\n\nThis is a well-evidenced, source-named, consequence-bearing axis. I defend it as drafted,
+      with the one caveat above offered proactively rather than extracted from me.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve is well-grounded: Pierce names the nominal/structural split explicitly and categorically
+      (TAPL §19.3), and Sebesta's independent \"type equivalence\" terminology converges on the same binary,
+      as the proposer documents. I have one structural objection, not a challenge to the underlying distinction
+      itself.\n\nThe carve's `exclusivity: exclusive` field, as typically implemented in this ontology,
+      assigns a single value of a dimension per language (matching `applies_to`'s language-level framing).
+      But the sources show the real-world choice is not uniformly exclusive at that grain: Sebesta states
+      flatly that \"C uses both name and structure type equivalence\" — struct/enum/union declarations
+      get name equivalence, while array types get structure equivalence, with yet another rule (file-boundary
+      exception) layered on top [sebesta-copl#c00568]. Ada shows the same pattern: unconstrained array
+      types use \"structure type equivalence,\" while derived/subrange/anonymous types use (varying strictness
+      of) name equivalence in the very same language [sebesta-copl#c00566]. So the axis isn't cleanly
+      one value per language; it's one value per *type-construct category* within a language, and C/Ada
+      are genuinely mixed when judged at the language level the carve's `applies_to` targets.\n\nThe proposer
+      anticipated something like this and proposed rescoping exclusivity to \"per subtyping/equivalence
+      judgment\" rather than \"per language.\" That is the right fix, but it's a fix to what the ontology's
+      `exclusivity` field is defined to range over, not evidence against the axis's validity — hence I'm
+      filing it as wrong-structure rather than contesting the carve itself. If the ontology currently
+      has no slot for \"exclusive per judgment/construct-category, not per language,\" the carve as drafted
+      (scoped to whole languages via `applies_to: ['general-purpose']`) will misclassify any language
+      that mixes rules by construct, which on this evidence includes two of the most commonly surveyed
+      languages (C and Ada)."
+    challenges:
+      - type: wrong-structure
+        text: "The carve sets `exclusivity: exclusive` and scopes via `applies_to: ['general-purpose']`,
+          implying one value of the axis per language. But Sebesta documents C and Ada as genuinely mixed
+          at the language level: C uses name equivalence for struct/enum/union and structure equivalence
+          for arrays (plus a file-boundary exception) in the same language; Ada uses structure equivalence
+          for unconstrained arrays but name equivalence (of varying strictness) for derived/subrange/anonymous
+          types in the same language. The ontology's per-language exclusive-value slot has no way to represent
+          'exclusive per type-construct category, not per language,' which is what these sources actually
+          show — the carve is being forced onto a language-level exclusivity slot that doesn't match the
+          granularity the evidence describes."
+        evidence:
+          - source: sebesta-copl
+            locator: §6.15
+            chunk_id: sebesta-copl#c00568
+          - source: sebesta-copl
+            locator: §6.15
+            chunk_id: sebesta-copl#c00566
+            quote: for objects of unconstrained array types, structure type equivalence rather than 
+              name type equivalence is used.
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is well-supported and I raise no challenges.\n\nPierce's TAPL §19.3 is cited accurately
+      and directly names the dichotomy in the carve's own terms: \"Type systems like Java's... are called
+      nominal. Type systems like most of the ones in this book... are called structural\" [pierce-tapl-2002#c00525].
+      This is Pierce classifying type systems into exactly two named buckets, which licenses `exclusivity:
+      exclusive` rather than a spectrum of tunable knobs.\n\nThe independent corroboration from Sebesta's
+      \"type equivalence\" treatment (\"There are two approaches... name type equivalence and structure
+      type equivalence\") [sebesta-copl#c00562] strengthens the case that this is a load-bearing, cross-traditions
+      distinction rather than an artifact of one author's framing.\n\nThe one passage that could be read
+      as undermining exclusivity — Sebesta's note that \"many languages use combinations of them\" [sebesta-copl#c00562],
+      detailed concretely for C: \"C uses both name and structure type equivalence... name type equivalence
+      is used for structure, enumeration, and union types. Other nonscalar types use structure type equivalence\"\
+      \ [sebesta-copl#c00568] — does not actually break exclusivity as scoped. C's mixture is a per-category
+      split (structs/enums/unions get name equivalence; arrays get structural equivalence), not a single
+      type-pair judgment being simultaneously settled both ways. For any specific equivalence/subtyping
+      check, the language commits to one discipline, matching Pierce's framing exactly (\"names are significant...
+      or names are inessential,\" not both for the same check). The proposer flagged this nuance proactively
+      and it holds up: it is a scoping clarification (exclusive per judgment/category, not a blanket claim
+      that no language ever mixes the two mechanisms across different parts of its type system), not a
+      defect in the carve itself.\n\nPierce's own acknowledgment that nominal languages extended with
+      generic features become \"complex hybrids of the two approaches\" [pierce-tapl-2002#c00529] is consistent
+      with the same reading — hybridization happens by mixing which categories of types get which treatment,
+      not by collapsing the binary nature of any single judgment. Pierce still treats nominal/structural
+      as the two poles being hybridized, not as a third merged category, so this doesn't invite a wrong-atomization
+      or wrong-structure objection either.\n\nI don't find grounds for wrong-layer (Pierce explicitly
+      treats this as a language/type-system-level design choice, matching layer-3 scope), missing-source
+      (both the primary TAPL source and a second independent lineage are cited accurately), or redundant-with
+      (no overlapping carve is in evidence). This is a sound carve, directly and explicitly grounded in
+      the named source taxonomy."
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "The challenge is correct, and I concede the core point.\n\nSebesta is unambiguous that single
+      languages combine both mechanisms rather than selecting one:\n\n- On C: \"C uses **both** name and
+      structure type equivalence. ... So, name type equivalence is used for structure, enumeration, and
+      union types. Other nonscalar types use structure type equivalence. Array types are equivalent if
+      they have the same type components. ... One exception to C using name type equivalence for structures,
+      enumerations, and unions is if two structures, enumerations, or unions are defined in different
+      files, in which case structural type equivalence is used.\" (sebesta-copl §6.15, c00568)\n\n- On
+      Ada: unconstrained arrays get structure equivalence — \"for objects of unconstrained array types,
+      structure type equivalence rather than name type equivalence is used\" (c00566) — while derived
+      types are strict/incompatible-by-name, subtypes are compatible-by-name, and constrained anonymous
+      types get \"a highly restrictive form of name type equivalence\" (c00565–c00567). Three different
+      name-equivalence strictness levels plus one structural carve-out, in one language.\n\n- Sebesta's
+      own general framing anticipates exactly this: \"There are some variations of these two approaches,
+      and **many languages use combinations of them**.\" (c00563)\n\nScott (scott-plp, c00419) does list
+      languages as using one or the other (\"Structural equivalence is used in Algol-68, Modula-3, and
+      (with various wrinkles) C and ML. Name equivalence is... used in Java, C#, standard Pascal... including
+      Ada\") — but notice the hedge \"(with various wrinkles)\" doing exactly the work the challenge points
+      at, and Scott's own list contradicts itself across sources once you bring in Sebesta's construct-by-construct
+      breakdown of the *same* two languages (C, Ada).\n\nI could not find a Pierce passage in the corpus
+      that actually states the \"exclusive per language\" framing attributed to him in the carve's note
+      — my searches for Pierce's treatment of structural/nominal choice returned only his structural-equivalence
+      algorithmic rules (pierce-attapl-2004 §9.3), not a claim about exclusivity of choice. So the note's
+      appeal to Pierce isn't currently backed by a located citation, which removes the one piece of evidence
+      that might have supported the language-level-exclusive framing.\n\nGiven both points, the carve
+      as drafted is wrong-grained: `exclusivity: exclusive` with `applies_to: ['general-purpose']` asserts
+      a single value per language, but the cited evidence is specifically about per-type-construct-category
+      variation within one language (struct/enum/union vs. array in C; derived vs. subtype vs. unconstrained-array
+      vs. anonymous in Ada). I'd propose one of:\n\n1. Drop `exclusivity: exclusive` and add a `mixed`/`combination`
+      value alongside `structural` and `nominal`, documented as applying when a language's construct categories
+      differ — accepting a coarser, honest \"mixed\" label at the language level, or\n2. Re-scope the
+      carve down a layer, to apply per type-construct category (record/struct type, array type, enumeration
+      type, etc.) rather than per language, which is the granularity Sebesta's evidence actually supports.\n\
+      \nEither repair is preferable to the current draft; I don't think the exclusive/language-level claim
+      survives the cited evidence as written.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The underlying distinction is solid: Pierce (TAPL §19.3) names \"nominal\" and \"structural\"\
+      \ as the two terms for a type system's subtyping/equivalence judgment, and Sebesta's independently-sourced
+      \"type equivalence\" split (name vs. structure) corroborates it. Krishnamurthi's worked Java example
+      shows the choice has concrete, observable consequences. No participant contests that structural-vs-nominal
+      is a real, load-bearing axis in the domain, and challenger-b found no defect in the carve's sourcing,
+      layer placement, or atomization.\n\nThe challenge that is upheld is narrower and structural: the
+      carve's `exclusivity: exclusive` combined with `applies_to: ['general-purpose']` asserts one value
+      of the axis per whole language, but the cited evidence (Sebesta §6.15 on C: name equivalence for
+      struct/enum/union, structure equivalence for arrays, plus a file-boundary exception; Sebesta on
+      Ada: structure equivalence for unconstrained arrays alongside three different strictness levels
+      of name equivalence for derived types/subtypes/anonymous types) shows real languages mixing the
+      two mechanisms by type-construct category within a single language. The proposer, after searching,
+      could not locate a Pierce passage actually backing the language-level-exclusive framing attributed
+      to him in the note, which removes the strongest piece of support for that framing. This is a genuine
+      mismatch between what the ontology's per-language exclusive-value slot can express and the grain
+      at which the evidence actually varies — a dimension-model gap, not a flaw in the carve's identification
+      of the axis itself.\n\nPer the handling rule for upheld wrong-structure challenges, the carve is
+      kept on its own merits (the axis is real and well-evidenced) while the structural gap is flagged
+      for the structure review: the dimension-model needs either (a) a `mixed`/`combination` value usable
+      alongside `structural`/`nominal` for languages whose construct categories differ, or (b) a way to
+      scope `exclusivity` at a grain finer than \"per language\" — e.g., per type-construct category (record/struct,
+      array, enumeration, etc.) — since that is the granularity at which C and Ada's documented behavior
+      actually resolves to a clean exclusive choice. Until the dimension-model is extended with one of
+      these mechanisms, any carve using whole-language `exclusivity: exclusive` will misclassify languages,
+      like C and Ada, that mix rules by construct — so the challenger's underlying objection about accuracy
+      for those languages remains live even though the carve itself is not being altered here."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: true
+  rounds: 1
+  upheld_challenges:
+    - wrong-structure
+  rationale: "The underlying distinction is solid: Pierce (TAPL §19.3) names \"nominal\" and \"structural\"\
+    \ as the two terms for a type system's subtyping/equivalence judgment, and Sebesta's independently-sourced
+    \"type equivalence\" split (name vs. structure) corroborates it. Krishnamurthi's worked Java example
+    shows the choice has concrete, observable consequences. No participant contests that structural-vs-nominal
+    is a real, load-bearing axis in the domain, and challenger-b found no defect in the carve's sourcing,
+    layer placement, or atomization.\n\nThe challenge that is upheld is narrower and structural: the carve's
+    `exclusivity: exclusive` combined with `applies_to: ['general-purpose']` asserts one value of the
+    axis per whole language, but the cited evidence (Sebesta §6.15 on C: name equivalence for struct/enum/union,
+    structure equivalence for arrays, plus a file-boundary exception; Sebesta on Ada: structure equivalence
+    for unconstrained arrays alongside three different strictness levels of name equivalence for derived
+    types/subtypes/anonymous types) shows real languages mixing the two mechanisms by type-construct category
+    within a single language. The proposer, after searching, could not locate a Pierce passage actually
+    backing the language-level-exclusive framing attributed to him in the note, which removes the strongest
+    piece of support for that framing. This is a genuine mismatch between what the ontology's per-language
+    exclusive-value slot can express and the grain at which the evidence actually varies — a dimension-model
+    gap, not a flaw in the carve's identification of the axis itself.\n\nPer the handling rule for upheld
+    wrong-structure challenges, the carve is kept on its own merits (the axis is real and well-evidenced)
+    while the structural gap is flagged for the structure review: the dimension-model needs either (a)
+    a `mixed`/`combination` value usable alongside `structural`/`nominal` for languages whose construct
+    categories differ, or (b) a way to scope `exclusivity` at a grain finer than \"per language\" — e.g.,
+    per type-construct category (record/struct, array, enumeration, etc.) — since that is the granularity
+    at which C and Ada's documented behavior actually resolves to a clean exclusive choice. Until the
+    dimension-model is extended with one of these mechanisms, any carve using whole-language `exclusivity:
+    exclusive` will misclassify languages, like C and Ada, that mix rules by construct — so the challenger's
+    underlying objection about accuracy for those languages remains live even though the carve itself
+    is not being altered here."
+  structure_element: dimension-model
