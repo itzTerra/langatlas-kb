@@ -1,0 +1,311 @@
+id: d-01-typing-002
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: duck-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-duck-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-duck-typing-01
+triggers:
+  - ontologist-flagged
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: duck-typing
+  from_candidates:
+    - duck-typing
+  kind: feature
+  id: duck-typing
+  name: Duck Typing
+  summary: An informal, colloquial name for checking at run time whether an object supports the 
+    operations used on it, loosely related to but not formally identical with structural typing 
+    theory.
+  evidence:
+    - source: krishnamurthi-plai
+      locator: p. 167
+      chunk_id: krishnamurthi-plai#c00232
+    - source: scott-plp
+      locator: pp. 425–426
+      chunk_id: scott-plp#c00398
+      quote: fully dynamic typing allows the programmer to apply arbitrary operations to arbitrary 
+        objects. Only at run time does the language implementation check to see that the objects 
+        actually implement the requested operations.
+  contested:
+    - ontologist-flagged
+  debate_id:
+  status: proposed
+  verification:
+  note: Kept off the structural-vs-nominal dimension because sources call it an informal, not 
+    formally equivalent, runtime notion rather than a type-theoretic discipline. Uncertain whether 
+    this deserves its own node versus being folded as an alias/informal-name note under 
+    structural-typing or dynamic-typing; sources treat it as colloquial, not a rigorous design 
+    point.
+  dimension:
+  cross_cutting: true
+  aliases: []
+  realizes:
+    - subtyping
+  layer: 2
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "## Opening case: keep `duck-typing` as its own cross-cutting node\n\n**The core textual support
+      is explicit and on-point.** Krishnamurthi states this almost word-for-word: having described structural
+      typing by field/method shape, the text says \"This is called structural typing, though the Internet
+      appears to have decided to call this 'duck' typing (though it's hard to be clear: there is no actual
+      theory of duck typing to compare against well-defined theories of structural typing...)\" [krishnamurthi-plai#c00235].
+      That sentence *is* the carve's summary — a popular, non-theoretical label layered on top of a real
+      theoretical notion, not identical to it. The carve's wording (\"informal, colloquial name... loosely
+      related to but not formally identical with structural typing theory\") is a faithful paraphrase,
+      not an invention.\n\n**Why a standalone node rather than folding it under one parent:** the evidence
+      itself refuses to settle on a single parent. Krishnamurthi ties the folk term to *structural typing*
+      [krishnamurthi-plai#c00235]. But the carve's second citation, Scott, defines the matching runtime
+      behavior not in structural-typing vocabulary but in dynamic-typing vocabulary: \"fully dynamic typing
+      allows the programmer to apply arbitrary operations to arbitrary objects. Only at run time does
+      the language implementation check to see that the objects actually implement the requested operations\"\
+      \ [scott-plp#c00398]. Scott's own worked example of exactly this mechanism is the canonical Smalltalk
+      case: untyped variable, any object assignable, and \"only when code actually attempts to invoke
+      an operation... does the language implementation check whether the operation is supported... If
+      not, it generates a 'message not understood' error\" [scott-plp#c00680] — the textbook \"if it walks
+      like a duck\" scenario, described purely in dynamic-typing terms, no structural type system in sight.
+      So the colloquial term genuinely straddles two different formal literatures (structural typing's
+      shape-matching and dynamic typing's deferred operation-support check) without sources ever equating
+      it cleanly with either. Forcing it under *either* `structural-typing` or `dynamic-typing` as an
+      alias note would silently assert an equivalence the corpus explicitly withholds. A thin, explicitly-hedged
+      node that cites both and refuses to pick a side is the more honest representation of what the sources
+      say.\n\n**The `realizes: ['subtyping']` and layer-2 placement are also textually motivated**, not
+      arbitrary: Krishnamurthi's own chapter structure places \"Structural Types\" immediately before
+      \"Subtyping\" within one unit (\"Types, Structural Types, and Subtyping\") [krishnamurthi-plai#c00014],
+      and Harper independently frames structural compatibility as \"a matter of behavior, rather than
+      containment\" [harper-pfpl#c00375] — i.e., the same behavioral-substitutability idea subtyping formalizes.
+      Scott's polymorphism discussion makes the same link explicitly: dynamic dispatch gives \"subtype
+      polymorphism\" whenever \"objects of the derived class support the operations of the base class\"\
+      \ [scott-plp#c00680]. So whichever formal lens (structural or dynamic) one uses to cash out the
+      folk term, both land on subtyping-style substitutability — supporting `realizes: subtyping` regardless
+      of which parent one would otherwise pick, which is itself an argument that the node shouldn't be
+      forced to commit to one parent.\n\n**The honest alternative — \"don't mint a feature node for a
+      non-theory at all\"** is the strongest version of a challenge I should pre-empt myself: Krishnamurthi
+      is blunt that duck typing has no actual theory. But the carve doesn't claim otherwise — its summary
+      explicitly disclaims rigor, and the note already flags the open uncertainty for the moderator rather
+      than hiding it. Given that \"duck typing\" is the term practitioners will actually type into the
+      KB's search box, a node that correctly says \"here's the informal term, here's what it loosely overlaps
+      with, here's why it isn't a rigorous discipline\" is more useful than either silence or a false
+      alias to one theory.\n\nI'll hold my second message for responses to specific challenges."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The carve is largely defensible on the Krishnamurthi passage, but it has one citation 
+      defect and a sourcing problem in the "straddles two literatures" argument that is doing most 
+      of the work to justify a standalone node. I raise three challenges.
+    challenges:
+      - type: missing-source
+        text: "The carve's own listed evidence citation, krishnamurthi-plai#c00232, is not the passage
+          that supports the carve's claim. c00232 is only the section-header and a 'Do Now'/exercise prompt
+          ('Let's go back to ... and ask how we could have represented this in Java. Do Now: Represent
+          this in Java! ... Exercise: Why is that solution not object-oriented?') — it never mentions
+          duck typing, structural typing by name, or any informal/formal distinction. The actual sentence
+          that motivates the entire carve summary ('the Internet appears to have decided to call this
+          \"duck\" typing... there is no actual theory of duck typing to compare against well-defined
+          theories of structural typing') is three chunks later, at krishnamurthi-plai#c00235, which the
+          carve does not cite. As written, the carve's primary evidence pointer does not support its own
+          summary."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 167
+            chunk_id: krishnamurthi-plai#c00232
+          - source: krishnamurthi-plai
+            locator: pp. 169–170
+            chunk_id: krishnamurthi-plai#c00235
+      - type: missing-source
+        text: The carve's second evidence line (scott-plp pp. 425-426, c00398) is used by the 
+          proposer to argue duck typing 'straddles' structural typing and dynamic typing without the
+          corpus ever equating the two, which is then the stated reason a standalone node is needed 
+          rather than an alias under one parent. But neither c00398 nor the related c00680 ever uses
+          the term 'duck typing,' 'duck-typed,' or anything synonymous — they describe dynamic 
+          method binding and 'message not understood' errors in Smalltalk/CLOS/Objective-C without 
+          naming the folk term at all. The only sentence in the corpus that actually uses the term 
+          'duck typing' (krishnamurthi-plai#c00235) ties it exclusively to structural typing and 
+          says nothing about dynamic typing. So the 'two different formal literatures' argument for 
+          why this needs its own node, rather than being folded under structural-typing, rests on an
+          analogy the proposer drew themselves, not on a sourced equivalence — the corpus gives only
+          one anchor point for the term, not two.
+        evidence:
+          - source: scott-plp
+            locator: pp. 425–426
+            chunk_id: scott-plp#c00398
+            quote: fully dynamic typing allows the programmer to apply arbitrary operations to 
+              arbitrary objects. Only at run time does the language implementation check to see that
+              the objects actually implement the requested operations.
+          - source: krishnamurthi-plai
+            locator: pp. 169–170
+            chunk_id: krishnamurthi-plai#c00235
+      - type: wrong-atomization
+        text: "The only source in the corpus that actually uses the term explicitly denies it names a
+          distinct theoretical thing: 'there is no actual theory of duck typing to compare against well-defined
+          theories of structural typing.' Per the project's own feature definition ('a realisation of
+          a concept within a family of related systems'), a term the sole citing source describes as having
+          no corresponding theory at all is a weak candidate for 'feature' kind — it is a folk label for
+          an existing feature (structural typing), not a second realisation of some concept. The carve's
+          note already registers this exact doubt ('uncertain whether this deserves its own node versus
+          being folded as an alias/informal-name note') but resolves it in favor of a free node anyway,
+          on the strength of the (unsourced, per challenge 2) claim that it also covers dynamic typing.
+          Strip that second anchor and the single remaining source gives no basis to atomize 'duck typing'
+          away from structural-typing rather than recording it as an alias/informal-name fact on that
+          node."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: pp. 169–170
+            chunk_id: krishnamurthi-plai#c00235
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is not sound as sourced. The problem is not whether \"duck typing\" deserves a node,
+      but what the node's second evidence citation is doing.\n\nAcross this corpus the string \"duck typing\"\
+      \ is named by exactly one source: Krishnamurthi, who introduces it only as the Internet's colloquial
+      label for *structural typing*, with an explicit caveat that there is \"no actual theory of duck
+      typing to compare against well-defined theories of structural typing\" [krishnamurthi-plai#c00235].
+      That passage supports a narrow claim: duck typing = folk name for structural typing, not a rigorous
+      discipline in its own right.\n\nThe carve's second evidence item, scott-plp pp. 425–426 (\"fully
+      dynamic typing allows the programmer to apply arbitrary operations to arbitrary objects. Only at
+      run time does the language implementation check...\") [scott-plp#c00398], never uses the term \"\
+      duck typing\" anywhere in the passage — it is Scott's general treatment of *dynamic typing* and
+      implicit parametric polymorphism, filed under the heading \"Dynamic typing.\" Nothing in that chunk,
+      or in the surrounding §7.1.2 context, names or glosses duck typing at all.\n\nThe proposer's case
+      leans on this citation to argue the colloquial term \"genuinely straddles two different formal literatures\"\
+      \ (structural and dynamic), and to justify giving duck typing its own cross-cutting node that \"\
+      refuses to pick a side.\" But that straddle is manufactured by the carve, not attested by the sources:
+      only Krishnamurthi actually names and scopes the term, and he scopes it to structural typing alone.
+      Attaching Scott's unrelated dynamic-typing passage as co-equal evidence for \"duck typing\" imports
+      a second meaning the corpus never calls by that name. This is a missing-source problem: the claim
+      that duck typing legitimately covers dynamic typing's deferred-check mechanism has no source that
+      actually uses the term that way — it's an inference from thematic similarity (both check at run
+      time), not from any text that says \"this too is duck typing.\"\n\nIf the node is kept, the scott-plp
+      evidence should be dropped or clearly marked as background on the mechanism rather than as warrant
+      for the term's scope, and the summary/note should reflect that only Krishnamurthi licenses \"duck
+      typing\" as a name, pinned to structural typing — not a term independently floating between two
+      literatures."
+    challenges:
+      - type: missing-source
+        text: The node cites scott-plp pp. 425–426 as supporting evidence for 'duck typing,' but 
+          that passage (filed under Scott's heading 'Dynamic typing') never uses the term 'duck 
+          typing' at all — it is a general account of dynamic type checking and implicit parametric 
+          polymorphism. The only source in the corpus that actually names and scopes the term 'duck 
+          typing' is Krishnamurthi, who restricts it explicitly to structural typing ('This is 
+          called structural typing, though the Internet appears to have decided to call this "duck" 
+          typing... there is no actual theory of duck typing to compare against well-defined 
+          theories of structural typing'). Using the Scott passage as co-equal evidence manufactures
+          a second, unattested meaning of the term (duck typing as also covering dynamic typing's 
+          deferred operation-check) that no source actually asserts under that name. The citation 
+          should either be removed or re-labeled as unrelated background, not evidence for the 
+          carve's scope.
+        evidence:
+          - source: scott-plp
+            locator: pp. 425–426
+            chunk_id: scott-plp#c00398
+            quote: fully dynamic typing allows the programmer to apply arbitrary operations to 
+              arbitrary objects. Only at run time does the language implementation check to see that
+              the objects actually implement the requested operations.
+          - source: krishnamurthi-plai
+            locator: pp. 169–170
+            chunk_id: krishnamurthi-plai#c00235
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede. Having checked the actual passages, the challenges are correct on all counts.\n\n\
+      The carve's cited evidence (krishnamurthi-plai#c00232) is indeed just a \"Do Now\" exercise prompt
+      about representing a tree size method in Java — it says nothing about duck typing or structural
+      typing. The only passage in the corpus that actually uses the term is krishnamurthi-plai#c00235,
+      which the carve never cites, and it is unambiguous: duck typing is presented as *the Internet's*
+      colloquial name for structural typing specifically (\"This is called structural typing, though the
+      Internet appears to have decided to call this 'duck' typing... there is no actual theory of duck
+      typing to compare against well-defined theories of structural typing\"). That sentence anchors the
+      term to exactly one parent concept, not two.\n\nI've now also read scott-plp#c00398 directly, and
+      the type theorist and working-language-implementer are right about it too: it's filed under Scott's
+      \"Dynamic (run-time) type checking\" / \"Polymorphism\" discussion of Lisp/Smalltalk/scripting-language
+      late binding, and never uses \"duck typing,\" \"duck-typed,\" or any synonym. My framing of it as
+      a second, independent anchor justifying a standalone node that \"straddles\" structural and dynamic
+      typing was an analogy I constructed, not something either source asserts. Pairing c00398 with the
+      duck-typing summary manufactures a reading no source makes.\n\nThat leaves exactly one sourced fact
+      about this term: Krishnamurthi uses \"duck typing\" as the Internet's informal name for structural
+      typing, and explicitly denies any separate theory exists for it. Per the project's own feature definition,
+      a term whose only citing source says it has no corresponding theory is not \"a realisation of a
+      concept\" — it's a colloquial alias for an existing feature. The carve's own note already flagged
+      this exact doubt and resolved it the wrong way, propped up by the now-refuted scott-plp anchor.\n\
+      \nRecommended resolution: drop this as a standalone feature node. Fold \"duck typing\" into structural-typing
+      as an alias/informal-name fact, citing only krishnamurthi-plai#c00235, with text close to the source:
+      an informal/colloquial name with no attendant theory, used loosely for structural typing. Remove
+      the scott-plp#c00398 citation entirely — it does not support any claim about this term — and drop
+      the `cross_cutting`/dual-realizes framing that depended on it."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both missing-source challenges and the wrong-atomization challenge are upheld; the proposer
+      conceded all three after re-checking the passages, and the record bears this out.\n\n(1) The carve's
+      listed evidence chunk krishnamurthi-plai#c00232 is a 'Do Now'/exercise prompt about representing
+      a tree method in Java — it never mentions duck typing or structural typing, so the carve's primary
+      citation does not support its own summary. The sentence that actually motivates the carve (\"the
+      Internet appears to have decided to call this 'duck' typing... there is no actual theory of duck
+      typing to compare against well-defined theories of structural typing\") is krishnamurthi-plai#c00235,
+      which the carve never cites.\n\n(2) The second evidence item, scott-plp pp. 425–426 (#c00398, and
+      the related #c00680), never uses \"duck typing\" or any synonym anywhere — it is Scott's general
+      treatment of dynamic type checking and late-bound polymorphism. The proposer's \"straddles two literatures\"\
+      \ argument — the load-bearing reason given for minting a standalone, dual-rooted node rather than
+      folding the term under one parent — rested on pairing this passage with the duck-typing summary
+      by thematic analogy (both are runtime checks), not on any source that calls this mechanism \"duck
+      typing.\" That manufactured second anchor is exactly what justified `cross_cutting: True` and the
+      refusal to pick a parent; with it gone, the sourced claim collapses to a single anchor.\n\n(3) With
+      only krishnamurthi-plai#c00235 standing, the sole source that actually names the term explicitly
+      denies it has a corresponding theory (\"no actual theory of duck typing to compare against well-defined
+      theories of structural typing\") and scopes it exclusively to structural typing. Per the project's
+      own feature definition (\"a realisation of a concept within a family of related systems\"), a term
+      whose only citing source denies it has a theory of its own is not a second feature realization —
+      it is a colloquial alias for the feature structural-typing already names. The carve's own note flagged
+      this exact doubt and resolved it the wrong way, propped up by the now-refuted scott-plp anchor.\n\
+      \nResolution, per the converged position of proposer and both challengers: fold \"duck typing\"\
+      \ into `structural-typing` as an alias/informal-name fact, citing only krishnamurthi-plai#c00235,
+      with text close to the source (an informal/colloquial Internet name, with no attendant theory, used
+      loosely for structural typing). Drop the scott-plp#c00398 citation and the cross_cutting/dual-realizes
+      framing that depended on it. No standing dissent — all three debate participants agree on this outcome
+      after inspecting the primary sources."
+resolution:
+  outcome: converged-after-revision
+  disposition: merge
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - wrong-atomization
+  rationale: "Both missing-source challenges and the wrong-atomization challenge are upheld; the proposer
+    conceded all three after re-checking the passages, and the record bears this out.\n\n(1) The carve's
+    listed evidence chunk krishnamurthi-plai#c00232 is a 'Do Now'/exercise prompt about representing a
+    tree method in Java — it never mentions duck typing or structural typing, so the carve's primary citation
+    does not support its own summary. The sentence that actually motivates the carve (\"the Internet appears
+    to have decided to call this 'duck' typing... there is no actual theory of duck typing to compare
+    against well-defined theories of structural typing\") is krishnamurthi-plai#c00235, which the carve
+    never cites.\n\n(2) The second evidence item, scott-plp pp. 425–426 (#c00398, and the related #c00680),
+    never uses \"duck typing\" or any synonym anywhere — it is Scott's general treatment of dynamic type
+    checking and late-bound polymorphism. The proposer's \"straddles two literatures\" argument — the
+    load-bearing reason given for minting a standalone, dual-rooted node rather than folding the term
+    under one parent — rested on pairing this passage with the duck-typing summary by thematic analogy
+    (both are runtime checks), not on any source that calls this mechanism \"duck typing.\" That manufactured
+    second anchor is exactly what justified `cross_cutting: True` and the refusal to pick a parent; with
+    it gone, the sourced claim collapses to a single anchor.\n\n(3) With only krishnamurthi-plai#c00235
+    standing, the sole source that actually names the term explicitly denies it has a corresponding theory
+    (\"no actual theory of duck typing to compare against well-defined theories of structural typing\"\
+    ) and scopes it exclusively to structural typing. Per the project's own feature definition (\"a realisation
+    of a concept within a family of related systems\"), a term whose only citing source denies it has
+    a theory of its own is not a second feature realization — it is a colloquial alias for the feature
+    structural-typing already names. The carve's own note flagged this exact doubt and resolved it the
+    wrong way, propped up by the now-refuted scott-plp anchor.\n\nResolution, per the converged position
+    of proposer and both challengers: fold \"duck typing\" into `structural-typing` as an alias/informal-name
+    fact, citing only krishnamurthi-plai#c00235, with text close to the source (an informal/colloquial
+    Internet name, with no attendant theory, used loosely for structural typing). Drop the scott-plp#c00398
+    citation and the cross_cutting/dual-realizes framing that depended on it. No standing dissent — all
+    three debate participants agree on this outcome after inspecting the primary sources."
+  merge_into: structural-typing
