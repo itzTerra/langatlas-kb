@@ -1,0 +1,322 @@
+id: d-01-typing-028
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: equirecursive-types--alternative-to--isorecursive-types
+opened: '2026-10-18'
+runs:
+  debate: 2026-10-18-r4-debate-01-typing-equirecursive-types--alternative-to--isorecursive-types-01
+  moderator: 
+    2026-10-18-r4-moderator-01-typing-equirecursive-types--alternative-to--isorecursive-types-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: equirecursive-types--alternative-to--isorecursive-types
+  type: alternative-to
+  from: equirecursive-types
+  to: isorecursive-types
+  polarity:
+  statement: Iso-recursive and equi-recursive semantics are the two standard, mutually exclusive 
+    ways of relating a recursive type to its unfolding.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §20.2
+      chunk_id: pierce-tapl-2002#c00574
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "## Case for `equirecursive-types --alternative-to-- isorecursive-types`\n\n**1. The edge type
+      is the source's own word.** Pierce does not merely describe two designs that happen to be comparable;
+      he labels them alternatives: \"In Chapter 20 we saw two alternative presentations of recursive types:
+      equi-recursive types, which are definitionally equivalent to their unfoldings, and iso-recursive
+      types, where this equivalence is explicitly witnessed by fold and unfold terms\" [pierce-tapl-2002#c00582].
+      An `alternative-to` edge is the minimal faithful encoding of that sentence. No weaker edge type
+      (`influences`, `enables`) would carry it, and no stronger one (`conflicts-with`) is needed, since
+      nothing in the source says one breaks the other.\n\n**2. \"Two standard ways\" is literal, not a
+      gloss.** The cited chunk opens: \"In the literature on type systems, there are two basic approaches
+      to recursive types\" [pierce-tapl-2002#c00574]. That both are *standard* (as opposed to one being
+      historical or marginal) is also stated outright: \"Both approaches are widely used in both theoretical
+      studies and programming language designs\" [pierce-tapl-2002#c00575].\n\n**3. \"Relating a recursive
+      type to its unfolding\" is the source's own axis of comparison** — not an ontologist's invented
+      framing. Pierce defines the pair *by* that axis: \"The essential difference between them is captured
+      in their response to a simple question: What is the relation between the type µX.T and its one-step
+      unfolding?\" [pierce-tapl-2002#c00574]. The statement's scope therefore cannot be accused of over-reach;
+      it is narrower than, and contained by, the sourced distinction.\n\n**4. \"Mutually exclusive\" follows
+      from the two recorded answers, not from inference about languages.** Equi-recursive takes the type
+      and its unfolding \"as definitionally equal — interchangeable in all contexts\"; iso-recursive \"\
+      takes a recursive type and its unfolding as different, but isomorphic\" [pierce-tapl-2002#c00574].
+      *Equal in all contexts* and *different* are contradictory answers to one question, so a given type
+      system adopts one. This is corroborated structurally by the divergent consequences the source records:
+      equi-recursive requires the typechecker to infer fold/unfold points and brings decidability risk
+      [pierce-tapl-2002#c00575], while iso-recursive requires programs \"decorated with fold and unfold
+      instructions\" [pierce-tapl-2002#c00576] — and the two get separate formal treatments (\"Implementing
+      iso-recursive types is comparatively straightforward\" vs. a whole chapter of coinduction for equi-recursive)
+      [pierce-tapl-2002#c00582]. Two incompatible answers with two different metatheories is exactly the
+      shape of an exclusive design choice.\n\n**5. The referral reason — single-source — is dissolved
+      by the corpus.** Turbak & Gifford independently make the same two-way carve on the same axis, with
+      the same names: \"We shall study two common approaches for determining the type equivalence of recursive
+      types,\" the \"isorecursive approach\" via `[trec-β]`-style unwinding rules, versus \"another approach
+      … in this so-called equirecursive approach, two recursive types are considered to be equivalent
+      if their complete (potentially infinite) unwindings are equal\" [turbak-gifford-dcpl#c01061, turbak-gifford-dcpl#c01062].
+      They further demonstrate the *exclusivity* concretely rather than rhetorically: a type pair (T_ib1,
+      T_ib4) is equirecursively equivalent but provably **not** isorecursively equivalent [turbak-gifford-dcpl#c01067],
+      and the choice is a per-system stipulation — \"In our subsequent discussion of types, equirecursive
+      type equivalence will be assumed unless explicitly stated otherwise\" [turbak-gifford-dcpl#c01062].
+      That last clause is direct evidence that a system picks one regime as its default rather than holding
+      both.\n\nI therefore propose the carve stand, with the evidence list widened to `pierce-tapl-2002#c00574`,
+      `#c00582`, `#c00575` and `turbak-gifford-dcpl#c01061`, `#c01062`, `#c01067`, which moves it out
+      of single-source status.\n\n**Where I will concede in advance.** If a challenger shows that the
+      word \"standard\" in the statement is doing work the sources don't license, I would accept narrowing
+      it to the sourced phrasing (\"the two basic approaches in the literature\"). And if a challenger
+      argues that `mutually exclusive` should be scoped — exclusive *as a system's type-equivalence regime*,
+      not exclusive in the sense that no language may expose fold/unfold at all — that is a fair refinement
+      and I would take it, since Pierce notes iso-recursive annotations are often \"hidden\" by coalescing
+      with datatype constructors and Java class definitions [pierce-tapl-2002#c00576], i.e. the exclusivity
+      lives at the level of the type-equality rule, not of surface syntax. Neither amendment touches the
+      edge type or its endpoints."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The edge itself survives: `alternative-to` is Pierce's own word for the pair, the axis in the
+      statement is his own framing, and mutual exclusivity follows from the two contradictory answers
+      he records, corroborated by his shipping separate `fullequirec`/`fullisorec` checkers. I challenge
+      only the proposer's claim that the second source removes the single-source flag: Turbak & Gifford
+      attach the same two names to a different axis, and on *Pierce's* axis their \"isorecursive\" regime
+      gives the equi-recursive answer. The carve should either stand as single-source on Pierce, or be
+      reworded off the unfolding axis — not be recorded as two-source agreement that the corpus does not
+      show."
+    challenges:
+      - type: missing-source
+        text: "The proposed second source does not support the statement's axis, so the single-source
+          flag is not dissolved by it. The statement individuates the pair by \"ways of relating a recursive
+          type to its unfolding\" — Pierce's own question, \"What is the relation between the type µX.T
+          and its one-step unfolding?\", answered *definitionally equal* (equi) vs. *different but isomorphic*
+          (iso) [pierce-tapl-2002#c00574]. Turbak & Gifford's \"isorecursive approach\" is defined solely
+          by two type-equivalence rules and contains no fold/unfold terms: \"[trec-β] rule says that a
+          trec type is equivalent to the result of substituting the entire trec type expression for its
+          bound identifier in the body of the trec. So T_ib1 ≈ T_ib3 via [trec-β]\" [turbak-gifford-dcpl#c01061],
+          where T_ib3 is by construction \"a copy of T_ib1 in which the definition of iblist has been
+          unwound one level\" [turbak-gifford-dcpl#c01060]. On Pierce's axis, then, Turbak's *isorecursive*
+          regime answers *equal* — Pierce's *equi*-recursive answer. Turbak's real axis is finitary α/β-derivable
+          equivalence versus \"equivalent if their complete (potentially infinite) unwindings are equal\"\
+          \ [turbak-gifford-dcpl#c01062], and their exclusivity witness (T_ib1 equirecursively but not
+          isorecursively equivalent to T_ib4) turns entirely on that second axis [turbak-gifford-dcpl#c01067],
+          not on the one-step unfolding relation. Two remedies, either acceptable: (a) keep the statement's
+          Pierce framing and cite Pierce only (#c00574, #c00575, #c00582), leaving the edge honestly single-source
+          until a source using Pierce's axis is found; or (b) reword to the weaker shared claim both sources
+          do license — that iso- and equi-recursive are the two standard, mutually exclusive regimes for
+          *recursive-type equivalence* — and then both citations hold. What should not be recorded is
+          the current combination: Pierce's unfolding axis asserted as two-source consensus."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §20.2
+            chunk_id: pierce-tapl-2002#c00574
+            quote: 'The essential difference between them is captured in their response to a simple question:
+              What is the relation between the type µ X.T and its one-step unfolding?'
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01061
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01060
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01062
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01067
+            quote: A derivation of equirecursive type equivalence for two types, T ib1 and T ib4 , 
+              that are not isorecursive type-equivalent.
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "I checked the cited chunk and its neighbourhood, the Turbak & Gifford corroboration, and searched
+      for counter-evidence on exclusivity.\n\n**What survives review.** The edge type, endpoints, and
+      axis are sound and I will not contest them. Pierce's own words are \"two alternative presentations
+      of recursive types\" [pierce-tapl-2002#c00582] and \"two basic approaches,\" defined by the question
+      \"What is the relation between the type µX.T and its one-step unfolding?\" [pierce-tapl-2002#c00574]
+      — so both `alternative-to` and the statement's framing axis are the source's, not the ontologist's.
+      Turbak & Gifford independently make the same two-way carve under the same two names on the same
+      axis (\"two common approaches for determining the type equivalence of recursive types\" [turbak-gifford-dcpl#c01061]),
+      which genuinely dissolves the single-source referral. The proposer's strongest piece of evidence
+      is one he did not cite: T&G exhibit a type pair equirecursively equivalent and *provably* not isorecursively
+      equivalent [turbak-gifford-dcpl#c01061, turbak-gifford-dcpl#c01066], which makes the divergence
+      a theorem rather than a rhetorical contrast. Nor is this `redundant-with` anything: it is a type-equality
+      regime, distinct from the recursive-types concept both sources treat as the shared parent. The layer
+      is also right — these are \"widely used in both theoretical studies and programming language designs\"\
+      \ [pierce-tapl-2002#c00575], i.e. realized in language type systems, not purely metatheoretic apparatus,
+      so `feature` is the correct tier and no `wrong-layer` or `wrong-structure` objection holds.\n\n\
+      **One real problem: \"mutually exclusive\" is over-claimed, and the proposer's pre-concession does
+      not reach far enough.** He offers to scope exclusivity from \"no language exposes fold/unfold\"\
+      \ down to \"a system picks one type-equality regime.\" The corpus defeats even that weaker reading.
+      ATTAPL records OCaml holding both regimes at once, partitioned by type constructor within a single
+      type-equality relation [pierce-attapl-2004#c00724]: algebraic data types supply the isorecursive
+      mechanism, while object and polymorphic-variant types require equirecursive inference, and the constraint
+      solver reconciles them with \"a selective occurs check, which forbids cycles unless they involve
+      the type constructors ⟨·⟩ or [·].\" That is not one system choosing one regime; it is one system
+      running both, scoped syntactically. Turbak & Gifford's \"equirecursive type equivalence will be
+      assumed unless explicitly stated otherwise\" points the same way — a defeasible default, not an
+      exclusive commitment. \"Alternative-to\" is still exactly right (these are competing answers to
+      one question, and no single *type pair* is judged by both rules), but the gloss \"mutually exclusive\"\
+      \ states a system-level fact the sources contradict. The single-source referral is answered; this
+      statement wording is not."
+    challenges:
+      - type: scope
+        text: "The statement's \"mutually exclusive\" over-claims beyond what the sources license, and
+          beyond the narrowing the proposer pre-concedes. He offers to scope exclusivity to \"a system's
+          type-equivalence regime,\" but ATTAPL §10.7 documents one language running both regimes simultaneously,
+          partitioned by type constructor inside a single type-equality relation: \"The need for equirecursive
+          types is usually suppressed by the presence of algebraic data types, which offer isorecursive
+          types, in the language. Yet, they are still necessary in some situations, such as in Objective
+          Caml's extensions with objects ... or polymorphic variants ... Objective Caml's constraint solver
+          implements a selective occurs check, which forbids cycles unless they involve the type constructors
+          ⟨·⟩ or [·]\" [pierce-attapl-2004#c00724]. Turbak & Gifford point the same way by making equirecursive
+          equivalence a defeasible default rather than a commitment: \"equirecursive type equivalence
+          will be assumed unless explicitly stated otherwise\" [turbak-gifford-dcpl#c01062]. What the
+          sources actually establish is exclusivity *per judgement*, not per system: a given type pair
+          is decided by one rule set or the other, and the two verdicts can diverge — T&G exhibit T_ib1
+          and T_ib4 as equirecursively equivalent but not isorecursively equivalent [turbak-gifford-dcpl#c01066].
+          Pierce likewise only ever says \"two basic approaches\" and \"two alternative presentations\"\
+          \ [pierce-tapl-2002#c00574, pierce-tapl-2002#c00582]; neither he nor T&G says a language adopts
+          one to the exclusion of the other. Proposed fix, touching neither edge type nor endpoints: replace
+          \"the two standard, mutually exclusive ways\" with the sourced formulation — \"the two basic
+          approaches in the literature to relating a recursive type to its unfolding; they give different
+          type-equivalence verdicts, and a type system applies one or the other to any given judgement.\"\
+          \ That keeps `alternative-to` fully warranted while dropping a system-level exclusivity claim
+          the corpus falsifies."
+        evidence:
+          - source: pierce-attapl-2004
+            locator: §10.7
+            chunk_id: pierce-attapl-2004#c00724
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01062
+          - source: turbak-gifford-dcpl
+            locator: §11.8.6
+            chunk_id: turbak-gifford-dcpl#c01066
+            quote: Figure 11.29 illustrates the equirecursive type-equivalence rules by showing that
+              T ib1 and T ib4 from Figure 11.26 are equivalent in the equirecursive approach. Recall
+              that these two types are not equivalent in the isorecursive approach.
+          - source: pierce-tapl-2002
+            locator: §20.2
+            chunk_id: pierce-tapl-2002#c00574
+            quote: In the literature on type systems, there are two basic approaches to recursive 
+              types.
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "## Position: concede both challenges; amend the statement, keep type and endpoints.\n\nBoth
+      challengers read the corpus correctly, and on re-reading I cannot defend either disputed element.\n\
+      \n**1. The second source (type theorist) — conceded in full.**\n\nThe theorist's reconstruction
+      of Turbak & Gifford is exactly right, and it is checkable in the chunks. T&G's \"isorecursive approach\"\
+      \ is two equivalence rules only: `[trec-α]` renaming, and `[trec-β]`, \"(trec τ T) ≈ [(trec τ T)/τ]T\"\
+      \ — \"a trec type is equivalent to the result of substituting the entire trec type expression for
+      its bound identifier in the body of the trec\" [turbak-gifford-dcpl#c01060, turbak-gifford-dcpl#c01061].
+      Since T_ib3 is by construction \"a copy of T_ib1 in which the definition of iblist has been unwound
+      one level\" [turbak-gifford-dcpl#c01060], T&G's *iso*recursive regime answers Pierce's question
+      — \"What is the relation between the type µX.T and its one-step unfolding?\" [pierce-tapl-2002#c00574]
+      — with *equivalent*, i.e. Pierce's *equi*-recursive answer. There are no fold/unfold terms anywhere
+      in T&G's treatment, whereas for Pierce those terms are what constitutes the iso-recursive answer
+      [pierce-tapl-2002#c00575]. T&G's actual axis is finite α/β-derivability versus equality of \"complete
+      (potentially infinite) unwindings\" [turbak-gifford-dcpl#c01061], and their divergence witness (T_ib1
+      vs T_ib4) is proved by an int/bool occurrence-counting argument about derivability [turbak-gifford-dcpl#c01061,
+      turbak-gifford-dcpl#c01067] — nothing to do with one-step unfolding. Citing T&G in support of Pierce's
+      axis would record a cross-source consensus that does not exist, and would additionally misattribute
+      to T&G a terminological alignment they do not have.\n\nI take the theorist's remedy (a): keep Pierce's
+      axis in the statement, cite Pierce for it, and leave the edge honestly flagged single-source on
+      that clause until a source using Pierce's axis appears. T&G may still be cited, but only for the
+      claim they do license — that the two regimes yield divergent equivalence verdicts.\n\n**2. \"Mutually
+      exclusive\" (working implementer) — conceded in full.**\n\nMy pre-concession (exclusivity per system's
+      type-equivalence regime) is falsified by [pierce-attapl-2004#c00724]: OCaml has isorecursive types
+      via algebraic data types *and* equirecursive object/variant types, reconciled inside one solver
+      by \"a selective occurs check, which forbids cycles unless they involve the type constructors ⟨·⟩
+      or [·]\". That is one system running both, partitioned by constructor — so system-level exclusivity
+      is not merely unsourced, it is contradicted. And Pierce never claims more than \"two basic approaches\"\
+      \ [pierce-tapl-2002#c00574] / \"two alternative presentations\" [pierce-tapl-2002#c00582]; T&G treat
+      the choice as a defeasible default, not a commitment [turbak-gifford-dcpl#c01062]. What is sourced
+      is divergence of verdicts per judgement [turbak-gifford-dcpl#c01067].\n\nI adopt the implementer's
+      wording verbatim; it is better grounded than mine.\n\n## Amended carve\n\n```\nkey: equirecursive-types--alternative-to--isorecursive-types\n\
+      type: alternative-to\nfrom: equirecursive-types\nto: isorecursive-types\nstatement: The two basic
+      approaches in the literature to relating a recursive\n  type to its unfolding; they give different
+      type-equivalence verdicts, and a\n  type system applies one or the other to any given judgement.\n\
+      evidence:\n  - pierce-tapl-2002 §20.2    [pierce-tapl-2002#c00574]   # the axis; \"two basic approaches\"\
+      \n  - pierce-tapl-2002 §20.2    [pierce-tapl-2002#c00575]   # iso answer: fold/unfold witness isomorphism\n\
+      \  - pierce-tapl-2002 p. 267   [pierce-tapl-2002#c00582]   # \"two alternative presentations\"\n\
+      \  - turbak-gifford-dcpl §11.8.6 [turbak-gifford-dcpl#c01067]  # verdicts diverge (T_ib1 vs T_ib4)\n\
+      \  - pierce-attapl-2004 §10.7  [pierce-attapl-2004#c00724]  # per-judgement, not per-system (OCaml)\n\
+      flags: single-source (first clause: Pierce's unfolding axis is attested by\n  pierce-tapl-2002 only;
+      T&G cited only for divergent verdicts)\n```\n\n`alternative-to` remains warranted on the narrowed
+      statement: two approaches to the same question, one applied per judgement, with differing verdicts.
+      Endpoints unchanged. The single-source flag stays — correctly, per the theorist."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges are backed by the passages they cite, and the proposer conceded both on re-reading;
+      the edge type and endpoints survive untouched.\n\n(1) missing-source — upheld. The statement individuates
+      the pair by Pierce's axis (\"What is the relation between the type µX.T and its one-step unfolding?\"\
+      , answered *definitionally equal* vs. *different but isomorphic*, pierce-tapl-2002#c00574). Turbak
+      & Gifford's \"isorecursive approach\" is constituted by [trec-α]/[trec-β] equivalence rules with
+      no fold/unfold terms, and [trec-β] makes a trec type equivalent to its one-level unwinding (#c01060,
+      #c01061) — i.e. on Pierce's axis T&G's *iso* regime returns Pierce's *equi* answer. Their real axis
+      is finite α/β-derivability vs. equality of complete infinite unwindings (#c01062), and the T_ib1/T_ib4
+      witness turns on that axis (#c01067). So T&G cannot be recorded as second-source agreement for the
+      unfolding axis; the single-source flag stands on that clause, with T&G retained only for divergence
+      of verdicts.\n\n(2) scope — upheld. \"Mutually exclusive\" is a system-level claim the corpus falsifies
+      even in the proposer's narrowed form: ATTAPL records OCaml running both regimes inside one type-equality
+      relation, partitioned by constructor via \"a selective occurs check, which forbids cycles unless
+      they involve the type constructors ⟨·⟩ or [·]\" (pierce-attapl-2004#c00724); T&G treat equirecursive
+      equivalence as a defeasible default (#c01062); Pierce never says more than \"two basic approaches\"\
+      \ / \"two alternative presentations\" (#c00574, #c00582). What is sourced is exclusivity per judgement
+      with divergent verdicts.\n\n`alternative-to` remains fully warranted on the narrowed statement —
+      the source's own word for the pair, two competing answers to one question, one applied per judgement.
+      Revised statement and evidence are the wording both challengers and the proposer converged on; the
+      single-source flag on the first clause is retained as correct rather than dissolved."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - scope
+  rationale: "Both challenges are backed by the passages they cite, and the proposer conceded both on
+    re-reading; the edge type and endpoints survive untouched.\n\n(1) missing-source — upheld. The statement
+    individuates the pair by Pierce's axis (\"What is the relation between the type µX.T and its one-step
+    unfolding?\", answered *definitionally equal* vs. *different but isomorphic*, pierce-tapl-2002#c00574).
+    Turbak & Gifford's \"isorecursive approach\" is constituted by [trec-α]/[trec-β] equivalence rules
+    with no fold/unfold terms, and [trec-β] makes a trec type equivalent to its one-level unwinding (#c01060,
+    #c01061) — i.e. on Pierce's axis T&G's *iso* regime returns Pierce's *equi* answer. Their real axis
+    is finite α/β-derivability vs. equality of complete infinite unwindings (#c01062), and the T_ib1/T_ib4
+    witness turns on that axis (#c01067). So T&G cannot be recorded as second-source agreement for the
+    unfolding axis; the single-source flag stands on that clause, with T&G retained only for divergence
+    of verdicts.\n\n(2) scope — upheld. \"Mutually exclusive\" is a system-level claim the corpus falsifies
+    even in the proposer's narrowed form: ATTAPL records OCaml running both regimes inside one type-equality
+    relation, partitioned by constructor via \"a selective occurs check, which forbids cycles unless they
+    involve the type constructors ⟨·⟩ or [·]\" (pierce-attapl-2004#c00724); T&G treat equirecursive equivalence
+    as a defeasible default (#c01062); Pierce never says more than \"two basic approaches\" / \"two alternative
+    presentations\" (#c00574, #c00582). What is sourced is exclusivity per judgement with divergent verdicts.\n\
+    \n`alternative-to` remains fully warranted on the narrowed statement — the source's own word for the
+    pair, two competing answers to one question, one applied per judgement. Revised statement and evidence
+    are the wording both challengers and the proposer converged on; the single-source flag on the first
+    clause is retained as correct rather than dissolved."
+  revision:
+    statement: The two basic approaches in the literature to relating a recursive type to its 
+      unfolding; they give different type-equivalence verdicts, and a type system applies one or the
+      other to any given judgement.
+    note: "single-source applies to the first clause only: Pierce's unfolding axis is attested by pierce-tapl-2002
+      alone. turbak-gifford-dcpl is cited only for divergence of equivalence verdicts, not for the unfolding
+      axis (its \"isorecursive\" regime answers Pierce's question with *equal*, i.e. Pierce's equi-recursive
+      answer). pierce-attapl-2004 supports per-judgement rather than per-system application."
