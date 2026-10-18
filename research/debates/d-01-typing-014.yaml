@@ -1,0 +1,312 @@
+id: d-01-typing-014
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: static-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-static-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-static-typing-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: static-typing
+  from_candidates:
+    - static-typing
+  kind: feature
+  id: static-typing
+  name: Static Typing
+  summary: A typing discipline in which the type of every expression is determined and checked 
+    before the program runs, typically at compile time.
+  evidence:
+    - source: cardelli-wegner-1985
+      locator: §1
+      chunk_id: cardelli-wegner-1985#c00009
+    - source: turbak-gifford-dcpl
+      locator: §11.3.1
+      chunk_id: turbak-gifford-dcpl#c00958
+    - source: stroustrup-de-cpp-1994
+      locator: § Review
+      chunk_id: stroustrup-de-cpp-1994#c00002
+      quote: committed to the concept of static (as opposed to dynamic) type checking as being 
+        inherently safer
+  contested:
+    - new-dimension
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-b72623f63af9
+    verdict: verified
+    admissible: true
+    pairs: 3
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: A design choice on the when-is-typing-checked axis, so carved at layer 3 with a dimension 
+    rather than as a bare semantic property.
+  dimension: static-dynamic-typing-discipline
+  cross_cutting: false
+  aliases:
+    - statically typed
+    - static type system
+  realizes:
+    - type-checking
+  layer: 3
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `static-typing`**\n\nThe carve is well-evidenced and the \"new-dimension\"\
+      \ flag should resolve in its favor, not against it.\n\n**1. The definition matches a convergent,
+      cross-tradition consensus.**\nIndependent sources from different decades and traditions all define
+      static typing identically as \"checked before execution\":\n\n- Cardelli & Wegner (1985): \"Programming
+      languages in which the type of every expression can be determined by static program analysis are
+      said to be statically typed\" [cardelli-wegner-1985#c00009].\n- Turbak & Gifford: \"statically analyze
+      a program before executing it to determine whether type information is consistent... languages using
+      this approach are said to be statically typed\" [turbak-gifford-dcpl#c00958].\n- Van Roy & Haridi:
+      \"In a statically-typed language... all variable types are known at compile time\" [vanroy-haridi-2003#c00236].\n\
+      - Kaijanaho (2015), synthesizing Sheil, Cardelli & Wegner, Hanenberg et al., Turner, and Harper:
+      \"type checking expected to be performed before a program is allowed to execute\" [kaijanaho-2015#c00071].\n\
+      - Krishnamurthi: \"Types that are checked before program execution—what are known as static types\"\
+      \ [krishnamurthi-plai#c00153].\n\nFive independently-written sources, spanning 1985–2015, converge
+      on the same checked-before-execution criterion. That is about as strong a textual mandate as a carve
+      can have.\n\n**2. It is correctly placed as a dimension-value, not a bare property.**\nThe note's
+      reasoning is itself evidenced: Van Roy & Haridi frame the choice explicitly as a design axis — \"\
+      one of the major decisions to make is whether the language is to be dynamically typed, statically
+      typed, or some mixture of both\" [vanroy-haridi-2003#c00236] — and Turbak & Gifford title the whole
+      subsection \"Dynamic versus Static Types,\" treating the two as paired alternatives on one axis,
+      explicitly noting intermediate cases like Java that mix the two [turbak-gifford-dcpl#c00960]. This
+      is exactly the structure a `dimension` carve is meant to capture: not an isolated semantic property
+      but one pole of a recognized design axis with a real alternative.\n\n**3. `realizes: [type-checking]`
+      is textually supported**, not just structurally plausible: Sebesta's \"Type Checking\" section frames
+      compile-time vs. run-time checking as two implementations of the same underlying mechanism [sebesta-copl#c00061],
+      and static semantics (the compile-time analysis phase) is explicitly tied to \"type constraints\"\
+      \ checked at compile time [sebesta-copl#c00283].\n\n**4. Caution duly noted, not ignored.** Harper's
+      critique that \"every dynamic language is inherently a static language in which we confine ourselves
+      to a... restricted type discipline\" [harper-pfpl#c00346] is a philosophical point about foundations
+      (dynamic typing as a degenerate unityped static system), not a rejection of the static/dynamic terminological
+      distinction — Harper himself still uses \"statically typed\" and \"dynamically typed\" as the operative
+      vocabulary throughout the same chapter [harper-pfpl#c00348, harper-pfpl#c00355]. It doesn't undermine
+      the carve; if anything it reinforces that the static/dynamic axis is the field's standard way of
+      talking about this, even among people who find the distinction philosophically thin.\n\nI'd defend
+      this carve as drafted. I'm open to a challenge on whether \"strongly typed\" (Cardelli-Wegner's
+      orthogonal axis) is at risk of being conflated with this carve elsewhere in the ontology, but nothing
+      in the carve's own text does that — it correctly isolates the *when-checked* axis from the *type-safety-guarantee*
+      axis."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: 'The carve is well-evidenced on its central claim and the dimension placement is sound, but
+      the proposer overstates convergence: it treats "static typing" as a clean atom meaning only "checked
+      before execution," isolated from the strong/weak axis. That isolation does not hold across the corpus.'
+    challenges:
+      - type: wrong-atomization
+        text: "The proposer claims five independent sources converge on 'checked before execution' as
+          the sole, clean criterion for static typing, explicitly isolated from the strength/safety axis
+          ('nothing in the carve's own text conflates' them). But Scott's textbook defines static typing
+          as requiring BOTH properties at once: 'A language is said to be statically typed if it is strongly
+          typed and type checking can be performed at compile time.' Scott then shows this bites in practice:
+          Pascal does most of its checking at compile time yet 'is not quite strongly typed' (untagged
+          variant records), and under Scott's definition that loophole is relevant to whether the language
+          counts as statically typed at all, not just to a separate orthogonal property. This means the
+          field does not uniformly atomize 'static typing' as a pure when-checked property — one major
+          source builds the strength guarantee into the definition itself, so collapsing the carve's summary
+          to 'determined and checked before the program runs' silently picks one side of a live definitional
+          disagreement rather than reporting an uncontested convergence."
+        evidence:
+          - source: scott-plp
+            locator: pp. 423–425
+            chunk_id: scott-plp#c00397
+            quote: A language is said to be statically typed if it is strongly typed and type 
+              checking can be performed at compile time. In the strictest sense of the term, few 
+              languages are statically typed.
+          - source: cardelli-wegner-1985
+            locator: §1
+            chunk_id: cardelli-wegner-1985#c00009
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "I raise one challenge. The rest of the carve — the checked-before-execution definition, the
+      dimension placement, and the realizes link — is well supported by convergent, independently-written
+      sources (Cardelli & Wegner 1985, Turbak & Gifford, Van Roy & Haridi, Krishnamurthi, Scott), so I
+      don't contest those.\n\nThe one real tension is with Harper's PFPL treatment, which the proposer
+      cites but under-weighs. The carve models `static-dynamic-typing-discipline` as a dimension with
+      two alternative, mutually exclusive poles — \"static (as opposed to dynamic)\" is baked into the
+      carve's own evidence quote. But Harper's chapter on dynamic typing explicitly denies that static
+      and dynamic typing are alternatives on a shared axis at all: \"Static and dynamic types are not
+      opposed to one another, but may coexist harmoniously... one may say that dynamic typing is a mode
+      of use of static typing, reconciling an apparent opposition between them\" [harper-pfpl#c00361].
+      This isn't the weaker \"foundations\" remark the proposer addresses (about unityped systems) — it's
+      a direct claim that the relationship is subsumption (dynamic ⊆ a restricted use of static), not
+      a binary choice between two symmetric design points. A dimension construct that models this as \"\
+      pick pole A or pole B\" has no slot for a source that says B is actually a special case of A rather
+      than an alternative to it. That's a genuine atomization disagreement in the literature the carve's
+      note doesn't surface, not a stylistic preference for a different carve.\n\nI'd stop at this one
+      challenge — it's the only place the sources actually pull against each other on how the carve is
+      shaped; everything else is convergent."
+    challenges:
+      - type: wrong-atomization
+        text: 'The carve treats static and dynamic typing as two symmetric, mutually exclusive values
+          of one dimension (per its own evidence quote: static "as opposed to dynamic"). But Harper (PFPL)
+          denies this is an opposition of alternatives at all, framing dynamic typing as a restricted
+          mode of use of static typing rather than a competing pole on the same axis — a subsumption relationship
+          the dimension-of-opposed-values atomization cannot represent without flattening it into something
+          the source explicitly rejects.'
+        evidence:
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "**On the type theorist's challenge (Scott's compound definition):**\n\nThe citation is accurate:
+      Scott does write \"A language is said to be statically typed if it is strongly typed and type checking
+      can be performed at compile time\" [scott-plp#c00397], and the Pascal/C89 examples show the strength
+      axis biting on whether a language counts as statically typed under *his* definition. I won't pretend
+      that's not a real divergence in the corpus.\n\nBut look at what Scott does immediately after stating
+      that compound definition: \"In the strictest sense of the term, few languages are statically typed.
+      In practice, the term is often applied to languages in which most type checking can be performed
+      at compile time, and the rest can be performed at run time\" [scott-plp#c00397]. Scott's own usage
+      collapses back onto the when-checked criterion the moment he has to classify real languages — his
+      \"strict\" compound definition is presented as a theoretical ideal that practice doesn't track.\n\
+      \nMore importantly, Scott is the outlier, not the center of mass. Cardelli & Wegner state the two
+      properties as independent and non-coextensive in one sentence: \"every statically typed language
+      is strongly typed but the converse is not necessarily true\" [cardelli-wegner-1985#c00009] — that's
+      only sayable if static-typed-ness and strong-typed-ness are different properties with a one-way
+      implication, not one bundled definition. Turbak & Gifford define static typing purely as \"analyz[ing]
+      a program before executing it to determine whether type information is consistent\" [turbak-gifford-dcpl#c00958],
+      with no strength clause. Pierce explicitly separates the concerns at the level the carve cares about:
+      \"Language safety is not the same thing as static type safety... Scheme is a safe language, even
+      though it has no static type system\" [pierce-tapl-2002#c00032] — safety/strength and static-ness
+      are orthogonal enough that one can hold without the other in either direction. Van Roy & Haridi
+      frame strong typing as the umbrella property and static/dynamic as \"two major families of strong
+      typing\" [vanroy-haridi-2003#c00236] — i.e., exactly the layered structure the carve's `dimension:
+      static-dynamic-typing-discipline` note presupposes, with strength as a prior, separately-carved
+      property.\n\nSo the field is not silent on this, but it does lean one way: four sources atomize
+      cleanly, one (Scott) bundles by strict definition and then retreats to the clean criterion in application.
+      I'll amend rather than dig in: the carve should add a cross-reference note flagging that Scott's
+      stricter compound usage exists, so a reader checking Pascal-like edge cases against the KB isn't
+      surprised. That's a documentation fix, not a reason to re-merge strength into this node — the clean
+      atomization is the majority position and matches how the carve's own dimension key is already structured.\n\
+      \n**On the working language implementer's challenge (Harper's subsumption):**\n\nThis one lands
+      harder and I'll concede the framing issue rather than defend the quote. Harper is explicit and repeats
+      himself for emphasis: \"Static and dynamic types are not opposed to one another, but may coexist
+      harmoniously... dynamic typing is a mode of use of static typing, reconciling an apparent opposition
+      between them\" [harper-pfpl p.235], and even more bluntly: \"every dynamic language is inherently
+      a static language in which we confine ourselves to a (needlessly) restricted type discipline to
+      ensure safety\" [harper-pfpl pp.225-226]. That is a real, sourced denial that static/dynamic sit
+      as two symmetric values of one axis — Harper's claim is specifically that one subsumes the other
+      via the `dyn` recursive type construction.\n\nThe carve's own chosen evidence quote — Stroustrup's
+      \"static (as opposed to dynamic)\" [stroustrup-de-cpp-1994#c00002] — is the exact phrasing Harper
+      is arguing against, and the dimension framing (`static-dynamic-typing-discipline`) does encode a
+      two-opposed-poles structure. That's a genuine mismatch with a source already in the corpus, not
+      a hypothetical one.\n\nI don't think this fully breaks the carve, though, because the two sources
+      are answering different questions at different layers. Harper's result is about semantic embeddability
+      within a single type theory (PCF with recursive types) — a foundational claim about how dynamic
+      typing *can be modeled*. Van Roy & Haridi, by contrast, describe the question a language *designer*
+      actually faces: \"one of the major decisions to make is whether the language is to be dynamically
+      typed, statically typed, or some mixture of both\" [vanroy-haridi-2003#c00236] — explicitly already
+      a three-way space (static / dynamic / mixture), not a strict binary, and explicitly a design decision,
+      which is the layer-3 framing the carve's own note claims (\"a design choice on the when-is-typing-checked
+      axis\"). Harper himself keeps using \"statically typed\" and \"dynamically typed\" as classifying
+      real languages even while arguing the opposition is \"apparent\" / \"purported\" [harper-pfpl p.235,
+      pp.225–226] — so even Harper doesn't dispense with the practical classificatory vocabulary, only
+      with a strong metaphysical reading of it as two fundamentally separate kinds of thing.\n\nGiven
+      that, my proposed fix is to amend, not withdraw: drop or de-emphasize the \"as opposed to\" framing
+      in the evidence/summary (it's the one phrase that actually asserts the symmetric-opposition reading
+      Harper rebuts), state the dimension as admitting a hybrid/mixed value (matching Van Roy & Haridi's
+      \"or some mixture of both\"), and add a note that Harper's subsumption result is a foundational
+      caveat on the *theoretical* independence of the two poles, not a reason to drop the practical design-axis
+      carving used by the rest of the corpus. That keeps the carve honest about where the disagreement
+      actually lives (opposition vs. subsumption) without erasing the classificatory distinction every
+      other source in the corpus, including Harper's own prose, still relies on.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges are upheld as genuine, sourced wrong-atomization concerns rather than confident-but-unevidenced
+      objections: challenger-a's Scott citation (scott-plp, compile-time + strong-typing bundled definition,
+      with the Pascal loophole) is accurate and shows the field is not uniformly unanimous on a pure when-checked
+      atomization; challenger-b's Harper citation (PFPL pp.225-226, 235) is likewise accurate and shows
+      a source that denies the static/dynamic relationship is even a symmetric opposition, which is in
+      tension with the carve's own chosen Stroustrup evidence quote and with the two-pole dimension framing.
+      The proposer did not merely defend the original text — it conceded real framing problems and proposed
+      concrete, source-grounded fixes (a caveat note on Scott's compound usage; reframing the dimension
+      to admit a hybrid/mixed third value per Van Roy & Haridi and Turbak & Gifford; flagging Harper's
+      subsumption claim as a foundational caveat rather than erasing the practical static/dynamic vocabulary
+      that even Harper keeps using). Those fixes are sound: the core checked-before-execution definition
+      remains the clear majority position across five independent sources (Cardelli & Wegner, Turbak &
+      Gifford, Van Roy & Haridi, Krishnamurthi, and even Scott in practice), so the carve's substance
+      stands, but its note and evidence needed to surface the two documented minority readings instead
+      of presenting the atomization as uncontested. I apply the proposer's own proposed amendments as
+      the revision. The deeper theoretical disagreement between Harper (subsumption) and the opposition
+      framing baked into the carve's chosen Stroustrup quote is a genuine, unresolved contradiction between
+      sourced positions — recorded as such — and is not fully dissolved by adding a caveat note, so a
+      standing dissent remains live even though the carve, so revised, should stand."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - wrong-atomization
+  rationale: "Both challenges are upheld as genuine, sourced wrong-atomization concerns rather than confident-but-unevidenced
+    objections: challenger-a's Scott citation (scott-plp, compile-time + strong-typing bundled definition,
+    with the Pascal loophole) is accurate and shows the field is not uniformly unanimous on a pure when-checked
+    atomization; challenger-b's Harper citation (PFPL pp.225-226, 235) is likewise accurate and shows
+    a source that denies the static/dynamic relationship is even a symmetric opposition, which is in tension
+    with the carve's own chosen Stroustrup evidence quote and with the two-pole dimension framing. The
+    proposer did not merely defend the original text — it conceded real framing problems and proposed
+    concrete, source-grounded fixes (a caveat note on Scott's compound usage; reframing the dimension
+    to admit a hybrid/mixed third value per Van Roy & Haridi and Turbak & Gifford; flagging Harper's subsumption
+    claim as a foundational caveat rather than erasing the practical static/dynamic vocabulary that even
+    Harper keeps using). Those fixes are sound: the core checked-before-execution definition remains the
+    clear majority position across five independent sources (Cardelli & Wegner, Turbak & Gifford, Van
+    Roy & Haridi, Krishnamurthi, and even Scott in practice), so the carve's substance stands, but its
+    note and evidence needed to surface the two documented minority readings instead of presenting the
+    atomization as uncontested. I apply the proposer's own proposed amendments as the revision. The deeper
+    theoretical disagreement between Harper (subsumption) and the opposition framing baked into the carve's
+    chosen Stroustrup quote is a genuine, unresolved contradiction between sourced positions — recorded
+    as such — and is not fully dissolved by adding a caveat note, so a standing dissent remains live even
+    though the carve, so revised, should stand."
+  revision:
+    note: A design choice on the when-is-typing-checked axis, so carved at layer 3 with a dimension 
+      rather than as a bare semantic property. The dimension admits a third hybrid/mixed value 
+      alongside the static and dynamic poles (languages that mix both, e.g. Java), per Van Roy & 
+      Haridi's explicit three-way framing ("dynamically typed, statically typed, or some mixture of 
+      both") and Turbak & Gifford's discussion of intermediate cases — this carve is one pole of 
+      that axis, not an exhaustive binary. Scott (PLP) instead bundles static typing with strong 
+      typing by strict definition ("statically typed if it is strongly typed and type checking can 
+      be performed at compile time"), a documented alternative usage flagged here for readers 
+      checking edge cases (e.g. Pascal's untagged variant records) against the KB; Scott's own 
+      practical usage retreats to the clean checked-before-execution criterion, which is why the 
+      carve follows the majority atomization used elsewhere in the corpus (Cardelli & Wegner, Turbak
+      & Gifford, Pierce, Van Roy & Haridi) rather than folding strength into this node. Separately, 
+      Harper (PFPL) argues dynamic typing is better modeled as a restricted mode of use of static 
+      typing (subsumption) rather than a symmetric opposed pole — a foundational caveat on the 
+      theoretical relationship between the two poles that the dimension's practical design-axis 
+      framing does not resolve; it is noted rather than adopted, since Harper's own classificatory 
+      prose, like the rest of the corpus, continues to use "statically typed"/"dynamically typed" as
+      alternatives when classifying real languages.
+  contradiction:
+    participants:
+      - citation:harper-pfpl:p.235
+      - citation:stroustrup-de-cpp-1994:§Review
+    detail: Stroustrup (quoted as this carve's own evidence) frames static typing as standing in 
+      direct opposition to dynamic typing ("static (as opposed to dynamic)"), encoding a symmetric 
+      two-pole axis. Harper (PFPL pp.225-226, 235) explicitly denies this opposition, arguing 
+      dynamic typing is a restricted mode of use of static typing (subsumption, via the `dyn` 
+      recursive type), not a competing alternative on a shared axis. Both are genuine, sourced 
+      positions about the same relationship (how static and dynamic typing relate to each other) and
+      neither source backs down from its framing — Harper keeps the practical static/dynamic 
+      vocabulary for classifying languages while still rejecting the opposition reading, and 
+      Stroustrup's phrasing is exactly the 'apparent opposition' Harper argues against. The revision
+      notes this tension rather than resolving it.
