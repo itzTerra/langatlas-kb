@@ -1,0 +1,222 @@
+id: d-01-typing-001
+cycle: 1
+theme: typing
+target:
+  list: dimensions
+  key: polymorphism-variety
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-polymorphism-variety-01
+  moderator: 2026-10-17-r4-moderator-01-typing-polymorphism-variety-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: polymorphism-variety
+  slug: polymorphism-variety
+  label: Variety of Polymorphism
+  exclusivity: multi
+  applies_to:
+    - general-purpose
+  contested:
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: Strachey's classification (via Cardelli & Wegner, via Pierce) of parametric, ad hoc, and 
+    subtype/inclusion polymorphism as mutually comparable but freely combinable mechanisms a 
+    language may adopt.
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `polymorphism-variety`**\n\nThis carve is directly and explicitly sourced
+      — it isn't an inference from scattered facts but a lineage of named classification work spanning
+      three canonical sources, each independently converging on the same taxonomy.\n\n**1. Strachey →
+      Cardelli & Wegner is the originating classification, and it is exactly this carve.**\nCardelli &
+      Wegner (1985) state plainly: \"Strachey [Strachey 67] distinguished, informally, between two major
+      kinds of polymorphism. Parametric polymorphism... Ad-hoc polymorphism...\" and that their own contribution
+      is to refine this \"by introducing a new form of polymorphism called inclusion polymorphism to model
+      subtypes and inheritance\" [cardelli-wegner-1985#c00011]. This is the note's claim almost verbatim:
+      Strachey's classification, refined/transmitted via Cardelli & Wegner, of parametric/ad-hoc/subtype(inclusion)
+      polymorphism.\n\n**2. Pierce (TAPL) independently confirms the same three-way split and explicitly
+      cites both predecessors.** \"Several varieties of polymorphism can be found in modern languages
+      (this classification comes from Strachey, 1967, and Cardelli and Wegner, 1985)\" followed by definitions
+      of parametric and ad-hoc polymorphism [pierce-tapl-2002#c00726], with subtype polymorphism treated
+      as the third variety via \"the rule of subsumption\" [pierce-tapl-2002#c00728]. This triangulates
+      the \"via Cardelli & Wegner, via Pierce\" lineage named in the note exactly.\n\n**3. The \"mutually
+      comparable but freely combinable\" characterization is explicitly textual, not editorial gloss.**
+      Pierce: \"These categories are not exclusive: different forms of polymorphism can be mixed in the
+      same language. For example, Standard ML offers both parametric polymorphism and simple overloading...
+      but not subtyping, while Java includes subtyping, overloading, and simple ad-hoc polymorphism...,
+      but not... parametric polymorphism\" [pierce-tapl-2002#c00728]. This is a direct textual basis for
+      `exclusivity: multi` — the sources themselves demonstrate languages picking independent subsets,
+      not a single point on a spectrum.\n\n**4. The ad-hoc/universal (parametric+inclusion) distinction
+      is principled, not just terminological**, giving the carve real taxonomic teeth rather than being
+      an arbitrary bucket: Cardelli & Wegner ground it in observable implementation and semantic differences
+      — \"a universally polymorphic function will execute the same code for arguments of any admissible
+      type, while an ad-hoc polymorphic function may execute different code for each type of argument\"\
+      \ [cardelli-wegner-1985#c00011], and inclusion polymorphism is given its own historical anchor via
+      Simula 67 and Smalltalk [cardelli-wegner-1985#c00019].\n\n**5. `applies_to: ['general-purpose']`
+      is reasonable** given all cited exemplar languages (ML, Java, Standard ML, Simula, Smalltalk) are
+      general-purpose languages, and the mechanism (generic functions, overloading, subtype subsumption)
+      presupposes a type system expressive enough to support user-defined abstractions — not a concern
+      for e.g. minimal DSLs.\n\nOne caveat I'll flag myself rather than wait for a challenge: Pierce also
+      notes a *terminological* hazard — \"the unqualified term 'polymorphism' causes... confusion between
+      programming language communities... [FP people mean parametric]... [OO people mean subtype]... the
+      term genericity... is used for parametric polymorphism\" [pierce-tapl-2002#c00728]. This doesn't
+      undermine the carve's validity as a classification of mechanisms, but it does argue that the KB's
+      `label`/`note` text should keep the three mechanisms explicitly named (as it does) rather than ever
+      collapsing to the bare word \"polymorphism,\" to avoid importing that exact community-dependent
+      ambiguity. That's a documentation-wording note, not a structural objection to the carve."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "No challenges. The carve is well-sourced and accurately represents the cited literature.\n\n\
+      Cardelli & Wegner (1985) state the Strachey-derived three-way classification almost exactly as the
+      note describes: Strachey's original parametric/ad-hoc split, refined by the addition of inclusion
+      polymorphism to cover subtypes and inheritance, with parametric and inclusion grouped as \"universal\"\
+      \ against \"nonuniversal or ad-hoc\" [cardelli-wegner-1985#c00011][cardelli-wegner-1985#c00012].
+      Pierce (TAPL §23.2) independently corroborates this exact lineage, explicitly naming both Strachey
+      and Cardelli & Wegner as the source of \"this classification\" [pierce-tapl-2002#c00726], and treats
+      subtype polymorphism via subsumption as the third variety [pierce-tapl-2002#c00727].\n\nThe `exclusivity:
+      multi` field is directly textually grounded, not an editorial add: Pierce gives the canonical counterexample
+      pair showing independent, non-exclusive adoption — \"Standard ML offers both parametric polymorphism
+      and simple overloading... but not subtyping, while Java includes subtyping, overloading, and simple
+      ad-hoc polymorphism..., but not... parametric polymorphism\" [pierce-tapl-2002#c00728]. This is
+      exactly what \"freely combinable mechanisms a language may adopt\" describes, so the carve's exclusivity
+      setting matches the sources rather than overriding them.\n\nThe terminological hazard the proposer
+      flagged — that \"polymorphism\" unqualified means different things to FP and OO communities [pierce-tapl-2002#c00728]
+      — is a real textual point but only supports keeping the KB's documentation explicit about the three
+      named mechanisms (which the note already does); it does not undermine the carve's validity as a
+      classification of mechanisms, so it does not rise to a structural or sourcing objection.\n\nI also
+      checked a third independent source (Turbak & Gifford, DCPL) treating ad hoc polymorphism/overloading
+      as its own named category distinct from universal polymorphism [turbak-gifford-dcpl#c01148], which
+      is consistent with rather than contradicts the three-way split — no atomization mismatch or missing
+      distinction surfaced.\n\nI looked for grounds to raise wrong-atomization (is subtype/inclusion secretly
+      two things), wrong-layer, missing-source, redundant-with, or scope objections, and found none that
+      the cited passages support. Raising one here would be inventing disagreement where the sources,
+      the note, and the exclusivity field are all mutually consistent."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is well-sourced for the three-way split it names, and the `exclusivity: multi` call
+      is textually supported by Pierce's \"not exclusive... can be mixed\" language. But the atomization
+      is too coarse by the primary source's own account: Cardelli & Wegner don't present ad-hoc polymorphism
+      as a single undifferentiated option. They explicitly state \"there are also two major kinds of ad-hoc
+      polymorphism\" — overloading (a syntactic abbreviation eliminable by renaming) and coercion (a semantic
+      run-time/compile-time conversion) — and treat these as distinguishable enough to assign different
+      implementation costs, different resolvability properties, and different historical examples (cardelli-wegner-1985#c00011,
+      #c00013). Scott (PLP) independently corroborates that overloading and coercion \"can have very different
+      costs\" and are examined as separate design choices (scott-plp#c00215, scott-plp#c00431). Given
+      that the carve's whole rationale for `exclusivity: multi` is that mechanisms are \"freely combinable\"\
+      \ and a language can pick an independent subset (SML has parametric+overloading but not subtyping,
+      per Pierce), the same logic applies one level down: a language can have overloading without coercion
+      or vice versa (e.g., statically-coerced Algol 68 vs. untyped-overload-only systems), so collapsing
+      them into one \"ad hoc\" bucket invents a coarser grain than the sources themselves use when the
+      dimension is precisely trying to capture which independently-combinable mechanisms a language adopts."
+    challenges:
+      - type: wrong-atomization
+        text: "Cardelli & Wegner's own taxonomy (which the carve cites as its primary source) does not
+          treat ad-hoc polymorphism as a single atomic option; it explicitly subdivides it into two major,
+          independently-combinable kinds — overloading and coercion — with distinct semantics, resolvability,
+          and cost profiles. The carve's three-way split (parametric / ad hoc / subtype) therefore sits
+          at an inconsistent grain: it preserves the universal/inclusion split at fine detail but flattens
+          the ad-hoc branch that the same source splits just as explicitly, even though the carve's own
+          `exclusivity: multi` rationale (independent, freely-combinable subsets) applies equally to overloading
+          vs. coercion."
+        evidence:
+          - source: cardelli-wegner-1985
+            locator: pp. 4–5
+            chunk_id: cardelli-wegner-1985#c00011
+          - source: scott-plp
+            locator: pp. 229–230
+            chunk_id: scott-plp#c00215
+            quote: coercion and overloading can have very different costs
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede this challenge. It is well evidenced and correct.\n\nCardelli & Wegner's own text,
+      immediately following the passage the carve cites for the parametric/ad-hoc/inclusion split, states
+      plainly: \"There are also two major kinds of ad-hoc polymorphism\" — overloading and coercion [cardelli-wegner-1985#c00013].
+      They are not presented as a loose stylistic aside; the paper gives each a distinct resolution mechanism
+      and cost profile:\n\n- Overloading is \"a purely syntactic way of using the same name for different
+      semantic objects; the compiler can resolve the ambiguity at compile time\" [cardelli-wegner-1985#c00015]
+      — i.e., statically resolvable, in principle eliminable by renaming.\n- Coercion \"is instead a semantic
+      operation... Coercions can be provided statically... or may have to be determined dynamically by
+      run-time tests on the arguments\" [cardelli-wegner-1985#c00013], and the paper separately warns
+      that coercion schemes (e.g., Algol 68's) have genuine runtime effects and error-proneness that overloading
+      does not [cardelli-wegner-1985#c00018].\n\nScott's textbook treatment independently preserves the
+      same split and adds a cost dimension the carve's label obscures: coercion from int to float carries
+      real runtime cost that integer/float overload dispatch does not, which is exactly why language designers
+      may choose one over the other [scott-plp#c00431]. This confirms the challenge's \"distinct semantics,
+      resolvability, and cost profiles\" claim from a second, independent source — it isn't an idiosyncrasy
+      of Cardelli & Wegner's exposition.\n\nThe challenge is also right that the carve's own `exclusivity:
+      multi` rationale — independently adoptable, freely combinable mechanisms — applies within the ad-hoc
+      branch just as it does across the top-level split. Cardelli & Wegner's own worked example (`3 +
+      4`, `3.0 + 4.0`, etc.) shows a single language feature can be analyzed as pure overloading, pure
+      coercion, or a mix of both simultaneously [cardelli-wegner-1985#c00014] — the same \"a language
+      may freely adopt any subset\" logic the carve already uses to justify `multi` for parametric/ad-hoc/subtype.\n\
+      \nSo the carve as drafted does sit at an inconsistent grain: it atomizes universal polymorphism
+      (parametric vs. inclusion) to the depth the source supports, but leaves ad-hoc polymorphism unatomized
+      despite the same source splitting it with equal explicitness and giving the same multi-combinability
+      rationale.\n\nProposed amendment: split the `ad hoc` option into its two source-attested kinds,
+      yielding a four-option multi-exclusivity dimension — parametric / overloading / coercion / subtype
+      (inclusion) — with the note updated to cite Cardelli & Wegner's explicit sub-division of ad-hoc
+      polymorphism alongside Strachey's original parametric/ad-hoc split and Pierce's restatement. This
+      keeps `exclusivity: multi` (all four remain independently, freely combinable per the cited evidence)
+      and removes the inconsistent atomization the challenge identifies, rather than requiring a brand-new
+      dimension."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The wrong-atomization challenge is upheld: Cardelli & Wegner's own text — the carve's primary
+      cited source — explicitly subdivides ad-hoc polymorphism into two independently-combinable kinds,
+      overloading and coercion, with distinct resolution mechanisms (compile-time syntactic vs. semantic/possibly-runtime)
+      and distinct cost profiles [cardelli-wegner-1985#c00011, #c00013, #c00014, #c00015, #c00018], corroborated
+      independently by Scott (PLP) treating overloading and coercion as separately-costed design choices
+      [scott-plp#c00215, scott-plp#c00431]. The carve's own stated rationale for `exclusivity: multi`
+      — that the sources show languages freely adopting independent subsets of the mechanisms — applies
+      with equal force one level down to overloading vs. coercion, exactly as the proposer concedes. Leaving
+      the dimension at three options (parametric/ad-hoc/subtype) while atomizing the universal branch
+      (parametric vs. inclusion) to full source depth is an inconsistent grain, not a defensible simplification.
+      This is a revision to the enumeration of a single dimension carve, not a case for spawning separate
+      dimensions: the four resulting options (parametric / overloading / coercion / subtype-inclusion)
+      remain one coherent \"variety of polymorphism\" dimension, retain `exclusivity: multi`, and keep
+      the same `applies_to` and sourcing lineage. No other challenge was raised against the carve's existence,
+      sourcing, or `applies_to` scoping, and challenger-a found no grounds for wrong-layer/missing-source/redundant-with
+      objections, so nothing else about the carve needs to change."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 1
+  upheld_challenges:
+    - wrong-atomization
+  rationale: "The wrong-atomization challenge is upheld: Cardelli & Wegner's own text — the carve's primary
+    cited source — explicitly subdivides ad-hoc polymorphism into two independently-combinable kinds,
+    overloading and coercion, with distinct resolution mechanisms (compile-time syntactic vs. semantic/possibly-runtime)
+    and distinct cost profiles [cardelli-wegner-1985#c00011, #c00013, #c00014, #c00015, #c00018], corroborated
+    independently by Scott (PLP) treating overloading and coercion as separately-costed design choices
+    [scott-plp#c00215, scott-plp#c00431]. The carve's own stated rationale for `exclusivity: multi` —
+    that the sources show languages freely adopting independent subsets of the mechanisms — applies with
+    equal force one level down to overloading vs. coercion, exactly as the proposer concedes. Leaving
+    the dimension at three options (parametric/ad-hoc/subtype) while atomizing the universal branch (parametric
+    vs. inclusion) to full source depth is an inconsistent grain, not a defensible simplification. This
+    is a revision to the enumeration of a single dimension carve, not a case for spawning separate dimensions:
+    the four resulting options (parametric / overloading / coercion / subtype-inclusion) remain one coherent
+    \"variety of polymorphism\" dimension, retain `exclusivity: multi`, and keep the same `applies_to`
+    and sourcing lineage. No other challenge was raised against the carve's existence, sourcing, or `applies_to`
+    scoping, and challenger-a found no grounds for wrong-layer/missing-source/redundant-with objections,
+    so nothing else about the carve needs to change."
+  revision:
+    note: "Strachey's classification (via Cardelli & Wegner, via Pierce) of parametric, subtype/inclusion,
+      and ad-hoc polymorphism as mutually comparable but freely combinable mechanisms a language may adopt
+      — with ad-hoc polymorphism itself resolved, per Cardelli & Wegner's explicit sub-division (independently
+      corroborated by Scott), into its two source-attested kinds: overloading (syntactic, compile-time-resolvable)
+      and coercion (semantic, possibly run-time). The dimension therefore has four independently combinable
+      options: parametric, overloading, coercion, and subtype (inclusion) polymorphism."
