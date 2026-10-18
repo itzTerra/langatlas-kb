@@ -1,0 +1,287 @@
+id: d-01-typing-009
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: nominal-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-nominal-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-nominal-typing-01
+triggers:
+  - split-candidate
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: nominal-typing
+  from_candidates:
+    - structural-vs-nominal-typing
+  kind: feature
+  id: nominal-typing
+  name: Nominal Typing
+  summary: A discipline, as in Java, in which subtyping and type equivalence require explicit, 
+    name-based declaration rather than structural comparison.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §19.3
+      chunk_id: pierce-tapl-2002#c00525
+    - source: pierce-tapl-2002
+      locator: §19.3
+      chunk_id: pierce-tapl-2002#c00527
+    - source: pierce-attapl-2004
+      locator: §8.2
+      chunk_id: pierce-attapl-2004#c00459
+  contested:
+    - split-candidate
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: The other half of the same split; the two features together are the dimension's two 
+    exclusive values.
+  dimension: structural-vs-nominal-typing
+  cross_cutting: false
+  aliases:
+    - nominal type systems
+    - nominal subtype relation
+  realizes:
+    - subtyping
+    - type-equivalence
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `nominal-typing`**\n\nThe carve is well-grounded and the dimension framing
+      is exactly how the primary source presents it. Pierce is explicit that this is a *single* binary
+      dimension, not two independent features bolted together after the fact:\n\n> \"Type systems like
+      Java's, in which names are significant and subtyping is explicitly declared, are called *nominal*.
+      Type systems like most of the ones in this book, in which names are inessential and subtyping is
+      defined directly on the structures of types are called *structural*.\" [pierce-tapl-2002#c00525]\n\
+      \nThat sentence alone licenses the `structural-vs-nominal-typing` dimension with exactly two exclusive
+      values — there is no third option Pierce entertains (no mention of a hybrid as a separate point
+      on the same axis; mixed systems are discussed elsewhere as combining the two, not as a third primitive).
+      The companion chunk [pierce-tapl-2002#c00524] supplies the mechanism that makes \"nominal\" more
+      than a label: in Java \"every compound type used... has a name,\" those names are declared with
+      explicit extends/implements relations, and \"the subtype relation is... defined between type names
+      as the... closure of the declared immediate-subtype relation.\" That is precisely the summary's
+      claim that nominal typing requires \"explicit, name-based declaration rather than structural comparison\"\
+      \ — the summary is not a paraphrase drifting from the source, it's close to a direct restatement.\n\
+      \nThe `realizes: ['subtyping', 'type-equivalence']` linkage is also textually supported, not invented:
+      Pierce frames the whole §19.3 discussion around *both* \"the subtype relation\" and type-name identity/equivalence
+      simultaneously — nominal naming settles both what counts as the same type and what counts as a declared
+      subtype, which is why the carve correctly realizes both parents rather than just one.\n\nIndependent
+      corroboration, not currently cited but worth noting for the moderator since it triangulates the
+      same two-way split from a different textbook lineage: Krishnamurthi's PLAI walks through the identical
+      Java example (two structurally-identical classes `mt`/`empty`, one rejected as a substitute for
+      the other) to make the same point — \"what matters is which actual (named) class, not what structure
+      of class, created the value\" [krishnamurthi-plai#c00234], and later states directly \"This is an
+      account of how subtyping works for nominal systems... We can also define subtyping for structural
+      systems\" [krishnamurthi-plai#c00238], treating nominal/structural subtyping as the two accounts
+      of the same relation, i.e. the same dimension. Two independent PL-theory textbooks converge on the
+      identical binary opposition with the identical exemplar language (Java) for the nominal side — that's
+      about as strong as corpus convergence gets for a `split-candidate`/`new-dimension` flag.\n\nWhy
+      `kind: feature` rather than, say, a bare `characteristic`: the carve inherits `layer: 3` and sits
+      under a concrete discipline a language either adopts or doesn't (Java adopts it; the ML-family languages
+      in Pierce's book don't) — that matches the project's own definition of *feature* (\"a realisation
+      of a concept within a family of related systems\") better than *characteristic*, since this is a
+      design discipline you build subtyping/equivalence around, not merely an observable property of one
+      instance.\n\nI'd keep the carve as drafted. The one thing I'd flag for the moderator rather than
+      concede outright: the `pierce-tapl-2002#c00527` evidence pointer in the carve doesn't match anything
+      I could retrieve verbatim (search returned `#c00524`/`#c00525` for §19.3, and `#c01338`/`#c01336`
+      for later figure captions) — worth the ontologist double-checking that chunk ID resolves to real
+      supporting text rather than being a typo for one of the adjacent chunks, since the ATTAPL pointer
+      [pierce-attapl-2004#c00459] I have not independently verified either. That's a citation-hygiene
+      concern, not a substantive objection to the carve itself.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The dimension framing and the subtyping half of this carve are well-supported — Pierce's §19.3
+      chunks are explicit and exactly as quoted by the proposer, and I can also confirm the proposer's
+      citation-hygiene worry is a non-issue: [pierce-tapl-2002#c00527] does resolve to real §19.3 text
+      (the \"recursive types come essentially for free\" / \"checking... becomes almost trivial\" paragraph),
+      and [pierce-attapl-2004#c00459] resolves to Harper & Pierce explicitly writing \"(This distinction
+      exactly mirrors the distinction between structural and nominal subtype relations discussed in TAPL,
+      §19.3.)\" — a clean, on-point corroboration, not a mismatched pointer.\n\nI have one substantive
+      objection, to the `realizes: ['subtyping', 'type-equivalence']` edge specifically, not to the carve's
+      existence.\n\nEvery sentence in the cited §19.3 evidence that discusses what nominal naming *does*
+      — \"the subtype relation is now defined between type names,\" \"subtyping is explicitly declared,\"\
+      \ \"checking whether one type is a subtype of another becomes almost trivial\" — is about subtyping.
+      None of the cited chunks ([pierce-tapl-2002#c00525], [pierce-tapl-2002#c00527]) use the term \"\
+      type equivalence\" or describe nominal naming as settling type identity; the one explicit identity/equivalence
+      remark in §19.3 is actually about the *structural* side — \"the name NatPair is a simple abbreviation
+      for {fst:Nat,snd:Nat}, and the two are interchangeable in every context\" [pierce-tapl-2002#c00524]
+      — and Pierce's formal \"type equivalence\" relation (S ≡ T) is introduced much later, for a completely
+      different purpose (type operators/definitional equivalence under higher kinds), in §29.1: \"we introduce
+      a definitional equivalence relation on types, written S ≡ T... a type-level abstraction applied
+      to an argument is equivalent to the body...\" [pierce-tapl-2002#c00928]. That relation has no connection
+      to nominal-vs-structural naming anywhere in the retrieved text. So while \"realizes subtyping\"\
+      \ is directly textually licensed, \"realizes type-equivalence\" is an inference the carve author
+      added by analogy (names settle sameness too) rather than something the cited §19.3 passages, or
+      the ATTAPL passage (also subtyping/signature-matching only), actually say.\n\nIf the ontologist
+      can point to a different passage where Pierce or Harper & Pierce tie nominal naming to a type-equivalence
+      relation, that would resolve this; on the evidence currently cited, the type-equivalence half of
+      the realizes link is unsupported."
+    challenges:
+      - type: missing-source
+        text: "The carve's `realizes` edge to `type-equivalence` has no support in the cited evidence.
+          The §19.3 chunks given as evidence ([pierce-tapl-2002#c00525], [pierce-tapl-2002#c00527]) discuss
+          only the subtype relation (\"the subtype relation is now defined between type names...\", \"\
+          checking whether one type is a subtype of another becomes almost trivial\"); neither mentions
+          type equivalence. The section's one remark about name-based identity/interchangeability is given
+          for the *structural* case (\"the name NatPair is a simple abbreviation... interchangeable in
+          every context\" [pierce-tapl-2002#c00524]), not the nominal one. Pierce's actual formal type-equivalence
+          relation (S ≡ T) is introduced in an unrelated later chapter about type operators and higher
+          kinds (\"we introduce a definitional equivalence relation on types, written S ≡ T...\" [pierce-tapl-2002#c00928]),
+          with no tie back to nominal/structural naming. The ATTAPL evidence is likewise framed purely
+          in terms of subtyping/signature-matching (\"There are two well-known styles of signature matching,
+          which we call structural and nominal... This distinction exactly mirrors the distinction between
+          structural and nominal subtype relations discussed in TAPL, §19.3\" [pierce-attapl-2004#c00459])
+          and never invokes type equivalence either. The `realizes: ['subtyping', 'type-equivalence']`
+          link therefore over-claims relative to its cited sources for its second target."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §19.3
+            chunk_id: pierce-tapl-2002#c00525
+            quote: The subtype relation is now defined between type names as the reflexive and 
+              transitive closure of the declared immediate-subtype relation.
+          - source: pierce-tapl-2002
+            locator: §19.3
+            chunk_id: pierce-tapl-2002#c00524
+          - source: pierce-tapl-2002
+            locator: §29.1
+            chunk_id: pierce-tapl-2002#c00928
+            quote: we introduce a definitional equivalence relation on types, written S ≡ T
+          - source: pierce-attapl-2004
+            locator: §8.2
+            chunk_id: pierce-attapl-2004#c00459
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is well-grounded on its primary source. Pierce §19.3 states the binary dimension
+      explicitly and in exactly these terms: \"Type systems like Java's, in which names are significant
+      and subtyping is explicitly declared, are called nominal. Type systems like most of the ones in
+      this book... are called structural\" [pierce-tapl-2002#c00525], with the mechanism (\"every compound
+      type used in a Java program has a name\"; subtype relation as \"the reflexive and transitive closure
+      of the declared immediate-subtype relation\") in [pierce-tapl-2002#c00524]. I verified the previously-flagged
+      pointer [pierce-tapl-2002#c00527] independently — it resolves to real §19.3 text on nominal subtyping's
+      performance/recursive-type advantages, so the citation-hygiene concern the proposer raised is resolved;
+      it is not a typo. I therefore do not raise a missing-source challenge on that point.\n\nI raise
+      one narrower challenge, as a scope concern, about one of the three evidence pointers rather than
+      about the carve's core claim."
+    challenges:
+      - type: scope
+        text: "The [pierce-attapl-2004#c00459] citation supports a feature about nominal *module-signature
+          matching*, not nominal typing/subtyping of ordinary types, and Pierce is explicit that these
+          are two separate mechanisms related only by analogy, not identity: 'There are two well-known
+          styles of signature matching, which we call structural and nominal... Such declarations are
+          often tied to a naming mechanism for modules and signatures... (This distinction exactly mirrors
+          the distinction between structural and nominal subtype relations discussed in TAPL, §19.3.)'
+          The word 'mirrors' marks this as a parallel phenomenon in a different part of the type system
+          (module interfaces, not FJ/Java-style class subtyping), not a restatement of the same relation.
+          Using it as direct supporting evidence for a feature whose summary and realizes-targets ('subtyping',
+          'type-equivalence') are framed at the level of ordinary types risks silently widening the feature's
+          scope to also cover module-signature matching, a distinct mechanism Pierce treats separately
+          (ATTAPL ch. 8-9) with its own definitions. If the KB intends 'nominal-typing' to cover both
+          phenomena, that should be stated in the summary/scope rather than left implicit via a citation
+          that itself flags the two as merely analogous."
+        evidence:
+          - source: pierce-attapl-2004
+            locator: §8.2
+            chunk_id: pierce-attapl-2004#c00459
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Both challenges are correct, and I concede them.\n\n**On `realizes: ['subtyping', 'type-equivalence']`:**
+      The type theorist is right. [pierce-tapl-2002#c00525] and [#c00527] (confirmed above by reading
+      the full §19.3 span, including [#c00524], [#c00526], [#c00528], [#c00529]) talk exclusively about
+      the *subtype* relation being name-based (\"The subtype relation is now defined between type names...\"\
+      , \"checking whether one type is a subtype of another becomes almost trivial\"). Nothing in §19.3
+      defines or even mentions a type-equivalence relation; the one passage about name-interchangeability
+      ([#c00524]) is explicitly the *structural* case, which cuts against nominal-typing, not for it.
+      Pierce's formal `S ≡ T` equivalence relation lives in an unrelated chapter (type operators/higher
+      kinds) with no stated connection to nominal/structural naming. The ATTAPL chunk mentions type equivalence
+      only inside its definition of signature *implementation* (basic module M implements signature I
+      \"up to type equivalence\" — [pierce-attapl-2004#c00457]/[#c00458]), which is a module-system notion,
+      not evidence that nominal *subtyping* realizes type-equivalence generally. I have no cited source
+      tying nominal-typing to type-equivalence. **Amend `realizes` to `['subtyping']` only**, dropping
+      `type-equivalence`.\n\n**On the ATTAPL citation's scope:** The working language implementer is also
+      right. [pierce-attapl-2004#c00459] is explicit that structural/nominal *signature matching* \"mirrors\"\
+      \ the TAPL §19.3 subtyping distinction — mirroring, not identity. Pierce treats module-signature
+      matching as its own mechanism with its own definitions (§8.2, continuing through [#c00460]–[#c00463]
+      on principal signatures, matching rules, etc.), separate from FJ/Java-style class subtyping. Citing
+      it as direct support for a feature whose summary and `realizes` targets are framed at the level
+      of ordinary-type subtyping does risk silently widening scope to cover module signatures too, which
+      is a materially different mechanism (different matching rules, different literature, different §8.2
+      vs §19.3 formal treatment).\n\nI'd rather narrow than overclaim: **drop the ATTAPL citation as evidence
+      for this carve**, or, if the developer wants the KB to deliberately generalize \"nominal\" across
+      both ordinary subtyping and module-signature matching as one cross-cutting discipline, that generalization
+      should be stated explicitly in the summary (e.g. \"...applies to Java-style class subtyping and,
+      by analogy, to ML-style module signature matching\") rather than smuggled in via a citation that
+      itself calls the relation an analogy. Absent that explicit scope decision, the safer carve is: evidence
+      = the two pierce-tapl-2002 §19.3 chunks only, `realizes: ['subtyping']`, summary unchanged (it's
+      already correctly scoped to subtyping/type-equivalence declaration, matching Java).\n\nNet effect:
+      the carve's core claim — nominal typing as a distinct, named, Java-style discipline opposing structural
+      typing, evidenced by TAPL §19.3 — stands. The two over-reaches (the type-equivalence realizes-target,
+      and treating the ATTAPL module-matching passage as same-mechanism evidence) should both be corrected
+      as above."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges land and the proposer concedes both with specific textual support, so this
+      is a clean revision rather than a dispute needing escalation. (1) missing-source: the cited §19.3
+      chunks ([pierce-tapl-2002#c00525], [#c00527]) and the surrounding span discuss only the subtype
+      relation; nothing in §19.3 defines or ties nominal naming to type-equivalence, and the one name-interchangeability
+      remark in that section is explicitly about the structural case. Pierce's formal S≡T equivalence
+      relation is introduced in an unrelated chapter (type operators/higher kinds) with no stated link
+      to nominal/structural naming. The ATTAPL evidence mentions equivalence only inside module-signature
+      \"implements\" semantics, not as support for nominal subtyping generally realizing type-equivalence.
+      So `type-equivalence` must be dropped from `realizes`, leaving `['subtyping']`, which is fully licensed
+      by the cited text. (2) scope: the ATTAPL chunk itself frames nominal/structural signature matching
+      as \"mirroring\" §19.3's subtyping distinction — explicitly an analogy between two separate mechanisms
+      (module signatures vs. class subtyping), not identity. Using it as direct evidence for a feature
+      summarized and realizes-scoped at the level of ordinary-type subtyping risks silently widening the
+      carve's scope to module systems, which the source itself declines to equate. Since the carve's summary
+      is not being changed to explicitly generalize across both phenomena, the safer move (as the proposer
+      herself recommends) is to drop the ATTAPL citation from this carve's evidence, leaving only the
+      two pierce-tapl-2002 §19.3 chunks, which the challenger-b/proposer exchange confirms both resolve
+      to genuine, on-point text. The carve's core claim — nominal typing as a Java-style, name-based discipline
+      opposing structural typing per TAPL §19.3 — is well-evidenced and converges across two independent
+      textbook lineages (Pierce, and the proposer's uncited PLAI corroboration), so `keep`-the-core /
+      revise-the-edges is right; no basis for drop, split, merge, or escalate."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - scope
+  rationale: "Both challenges land and the proposer concedes both with specific textual support, so this
+    is a clean revision rather than a dispute needing escalation. (1) missing-source: the cited §19.3
+    chunks ([pierce-tapl-2002#c00525], [#c00527]) and the surrounding span discuss only the subtype relation;
+    nothing in §19.3 defines or ties nominal naming to type-equivalence, and the one name-interchangeability
+    remark in that section is explicitly about the structural case. Pierce's formal S≡T equivalence relation
+    is introduced in an unrelated chapter (type operators/higher kinds) with no stated link to nominal/structural
+    naming. The ATTAPL evidence mentions equivalence only inside module-signature \"implements\" semantics,
+    not as support for nominal subtyping generally realizing type-equivalence. So `type-equivalence` must
+    be dropped from `realizes`, leaving `['subtyping']`, which is fully licensed by the cited text. (2)
+    scope: the ATTAPL chunk itself frames nominal/structural signature matching as \"mirroring\" §19.3's
+    subtyping distinction — explicitly an analogy between two separate mechanisms (module signatures vs.
+    class subtyping), not identity. Using it as direct evidence for a feature summarized and realizes-scoped
+    at the level of ordinary-type subtyping risks silently widening the carve's scope to module systems,
+    which the source itself declines to equate. Since the carve's summary is not being changed to explicitly
+    generalize across both phenomena, the safer move (as the proposer herself recommends) is to drop the
+    ATTAPL citation from this carve's evidence, leaving only the two pierce-tapl-2002 §19.3 chunks, which
+    the challenger-b/proposer exchange confirms both resolve to genuine, on-point text. The carve's core
+    claim — nominal typing as a Java-style, name-based discipline opposing structural typing per TAPL
+    §19.3 — is well-evidenced and converges across two independent textbook lineages (Pierce, and the
+    proposer's uncited PLAI corroboration), so `keep`-the-core / revise-the-edges is right; no basis for
+    drop, split, merge, or escalate."
+  revision:
+    realizes:
+      - subtyping
