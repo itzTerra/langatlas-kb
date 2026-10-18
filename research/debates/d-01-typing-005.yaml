@@ -1,0 +1,246 @@
+id: d-01-typing-005
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: existential-types
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-existential-types-02
+  moderator: 2026-10-17-r4-moderator-01-typing-existential-types-02
+triggers:
+  - merged-candidates
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: existential-types
+  from_candidates:
+    - existential-types
+    - abstract-data-type-via-existentials
+  kind: concept
+  id: existential-types
+  name: Existential Types
+  summary: A type formed by pairing a hidden representation type with operations on it, giving 
+    formal grounding to data abstraction and information hiding as found in abstract data types and 
+    modules.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §24.1
+      chunk_id: pierce-tapl-2002#c00777
+      quote: a value {*S,t} of type {$X,T} as a simple form of package or module with one (hidden) 
+        type component and one term component
+    - source: pierce-tapl-2002
+      locator: p. 350
+      chunk_id: pierce-tapl-2002#c00786
+      quote: the typing rules for existential packages ensure that the rest of the program cannot 
+        depend on the ADT's internal representation
+    - source: cardelli-wegner-1985
+      locator: §4.2
+      chunk_id: cardelli-wegner-1985#c00058
+  contested:
+    - merged-candidates
+  debate_id:
+  status: proposed
+  verification:
+  note: Merged the survey's abstract-data-type-via-existentials candidate into this node since both 
+    describe the same construct at different levels of abstraction, not two distinct things.
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Defending the merge as a single concept node.**\n\nThe carve claims that \"existential-types\"\
+      \ and the survey's \"abstract-data-type-via-existentials\" candidate are the same construct described
+      at two levels of abstraction, not two distinct concepts. The corpus overwhelmingly supports this
+      — every source that treats existential types treats ADT-via-existentials as *the same formal device*,
+      not a sibling idea:\n\n- Harper states it most directly: \"Data abstraction may be formalized by
+      extending the language F with existential types. Interfaces are modelled as existential types that
+      provide a collection of operations acting on an unspecified, or abstract, type. Implementations
+      are modelled as packages... It is remarkable that the programming concept of data abstraction is
+      modelled so naturally and directly by the logical concept of existential type quantification.\"\
+      \ [harper-pfpl#c00277]. This is not \"two related concepts\" — it is one formal mechanism (existentials)
+      *being* the model of the programming concept (data abstraction/ADTs).\n\n- Pierce frames the whole
+      chapter this way from its opening line: existential quantifiers \"offer[] an elegant foundation
+      for data abstraction and information hiding\" [pierce-tapl-2002#c00775], and his worked example
+      literally names the existential package `counterADT` and walks through translating ADT pseudocode
+      \"almost symbol for symbol into our calculus with existentials\" [pierce-tapl-2002#c00784]. The
+      cited evidence in the carve itself ([pierce-tapl-2002#c00777], [c00786]) makes the same identification:
+      a value of existential type \"simple form of package or module,\" and the typing rules \"ensure
+      that the rest of the program cannot depend on the ADT's internal representation\" — ADT and existential
+      package are used interchangeably in the same sentence.\n\n- Cardelli & Wegner's own section title
+      is \"Existential Quantification and Information Hiding,\" and their text says plainly: \"the real
+      usefulness of existential types becomes apparent only when we realize that ∃a. a×(a→Int) is a simple
+      example of an abstract type packaged with its set of operations\" [cardelli-wegner-1985#c00058],
+      then: \"the type representation... corresponds to the hidden data type associated with a data abstraction\"\
+      \ [c00059]. Again, no daylight between the two — the existential *is* the ADT's formal rendering.\n\
+      \n- Turbak & Gifford's independent treatment uses the identical framing: a package is \"a value
+      that implements an abstract type,\" and \"(packof exist ...)\" is read as positing \"there exists
+      a concrete point representation type... such that there are [operation] procedures\" [turbak-gifford-dcpl#c01304/c01305]
+      — same construct, same informal gloss as \"abstract type,\" just different notation.\n\nNo source
+      in the corpus treats \"ADT via existentials\" as having independent typing rules, a separate introduction/elimination
+      form, or distinct formal content from existential types. The two candidate labels name the *same*
+      type-formation rule — one names it by its logical shape (existential quantification over a hidden
+      witness type), the other by its programming-language purpose (giving ADTs/modules a formal ground).
+      That is exactly the \"same construct at different levels of abstraction\" the note describes, and
+      it's exactly the case in which a merge is the right carve: splitting them would create two nodes
+      with identical typing rules, identical evidence, and no independent content for either — fiat duplication
+      the ontology shouldn't encode.\n\nOne caveat worth flagging rather than hiding: Harper separately
+      notes that existentials are *derivable from* universal quantification (\"existentials are definable
+      from universals — surprisingly, data abstraction is actually just a form of polymorphism!\" [harper-pfpl#c00277]).
+      That's a reason existential-types might eventually also relate to a universal/parametric-polymorphism
+      node by an `enables`/`requires`-style edge — but it's an argument for *more edges*, not for un-merging
+      the ADT candidate, since that reducibility claim is about existentials-vs-universals, not about
+      existentials-vs-ADTs. The merge under debate is correctly scoped and the summary's \"giving formal
+      grounding to data abstraction and information hiding as found in abstract data types and modules\"\
+      \ accurately reflects the source consensus. I'd keep the carve as drafted.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The merge is well-supported and I find no sound challenge to raise.\n\nFour independent sources
+      converge on treating \"existential types\" and \"ADT via existentials\" as the same formal device
+      rather than two distinct constructs: Pierce frames the whole chapter around this identification
+      and names his worked example `counterADT`, explicitly built from the existential introduction/elimination
+      forms [pierce-tapl-2002#c00775, #c00784, #c00786]; Harper states directly that \"data abstraction
+      may be formalized by extending the language F with existential types... implementations are modelled
+      as packages, the introductory form for existentials\" [harper-pfpl#c00277]; Cardelli & Wegner's
+      abstract itself collapses them (\"existential quantification and packaging (information hiding)
+      to model abstract data types\") and their worked Ada-`private`-type example translates the package
+      directly into an existential type with no separate formal apparatus [cardelli-wegner-1985#c00002,
+      #c00065]; and Turbak & Gifford's bibliographic notes treat \"existential types\" and \"data abstraction
+      via existentials\" as literally the same citation lineage (Mitchell & Plotkin), noting existentials
+      \"do not actually add any power to a language with universal polymorphism\" as a property of the
+      single mechanism, not a comparison between two mechanisms [turbak-gifford-dcpl#c01364].\n\nI checked
+      for the two likeliest counter-moves and neither holds up:\n- A wrong-layer objection (concept-level
+      existential-types vs. feature-level ADT/module) doesn't survive contact with the sources: even where
+      a source structurally separates \"Existential Types\" from \"Data Abstraction\" as subsections (Harper's
+      chapter 18: 18.1 Existential Types, 18.2 Data Abstraction), the text spanning that boundary explicitly
+      says the subsection split is expository, not a split in formal content — \"the programming concept
+      of data abstraction is modelled so naturally and directly by the logical concept of existential
+      type quantification\" [harper-pfpl#c00277]. The carve's summary already reflects this by naming
+      ADTs/modules as the found-in instances of the one concept, so nothing is being flattened that the
+      ontology's concept/feature layers would otherwise need to keep apart.\n- A wrong-structure objection
+      (existentials being derivable from universals implying a hidden second concept) is the proposer's
+      own caveat, and it's correctly scoped as a future edge to a *different* node (universal/parametric
+      polymorphism), not a reason to split the ADT candidate back out — Harper's reducibility remark [harper-pfpl#c00277]
+      and Turbak & Gifford's note [turbak-gifford-dcpl#c01364] are about existentials-vs-universals, not
+      existentials-vs-ADTs.\n\nNo source gives ADT-via-existentials independent typing rules or a separate
+      introduction/elimination form, which is the evidentiary bar a split would need to clear. The merge
+      is sound as drafted."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The merge itself is well-supported — Harper, Pierce, Cardelli & Wegner, and Turbak & Gifford
+      all treat existential types and \"ADT-via-existentials\" as the same formal device at different
+      naming levels, exactly as the proposer argues. I'm not challenging the merge decision. But the resulting
+      node's summary overshoots the evidence on one point.\n\nThe summary states the node gives \"formal
+      grounding to data abstraction and information hiding as found in abstract data types and modules\"\
+      \ — explicitly folding ML-style modules into the same node as simple ADTs. The corpus is explicit
+      that this is too strong a scope claim: Pierce's own chapter closes by distinguishing the two cases
+      — \"We have seen how existential types offer natural type-theoretic foundations for a simple form
+      of abstract data types. To account for the (related, but much more powerful) module systems found
+      in languages like ML, a variety of more sophisticated mechanisms have been studied\" [pierce-tapl-2002#c00806].
+      ATTAPL is even more direct that the fit to modules is not real: \"the relationship to existentials
+      is more analogical than technically accurate... existentials do not support dot notation for existential
+      types... and so do not offer a fully satisfactory foundation for module systems\" [pierce-attapl-2004#c00473].\n\
+      \nSo while merging the ADT candidate into existential-types is sound (same construct, same typing
+      rules), writing \"modules\" into the summary's scope claims formal grounding the sources deny —
+      ML-style modules are covered by a distinct, more powerful mechanism (translucent/opaque signatures,
+      sealing, phase distinction) discussed in a different chapter (ATTAPL §8.5) with its own typing apparatus.
+      That mechanism isn't in this merge's evidence set at all. The summary should restrict its claim
+      to data abstraction/ADTs, or the node risks silently absorbing module-system content that the corpus
+      treats as a separate, unmerged topic."
+    challenges:
+      - type: scope
+        text: "The node's summary claims existential types give formal grounding to data abstraction \"\
+          as found in abstract data types and modules,\" but Pierce explicitly separates these: existentials
+          ground \"a simple form of abstract data types,\" while ML-style module systems are \"related,
+          but much more powerful\" and require different, more sophisticated mechanisms. ATTAPL goes further,
+          calling the existential/module relationship \"analogical\" rather than \"technically accurate,\"\
+          \ noting existentials lack dot notation and so don't give \"a fully satisfactory foundation
+          for module systems.\" The merge of the two ADT-existential candidates is sound, but the summary's
+          inclusion of \"modules\" claims scope the cited sources deny."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §24.4
+            chunk_id: pierce-tapl-2002#c00806
+            quote: We have seen how existential types offer natural type-theoretic foundations for a
+              simple form of abstract data types. To account for the (related, but much more 
+              powerful) module systems found in languages like ML, a variety of more sophisticated 
+              mechanisms have been studied.
+          - source: pierce-attapl-2004
+            locator: §8.5
+            chunk_id: pierce-attapl-2004#c00473
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede the scope challenge. The cited evidence is direct and unambiguous: Pierce (TAPL §24.4,
+      pierce-tapl-2002#c00806) states that existentials \"offer natural type-theoretic foundations for
+      a simple form of abstract data types,\" then explicitly contrasts this with \"the (related, but
+      much more powerful) module systems found in languages like ML,\" which require \"a variety of more
+      sophisticated mechanisms\" — i.e., a different formal apparatus, not existentials. ATTAPL §8.5 (pierce-attapl-2004#c00473)
+      sharpens this further: ML-style translucent signatures are merely \"similar to existential types,\"\
+      \ and \"the relationship to existentials is more analogical than technically accurate,\" specifically
+      because existentials lack dot notation and so \"do not offer a fully satisfactory foundation for
+      module systems.\" The companion chunk (#c00477) goes on to show ATTAPL's own module formalization
+      deliberately departs from the existential framework (open-scope vs. closed-scope abstraction) precisely
+      because existentials don't scale to modules.\n\nThis directly contradicts the carve's summary claim
+      that existential types give \"formal grounding to data abstraction... as found in abstract data
+      types and modules.\" The sources support grounding ADTs, not modules — the module relationship is
+      explicitly flagged as informal/analogical, not a formalization existentials provide.\n\nThe merge
+      of the two candidates (existential-types + abstract-data-type-via-existentials) remains sound —
+      both evidenced chunks (pierce-tapl-2002#c00777, #c00786) describe the same ADT-via-existentials
+      construct at different levels, and that merge isn't in dispute. The fix is narrower than rejecting
+      the carve: amend the summary to drop \"and modules\" (or rephrase to something like \"...as found
+      in abstract data types, with only an analogical, non-foundational connection to ML-style module
+      systems\"), and keep the id/key/evidence otherwise as drafted. I'd propose: summary → \"A type formed
+      by pairing a hidden representation type with operations on it, giving formal grounding to data abstraction
+      and information hiding as found in abstract data types; the connection often drawn to ML-style module
+      systems is analogical rather than a full formal foundation (Pierce TAPL §24.4; ATTAPL §8.5).\""
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The merge itself (existential-types + abstract-data-type-via-existentials) is solidly supported:
+      Harper, Pierce, Cardelli & Wegner, and Turbak & Gifford all treat existential quantification and
+      ADT-via-existentials as the same formal device described at different naming levels, with no source
+      giving the ADT candidate independent typing rules or introduction/elimination forms. That part of
+      the carve stands.\n\nThe scope challenge is upheld, however. The drafted summary claims existential
+      types give formal grounding to data abstraction/information hiding \"as found in abstract data types
+      and modules.\" Pierce (TAPL §24.4, pierce-tapl-2002#c00806) explicitly limits the existential foundation
+      to \"a simple form of abstract data types\" and distinguishes ML-style module systems as \"related,
+      but much more powerful,\" requiring different mechanisms. ATTAPL §8.5 (pierce-attapl-2004#c00473)
+      goes further, calling the existential/module relationship \"analogical... rather than technically
+      accurate\" specifically because existentials lack dot notation and so do not give \"a fully satisfactory
+      foundation for module systems.\" The proposer conceded this directly. No evidence in the carve's
+      own citation set covers module systems, so including \"modules\" in the scope claim overshoots what
+      the cited sources support.\n\nRevising the summary to confine the formal-grounding claim to ADTs
+      and flag the module connection as analogical resolves the challenge without disturbing the merge,
+      key, id, or evidence list."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 1
+  upheld_challenges:
+    - scope
+  rationale: "The merge itself (existential-types + abstract-data-type-via-existentials) is solidly supported:
+    Harper, Pierce, Cardelli & Wegner, and Turbak & Gifford all treat existential quantification and ADT-via-existentials
+    as the same formal device described at different naming levels, with no source giving the ADT candidate
+    independent typing rules or introduction/elimination forms. That part of the carve stands.\n\nThe
+    scope challenge is upheld, however. The drafted summary claims existential types give formal grounding
+    to data abstraction/information hiding \"as found in abstract data types and modules.\" Pierce (TAPL
+    §24.4, pierce-tapl-2002#c00806) explicitly limits the existential foundation to \"a simple form of
+    abstract data types\" and distinguishes ML-style module systems as \"related, but much more powerful,\"\
+    \ requiring different mechanisms. ATTAPL §8.5 (pierce-attapl-2004#c00473) goes further, calling the
+    existential/module relationship \"analogical... rather than technically accurate\" specifically because
+    existentials lack dot notation and so do not give \"a fully satisfactory foundation for module systems.\"\
+    \ The proposer conceded this directly. No evidence in the carve's own citation set covers module systems,
+    so including \"modules\" in the scope claim overshoots what the cited sources support.\n\nRevising
+    the summary to confine the formal-grounding claim to ADTs and flag the module connection as analogical
+    resolves the challenge without disturbing the merge, key, id, or evidence list."
+  revision:
+    summary: A type formed by pairing a hidden representation type with operations on it, giving 
+      formal grounding to data abstraction and information hiding as found in abstract data types. 
+      The connection often drawn to ML-style module systems is analogical rather than a full formal 
+      foundation (Pierce TAPL §24.4; ATTAPL §8.5).
