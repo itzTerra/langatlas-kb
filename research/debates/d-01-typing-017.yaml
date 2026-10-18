@@ -1,0 +1,257 @@
+id: d-01-typing-017
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: subtype-polymorphism
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-subtype-polymorphism-01
+  moderator: 2026-10-17-r4-moderator-01-typing-subtype-polymorphism-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: subtype-polymorphism
+  from_candidates:
+    - subtype-polymorphism
+  kind: feature
+  id: subtype-polymorphism
+  name: Subtype Polymorphism (Inclusion Polymorphism)
+  summary: Polymorphism where a value of a subtype can be used wherever a value of a non-disjoint 
+    supertype is expected, via the rule of subsumption.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §23.2
+      chunk_id: pierce-tapl-2002#c00728
+    - source: sebesta-copl
+      locator: §9.10
+      chunk_id: sebesta-copl#c00758
+      quote: Subtype polymorphism means that a variable of type T can access any object of type T or
+        any type derived from T.
+  contested:
+    - new-dimension
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-dfbba61695c2
+    verdict: verified
+    admissible: true
+    pairs: 2
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: Third value of the polymorphism-variety axis; exclusivity is multi because sources 
+    explicitly note languages mix varieties (e.g. Java has subtyping+overloading, ML has 
+    parametric+overloading).
+  dimension: polymorphism-variety
+  cross_cutting: false
+  aliases:
+    - inclusion polymorphism
+  realizes:
+    - polymorphism
+    - subtyping
+  layer: 3
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `subtype-polymorphism`**\n\nThis carve is well-supported and should stand
+      as drafted.\n\n**1. It names a distinct, canonically-recognized variety of polymorphism, not an
+      ad-hoc label.**\nCardelli & Wegner (1985) — the foundational taxonomy this whole `polymorphism-variety`
+      dimension is implicitly built on — define exactly this category under the name \"inclusion polymorphism\"\
+      : \"In inclusion polymorphism an object can be viewed as belonging to many different classes which
+      need not be disjoint, i.e. there may be inclusion of classes\" [cardelli-wegner-1985#c00012], contrasted
+      explicitly with parametric polymorphism as the two subcategories of *universal* polymorphism, both
+      opposed to ad-hoc polymorphism [cardelli-wegner-1985#c00011]. The carve's `aliases: ['inclusion
+      polymorphism']` is therefore not decorative — it's the term's own canonical origin, and the carve's
+      summary (\"via the rule of subsumption\") matches Pierce directly: \"The subtype polymorphism of
+      Chapter 15 gives a single term many types using the rule of subsumption\" [pierce-tapl-2002#c00728].\n\
+      \n**2. The \"non-disjoint supertype\" phrasing in the summary is textually grounded, not an invention.**\n\
+      Cardelli & Wegner's own definition hinges on non-disjointness (\"classes which need not be disjoint\"\
+      ) [cardelli-wegner-1985#c00012], and their worked example makes the subsumption rule concrete: \"\
+      Every object of a subtype can be used in a supertype context... every Toyota is a vehicle and can
+      be operated on by all operations that are applicable to vehicles\" [cardelli-wegner-1985#c00019].
+      Sebesta's gloss, already cited in the carve, gives the same idea in practitioner language [sebesta-copl#c00758].\n\
+      \n**3. The `multi`-exclusivity note is directly evidenced, not editorializing.**\nPierce states
+      explicitly: \"These categories are not exclusive: different forms of polymorphism can be mixed in
+      the same language. For example, Standard ML offers both parametric polymorphism and simple overloading...
+      while Java includes subtyping, overloading, and simple ad-hoc polymorphism (instanceof), but not...
+      parametric polymorphism\" [pierce-tapl-2002#c00728]. This is the exact ML/Java pairing the carve's
+      note cites — the note is lifted almost verbatim from the source, not asserted independently.\n\n\
+      **4. Placing it as a third value on a `polymorphism-variety` dimension (alongside parametric and
+      ad-hoc/overloading) matches the sources' own structure.**\nBoth Cardelli & Wegner's Figure 1 taxonomy
+      [cardelli-wegner-1985#c00011] and Pierce's §23.2 [pierce-tapl-2002#c00726, #c00728] organize the
+      space as parametric / ad-hoc(overloading) / inclusion(subtype), which is precisely the three-way
+      axis this carve instantiates. This isn't a novel cut invented for the ontology — it's reproducing
+      the field's own standard classification, which is exactly the kind of carve that should survive
+      debate even when flagged `new-dimension`.\n\n**5. `realizes: ['polymorphism', 'subtyping']` is correct
+      and necessary.**\nPierce calls subtyping itself \"sometimes called subtype polymorphism\" [pierce-tapl-2002#c00382],
+      and Cardelli & Wegner call subtyping \"an instance of inclusion polymorphism\" [cardelli-wegner-1985#c00016]
+      — so the feature is definitionally the polymorphism-side view of the subtyping relation, justifying
+      the dual `realizes` link.\n\nI'd defend the carve as-is. The one thing I'd flag for amendment pre-emptively:
+      Pierce separately notes subtyping is \"a cross-cutting extension, interacting with most other language
+      features in non-trivial ways\" [pierce-tapl-2002#c00382], which could be read as tension with `cross_cutting:
+      False`. I'd argue that note is about *subtyping as a type-system feature* interacting with other
+      typing constructs (records, functions, etc. within Ch. 15), not about *subtype polymorphism as a
+      point on the polymorphism-variety axis* interacting with unrelated ontology dimensions — the two
+      are different scopes, so `cross_cutting: False` on this axis-value carve is still defensible. But
+      I'll yield that point if a challenger reads it differently."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve is sound; I raise no challenges.\n\nThe sources check out on every point the proposer
+      made. Cardelli & Wegner's Figure 1 taxonomy explicitly introduces \"inclusion polymorphism\" as
+      one of the two subcategories of universal polymorphism (alongside parametric), opposed to ad-hoc
+      polymorphism [cardelli-wegner-1985#c00011, #c00012] — so this is not an invented cut but a direct
+      reproduction of the field's own canonical three-way classification, which Pierce §23.2 reproduces
+      in the same shape [pierce-tapl-2002#c00728]. The \"non-disjoint supertype\" language in the summary
+      tracks Cardelli & Wegner's own definition (\"classes which need not be disjoint\") and their worked
+      Toyota/Vehicle example of subsumption [cardelli-wegner-1985#c00012, #c00019], and Pierce's \"rule
+      of subsumption\" phrasing is quoted verbatim [pierce-tapl-2002#c00728]. The `multi`-exclusivity
+      note is lifted almost directly from Pierce's ML/Java passage in the same chunk, not asserted independently.
+      The dual `realizes: ['polymorphism', 'subtyping']` is also textually anchored twice over — Pierce
+      calls subtyping \"sometimes called subtype polymorphism\" [pierce-tapl-2002#c00382] and Cardelli
+      & Wegner state flatly \"Subtyping is an instance of inclusion polymorphism\" [cardelli-wegner-1985#c00015]
+      — so the feature legitimately sits at the intersection of both concepts rather than arbitrarily
+      claiming two unrelated parents.\n\nOn the one point the proposer flagged for themselves (Pierce's
+      \"cross-cutting extension\" remark, [pierce-tapl-2002#c00382]), I agree with their read: that passage
+      characterizes subtyping-as-type-system-feature interacting with records/functions/recursive-types/parametric-polymorphism
+      within TAPL's own chapter structure (confirmed by the §15.5 cross-reference to later chapters on
+      those interactions [pierce-tapl-2002#c00408]), not the polymorphism-variety axis-value this carve
+      represents. It doesn't contradict `cross_cutting: False` at this carve's intended scope.\n\nI don't
+      see a wrong-atomization, wrong-layer, wrong-structure, missing-source, redundant-with, or scope
+      problem here that survives contact with the cited passages, so I'm not manufacturing one. This is
+      a case where the `new-dimension` flag triggered debate appropriately, but the debate confirms the
+      carve rather than undermining it."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is well-supported on its central claims: Cardelli & Wegner's inclusion-polymorphism
+      taxonomy and Pierce §23.2's three-way (parametric/ad-hoc/subtype) split of the polymorphism-variety
+      axis are reproduced accurately, the ML/Java multi-exclusivity note is near-verbatim from pierce-tapl-2002#c00728,
+      and the \"non-disjoint supertype\" + subsumption framing matches cardelli-wegner-1985#c00012/#c00019
+      and pierce-tapl-2002#c00728 directly. I have one structural objection, which the proposer itself
+      flagged and tried to pre-empt but did not actually resolve.\n\nThe proposer's rebuttal to the cross_cutting
+      tension invents a scope split (\"subtyping as a type-system feature\" vs. \"subtype polymorphism
+      as a point on the polymorphism-variety axis\") that the cited source does not support. Pierce introduces
+      the cross-cutting claim in the very sentence that names the thing: \"this chapter addresses a more
+      fundamental extension: subtyping (sometimes called subtype polymorphism). Unlike the features we
+      have studied up to now, which could be formulated more or less orthogonally to each other, subtyping
+      is a cross-cutting extension, interacting with most other language features in non-trivial ways\"\
+      \ [pierce-tapl-2002#c00382]. Pierce treats \"subtyping\" and \"subtype polymorphism\" as the same
+      referent (parenthetical gloss, not two scoped concepts), and ascribes cross-cutting behavior to
+      that referent as such — not to some narrower \"subtyping-within-Ch.15\" sense that excludes its
+      polymorphism-axis reading. The carve's own `realizes: ['polymorphism', 'subtyping']` field cements
+      that identity by linking the two, which is exactly why the proposer felt obliged to invent a scope
+      distinction in the first place.\n\nThis isn't really a case for \"the carve should be cross_cutting:
+      True instead\" — the axis-value framing (one slot among parametric/ad-hoc/subtype on `polymorphism-variety`)
+      is itself a reasonable and source-matching carve, and cross-cutting-ness is a property of how a
+      feature interacts outward, not of which dimension enumerates it. The real problem is that the ontology's
+      `cross_cutting` field is a single boolean per node, with no slot for \"this feature is cross-cutting
+      under the type-system-mechanism reading that the source actually gives it, but we're modeling it
+      here as a flat enumerated axis-value and suppressing that reading because the axis container doesn't
+      accommodate it.\" The source gives one referent one cross-cutting fact; the ontology structure forces
+      a binary choice that doesn't fit how Pierce actually used the term, and the carve's note field has
+      no mechanism to record the qualification the proposer had to supply ad hoc in debate rather than
+      in the record."
+    challenges:
+      - type: wrong-structure
+        text: "Pierce names the cross-cutting extension \"subtyping (sometimes called subtype polymorphism)\"\
+          \ in the same breath he asserts its cross-cutting character, i.e. the source attributes cross-cutting-ness
+          to the very referent this carve models as a flat polymorphism-variety axis value with realizes:
+          ['subtyping']. The ontology's single boolean cross_cutting field has no way to represent that
+          the source's cross-cutting claim applies to the referent under its type-system-mechanism aspect
+          while the carve needs to assert non-cross-cutting under its axis-value aspect — the proposer
+          had to invent that scope split outside the record (in debate prose) because the schema gives
+          no field to encode it, which is itself the misfit."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: p. 175
+            chunk_id: pierce-tapl-2002#c00382
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Defending the carve, with one clarification of scope rather than a schema fix.\n\nThe challenge's
+      premise is that Pierce \"attributes cross-cutting-ness to the very referent this carve models,\"\
+      \ forcing an undocumented aspect-split. That premise doesn't survive close reading of where each
+      claim actually sits in the source.\n\n1. The cross-cutting claim is made about a *different textual/conceptual
+      object* than the one this carve cites. [pierce-tapl-2002#c00382] (p.175) opens Chapter 15, introducing
+      subtyping as \"a more fundamental extension... [that] is a cross-cutting extension, interacting
+      with most other language features in non-trivial ways\" — i.e. the metatheoretic claim that *adding
+      the subtyping relation and subsumption rule to a calculus* forces every other typing rule (functions,
+      records, recursive types, bounded quantification per [pierce-tapl-2002#c00819], type operators)
+      to be revisited. That is a claim about subtyping-as-mechanism.\n\n2. This carve's own evidence,
+      §23.2 [pierce-tapl-2002#c00726]–[c00728], is a *different* discussion: a taxonomy of polymorphism
+      varieties (parametric / ad-hoc / subtype), explicitly framed as \"not exclusive... different forms
+      of polymorphism can be mixed in the same language\" [c00728]. Here Pierce is classifying how languages'
+      polymorphism support decomposes along an axis, not re-asserting the metatheoretic cross-cutting
+      claim from Ch.15. The carve's `dimension: polymorphism-variety` and its note about ML/Java mixing
+      varieties track *this* passage, not p.175.\n\n3. The record already has a field for the scope split
+      the challenger says is missing: node boundary plus the `realizes: ['subtyping']` edge. The ontology
+      doesn't need one boolean to carry two aspects of one referent, because it doesn't model one referent
+      — it models two linked nodes: `subtyping` (the type-system mechanism, where Ch.15's cross-cutting
+      claim belongs if it isn't already recorded there) and `subtype-polymorphism` (this node, the axis-value
+      under the polymorphism-variety classification from §23.2). `realizes` is exactly the in-schema mechanism
+      for saying \"this value is grounded in that mechanism without inheriting every property asserted
+      of it.\" That isn't an invention in debate prose; it's the carve as written.\n\nWhere I'll concede
+      something: if the `subtyping` node elsewhere lacks `cross_cutting: True` sourced to p.175, that's
+      a real gap — but it's a gap in *that* node's carve, not evidence this carve is mis-structured. I
+      don't have visibility into that node's current record in this debate, so I can't confirm or deny
+      it, but it doesn't bear on whether `subtype-polymorphism`'s own `cross_cutting: False` is wrong.\n\
+      \nSo: the carve should stand as a layer-3 feature keyed to the §23.2 taxonomy, `cross_cutting: False`
+      justified by [c00728]'s non-exclusivity point, with the mechanism-level cross-cutting claim properly
+      homed on the separate `subtyping` node via the existing `realizes` edge — not folded into this one.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The carve is well-sourced on every substantive point: Cardelli & Wegner's inclusion-polymorphism
+      taxonomy and Pierce §23.2's parametric/ad-hoc/subtype three-way split are reproduced accurately,
+      the \"non-disjoint supertype\"/subsumption summary tracks the sources' own wording, the multi-exclusivity
+      note is near-verbatim from Pierce's ML/Java passage, and the dual realizes edge is textually anchored
+      twice over (Pierce's \"sometimes called subtype polymorphism,\" Cardelli & Wegner's \"subtyping
+      is an instance of inclusion polymorphism\"). The one live objection — challenger-b's wrong-structure
+      challenge that the single boolean cross_cutting field can't hold two aspects of one referent (p.175's
+      cross-cutting claim vs. this carve's own cross_cutting:False) — does not survive the proposer's
+      rebuttal. The proposer correctly distinguishes the textual object of each claim: p.175's cross-cutting
+      assertion is Ch.15's opening metatheoretic claim about adding the subsumption rule to a calculus
+      and its effect on other typing constructs (functions, records, recursive types), whereas this carve's
+      own evidence ([c00726]-[c00728]) comes from the entirely separate §23.2 discussion classifying polymorphism
+      varieties along an axis. Those are different passages making different claims about potentially-the-same-referent-under-different-aspects,
+      and the ontology already has the structural mechanism the challenge says is missing: two distinct
+      nodes (subtyping, subtype-polymorphism) joined by a realizes edge, which is precisely how a dimension-axis-value
+      carve can be grounded in a mechanism node without inheriting every property asserted of that mechanism
+      elsewhere. No participant produced textual evidence that Pierce's §23.2 taxonomy passage itself
+      asserts cross-cutting-ness for the axis-value reading, so the challenge's premise (that the source
+      attributes cross-cutting-ness to \"the very referent this carve models\") is not established for
+      the referent as modeled here. The challenge is not upheld. The carve stands as drafted."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: false
+  rounds: 1
+  upheld_challenges: []
+  rationale: "The carve is well-sourced on every substantive point: Cardelli & Wegner's inclusion-polymorphism
+    taxonomy and Pierce §23.2's parametric/ad-hoc/subtype three-way split are reproduced accurately, the
+    \"non-disjoint supertype\"/subsumption summary tracks the sources' own wording, the multi-exclusivity
+    note is near-verbatim from Pierce's ML/Java passage, and the dual realizes edge is textually anchored
+    twice over (Pierce's \"sometimes called subtype polymorphism,\" Cardelli & Wegner's \"subtyping is
+    an instance of inclusion polymorphism\"). The one live objection — challenger-b's wrong-structure
+    challenge that the single boolean cross_cutting field can't hold two aspects of one referent (p.175's
+    cross-cutting claim vs. this carve's own cross_cutting:False) — does not survive the proposer's rebuttal.
+    The proposer correctly distinguishes the textual object of each claim: p.175's cross-cutting assertion
+    is Ch.15's opening metatheoretic claim about adding the subsumption rule to a calculus and its effect
+    on other typing constructs (functions, records, recursive types), whereas this carve's own evidence
+    ([c00726]-[c00728]) comes from the entirely separate §23.2 discussion classifying polymorphism varieties
+    along an axis. Those are different passages making different claims about potentially-the-same-referent-under-different-aspects,
+    and the ontology already has the structural mechanism the challenge says is missing: two distinct
+    nodes (subtyping, subtype-polymorphism) joined by a realizes edge, which is precisely how a dimension-axis-value
+    carve can be grounded in a mechanism node without inheriting every property asserted of that mechanism
+    elsewhere. No participant produced textual evidence that Pierce's §23.2 taxonomy passage itself asserts
+    cross-cutting-ness for the axis-value reading, so the challenge's premise (that the source attributes
+    cross-cutting-ness to \"the very referent this carve models\") is not established for the referent
+    as modeled here. The challenge is not upheld. The carve stands as drafted."
