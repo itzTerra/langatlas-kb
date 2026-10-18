@@ -1,0 +1,294 @@
+id: d-01-typing-010
+cycle: 1
+theme: typing
+target:
+  list: dimensions
+  key: static-dynamic-typing-discipline
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-static-dynamic-typing-discipline-01
+  moderator: 2026-10-17-r4-moderator-01-typing-static-dynamic-typing-discipline-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: static-dynamic-typing-discipline
+  slug: static-dynamic-typing-discipline
+  label: Static/Dynamic Typing Discipline
+  exclusivity: exclusive
+  applies_to:
+    - general-purpose
+  contested:
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: The classic axis of when type checking happens and how typed/untyped code may be combined, 
+    with static, dynamic, gradual, and hybrid typing as its four values.
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Case for `static-dynamic-typing-discipline`**\n\nThis axis is one of the most heavily attested
+      in the type-systems literature, and critically, the sources themselves push past a naive static/dynamic
+      binary toward exactly the four-way split the carve proposes.\n\n**The core binary is textbook-canonical.**
+      Van Roy & Haridi state the base distinction directly: \"In a dynamically-typed language, variables
+      can be bound to entities of any type, so in general their type is known only at run time. In a statically-typed
+      language... all variable types are known at compile time\" (vanroy-haridi-2003#c00236). Turbak &
+      Gifford formalize the same split via *when* checking happens — \"dynamic type checking\" vs. \"\
+      static type checking\" — and frame it as \"a source of great debate in the programming language
+      community\" (turbak-gifford-dcpl#c00958, #c00960), which is exactly the \"classic axis\" language
+      in the carve's note.\n\n**\"Gradual\" is not my invention but a named, independently-defined point
+      on this axis.** Krishnamurthi distinguishes it explicitly from both pure dynamic and pure static:
+      \"type systems have been built for many real-world dynamic languages... a property called gradual
+      typing: as the name suggests, you add types 'gradually' to the program\" (krishnamurthi-plai#c00239),
+      going on to split it further into micro vs. macro styles (krishnamurthi-plai#c00241–242) — strong
+      evidence this is a recognized discipline in its own right, not just \"static with optional annotations.\"\
+      \n\n**\"Hybrid\" is likewise independently named and defined, and distinctly from gradual.** Harper
+      is explicit: \"A hybrid language is one that combines static and dynamic typing by enriching a statically
+      typed language with a distinguished type, `dyn`... Static and dynamic types are not opposed to one
+      another, but may coexist harmoniously\" (harper-pfpl#c00361, #c00366). This is a different mechanism
+      from gradual typing's incremental annotation-migration story (sibling languages, import boundaries)
+      — it's a type-theoretic embedding of dynamism *inside* a static system (e.g., Java's reflection/downcasts
+      per turbak-gifford-dcpl#c00960; load-time checks).\n\n**Why `exclusive` over `applies_to: general-purpose`
+      holds up, not undermines the carve:** the obvious objection is \"real languages mix static and dynamic
+      checking, so how can this be exclusive?\" The sources answer this for us — Scott notes \"in the
+      strictest sense of the term, few languages are statically typed... the term is often applied to
+      languages in which most type checking can be performed at compile time, and the rest can be performed
+      at run time\" (scott-plp#c00397), and Turbak & Gifford flag Java as \"not easily classified\" (turbak-gifford-dcpl#c00960)
+      precisely because it mixes. The carve doesn't ignore this — it *resolves* it by giving mixing its
+      own first-class values (gradual, hybrid) rather than forcing every language into a pure static/dynamic
+      bucket. A language is assigned whichever of the four disciplines best characterizes its *design
+      commitment*, which is exactly how the sources themselves use these terms.\n\nThis is a well-sourced,
+      four-valued, mutually exclusive dimension with each value independently attested in the corpus.
+      I'd defend it as drafted.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The carve is well-sourced for three of its four values but the "exclusive, four-way" 
+      framing overreaches what the corpus actually supports, in two specific ways.
+    challenges:
+      - type: wrong-atomization
+        text: "The carve presents static, dynamic, gradual, and hybrid as four mutually exclusive peer
+          values of one discipline — but Harper's own chapter on this exact topic (the one the proposer
+          cites for 'hybrid') explicitly denies that static and dynamic typing are opposed, exclusive
+          alternatives at all. Harper §24.4 goes through the standard 'supposed distinctions' between
+          dynamic and static typing one by one and rejects each: 'Dynamic languages are just as surely
+          statically typed as static languages, albeit for a degenerate type system with only one type...
+          The difference is only the extent to which we must use classification: always in a dynamic language,
+          only as necessary in a static language' (harper-pfpl#c00371). This is the theoretical basis
+          for his hybrid-typing chapter, where he states directly that 'dynamic typing is a mode of use
+          of static typing' and 'Static and dynamic types are not opposed to one another, but may coexist
+          harmoniously' (harper-pfpl#c00361). That is a nesting/subsumption relationship (dynamic ⊂ static-with-one-type;
+          hybrid = static objectively containing dynamic as a mode), not four siblings partitioning a
+          space. Treating 'hybrid' as a fourth exclusive co-equal value alongside 'static' and 'dynamic'
+          bakes in exactly the opposition that this source — the proposer's own citation for the value
+          — argues against."
+        evidence:
+          - source: harper-pfpl
+            locator: §24.4
+            chunk_id: harper-pfpl#c00371
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+      - type: scope
+        text: The proposer argues the exclusive four-way split 'resolves' messy mixed languages like
+          Java by giving gradual and hybrid their own first-class values. But as technically defined
+          in the cited sources, neither value actually covers Java's pattern. Krishnamurthi's 
+          gradual typing is specifically either (a) per-variable annotation commingling in one 
+          language, or (b) a migration between two 'sibling' languages sharing a runtime, with 
+          explicit import-boundary type declarations (krishnamurthi-plai#c00241–242) — Java has 
+          neither. Harper's hybrid typing is specifically the type-theoretic embedding of a 
+          distinguished recursive-sum type `dyn` into a statically typed core (harper-pfpl#c00361) —
+          Java has no such type. Turbak & Gifford's own description of why Java resists 
+          classification cites load-time class checking, reflection, safe down-casts, and safe array
+          subtyping (turbak-gifford-dcpl#c00960) — none of which is gradual typing's 
+          sibling-migration story or hybrid typing's `dyn`-type embedding. So the 'exclusive' 
+          dimension, applied to `general-purpose`, has no value that actually fits a language the 
+          sources flag as a canonical hard case; the four-way split doesn't close the gap it's 
+          credited with closing.
+        evidence:
+          - source: turbak-gifford-dcpl
+            locator: §11.3.1
+            chunk_id: turbak-gifford-dcpl#c00960
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00242
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: The carve is largely well-sourced — the static/dynamic binary is textbook-canonical 
+      (vanroy-haridi-2003#c00236; turbak-gifford-dcpl#c00958), and gradual typing is independently 
+      named and defined (krishnamurthi-plai#c00239). But the fourth value, "hybrid," is not a peer 
+      discipline alongside "static" in the way the carve's `exclusive` flag requires — one of the 
+      carve's own cited sources treats it as a species of static typing, not a sibling of it.
+    challenges:
+      - type: wrong-atomization
+        text: "The carve lists `static` and `hybrid` as mutually exclusive sibling values of one axis,
+          but Harper's own account of hybrid typing — the very source the proposer cites to establish
+          the value — explicitly denies that hybrid is a parallel design discipline to static typing.
+          Harper states dynamic typing is 'but a mode of use of static typing, one in which dynamically
+          typed values are of type dyn, a particular recursive sum type' and that 'every dynamic language
+          is inherently a static language in which we confine ourselves to a (needlessly) restricted type
+          discipline to ensure safety' (harper-pfpl#c00346). The hybrid construction (HPCF) is presented
+          as literally PCF (a statically typed language) 'enriching' itself with one extra static type,
+          dyn (harper-pfpl#c00361, #c00362) — i.e. hybrid typing is, by this source's own theoretical
+          account, a special case of static typing with a recursive type, not a fourth exclusive discipline
+          standing apart from 'static' the way 'dynamic' and 'gradual' do. Treating 'static' and 'hybrid'
+          as mutually exclusive atoms therefore splits one mechanism (static typing with a dyn type) into
+          two sibling values across a level distinction the source is explicit about collapsing ('reconciling
+          an apparent opposition between them,' harper-pfpl#c00361). A language like Java, which the corpus
+          separately flags as 'not easily classified' as static or dynamic because of load-time/reflection/down-cast
+          checks (turbak-gifford-dcpl#c00960), is exactly the case this atomization can't resolve cleanly:
+          under Harper's theory it is simply a (richly) statically typed language, yet under the carve's
+          four-way exclusive split a curator must force it into either 'static' or 'hybrid' as if those
+          were disjoint design commitments rather than one being a refinement of the other."
+        evidence:
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: harper-pfpl
+            locator: §24.1
+            chunk_id: harper-pfpl#c00362
+          - source: turbak-gifford-dcpl
+            locator: §11.3.1
+            chunk_id: turbak-gifford-dcpl#c00960
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede the core of both challenges, on the evidence.\n\n**Wrong-atomization (type theorist
+      + implementer).** Both quote the same passage I'd cite for \"hybrid,\" harper-pfpl#c00361: \"Static
+      and dynamic types are not opposed to one another, but may coexist harmoniously... one may say that
+      dynamic typing is a mode of use of static typing.\" That's not hedging — Harper repeats it at #c00346/#c00399
+      (\"dynamic typing is but a mode of use of static typing, one in which dynamically typed values are
+      of type dyn, a particular recursive sum type\") and devotes §24.4 (#c00372) to rejecting the \"\
+      supposed distinctions\" one by one, concluding the opposition \"may be reconciled without loss of
+      expressiveness.\" His own construction, HPCF, is PCF — a static language — with one additional type,
+      dyn (#c00361/#c00399). That is textbook subsumption (dynamic ⊆ static-with-one-type; hybrid = static-with-a-dyn-type),
+      not four siblings partitioning a space. I drafted \"hybrid\" as a fourth exclusive peer precisely
+      because Harper's chapter title made it look like a parallel discipline; the challengers are right
+      that the chapter's actual thesis is the opposite of that framing, and I can't defend citing Harper
+      for a value while ignoring what Harper says the value *is*.\n\n**Scope (type theorist).** The follow-on
+      evidence also holds up. Krishnamurthi's gradual typing is either micro (per-variable annotations
+      commingled in one language, #c00241) or macro (import-boundary migration between sibling languages,
+      #c00241–242) — a real technical commitment, not a loose \"some static, some dynamic\" label. Harper's
+      hybrid is specifically the dyn-type embedding (#c00361). Neither matches what the corpus says Java
+      actually does: compile-time types plus a load-time class/verification check (turbak-gifford-dcpl#c01431),
+      reflection returning `Object` requiring downcasts with dynamic residue tags (pierce-tapl-2002#c00412–414;
+      turbak-gifford-dcpl#c01110), and `instanceof`/reflection-based dynamic binding as a *workaround*
+      for a static type system's limits (sebesta-copl#c00962) — not a second sibling language and not
+      a `dyn` type. So the four-way split doesn't actually give Java a non-static home; it was never designed
+      to.\n\n**Where this leaves the carve.** The motivating case for adding gradual/hybrid as values
+      (\"resolves messy mixed languages\") doesn't survive, and the four values aren't peers in the sources'
+      own account — dynamic and hybrid are characterizations of *how much* static classification is used,
+      not alternatives to it. I don't think this is salvageable as \"four exclusive values of one discipline.\"\
+      \ The defensible version splits into (a) a genuinely binary/spectrum axis of static-vs-dynamic checking-extent
+      per Harper's unityped-degenerate-case framing, with gradual typing as a distinct *mixing mechanism*
+      (micro- or macro-style, not a value alongside static/dynamic), and hybrid as a *type-system device*
+      (the dyn type) rather than a peer discipline — and Java's load-time/reflection pattern probably
+      needs its own characteristic rather than forcing it into any of these. I'd rather the carve be reworked
+      along those lines than defended as drafted."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both wrong-atomization challenges are upheld by their own cited text, and the proposer concedes
+      on the record. Harper's chapter — the proposer's own source for \"hybrid\" — does not present hybrid
+      typing as a fourth peer discipline alongside static/dynamic: \"Static and dynamic types are not
+      opposed to one another, but may coexist harmoniously... dynamic typing is a mode of use of static
+      typing\" (harper-pfpl#c00361), repeated at #c00346/#c00399, with §24.4 (#c00372) devoted to rejecting
+      the \"supposed distinctions\" one by one. Harper's HPCF construction is literally PCF (static) plus
+      one additional type, dyn — subsumption, not four siblings partitioning a space. Treating \"static\"\
+      \ and \"hybrid\" as mutually exclusive atoms therefore bakes in an opposition the cited source explicitly
+      argues against; challenger-b's reading (hybrid = static typing with a recursive dyn type, not a
+      parallel design commitment) stands unrebutted.\n\nThe scope challenge is also upheld: the proposer's
+      own motivating justification for the four-way split — that it \"resolves\" mixed languages like
+      Java by giving them a non-static home — fails on the sources' own technical definitions. Krishnamurthi's
+      gradual typing is specifically per-variable annotation-mixing or sibling-language migration across
+      import boundaries (krishnamurthi-plai#c00241–242); Harper's hybrid is specifically the dyn-type
+      embedding (harper-pfpl#c00361). Java's actual pattern — load-time class checks, reflection-via-Object
+      requiring downcasts, instanceof as a workaround (turbak-gifford-dcpl#c00960, #c01431; pierce-tapl-2002#c00412–414;
+      sebesta-copl#c00962) — matches neither mechanism. So the four-way split doesn't actually close the
+      gap it was credited with closing, and the proposer agrees.\n\nWhat survives unchallenged and heavily
+      attested: the classic binary itself. Van Roy & Haridi (vanroy-haridi-2003#c00236) and Turbak & Gifford
+      (turbak-gifford-dcpl#c00958/#c00960, \"a source of great debate in the programming language community\"\
+      ) both treat static-vs-dynamic checking-time as a real, practically exclusive design classification
+      for a language's core type discipline — this is exactly the \"classic axis\" the carve's note already
+      describes, and neither challenger disputes it. The fix is to narrow the carve to that well-attested
+      binary and stop forcing gradual-typing (a mixing *mechanism*) and hybrid-typing (a *type-system
+      device*, the dyn type) into peer-value slots they don't theoretically occupy. Those two deserve
+      their own concept-level treatment in a future carve, not inclusion here as exclusive co-equals.\n\
+      \nA genuine source-vs-source contradiction underlies this, independent of the debate participants:
+      Harper denies that static and dynamic typing are opposed alternatives at all (dynamic ⊆ static-with-one-type),
+      while Van Roy & Haridi and Turbak & Gifford's framing treats them as the classic opposed binary
+      (\"source of great debate\"). Nothing in either source dissolves this; it is a live theoretical
+      disagreement the KB should hold rather than silently pick a side on, which is also why some dissent
+      remains live even after narrowing the carve."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - wrong-atomization
+    - scope
+  rationale: "Both wrong-atomization challenges are upheld by their own cited text, and the proposer concedes
+    on the record. Harper's chapter — the proposer's own source for \"hybrid\" — does not present hybrid
+    typing as a fourth peer discipline alongside static/dynamic: \"Static and dynamic types are not opposed
+    to one another, but may coexist harmoniously... dynamic typing is a mode of use of static typing\"\
+    \ (harper-pfpl#c00361), repeated at #c00346/#c00399, with §24.4 (#c00372) devoted to rejecting the
+    \"supposed distinctions\" one by one. Harper's HPCF construction is literally PCF (static) plus one
+    additional type, dyn — subsumption, not four siblings partitioning a space. Treating \"static\" and
+    \"hybrid\" as mutually exclusive atoms therefore bakes in an opposition the cited source explicitly
+    argues against; challenger-b's reading (hybrid = static typing with a recursive dyn type, not a parallel
+    design commitment) stands unrebutted.\n\nThe scope challenge is also upheld: the proposer's own motivating
+    justification for the four-way split — that it \"resolves\" mixed languages like Java by giving them
+    a non-static home — fails on the sources' own technical definitions. Krishnamurthi's gradual typing
+    is specifically per-variable annotation-mixing or sibling-language migration across import boundaries
+    (krishnamurthi-plai#c00241–242); Harper's hybrid is specifically the dyn-type embedding (harper-pfpl#c00361).
+    Java's actual pattern — load-time class checks, reflection-via-Object requiring downcasts, instanceof
+    as a workaround (turbak-gifford-dcpl#c00960, #c01431; pierce-tapl-2002#c00412–414; sebesta-copl#c00962)
+    — matches neither mechanism. So the four-way split doesn't actually close the gap it was credited
+    with closing, and the proposer agrees.\n\nWhat survives unchallenged and heavily attested: the classic
+    binary itself. Van Roy & Haridi (vanroy-haridi-2003#c00236) and Turbak & Gifford (turbak-gifford-dcpl#c00958/#c00960,
+    \"a source of great debate in the programming language community\") both treat static-vs-dynamic checking-time
+    as a real, practically exclusive design classification for a language's core type discipline — this
+    is exactly the \"classic axis\" the carve's note already describes, and neither challenger disputes
+    it. The fix is to narrow the carve to that well-attested binary and stop forcing gradual-typing (a
+    mixing *mechanism*) and hybrid-typing (a *type-system device*, the dyn type) into peer-value slots
+    they don't theoretically occupy. Those two deserve their own concept-level treatment in a future carve,
+    not inclusion here as exclusive co-equals.\n\nA genuine source-vs-source contradiction underlies this,
+    independent of the debate participants: Harper denies that static and dynamic typing are opposed alternatives
+    at all (dynamic ⊆ static-with-one-type), while Van Roy & Haridi and Turbak & Gifford's framing treats
+    them as the classic opposed binary (\"source of great debate\"). Nothing in either source dissolves
+    this; it is a live theoretical disagreement the KB should hold rather than silently pick a side on,
+    which is also why some dissent remains live even after narrowing the carve."
+  revision:
+    note: "The classic axis of when type checking happens, treated here as a binary design commitment
+      between static and dynamic typing (Van Roy & Haridi; Turbak & Gifford's 'source of great debate').
+      Narrowed from an earlier four-value draft: gradual typing (Krishnamurthi's micro/macro annotation-mixing
+      or sibling-language migration) and hybrid typing (Harper's dyn-type embedding within an otherwise
+      static language) are not peer disciplines alongside static/dynamic — Harper's own cited chapter
+      treats dynamic-in-static (hybrid) as subsumption, not opposition — and belong in their own concept-level
+      carve(s) rather than as exclusive co-equal values here. Mixed/hard-to-classify languages (e.g. Java's
+      load-time checks, reflection, downcasts) are not assumed to have a home on this axis and should
+      get their own characteristic."
+  contradiction:
+    participants:
+      - citation:harper-pfpl:§24.4
+      - citation:vanroy-haridi-2003:#c00236
+      - citation:turbak-gifford-dcpl:#c00958
+    detail: Harper argues static and dynamic typing are not opposed alternatives at all — dynamic 
+      typing is subsumed as a degenerate, single-type case of static typing ('dynamic typing is a 
+      mode of use of static typing,' harper-pfpl#c00361/#c00346/#c00399; §24.4 rejects the 'supposed
+      distinctions' between them). Van Roy & Haridi and Turbak & Gifford instead treat static vs. 
+      dynamic as the classic opposed binary of the field ('a source of great debate in the 
+      programming language community,' turbak-gifford-dcpl#c00958). Nothing in either source 
+      resolves this tension; it is a genuine disagreement about whether the axis's two poles are 
+      opposed alternatives or nested special cases.
