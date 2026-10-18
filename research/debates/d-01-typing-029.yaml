@@ -1,0 +1,487 @@
+id: d-01-typing-029
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: inferred-type-placeholder--requires--static-typing
+opened: '2026-10-18'
+runs:
+  debate: 2026-10-18-r4-debate-01-typing-inferred-type-placeholder--requires--static-typing-02
+  moderator: 2026-10-18-r4-moderator-01-typing-inferred-type-placeholder--requires--static-typing-02
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: inferred-type-placeholder--requires--static-typing
+  type: requires
+  from: inferred-type-placeholder
+  to: static-typing
+  polarity:
+  statement: An inferred-type placeholder omits an annotation that a static type-reconstruction 
+    algorithm must still fill in at compile time, so the feature only makes sense under static 
+    typing.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: p. 302
+      chunk_id: pierce-tapl-2002#c00669
+      quote: capable of calculating a principal type for a term in which some or all of these 
+        annotations are left unspecified
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Case for `inferred-type-placeholder --requires--> static-typing`**\n\n**1. The cited passage
+      says more in context than the excerpt shows.** The quoted line sits inside TAPL ch. 22's opening
+      frame: \"The typechecking algorithms for the calculi we have seen so far all depend on explicit
+      type annotations — in particular, they require that lambda-abstractions be annotated with their
+      argument types. In this chapter, we develop a more powerful type reconstruction algorithm, capable
+      of calculating a principal type for a term in which some or all of these annotations are left unspecified\"\
+      \ [pierce-tapl-2002#c00669]. The unspecified annotation is defined *relative to* a typechecking
+      algorithm that would otherwise have demanded it. The placeholder is a hole in a static discipline,
+      not an alternative to one. TAPL §22.6 names the feature itself in exactly these terms: \"Languages
+      supporting type reconstruction typically allow programmers to completely omit type annotations on
+      lambda-abstractions… make the parser fill in omitted annotations with freshly generated type variables\"\
+      \ [pierce-tapl-2002#c00708]. Omission presupposes a slot; the slot is the static annotation.\n\n\
+      **2. The single-source flag is answerable — three further sources independently carry the same edge.**\n\
+      \n- Jordan et al. place inference directly under compile-time checking: \"Type Inference — The information
+      required for *compile-time type checks* can either be supplied explicitly by the programmer, or
+      inferred by the compiler or interpreter using type reconstruction techniques\" [jordan-et-al-2015#c00016].
+      This is the feature-model source already canonical for the project, and it defines the inferred
+      case as one of two suppliers of *the same* compile-time information. The sibling entry in that list
+      defines static typing as checking \"at compile time\" [jordan-et-al-2015#c00016].\n- Turbak & Gifford:
+      \"Automatically computing the type of an expression that does not contain type information is known
+      as type reconstruction or type inference. Type reconstruction is more complicated than type checking
+      because type reconstruction must operate properly without (or with only partial) programmer-supplied
+      type information\" [turbak-gifford-dcpl#c01184] — i.e. reconstruction is the type-checking job done
+      under missing annotations, performed by \"studying the various ways in which f, g, x, and y are
+      used in the body\" ahead of execution.\n- Krishnamurthi makes the completion-of-static-checking
+      relation explicit: reconstruction \"figure[s] out what types to put in the missing annotations,\"\
+      \ and \"by running through this process, we have effectively applied all the typing rules; therefore,
+      if we have successfully reconstructed the type annotations, we need not bother type-checking the
+      program with those annotations: it will have to type-check\" [krishnamurthi-plai#c00206]. In the
+      same book, static types are \"types that are checked before program execution\" [krishnamurthi-plai#c00153].
+      Reconstruction *is* the static check in that account — the strongest possible form of the dependency.\n\
+      \n**3. The direction is the evidenced one.** Cardelli & Wegner show the target feature standing
+      without the source: \"In languages like ML, explicit declarations are avoided wherever possible
+      and the system may infer the type of expressions from local context, while still establishing consistent
+      usage. Programming languages in which the type of every expression can be determined by static program
+      analysis are said to be statically typed\" [cardelli-wegner-1985#c00009]. Static typing is satisfied
+      either by annotation or by inference, so it does not require placeholders; placeholders are only
+      meaningful where static analysis fixes a type for every expression. Hence `requires` from placeholder
+      to static typing, not the reverse and not `enables`.\n\n**4. One honest scope limit, which I do
+      not think defeats the carve.** A challenger could point at soft typing — \"many dynamically typed
+      languages are amenable to forms of type analysis\" [turbak-gifford-dcpl#c00960] — or at gradual/optional-annotation
+      designs, to argue that type *inference* machinery can run over a dynamically typed language. I accept
+      that as stated, and it is why the statement should stay scoped to the *placeholder* rather than
+      to inference in general: a soft-typing analysis infers types for programs that have no annotation
+      syntax at all, so there is no omitted annotation and no instance of this feature. If the moderator
+      wants the statement tightened, I would accept \"An inferred-type placeholder is a syntactic position
+      where a type annotation may be omitted, to be filled by a type-reconstruction algorithm before execution;
+      the omission is defined relative to a compile-time typing discipline, so the feature presupposes
+      static typing\" — same edge, same type, with the omission-relative-to-annotation point (the actual
+      load-bearing claim, [pierce-tapl-2002#c00669], [pierce-tapl-2002#c00708]) moved into the statement
+      instead of the inference-happens-at-compile-time claim. I would resist any amendment to `enables`
+      or `influences`: no cited passage describes a placeholder that is intelligible without a static
+      annotation it displaces.\n\n**Recommendation:** keep the edge as `requires`; promote it off single-source
+      by adding [jordan-et-al-2015#c00016], [turbak-gifford-dcpl#c01184], and [krishnamurthi-plai#c00206]
+      (with [krishnamurthi-plai#c00153] for the definition of static typing in use), plus [pierce-tapl-2002#c00708]
+      as the in-source corroborant naming the omission feature directly."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The arrow's direction survives scrutiny, and the single-source flag is genuinely answerable
+      — Jordan et al., Turbak & Gifford, and Krishnamurthi do carry this dependency. I am not challenging
+      `requires` vs `enables`. I am challenging (1) whether `inferred-type-placeholder` is one feature,
+      since the corpus's language specs give written placeholders and omitted annotations different names,
+      different syntax, and demonstrably different legal positions, and TAPL §22.6 — the proposer's own
+      corroborant — explicitly refuses to identify them; and (2) the statement's claim that an omitted
+      annotation \"must still [be] fill[ed] in at compile time,\" which is false of micro gradual typing,
+      a case the proposer's soft-typing pre-emption does not cover and which their offered tightening
+      does not fix either.\n\nOn the atomization: Rust's FLS defines three separable things. `InferredType
+      ::= _` is a written type, \"a placeholder for a type deduced by type inference,\" carrying legality
+      rules that forbid it in a FunctionParameter's TypeSpecification, a FunctionDeclaration's ReturnType,
+      and a ConstantDeclaration's TypeAscription [rust-fls#c00061]. Separately, \"a type variable is a
+      placeholder used during type inference to stand in for an undetermined type\" [rust-fls#c00085]
+      — internal, never written. Neither is Pierce's bare un-annotated abstraction. The legality rules
+      are decisive: in Rust a parameter annotation cannot be omitted at all, yet `_` may appear *inside*
+      one. A written placeholder and an omitted annotation therefore have different distributions within
+      a single language, which is not something one feature can have. GHC makes the same split from the
+      other side: a wildcard is a *partial* signature where \"the programmer can choose which parts of
+      a type to annotate and which to leave over to the type-checker to infer\" [ghc-users-guide#c01017]
+      — present syntax marking a hole in a type, not an absent annotation.\n\nOn the scope: the evidence
+      chain is drawn entirely from reconstruction-complete languages (ML, Haskell, plait, FLARE), and
+      there it is airtight. But Krishnamurthi's micro gradual typing describes an annotation slot that
+      is omitted without any static reconstruction standing behind it, and Python's own reference confirms
+      the slot is not backed by a compile-time discipline at all [krishnamurthi-plai#c00241], [python-langref-3#c00333].
+      The proposer anticipated soft typing and correctly set it aside on the grounds that soft typing
+      has \"no annotation syntax at all, so there is no omitted annotation.\" Python defeats that defence:
+      it has the syntax, permits omission, and fills the omission with the dynamic type rather than a
+      reconstructed static one.\n\nI did consider a third challenge from Harper's \"dynamic typing is
+      a mode of use of static typing\" [harper-pfpl#c00361], which puts pressure on treating `static-typing`
+      as a clean target for `requires`. I am not raising it: it is an objection to the target feature's
+      own carve rather than to this edge, and it substantially overlaps my scope challenge. Raising it
+      would pad the record without adding a distinct question."
+    challenges:
+      - type: wrong-atomization
+        text: "`inferred-type-placeholder` fuses three things the corpus's language specifications keep
+          apart, and the fusion is contradicted within a single language. (a) A *written* placeholder
+          occupying a type position: Rust's `InferredType ::= _`, \"a placeholder for a type deduced by
+          type inference\" [rust-fls#c00061]; GHC's wildcards in partial type signatures, where \"the
+          programmer can choose which parts of a type to annotate and which to leave over to the type-checker
+          to infer\" [ghc-users-guide#c01017]. (b) An *internal* inference variable, never written: \"\
+          a type variable is a placeholder used during type inference to stand in for an undetermined
+          type of an expression or a pattern\" [rust-fls#c00085]. (c) A wholly *omitted* annotation —
+          the bare lambda-abstraction — which is the only thing the cited evidence [pierce-tapl-2002#c00669]
+          actually describes.\n\nThe decisive point is distributional. Rust's legality rules forbid `_`
+          \"[w]ithin the TypeSpecification of a FunctionParameter\" and \"[w]ithin the ReturnType of a
+          FunctionDeclaration\" [rust-fls#c00061], while Rust permits no omission of a parameter annotation
+          whatsoever and freely permits `_` inside a `let` binding's type (`let values: Vec<_> = (0 ..
+          10).collect();`). So within one language, the written placeholder and the omitted annotation
+          are legal in different positions. A single feature cannot have two distributions; these are
+          two features, and the edge is currently asserted of whichever one the reader assumes.\n\nThe
+          proposer's in-source corroborant is the passage that most sharply refuses the fusion. TAPL §22.6
+          presents filling omitted annotations with fresh type variables as one option, then rejects it:
+          \"A better alternative is to add un-annotated abstractions to the syntax of terms and a corresponding
+          rule to the constraint typing relation... It is also more expressive, in a small but useful
+          way: if we make several copies of an un-annotated abstraction, the CT-ABSINF rule will allow
+          us to choose a different variable as the argument type of each copy. By contrast, if we regard
+          a bare abstraction as being annotated with an invisible type variable, then making copies will
+          yield several expressions sharing the same argument type. This difference is important for the
+          discussion of let-polymorphism\" [pierce-tapl-2002#c00708]. Pierce is saying, in terms, that
+          treating an omission as a placeholder loses expressiveness and gets let-polymorphism wrong.
+          §22.2 confirms the two accounts are alternatives, not one mechanism: the parser-annotation story
+          is offered as a story one *may* tell [pierce-tapl-2002#c00674]. Naming the feature `...-placeholder`
+          while evidencing it with the omission passage therefore adopts precisely the identification
+          its own source declines to make."
+        evidence:
+          - source: rust-fls
+            locator: § 4.9.1. Inferred Types¶
+            chunk_id: rust-fls#c00061
+          - source: rust-fls
+            locator: § 4.12.7. Type Inference¶
+            chunk_id: rust-fls#c00085
+            quote: A type variable is a placeholder used during type inference to stand in for an 
+              undetermined type of an expression or a pattern.
+          - source: pierce-tapl-2002
+            locator: §22.6
+            chunk_id: pierce-tapl-2002#c00708
+          - source: ghc-users-guide
+            locator: §6.11.7
+            chunk_id: ghc-users-guide#c01017
+            quote: A partial type signature bridges the gap between the two extremes, the programmer
+              can choose which parts of a type to annotate and which to leave over to the 
+              type-checker to infer.
+          - source: pierce-tapl-2002
+            locator: §22.2
+            chunk_id: pierce-tapl-2002#c00674
+            quote: During parsing, we annotate each bare lambda-abstraction λ x.t with a type 
+              variable, λ x:X.t
+      - type: scope
+        text: "The statement's load-bearing modal — an omitted annotation \"must still [be] fill[ed] in
+          at compile time\" by \"a static type-reconstruction algorithm\" — is not true of every instance
+          of an omittable annotation in the corpus. Krishnamurthi's \"micro\" gradual typing describes
+          exactly this feature in a setting with no such algorithm: \"In 'micro' gradual typing we can
+          add annotations to any subset of the variables of the language. We saw this earlier in the Static
+          Python example: def insort_right(a, x, lo: int = 0, hi: Optional[int] = None): Here, we have
+          annotations on lo and hi, but not on a and x\" — and the consequence is not reconstruction but
+          dynamism: \"there is now a much more complex language where any parts of a program can be static
+          and any other parts dynamic\" [krishnamurthi-plai#c00241]. The omitted positions `a` and `x`
+          are not reconstructed; they are left dynamic. Python's own reference confirms the slot is defined
+          without any compile-time typing discipline standing behind it: annotations \"are conventionally
+          used for type hints, but this is not enforced by the language,\" and \"[t]he presence of annotations
+          does not change the runtime semantics of the code\" [python-langref-3#c00333].\n\nThe proposer
+          foresaw an objection here and scoped it away via soft typing, on the stated ground that \"a
+          soft-typing analysis infers types for programs that have no annotation syntax at all, so there
+          is no omitted annotation and no instance of this feature.\" That ground does not reach this
+          case. Python has the annotation syntax, the syntax is optional per-position, and omission is
+          the unmarked default — every condition for an instance of the feature is met, and no static
+          reconstruction follows. The offered tightening (\"the omission is defined relative to a compile-time
+          typing discipline\") fails for the same reason: Python's annotation slot is defined by the language
+          reference with no compile-time discipline in the picture at all.\n\nThis does not kill the edge.
+          It bounds it. Every passage that actually establishes the dependency — [pierce-tapl-2002#c00669],
+          [krishnamurthi-plai#c00206], [turbak-gifford-dcpl#c01184], [jordan-et-al-2015#c00016] — is drawn
+          from reconstruction-complete languages where a principal type is computed for the whole program.
+          The edge should be scoped to that family, or the feature re-stated so that gradual/optional-annotation
+          designs are not swept in as counterexamples to an unrestricted `requires`."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+          - source: python-langref-3
+            locator: § 8.11. Annotations
+            chunk_id: python-langref-3#c00333
+            quote: Annotations are conventionally used for type hints, but this is not enforced by 
+              the language, and in general annotations may contain arbitrary expressions. The 
+              presence of annotations does not change the runtime semantics of the code
+          - source: krishnamurthi-plai
+            locator: p. 173
+            chunk_id: krishnamurthi-plai#c00240
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "I checked the carve against the corpus independently and the edge holds. I found corroboration
+      the proposer did not cite — Turbak & Gifford state the dependency almost as a definition: \"some
+      languages (e.g., ML, Haskell, FX, Miranda) achieve static typing without explicit type declarations
+      via a technique called type reconstruction or type inference\" [turbak-gifford-dcpl#c00963], in
+      a section (\"Explicit versus Implicit Types\") that is explicitly a sub-dimension of the static/dynamic
+      split [turbak-gifford-dcpl#c00958]. Cardelli & Wegner likewise present inference as one way of meeting
+      the static requirement, not an alternative to it [cardelli-wegner-1985#c00009], which independently
+      fixes the direction as `requires` from the placeholder, not the reverse.\n\nI tested the two defeaters
+      I could construct and both fail on the sources:\n\n1. *Micro gradual typing.* Krishnamurthi describes
+      annotating \"any subset of the variables\", leaving `a` and `x` unannotated in Static Python [krishnamurthi-plai#c00241]
+      — an omitted annotation slot in a language that is not wholly statically typed. But in that account
+      the unannotated positions stay dynamic rather than being reconstructed, so they are not instances
+      of an *inferred*-type placeholder; and where such a system does infer, it infers before execution
+      [krishnamurthi-plai#c00153], which is the target feature. Harper's \"dynamic typing is a mode of
+      use of static typing\" [harper-pfpl#c00361] removes the remaining force of the objection. Not a
+      counterexample.\n\n2. *Soft typing / analysis over dynamic languages.* The proposer already scoped
+      this out correctly, and I found nothing in the corpus describing an omitted-annotation-and-filled
+      construct in a language with no compile-time typing phase.\n\nI also do not think `wrong-atomization`
+      is available against the proposer here, even though it is the shape I went looking for: Sebesta
+      explicitly files C#'s `var` and ML/Haskell reconstruction under one heading, \"type inference\"\
+      , and insists `var` variables \"are statically typed\" [sebesta-copl#c00409], so the literature
+      lumps rather than splits the two mechanisms.\n\nOne real defect remains, and it is in the statement
+      rather than in the edge, so I raise it as `scope`."
+    challenges:
+      - type: scope
+        text: "The edge is right; the statement's mechanism clause is narrower than the feature it governs,
+          and the narrowing is contradicted by the normative sources for the feature's most common instances.
+          The statement says the placeholder \"omits an annotation that a static type-reconstruction algorithm
+          must still fill in\", and the proposer's offered tightening keeps both the omission and the
+          reconstruction algorithm. That describes TAPL's un-annotated lambda-abstraction [pierce-tapl-2002#c00708]
+          but misdescribes `auto`/`var`-style placeholders. In C++ nothing is omitted: the declaration
+          carries an actual `placeholder type` specifier, and \"[t]he type of a variable declared using
+          a placeholder type is deduced from its initializer\" [iso-iec-14882-cpp20-n4861#c00417], by
+          \"placeholder type deduction\" defined as replacement \"using the rules for template argument
+          deduction\" against the initializer, not by constraint generation and unification over the term's
+          uses [iso-iec-14882-cpp20-n4861#c00422]. C# is the same shape — `implicitly_typed_local_variable_declaration`
+          with the `var` contextual keyword, equivalent to a named explicit type, and an error without
+          an initializer (`var x; // Error, no initializer to infer type from`) [ecma-334-7th#c00597]
+          — as is Java's `var` [jls-se25#c00716]. Sebesta groups these with ML-style inference and affirms
+          both are static [sebesta-copl#c00409], so the dependency on static typing survives untouched
+          under either mechanism; what does not survive is \"omits an annotation\" and \"type-reconstruction
+          algorithm\" as the stated ground. As written, the fact either mis-states the C-family instances
+          or silently excludes them from the feature. I'd keep `requires`, keep the direction, and ground
+          the statement on the compile-time-determination claim the whole corpus shares (\"every variable
+          and every expression has a type that is known at compile time\" [jls-se25#c00096]; type checking
+          \"performed prior to, and independently of, execution\" [pierce-attapl-2004#c00469]) — e.g.
+          the placeholder leaves the type unwritten at a position where the language still fixes it before
+          execution, whether by local deduction from an initializer or by whole-term reconstruction. [pierce-tapl-2002#c00669]
+          and [pierce-tapl-2002#c00708] then support the reconstruction case specifically rather than
+          the feature as a whole."
+        evidence:
+          - source: iso-iec-14882-cpp20-n4861
+            locator: §9
+            chunk_id: iso-iec-14882-cpp20-n4861#c00417
+            quote: The type of a variable declared using a placeholder type is deduced from its 
+              initializer.
+          - source: iso-iec-14882-cpp20-n4861
+            locator: §9
+            chunk_id: iso-iec-14882-cpp20-n4861#c00422
+            quote: Placeholder type deduction is the process by which a type containing a 
+              placeholder type is replaced by a deduced type.
+          - source: ecma-334-7th
+            locator: §13.6
+            chunk_id: ecma-334-7th#c00597
+            quote: var x; // Error, no initializer to infer type from
+          - source: jls-se25
+            locator: §14.4
+            chunk_id: jls-se25#c00716
+            quote: var a = 1; // a has type 'int'
+          - source: sebesta-copl
+            locator: §5.4.2
+            chunk_id: sebesta-copl#c00409
+            quote: Keep in mind that these are statically typed variables—their types are fixed for 
+              the lifetime of the unit in which they are declared.
+          - source: pierce-tapl-2002
+            locator: §22.6
+            chunk_id: pierce-tapl-2002#c00708
+            quote: Languages supporting type reconstruction typically allow programmers to 
+              completely omit type annotations on lambda-abstractions.
+          - source: turbak-gifford-dcpl
+            locator: §11.3.2
+            chunk_id: turbak-gifford-dcpl#c00963
+            quote: some languages (e.g., ML , Haskell , FX , Miranda ) achieve static typing without
+              explicit type declarations via a technique called type reconstruction or type 
+              inference
+          - source: jls-se25
+            locator: p. 73
+            chunk_id: jls-se25#c00096
+            quote: every variable and every expression has a type that is known at compile time
+          - source: pierce-attapl-2004
+            locator: §8.4
+            chunk_id: pierce-attapl-2004#c00469
+            quote: type checking may be performed prior to, and independently of, execution
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "## Position: concede both challenges and amend. Keep the edge, narrow the feature, re-ground
+      the statement.\n\nI checked every passage the challengers cite. They all verify, and together they
+      show the carve was wrong in two separable ways. I am not defending the original statement.\n\n###
+      1. The atomization challenge is correct, and the fix is narrower than the challenger proposes\n\n\
+      I verified [rust-fls#c00061]: `InferredType ::= _`, \"a placeholder for a type deduced by type inference\"\
+      , forbidden \"[w]ithin the TypeSpecification of a FunctionParameter\" and \"[w]ithin the ReturnType
+      of a FunctionDeclaration\", legal in `let values: Vec<_> = (0 .. 10).collect();`. And [rust-fls#c01157]:
+      \"a type variable is a placeholder used during type inference to stand in for an undetermined type\"\
+      . The distributional argument holds: a written `_` and an omitted parameter annotation are legal
+      in different positions of the same language, so they are not one feature.\n\nI also verified [pierce-tapl-2002#c00708]
+      in full, and the challenger's reading is exact. Pierce offers filling omissions with fresh type
+      variables and then says \"A better alternative is to add un-annotated abstractions to the syntax
+      of terms... It is also more expressive, in a small but useful way... if we regard a bare abstraction
+      as being annotated with an invisible type variable, then making copies will yield several expressions
+      sharing the same argument type. This difference is important for the discussion of let-polymorphism\"\
+      . My own in-source corroborant declines the placeholder-for-omission identification. I withdraw
+      it.\n\n**Amendment.** `inferred-type-placeholder` is scoped to sense (a) only — *a token written
+      in a type position that the language replaces with a type it determines*. That is the extension
+      the name already asserts, and the corpus supports it across languages: Rust `_` [rust-fls#c00061],
+      GHC wildcards, where \"the programmer can choose which parts of a type to annotate and which to
+      leave over to the type-checker to infer\" [ghc-users-guide#c01017], C++ `auto` as a `placeholder-type-specifier`
+      [iso-iec-14882-cpp20-n4861#c00417], C# `var`, Java `var`, C `auto` [c23-n3220#c00344].\n\nSense
+      (b), the internal inference variable [rust-fls#c01157], is not a surface feature at all — nothing
+      is written — and should not be a feature node. Sense (c), the wholly omitted annotation (TAPL's
+      bare lambda, [pierce-tapl-2002#c00708]), is a *distinct* feature that deserves its own node and
+      its own edge; I am not asserting this edge of it here. Note that splitting this way dissolves the
+      challenger's own distributional contradiction, since the contradiction was precisely between (a)
+      and (c).\n\n### 2. The gradual-typing scope challenge is correct against the original carve, and
+      is answered by the same split\n\nI verified [krishnamurthi-plai#c00241] and [python-langref-3#c00333]:
+      micro gradual typing annotates \"any subset of the variables\", `a` and `x` are left dynamic rather
+      than reconstructed, and annotations \"are conventionally used for type hints, but this is not enforced
+      by the language\". Against the original statement — which quantified over omitted annotations —
+      this is a genuine counterexample, and my earlier soft-typing scoping did not reach it.\n\nUnder
+      the amendment it is no longer in the feature's extension. Python's optional annotation slot [python-langref-3#c00333]
+      is an *omission* in sense (c); the language reference defines no written token occupying a type
+      position to stand for a type the language will determine. So the gradual/optional-annotation family
+      is excluded by the feature boundary rather than by a bolted-on restriction. The challenger's alternative
+      remedy — bounding the edge to \"reconstruction-complete languages\" — is the wrong cut, because
+      it would also exclude C++ and Java, which are static and do have the written placeholder.\n\n###
+      3. The implementer's challenge is correct, and supplies the right ground\n\nI verified the mechanism
+      point. C++ omits nothing: the declaration carries a `placeholder-type-specifier`, \"[t]he type of
+      a variable declared using a placeholder type is deduced from its initializer\" [iso-iec-14882-cpp20-n4861#c00417],
+      and placeholder type deduction proceeds \"using the rules for template argument deduction\" against
+      that initializer [iso-iec-14882-cpp20-n4861#c00422], [iso-iec-14882-cpp20-n4861#c00423] — not constraint
+      generation and unification over a term's uses. C23 `auto` is the same shape: `static auto a = 3.5;`
+      is \"interpreted as if\" `static double a = 3.5;` [c23-n3220#c00344]. \"Omits an annotation\" and
+      \"type-reconstruction algorithm\" are therefore false of the feature's commonest instances.\n\n\
+      **Amended statement** (adopting the implementer's formulation):\n\n> An inferred-type placeholder
+      leaves the type unwritten at a position where the language still fixes it before execution — whether
+      by local deduction from an initializer or by whole-term reconstruction — so the feature presupposes
+      a compile-time typing discipline.\n\n**Evidence base**, which also retires the single-source referral:\n\
+      - The placeholder is defined as standing for a type the language determines: [rust-fls#c00061];
+      [iso-iec-14882-cpp20-n4861#c00417]; [ghc-users-guide#c01017].\n- Determination is pre-execution
+      and total: \"every variable and every expression has a type that is known at compile time\" [jls-se25#c00096],
+      reinforced by \"[t]he compile-time type of a variable is always declared, and the compile-time type
+      of an expression can be deduced at compile time\" [jls-se25#c00166]; and type checking \"performed
+      prior to, and independently of, execution\" [pierce-attapl-2004#c00469].\n- Failure to determine
+      is a compile-time error, not a runtime fallback — the sharpest available proof that the placeholder
+      cannot live outside a static discipline: \"[i]f the deduction fails, the declaration is ill-formed\"\
+      \ [iso-iec-14882-cpp20-n4861#c00423]; \"if the type that replaces the placeholder type is not the
+      same in each deduction, the program is ill-formed\" [iso-iec-14882-cpp20-n4861#c00418]. Contrast
+      [python-langref-3#c00333], where the annotation slot carries no such consequence — which is exactly
+      why Python is not an instance.\n- Both mechanisms are static: [sebesta-copl#c00409], with [sebesta-copl#c00408]
+      confirming that implicit and explicit declaration alike \"create static bindings to types\".\n-
+      [pierce-tapl-2002#c00669] is retained but demoted: it supports the whole-term-reconstruction mechanism
+      specifically, not the feature as a whole.\n\n### What I ask the moderator to record\n\n`requires`
+      and the direction `inferred-type-placeholder → static-typing` survive all three challenges untouched;
+      no challenger disputes them. What changes: the feature is narrowed to the written placeholder, the
+      omitted-annotation case is split off to its own node, the statement's mechanism clause is replaced
+      by the compile-time-determination ground, and the evidence becomes multi-source and cross-family.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges are upheld on their cited passages, and the proposer verified and conceded
+      both. The edge type and direction survive untouched — no participant disputed `requires` or the
+      direction, and Cardelli & Wegner [cardelli-wegner-1985#c00009] plus Turbak & Gifford [turbak-gifford-dcpl#c00963]
+      independently fix static typing as satisfiable by annotation *or* inference, so the dependency runs
+      from the placeholder, not the reverse. What fails is the statement, in two separable ways.\n\n(1)
+      Atomization. Challenger-a's distributional argument is sourced and decisive: Rust's FLS defines
+      `InferredType ::= _` as \"a placeholder for a type deduced by type inference\" while forbidding
+      it within a FunctionParameter's TypeSpecification and a FunctionDeclaration's ReturnType [rust-fls#c00061],
+      yet Rust permits no omission of a parameter annotation at all. Within one language the written placeholder
+      and the omitted annotation are legal in different positions; one feature cannot have two distributions.
+      The in-source corroborant the proposer himself offered is the passage that most sharply refuses
+      the identification: TAPL §22.6 prefers un-annotated abstractions in the term syntax over \"a bare
+      abstraction ... annotated with an invisible type variable\" precisely because the latter mis-handles
+      let-polymorphism [pierce-tapl-2002#c00708]. The internal inference variable [rust-fls#c00085] is
+      nothing written and is not a surface feature at all.\n\n(2) Scope/mechanism. Challenger-b's evidence
+      shows the statement's mechanism clause is false of the feature's commonest instances: C++ omits
+      nothing — the declaration carries a placeholder-type-specifier and the type \"is deduced from its
+      initializer\" [iso-iec-14882-cpp20-n4861#c00417] by template-argument-deduction rules [iso-iec-14882-cpp20-n4861#c00422],
+      not constraint generation over a term's uses; C# `var` requires an initializer [ecma-334-7th#c00597],
+      as does Java's. Challenger-a's gradual-typing counterexample is also sourced and real against the
+      *original* statement: Python's annotation slot is optional per-position and \"not enforced by the
+      language\" [python-langref-3#c00333], with unannotated positions left dynamic rather than reconstructed
+      [krishnamurthi-plai#c00241].\n\nRemedy. I take the narrowing rather than challenger-a's proposed
+      bound to \"reconstruction-complete languages\", which would wrongly exclude C++ and Java — static
+      languages that do have the written placeholder. Scoping the feature to the written token dissolves
+      the distributional contradiction (it was between senses (a) and (c)) and excludes Python by feature
+      boundary rather than by a bolted-on restriction. The statement is re-grounded on the compile-time-determination
+      claim the whole corpus shares [jls-se25#c00096], [pierce-attapl-2004#c00469], with the ill-formedness
+      consequence [iso-iec-14882-cpp20-n4861#c00423] as the sharpest proof the placeholder cannot live
+      outside a static discipline. [pierce-tapl-2002#c00669] is retained but demoted to supporting the
+      reconstruction mechanism only. This retires the single-source referral: the evidence is now cross-family
+      and multi-source.\n\nI did not split. The omitted-annotation case (TAPL's bare lambda) is a genuinely
+      distinct feature, but it has no node yet, the proposer expressly declines to assert this edge of
+      it, and challenger-a's Python evidence puts its relation to static typing in live contention — manufacturing
+      that carve here on no participant's case would be worse than leaving it to be proposed properly.\n\
+      \nStanding dissent is recorded because challenger-a's atomization objection is only half-discharged:
+      the narrowing fixes this carve, but sense (c) still has no node and the edge it would carry is unsettled."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - wrong-atomization
+    - scope
+  rationale: "Both challenges are upheld on their cited passages, and the proposer verified and conceded
+    both. The edge type and direction survive untouched — no participant disputed `requires` or the direction,
+    and Cardelli & Wegner [cardelli-wegner-1985#c00009] plus Turbak & Gifford [turbak-gifford-dcpl#c00963]
+    independently fix static typing as satisfiable by annotation *or* inference, so the dependency runs
+    from the placeholder, not the reverse. What fails is the statement, in two separable ways.\n\n(1)
+    Atomization. Challenger-a's distributional argument is sourced and decisive: Rust's FLS defines `InferredType
+    ::= _` as \"a placeholder for a type deduced by type inference\" while forbidding it within a FunctionParameter's
+    TypeSpecification and a FunctionDeclaration's ReturnType [rust-fls#c00061], yet Rust permits no omission
+    of a parameter annotation at all. Within one language the written placeholder and the omitted annotation
+    are legal in different positions; one feature cannot have two distributions. The in-source corroborant
+    the proposer himself offered is the passage that most sharply refuses the identification: TAPL §22.6
+    prefers un-annotated abstractions in the term syntax over \"a bare abstraction ... annotated with
+    an invisible type variable\" precisely because the latter mis-handles let-polymorphism [pierce-tapl-2002#c00708].
+    The internal inference variable [rust-fls#c00085] is nothing written and is not a surface feature
+    at all.\n\n(2) Scope/mechanism. Challenger-b's evidence shows the statement's mechanism clause is
+    false of the feature's commonest instances: C++ omits nothing — the declaration carries a placeholder-type-specifier
+    and the type \"is deduced from its initializer\" [iso-iec-14882-cpp20-n4861#c00417] by template-argument-deduction
+    rules [iso-iec-14882-cpp20-n4861#c00422], not constraint generation over a term's uses; C# `var` requires
+    an initializer [ecma-334-7th#c00597], as does Java's. Challenger-a's gradual-typing counterexample
+    is also sourced and real against the *original* statement: Python's annotation slot is optional per-position
+    and \"not enforced by the language\" [python-langref-3#c00333], with unannotated positions left dynamic
+    rather than reconstructed [krishnamurthi-plai#c00241].\n\nRemedy. I take the narrowing rather than
+    challenger-a's proposed bound to \"reconstruction-complete languages\", which would wrongly exclude
+    C++ and Java — static languages that do have the written placeholder. Scoping the feature to the written
+    token dissolves the distributional contradiction (it was between senses (a) and (c)) and excludes
+    Python by feature boundary rather than by a bolted-on restriction. The statement is re-grounded on
+    the compile-time-determination claim the whole corpus shares [jls-se25#c00096], [pierce-attapl-2004#c00469],
+    with the ill-formedness consequence [iso-iec-14882-cpp20-n4861#c00423] as the sharpest proof the placeholder
+    cannot live outside a static discipline. [pierce-tapl-2002#c00669] is retained but demoted to supporting
+    the reconstruction mechanism only. This retires the single-source referral: the evidence is now cross-family
+    and multi-source.\n\nI did not split. The omitted-annotation case (TAPL's bare lambda) is a genuinely
+    distinct feature, but it has no node yet, the proposer expressly declines to assert this edge of it,
+    and challenger-a's Python evidence puts its relation to static typing in live contention — manufacturing
+    that carve here on no participant's case would be worse than leaving it to be proposed properly.\n\
+    \nStanding dissent is recorded because challenger-a's atomization objection is only half-discharged:
+    the narrowing fixes this carve, but sense (c) still has no node and the edge it would carry is unsettled."
+  revision:
+    statement: An inferred-type placeholder leaves the type unwritten at a position where the 
+      language still fixes it before execution — whether by local deduction from an initializer or 
+      by whole-term reconstruction — so the feature presupposes a compile-time typing discipline. 
+      Scoped to a token written in a type position (Rust `_`, GHC wildcards, C/C++ `auto`, C#/Java 
+      `var`); a wholly omitted annotation is a distinct feature, not this one.
