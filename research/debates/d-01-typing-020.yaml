@@ -1,0 +1,254 @@
+id: d-01-typing-020
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: dynamic-typing--alternative-to--static-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-dynamic-typing--alternative-to--static-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-dynamic-typing--alternative-to--static-typing-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: dynamic-typing--alternative-to--static-typing
+  type: alternative-to
+  from: dynamic-typing
+  to: static-typing
+  polarity:
+  statement: Static and dynamic typing are the two competing strategies for when and how a language 
+    checks that operations are applied to compatible types.
+  evidence:
+    - source: vanroy-haridi-2003
+      locator: §2.7.3
+      chunk_id: vanroy-haridi-2003#c00236
+      quote: 'There are two major families of strong typing: dynamic typing and static typing.'
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Case for keeping the carve, with evidence now beyond the single source that triggered debate.**\n\
+      \nThe carve was flagged \"single-source,\" but that concern dissolves on a wider search: the dynamic/static-typing
+      dichotomy, posed explicitly as a *design choice between two alternatives*, is one of the most heavily
+      attested claims in the whole PL-textbook corpus, not an idiosyncrasy of Van Roy & Haridi.\n\n- Van
+      Roy & Haridi (2003) themselves frame it as a decision point, not just a taxonomy: \"When designing
+      a language, one of the major decisions to make is whether the language is to be dynamically typed,
+      statically typed, or some mixture of both\" [vanroy-haridi-2003#c00236].\n- Turbak & Gifford devote
+      a full subsection to \"Dynamic versus Static Types\" as competing strategies, laying out the advantages
+      each side claims against the other (\"Proponents of dynamic typing counter with the following claims...\"\
+      ) [turbak-gifford-dcpl#c00958, #c00959, #c00960, #c00962].\n- Scott (*Programming Language Pragmatics*)
+      frames it the same way: a language is statically typed when type checking \"can be performed at
+      compile time,\" contrasted with dynamic checking delayed to run time, and explicitly calls the static/dynamic
+      choice \"one of the most interesting language debates of the coming decade\" [scott-plp#c00401,
+      #c00400].\n- Sebesta states it as a binary consequence of type-binding time: \"If all bindings of
+      variables to types are static in a language, then type checking can nearly always be done statically...
+      Dynamic type binding requires type checking at run time\" [sebesta-copl#c00558].\n- Jordan et al.
+      (2015) — the ontology's other anchor source — independently list \"Type Checking\" as checked \"\
+      at compile time ('static' typing), at runtime ('dynamic' typing), or both\" [jordan-et-al-2015#c00016],
+      matching the carve's \"when and how\" framing almost verbatim.\n\nThat's five independent textbook
+      sources converging on the same alternative-to relationship, which is about as well-evidenced as
+      a carve in this corpus gets. The statement text — \"the two competing strategies for when and how
+      a language checks that operations are applied to compatible types\" — is a fair paraphrase shared
+      across all of them (when = compile time vs. run time; how = static analysis of phrases vs. run-time
+      inspection of values).\n\nOne complication I should surface myself rather than let a challenger
+      score it: Harper (*PFPL*) argues the opposition is \"illusory\" at the type-theoretic level — dynamic
+      typing is reducible to a restricted static type discipline (a \"unityped\" static language) [harper-pfpl#c00346,
+      #c00361, #c00373]. I don't think this defeats the carve: Harper is making a semantic/foundational-theory
+      claim about what dynamic typing *reduces to*, whereas every source above (including Jordan et al.,
+      the KB's own feature-model source) treats static-vs-dynamic as a live, mutually-exclusive *design
+      decision* a language author actually makes for a given language — which is exactly the granularity
+      this ontology's feature-to-feature edges operate at. \"Both exist as relevant design alternatives
+      language designers choose between\" is a different, compatible claim from \"they're equivalent in
+      expressive power at the type-theory level.\" I'd amend the evidence list to cite the corroborating
+      sources above rather than treat Harper's remark as refuting the edge.\n\nRecommendation: keep the
+      carve, broaden its evidence citations beyond vanroy-haridi-2003 to include scott-plp, turbak-gifford-dcpl,
+      sebesta-copl, and jordan-et-al-2015, which resolves the \"single-source\" flag outright.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve holds up well under scrutiny and I'm not raising a challenge.\n\nThe \"single-source\"\
+      \ flag that triggered this debate is resolved by the search: the static/dynamic-typing opposition
+      as a design decision between two alternatives is attested independently across Van Roy & Haridi
+      [vanroy-haridi-2003#c00236] (\"There are two major families of strong typing... When designing a
+      language, one of the major decisions to make is whether the language is to be dynamically typed,
+      statically typed, or some mixture of both\"), Turbak & Gifford's dedicated \"Dynamic versus Static
+      Types\" subsection framing them as competing checking strategies [turbak-gifford-dcpl#c00958], and
+      Cardelli & Wegner's parallel contrast of static program analysis vs. run-time type checking [cardelli-wegner-1985#c00009].
+      These are independent textbook/paper sources converging on the same binary opposition at the same
+      granularity the carve states it — a language-design choice about *when* (compile time vs. run time)
+      and *how* (static analysis of phrases vs. inspection of run-time values) type-compatibility is checked.\n\
+      \nThe one complication — Harper's claim that the opposition is \"illusory\" because dynamic typing
+      reduces to a restricted static (unityped) discipline [harper-pfpl#c00346, #c00373] — doesn't undercut
+      the carve. Harper is making a type-theoretic/semantic reduction claim about foundational expressiveness,
+      not a claim about how language designers actually frame and choose between the two strategies in
+      practice. Van Roy & Haridi's own text shows the same corpus treating this as a genuine, consequential
+      design decision with trade-offs (expressiveness vs. error-catching, flexibility vs. efficiency)
+      even while allowing hybrid mixtures [vanroy-haridi-2003#c00239], and Harper's own \"Hybrid Typing\"\
+      \ passage [harper-pfpl#c00361] is consistent with an alternative-to edge that permits partial combination
+      — most alternative-to pairs in this ontology are not mutually exclusive in that stronger sense either.
+      The carve's statement is a fair paraphrase of this shared framing, and no source treats the two
+      as describing the same mechanism or as belonging to different ontological layers. No challenge."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The proposer's multi-source case for keeping and re-grounding the carve is solid — Scott, Turbak
+      & Gifford, Sebesta, and Jordan et al. independently frame static/dynamic typing as a live design
+      decision, so the \"single-source\" flag is fairly resolved. I have one structural concern, not a
+      rejection of the carve's factual content.\n\nThe `alternative-to` relation, as used here, asserts
+      \"the two competing strategies\" — i.e., a binary either/or choice a language designer makes. But
+      the very source anchoring the carve immediately qualifies that framing: \"The choice between static
+      or dynamic typing does not have to be all or nothing. In each approach, a bit of the other can be
+      added\" [vanroy-haridi-2003#c00239]. Harper goes further, describing hybrid typing as a design where
+      \"Static and dynamic types are not opposed to one another, but may coexist harmoniously\" and calls
+      dynamic typing itself \"a mode of use of static typing\" [harper-pfpl#c00361]. Krishnamurthi's treatment
+      of gradual/retrofitted typing (Typed Racket, TypeScript, Static Python) describes production-grade
+      languages that are simultaneously, and non-exclusively, both [krishnamurthi-plai#c00241, #c00215].
+      This isn't an edge case tucked in a footnote — it's a well-attested third design point (hybrid/gradual)
+      sitting between the two poles, present in the same sources used to justify the edge.\n\nThat's a
+      mismatch between what the sources describe (a spectrum with a populated middle, where \"alternative\"\
+      \ is sometimes a false dichotomy) and what a binary `alternative-to` feature-to-feature edge can
+      express (mutually exclusive choice). The carve isn't factually wrong about static and dynamic typing
+      being opposed design points in the simple case, but the ontology currently has no edge type or node
+      for the hybrid/gradual middle that multiple sources treat as a first-class third option rather than
+      noise around a clean binary."
+    challenges:
+      - type: wrong-structure
+        text: "The ontology's alternative-to edge asserts a mutually-exclusive either/or choice, but the
+          same anchor source immediately complicates that: 'The choice between static or dynamic typing
+          does not have to be all or nothing... a bit of the other can be added' (Van Roy & Haridi), and
+          Harper describes hybrid typing where 'Static and dynamic types are not opposed to one another,
+          but may coexist harmoniously' and dynamic typing is 'a mode of use of static typing.' Krishnamurthi's
+          gradual/retrofitted typing material (Typed Racket, TypeScript) shows this middle ground is a
+          real, widely-used design point, not an edge case. The binary alternative-to relation has no
+          slot for this attested third position between the two poles."
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00239
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: there is now a much more complex language where any parts of a program can be 
+              static and any other parts dynamic, and they can freely commingle in the same body of 
+              code
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede the core point. The challenge is right, and it's right using the *same* anchor source:
+      [vanroy-haridi-2003#c00239] says in the same subsection cited for the carve, \"The choice between
+      static or dynamic typing does not have to be all or nothing. In each approach, a bit of the other
+      can be added, gaining some of its advantages.\" That directly undercuts reading \"two major families\"\
+      \ ([vanroy-haridi-2003#c00236]) as a strict either/or. Harper is stronger still: \"Static and dynamic
+      types are not opposed to one another, but may coexist harmoniously... dynamic typing is a mode of
+      use of static typing, reconciling an apparent opposition\" [harper-pfpl#c00361], and elsewhere calls
+      the supposed opposition \"illusory\" [harper-pfpl#c00346]. Krishnamurthi documents this as an actual,
+      shipped design category — retrofitted typing (Typed Racket, TypeScript, Static Python) and gradual
+      typing's micro/macro variants [krishnamurthi-plai#c00215, #c00241] — not a theoretical curiosity.\n\
+      \nAn `alternative-to` edge, read as asserting a mutually exclusive either/or choice, has no slot
+      for an attested third position that multiple sources treat as a stable design point rather than
+      noise around the poles. I don't have grounds to defend the binary framing against this — the evidence
+      cited for the carve itself immediately qualifies it.\n\nProposed amendment rather than outright
+      deletion, since the two-pole framing isn't baseless — Van Roy & Haridi do call them \"two major
+      families\" and most languages are still classifiable as predominantly one or the other at the level
+      of their core variable-binding discipline:\n\n- Reword the statement to drop the exclusive-choice
+      framing: \"Static and dynamic typing are the two poles of when/how a language checks type-compatibility;
+      most languages sit predominantly at one pole, but the choice is not all-or-nothing and hybrid/gradual
+      designs (e.g. Typed Racket, TypeScript) deliberately occupy the middle.\"\n- Add `gradual-typing`
+      (or `hybrid-typing`) as its own feature with edges to both `dynamic-typing` and `static-typing`
+      — not `alternative-to` but something like `requires`/`combines` or a dedicated \"retrofits\"/\"\
+      extends\" relation — so the graph has a place for Krishnamurthi's and Harper's middle category instead
+      of forcing it into the binary.\n- If the ontology's `alternative-to` semantics are meant loosely
+      (competing design strategies a designer picks between, not logical exclusivity), that should be
+      stated explicitly in the edge documentation; as currently worded the carve's statement reads as
+      exclusivity and the evidence contradicts that reading.\n\nI'd rather keep a two-pole relation than
+      drop it entirely — Van Roy & Haridi's own language supports treating static/dynamic as the two major
+      strategies — but the moderator should not uphold the current statement unamended, since the single
+      source cited for it immediately qualifies the exclusivity it's being used to support.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The single-source flag that triggered this debate is resolved: five independent textbook sources
+      (Van Roy & Haridi, Turbak & Gifford, Scott, Sebesta, Jordan et al., plus Cardelli & Wegner) converge
+      on static/dynamic typing as a named design-time choice about when and how type-compatibility is
+      checked, at the same granularity the carve asserts. No participant disputes the underlying factual
+      content.\n\nHowever, challenger-b's wrong-structure challenge is upheld. The carve's statement frames
+      the alternative-to edge as a mutually exclusive either/or, but the same anchor source cited for
+      the carve immediately qualifies that: \"The choice between static or dynamic typing does not have
+      to be all or nothing... a bit of the other can be added\" (Van Roy & Haridi §2.7.3), and Harper
+      (PFPL) describes hybrid typing where the two \"coexist harmoniously,\" with dynamic typing characterized
+      as \"a mode of use of static typing\" (p. 235). Krishnamurthi documents this as a shipped, non-exclusive
+      design category (Typed Racket, TypeScript, Static Python; p. 174), not an edge case. The proposer
+      conceded this directly. This is a real disagreement about what the evidence shows, resolved in the
+      challenger's favor by the proposer's own anchor source — not merely a disagreement between agents.\n\
+      \nResolution at the carve level: reword the statement to drop the exclusive-choice framing while
+      preserving the legitimate \"two major families/poles\" classification that most languages still
+      fit, and broaden evidence beyond the single source. This keeps the edge's factual core (most languages
+      are classifiable as predominantly static or dynamic, and designers do treat it as a consequential
+      choice) without asserting strict mutual exclusivity the sources contradict.\n\nThis does not fully
+      resolve the deeper structural gap challenger-b identifies: the ontology currently has no node/edge
+      for gradual or hybrid typing as a first-class third design point distinct from either pole, so the
+      alternative-to relation is still being asked to carry a load (a clean binary) that the corpus shows
+      is populated in the middle for real shipped languages. That gap is a dimension-model / edge-types
+      question for the structure review, not something a statement reword fully discharges — hence standing
+      dissent remains live even after this revision."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 1
+  upheld_challenges:
+    - wrong-structure
+  rationale: "The single-source flag that triggered this debate is resolved: five independent textbook
+    sources (Van Roy & Haridi, Turbak & Gifford, Scott, Sebesta, Jordan et al., plus Cardelli & Wegner)
+    converge on static/dynamic typing as a named design-time choice about when and how type-compatibility
+    is checked, at the same granularity the carve asserts. No participant disputes the underlying factual
+    content.\n\nHowever, challenger-b's wrong-structure challenge is upheld. The carve's statement frames
+    the alternative-to edge as a mutually exclusive either/or, but the same anchor source cited for the
+    carve immediately qualifies that: \"The choice between static or dynamic typing does not have to be
+    all or nothing... a bit of the other can be added\" (Van Roy & Haridi §2.7.3), and Harper (PFPL) describes
+    hybrid typing where the two \"coexist harmoniously,\" with dynamic typing characterized as \"a mode
+    of use of static typing\" (p. 235). Krishnamurthi documents this as a shipped, non-exclusive design
+    category (Typed Racket, TypeScript, Static Python; p. 174), not an edge case. The proposer conceded
+    this directly. This is a real disagreement about what the evidence shows, resolved in the challenger's
+    favor by the proposer's own anchor source — not merely a disagreement between agents.\n\nResolution
+    at the carve level: reword the statement to drop the exclusive-choice framing while preserving the
+    legitimate \"two major families/poles\" classification that most languages still fit, and broaden
+    evidence beyond the single source. This keeps the edge's factual core (most languages are classifiable
+    as predominantly static or dynamic, and designers do treat it as a consequential choice) without asserting
+    strict mutual exclusivity the sources contradict.\n\nThis does not fully resolve the deeper structural
+    gap challenger-b identifies: the ontology currently has no node/edge for gradual or hybrid typing
+    as a first-class third design point distinct from either pole, so the alternative-to relation is still
+    being asked to carry a load (a clean binary) that the corpus shows is populated in the middle for
+    real shipped languages. That gap is a dimension-model / edge-types question for the structure review,
+    not something a statement reword fully discharges — hence standing dissent remains live even after
+    this revision."
+  revision:
+    statement: Static and dynamic typing are the two poles of when and how a language checks that 
+      operations are applied to compatible types; most languages are classifiable as predominantly 
+      one or the other, but the choice is not all-or-nothing, and hybrid/gradual designs (e.g., 
+      Typed Racket, TypeScript) deliberately occupy the middle.
+  structure_element: edge-types
+  contradiction:
+    participants:
+      - citation:vanroy-haridi-2003:§2.7.3 (c00236)
+      - citation:vanroy-haridi-2003:§2.7.3 (c00239)
+    detail: The anchor source's own text frames static/dynamic typing both as "two major families"/a
+      binary design decision (c00236) and, in the same subsection, explicitly denies that the choice
+      is all-or-nothing, since each approach can incorporate a bit of the other (c00239). This 
+      internal tension is what the carve's exclusivity framing fails to carry, and is reinforced 
+      externally by Harper's claim that the opposition is illusory/harmonious (harper-pfpl) and 
+      Krishnamurthi's documentation of shipped gradual/hybrid languages.
