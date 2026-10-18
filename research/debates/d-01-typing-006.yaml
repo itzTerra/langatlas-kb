@@ -1,0 +1,305 @@
+id: d-01-typing-006
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: gradual-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-gradual-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-gradual-typing-01
+triggers:
+  - new-dimension
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: gradual-typing
+  from_candidates:
+    - gradual-typing
+  kind: feature
+  id: gradual-typing
+  name: Gradual Typing
+  summary: A discipline in which type annotations are added incrementally to a program, making it 
+    progressively more statically typed while deliberately mixing typed and untyped code.
+  evidence:
+    - source: krishnamurthi-plai
+      locator: p. 173
+      chunk_id: krishnamurthi-plai#c00240
+    - source: krishnamurthi-plai
+      locator: p. 174
+      chunk_id: krishnamurthi-plai#c00241
+      quote: In gradual typing, we are going to add annotations to programs and then type-check the 
+        program.
+  contested:
+    - new-dimension
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: Third exclusive value on the typing-discipline-time axis alongside static and dynamic.
+  dimension: static-dynamic-typing-discipline
+  cross_cutting: false
+  aliases: []
+  realizes:
+    - type-checking
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Defending `gradual-typing` as a third value on the static/dynamic dimension.**\n\n**1. It
+      is a distinctly named, independently structured discipline — not a stray mix of two existing values.**\n\
+      Krishnamurthi devotes an entire named section to it, opens by stating the problem it solves (large/partially-untypeable
+      codebases can't make \"an instant transition from untyped to typed\" [krishnamurthi-plai#c00239]),
+      defines it explicitly (\"gradual typing: as the name suggests, you add types 'gradually' to the
+      program... What started out as an academic idea... is now widely used in industry\" [krishnamurthi-plai#c00240]),
+      and then subdivides it into two named internal schools — \"micro\" and \"macro\" gradual typing
+      — each with its own mechanics (annotate any subset of variables vs. two sibling languages with typed
+      import boundaries) [krishnamurthi-plai#c00241]. A concept with its own name, its own history, its
+      own internal taxonomy, and canonical exemplars (Typed Racket [krishnamurthi-plai#c00242]) is not
+      an ad hoc description of \"some code is typed and some isn't\" — it is a recognized feature in its
+      own right, exactly the granularity this ontology's `feature` kind is meant to capture.\n\n**2. The
+      \"single-source\" flag is answerable: the phenomenon independently surfaces in a second source.**\n\
+      Van Roy & Haridi frame the static/dynamic choice explicitly as non-binary: \"When designing a language,
+      one of the major decisions to make is whether the language is to be dynamically typed, statically
+      typed, **or some mixture of both**\" [vanroy-haridi-2003#c00236]. They then give a concrete worked
+      instance of exactly this third option: Alice, a statically-typed sibling of the dynamically-typed
+      Oz, interoperable such that \"programs can be written partly in Alice and partly in Oz\" [vanroy-haridi-2003#c00240].
+      That is structurally identical to Krishnamurthi's \"macro\" gradual typing (two sibling languages,
+      typed/dynamic, sharing a runtime, with an explicit boundary for values crossing over) — described
+      independently, by a different author, without using the term \"gradual typing.\" This is real corroboration
+      of the *carve*, even though the specific term and its micro/macro taxonomy come from one source.
+      The flag is about sourcing breadth, and the breadth exists once you look past exact terminology.\n\
+      \n**3. \"New-dimension\" is the right call, not a defect — but as a *value*, not a separate axis.**\n\
+      The carve doesn't create a new axis; it adds an exclusive third value to the existing static-dynamic
+      axis, which is correct given the evidence: Krishnamurthi treats \"untyped→typed\" migration as sitting
+      conceptually between, not orthogonal to, static and dynamic typing — the whole point is movement
+      along a single spectrum, not a separate concern like e.g. nominal-vs-structural typing. Harper's
+      *Hybrid Typing* (`dyn`-type embedding) is a related but genuinely distinct mechanism — a single
+      escape-hatch type inside an otherwise fully static language, with no migration process and no \"\
+      two sibling languages\" story [harper-pfpl#c00361]. That distinctness is useful evidence too: it
+      shows the corpus contains more than one way to blend static and dynamic typing, and gradual typing
+      (migration-over-time, annotate-incrementally) is the specific one actually named and elaborated
+      at length, with real-world uptake, in the cited pages. The carve's own note — \"Third exclusive
+      value on the typing-discipline-time axis alongside static and dynamic\" — is precisely calibrated:
+      it's exclusive at a point in time (a given piece of code is in one state or crossing a boundary)
+      while being explicitly about change *over time*, which is what distinguishes it from Harper's static
+      hybrid.\n\n**Conclusion:** The carve should stand as drafted. The evidence shows (a) a named, internally-structured
+      feature, not a vague descriptor; (b) independent cross-source corroboration of the same structural
+      phenomenon (Van Roy & Haridi's Alice/Oz), even though only Krishnamurthi uses the canonical term;
+      and (c) a correctly scoped placement as a third value on the existing time-indexed static/dynamic
+      axis, distinguished from the adjacent-but-different hybrid-typing mechanism in Harper. I'd welcome
+      tightening the summary to foreground the *migration* aspect (rather than just \"mixing\"), since
+      that's what the sources actually emphasize and what cleanly separates gradual typing from Harper's
+      hybrid `dyn` approach — but the carve itself is sound."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve itself is reasonably well-grounded in Krishnamurthi — the source gives a named discipline
+      with explicit definition, an explicit \"broad principle\" framing that subsumes the micro/macro
+      split, and a canonical exemplar (Typed Racket), so treating it as a single `feature` node at the
+      principle's level of granularity matches the source's own structure. My one objection is to the
+      proposer's single-source rebuttal, not to the carve's placement as such.\n\nThe proposer resolves
+      the \"single-source\" flag by citing Van Roy & Haridi's Alice/Oz passage [vanroy-haridi-2003#c00240]
+      as independent corroboration, calling it \"structurally identical\" to Krishnamurthi's macro gradual
+      typing. Having read that passage directly, it doesn't support that claim. Van Roy & Haridi describe
+      two *separately motivated* research projects — Oz, kept dynamic because \"the only way to achieve
+      [exploring multi-paradigm integration] is with dynamic typing,\" and Alice, a sibling project that
+      \"has chosen to add a static type system\" for unrelated reasons — that happen to be interoperable
+      \"since it is based on the Mozart implementation.\" There is no language here of incremental annotation,
+      of a programmer deliberately migrating one codebase from dynamic to static over time, or of any
+      discipline at all; it's a static/dynamic interop fact about two independently designed languages.
+      Krishnamurthi's own definition is explicit that gradual typing is specifically about *change over
+      time within an effort* — \"we are going to add annotations to programs and then type-check the program\"\
+      \ [krishnamurthi-plai#c00241] — and even macro gradual typing's \"sibling languages\" are sibling
+      *by design*, expected to share a runtime precisely so code can be migrated function-by-function,
+      which is not what Van Roy & Haridi are describing. So the single-source concern stands: the defining,
+      time-indexed \"progressive migration\" character that justifies this as a *third value* on the axis
+      (rather than just a restatement of \"some mixture of both,\" which Van Roy & Haridi do attest at
+      [vanroy-haridi-2003#c00236]) is attested by only one source in the corpus."
+    challenges:
+      - type: missing-source
+        text: The cross-source corroboration offered for the single-source flag doesn't attest the 
+          same phenomenon. Van Roy & Haridi's Alice/Oz passage describes interoperability between 
+          two independently-motivated sibling language projects (Oz kept dynamic for multi-paradigm 
+          research, Alice made static for unrelated reasons, interoperable because both sit on the 
+          Mozart implementation) — not a discipline of incrementally annotating/migrating a program 
+          over time. The defining 'progressive' character that makes gradual typing a distinct third
+          value on the time-indexed axis, rather than just an instance of the already-attested 'some
+          mixture of both' option, remains sourced to Krishnamurthi alone.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00240
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: In gradual typing, we are going to add annotations to programs and then 
+              type-check the program.
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00236
+            quote: When designing a language, one of the major decisions to make is whether the 
+              language is to be dynamically typed, statically typed, or some mixture of both.
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: Two challenges stand against an otherwise well-evidenced carve; the single-source concern 
+      is not actually resolved by the Van Roy & Haridi citation, and the micro/macro split the 
+      proposer leans on as evidence of feature-hood is itself evidence the carve atomizes too 
+      coarsely.
+    challenges:
+      - type: missing-source
+        text: "The proposer's rebuttal to 'single-source' substitutes a different phenomenon. Krishnamurthi's
+          gradual typing is explicitly a temporal migration process: 'the programmer will gradually migrate
+          part of their codebase from the dynamic to the typed language, typically a function at a time'
+          — incremental annotation over time is the defining mechanism, and the carve's own note stresses
+          it is 'about change over time.' Van Roy & Haridi's Alice/Oz passage describes no such migration:
+          it is a snapshot fact about two already-built sibling languages being interoperable ('Alice
+          is interoperable with Oz (programs can be written partly in Alice and partly in Oz)'), arrived
+          at because the Oz project team built a second, statically-typed language once their dynamic
+          research was mature — not a discipline of incrementally annotating one evolving codebase. Citing
+          this as independent corroboration of 'the same structural phenomenon' conflates static/dynamic
+          language interoperability with gradual typing's defining time-indexed migration; the carve's
+          specific claim (incremental annotation, progressively more static) remains attested by Krishnamurthi
+          alone."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: the programmer will gradually migrate part of their codebase from the dynamic to 
+              the typed language, typically a function at a time
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00240
+            quote: Alice is interoperable with Oz (programs can be written partly in Alice and 
+              partly in Oz)
+      - type: wrong-atomization
+        text: The source itself treats 'gradual typing' as an umbrella label over two mechanically 
+          incompatible designs, and the proposer's own defense (point 1) cites exactly this split as
+          evidence of feature-hood without acknowledging it cuts the other way. Micro gradual typing
+          is a single-language, per-variable annotation discipline with an admittedly unclear 
+          soundness story ('previously we had a clean and simple soundness result for the typed 
+          program; now it is rather unclear what soundness means'); macro gradual typing is a 
+          two-sibling-language, import-boundary discipline with a completely different mechanism and
+          a clean typed/dynamic split preserved at the boundary. These read as competing 
+          architectural answers to the same problem rather than two flavors of one mechanism. 
+          Collapsing both into one feature node realizing 'type-checking' erases a distinction the 
+          source devotes a full named subsection to maintaining, and the carve's summary 
+          ('deliberately mixing typed and untyped code') only actually describes the micro variant; 
+          macro gradual typing deliberately does NOT mix code within a body — it isolates typed and 
+          dynamic code into sibling languages and only negotiates values at the boundary.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I'll address the two \"missing-source\" challenges together, then the \"wrong-atomization\"\
+      \ challenge.\n\n**Missing-source (conceded).** The type theorist and the working language implementer
+      are right, and I concede the point. The Van Roy & Haridi Alice/Oz material describes two already-built
+      sibling languages that happen to be interoperable — a synchronic fact about two independently-motivated
+      projects sharing a runtime. Krishnamurthi's gradual typing, by contrast, is explicitly diachronic:
+      \"the programmer will gradually migrate part of their codebase from the dynamic to the typed language,
+      typically a function at a time\" [krishnamurthi-plai#c00241], framed from the outset as solving
+      the problem that \"we cannot expect the whole program to make an instant transition from untyped
+      to typed\" [krishnamurthi-plai#c00240]. Nothing in the Alice/Oz passage attests incremental annotation
+      of one evolving program. Citing it as corroboration conflated \"static/dynamic interoperability\"\
+      \ with \"progressive typing of a single codebase over time,\" which are different phenomena. I withdraw
+      that corroboration; the carve should keep the `single-source` flag honestly rather than claim cross-source
+      support it doesn't have. This doesn't dissolve the carve — per project norms, single-source facts
+      are meant to be flagged and left challengeable, not deleted outright — but the evidence field and
+      any defense of it should not overstate support.\n\n**Wrong-atomization (partially conceded — summary
+      fix, not a split).** The implementer is correct that macro gradual typing does not \"deliberately
+      mix typed and untyped code\" — it isolates the two into sibling languages and negotiates only at
+      import boundaries, which is a materially different mechanism from micro's free intermingling within
+      one body, including an admittedly murky soundness story the source flags as a live cost (\"now it
+      is rather unclear what soundness means\") [krishnamurthi-plai#c00241]. The summary wording is wrong
+      for macro and needs to change.\n\nBut I don't think this licenses splitting the node. The source's
+      own framing nests both under one umbrella: \"In gradual typing, we are going to add annotations
+      to programs and then type-check the program. Within this broad principle, there are two schools
+      of thought\" — followed immediately by \"In contrast, there is another approach, **often called**
+      'macro' gradual typing\" [krishnamurthi-plai#c00241]. The text treats micro/macro as two mechanisms
+      realizing one named discipline (\"gradual typing\" is the section title and the recurring noun phrase
+      for both), not as two independently-named features. That matches this carve's `kind: feature` /
+      `realizes: type-checking` framing: the feature is \"incrementally typing a program so it becomes
+      progressively more static,\" and micro vs. macro are competing *implementation strategies* for that
+      feature — exactly the kind of variation the KB elsewhere handles via feature instances/mechanisms
+      rather than separate feature nodes, since both still cash out as the same third value on the static–dynamic
+      time axis (as opposed to \"all at once\" static or \"never\" dynamic).\n\nProposed amendment to
+      the carve rather than a split:\n- Reword summary to be mechanism-neutral, e.g.: \"A discipline in
+      which a program is made progressively more statically typed over time, either by freely intermixing
+      typed and untyped code within one language (micro) or by migrating code between sibling typed/dynamic
+      languages at import boundaries (macro).\"\n- Keep `single-source`, drop any claim of Van Roy corroboration
+      from the note.\n- Keep one node, `realizes: ['type-checking']`, `dimension: static-dynamic-typing-discipline`
+      as-is — the time-indexed, progressive character is still attested only by Krishnamurthi, but it
+      is attested clearly and is the organizing idea of the whole cited section, including both its sub-variants.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The carve holds as a single feature node, but the debate settled two things that must be reflected
+      in the record rather than just argued past.\n\n(1) Missing-source, upheld: the proposer's attempt
+      to resolve the single-source flag via Van Roy & Haridi's Alice/Oz passage was conceded as a conflation.
+      Alice/Oz is a synchronic interoperability fact about two independently-motivated sibling-language
+      projects; Krishnamurthi's gradual typing is explicitly diachronic — \"the programmer will gradually
+      migrate part of their codebase from the dynamic to the typed language, typically a function at a
+      time\" — and that time-indexed, progressive-migration character (the very thing that justifies treating
+      this as a third value rather than a restatement of Van Roy & Haridi's already-attested \"some mixture
+      of both\") remains attested by Krishnamurthi alone. The carve should stay flagged single-source
+      honestly; no cross-source corroboration should be claimed for it anywhere in the record.\n\n(2)
+      Wrong-atomization, not upheld as a split, but it correctly identifies a drafting defect. The source's
+      own text nests micro and macro gradual typing under one umbrella (\"Within this broad principle,
+      there are two schools of thought... often called 'macro' gradual typing\"), so one feature node
+      realizing type-checking, with micro/macro as competing mechanisms rather than sibling features,
+      matches the source's own structure — this is not the kind of mechanical incompatibility that warrants
+      a node split in this ontology (feature instances/mechanisms are the normal home for that variation).
+      But the current summary (\"deliberately mixing typed and untyped code\") only describes micro gradual
+      typing and misdescribes macro, which isolates typed/dynamic code into sibling languages and negotiates
+      only at import boundaries. The proposer's own amended wording fixes this and should be adopted mechanically.\n\
+      \nI'm recording a standing dissent: challenger-b's architectural point — that micro and macro are
+      \"competing architectural answers\" with materially different soundness stories, not flavors of
+      one mechanism — is not fully dissolved by the umbrella-framing argument, even though I agree it
+      doesn't rise to requiring a split today. If the KB later finds itself wanting to attach distinct
+      quality-impact or soundness facts to micro vs. macro specifically, this tension should be revisited
+      rather than treated as settled."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+  rationale: "The carve holds as a single feature node, but the debate settled two things that must be
+    reflected in the record rather than just argued past.\n\n(1) Missing-source, upheld: the proposer's
+    attempt to resolve the single-source flag via Van Roy & Haridi's Alice/Oz passage was conceded as
+    a conflation. Alice/Oz is a synchronic interoperability fact about two independently-motivated sibling-language
+    projects; Krishnamurthi's gradual typing is explicitly diachronic — \"the programmer will gradually
+    migrate part of their codebase from the dynamic to the typed language, typically a function at a time\"\
+    \ — and that time-indexed, progressive-migration character (the very thing that justifies treating
+    this as a third value rather than a restatement of Van Roy & Haridi's already-attested \"some mixture
+    of both\") remains attested by Krishnamurthi alone. The carve should stay flagged single-source honestly;
+    no cross-source corroboration should be claimed for it anywhere in the record.\n\n(2) Wrong-atomization,
+    not upheld as a split, but it correctly identifies a drafting defect. The source's own text nests
+    micro and macro gradual typing under one umbrella (\"Within this broad principle, there are two schools
+    of thought... often called 'macro' gradual typing\"), so one feature node realizing type-checking,
+    with micro/macro as competing mechanisms rather than sibling features, matches the source's own structure
+    — this is not the kind of mechanical incompatibility that warrants a node split in this ontology (feature
+    instances/mechanisms are the normal home for that variation). But the current summary (\"deliberately
+    mixing typed and untyped code\") only describes micro gradual typing and misdescribes macro, which
+    isolates typed/dynamic code into sibling languages and negotiates only at import boundaries. The proposer's
+    own amended wording fixes this and should be adopted mechanically.\n\nI'm recording a standing dissent:
+    challenger-b's architectural point — that micro and macro are \"competing architectural answers\"\
+    \ with materially different soundness stories, not flavors of one mechanism — is not fully dissolved
+    by the umbrella-framing argument, even though I agree it doesn't rise to requiring a split today.
+    If the KB later finds itself wanting to attach distinct quality-impact or soundness facts to micro
+    vs. macro specifically, this tension should be revisited rather than treated as settled."
+  revision:
+    summary: A discipline in which a program is made progressively more statically typed over time, 
+      either by freely intermixing typed and untyped code within one language (micro gradual typing)
+      or by migrating code between sibling typed/dynamic languages at import boundaries (macro 
+      gradual typing).
