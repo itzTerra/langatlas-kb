@@ -1,0 +1,400 @@
+id: d-01-typing-027
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: gadt--requires--algebraic-data-types
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-gadt--requires--algebraic-data-types-02
+  moderator: 2026-10-17-r4-moderator-01-typing-gadt--requires--algebraic-data-types-02
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: gadt--requires--algebraic-data-types
+  type: requires
+  from: gadt
+  to: algebraic-data-types
+  polarity:
+  statement: Generalized algebraic data types generalize ordinary algebraic data types by letting 
+    constructors declare richer, non-uniform return types.
+  evidence:
+    - source: ghc-users-guide
+      locator: §6.4.9
+      chunk_id: ghc-users-guide#c00693
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**The carve is correct and is no longer single-source.** Three distinct sources now carry it.\n\
+      \n**1. The primary passage states the generalization relation in exactly the carve's terms.** [ghc-users-guide#c00693]:
+      \"Generalised Algebraic Data Types generalise ordinary algebraic data types by allowing constructors
+      to have richer return types,\" with the worked `Term a` example and the explicit contrast \"the
+      return type of the constructors is not always `Term a`, as is the case with ordinary data types.\"\
+      \n\n**2. An independent source supplies the ordinary-ADT baseline being generalized.** The Haskell
+      2010 Report [haskell-2010-report#c00097] gives the ordinary algebraic datatype declaration and fixes
+      its constructor typing rule: `K_i :: ∀u1...uk. cx_i ⇒ t_i1 → ... → t_ik_i → (T u1...uk)`, where
+      \"the type variables u_1 through u_k must be distinct.\" That uniform-return-type discipline is
+      precisely the constraint GADTs relax, so the `algebraic-data-types` endpoint is attested outside
+      GHC's manual. Further independent attestation of that endpoint as sum-of-products with constructors
+      folding into a parameterized type: [krishnamurthi-plai#c00209], [pierce-attapl-2004#c00714], [turbak-gifford-dcpl#c00909].\n\
+      \n**3. A `requires` edge — not merely `influences` — is warranted, because the dependence is definitional,
+      not historical.** [ghc-users-guide#c00688] / [ghc-users-guide#c00689]: \"The result type of each
+      data constructor must begin with the type constructor being defined. If the result type of all constructors
+      has the form `T a1 ... an`, where `a1 ... an` are distinct type variables, then the data type is
+      ordinary; otherwise is a generalised data type.\" GADT-ness is diagnosed by deviation from the ordinary
+      ADT form; the ordinary form is the thing deviated from. Reinforced by [ghc-users-guide#c00695]:
+      \"It is permitted to declare an ordinary algebraic data type using GADT-style syntax. What makes
+      a GADT into a GADT is not the syntax, but rather the presence of data constructors whose result
+      type is not just `T a b`, or which include contexts.\" One cannot state what a GADT is without the
+      ADT declaration form in hand. [ghc-users-guide#c00694] adds the residual constraint that even in
+      a GADT \"the type of each constructor must end with `Term ty`.\"\n\n**One amendment I offer unprompted.**
+      The statement attributes GADT-ness to return types alone. [ghc-users-guide#c00695] gives a disjunctive
+      criterion: result type \"not just `T a b`, **or** which include contexts\" — and [ghc-users-guide#c00689]
+      shows per-constructor constraints (`T1 :: Eq b => b -> b -> T b`) as a separate axis of generalization,
+      with [ghc-users-guide#c00695] noting GADT constructors also generalize existential quantification.
+      I would amend the statement to: *\"Generalized algebraic data types generalize ordinary algebraic
+      data types by letting constructors declare richer return types — non-uniform type arguments, per-constructor
+      contexts, or existential variables — rather than the uniform `T a1 … an` result form.\"* This is
+      a tightening; the edge direction and type stand.\n\nAlso worth recording as a distinct downstream
+      fact rather than folding into this edge: the payoff of the generalization is typed pattern-match
+      refinement — \"the key point about GADTs is that pattern matching causes type refinement\" [ghc-users-guide#c00693],
+      shown propagating to other variables in [ghc-users-guide#c00694]. That belongs on a separate edge,
+      and I am not claiming it here."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The endpoints and the direction are right, and the multi-sourcing is now adequate: the ordinary-ADT
+      baseline is independently attested, and the GHC passage states the relation in the carve's own words
+      [ghc-users-guide#c00693]. I am not contesting that GADTs stand in a dependence relation to ordinary
+      ADTs, nor the direction.\n\nMy objections are to the relation *type* and to the proposer's unprompted
+      amendment.\n\nFirst, every passage the proposer cites describes **generalization/subsumption**,
+      not prerequisite dependence, and the sources make the subsumption run the other way from what `requires`
+      suggests: ordinary ADTs are a *degenerate case* of the GADT declaration form, not a component GADTs
+      are built on. [ghc-users-guide#c00683]: \"Any datatype (or newtype) that can be declared in standard
+      Haskell 98 syntax, can also be declared using GADT-style syntax.\" [ghc-users-guide#c00695]: \"\
+      It is permitted to declare an ordinary algebraic data type using GADT-style syntax.\" [ghc-users-guide#c00689]
+      diagnoses ordinary-vs-generalised by inspecting one uniform mechanism's output, not by layering
+      one mechanism on another. And where the guide does state GADTs' actual prerequisites, it names different
+      features: GADTs \"Implies MonoLocalBinds, GADTSyntax\" [ghc-users-guide#c00693], and \"the combination
+      of GADTSyntax and ExistentialQuantification is enough to define and use GADTs\" [ghc-users-guide#c00576].
+      So the dependence the sources actually assert as a dependence targets gadt-syntax and existential-quantification;
+      what they assert about plain ADTs is a generalizes relation. The ontology has no generalizes/specializes
+      slot, so that claim is being pressed into `requires`.\n\nSecond, the amendment imports material
+      the same sources attribute to neighbouring features. [ghc-users-guide#c00683] says it is GADT-*syntax*
+      — explicitly \"not GADTs themselves\" — that \"generalises existential types,\" and that the differential
+      treatment of constructor contexts is a property of GADT-style declarations as such. [ghc-users-guide#c00695]
+      confirms the separation sharply: a newtype may use GADT-style syntax but \"must declare an ordinary
+      data type, not a GADT… the constructor must not bind existential variables… nor include a context\"\
+      \ — i.e. contexts and existentials are available on declarations that are *not* GADTs. Folding \"\
+      per-constructor contexts, or existential variables\" into this edge's statement therefore attributes
+      to the ADT→GADT generalization axes the sources locate in gadt-syntax and existential-quantification.
+      The unamended statement, scoped to return types, matches [ghc-users-guide#c00693] and [ghc-users-guide#c00689]
+      exactly; I would keep it.\n\nI agree with the proposer that type refinement belongs on a separate
+      edge and make no claim about it here."
+    challenges:
+      - type: wrong-structure
+        text: "The carve's own statement is a generalization claim (\"generalize … by letting constructors
+          declare richer return types\"), and the cited passages consistently present ordinary ADTs as
+          a restriction/special case of the one GADT declaration mechanism rather than as a prerequisite
+          feature GADTs are built on: \"Any datatype (or newtype) that can be declared in standard Haskell
+          98 syntax, can also be declared using GADT-style syntax\" [ghc-users-guide#c00683]; \"It is
+          permitted to declare an ordinary algebraic data type using GADT-style syntax\" [ghc-users-guide#c00695];
+          ordinary-vs-generalised is a diagnosis on constructor result forms within one mechanism [ghc-users-guide#c00689].
+          Where the source does state GADTs' prerequisites, it names other features — \"Implies MonoLocalBinds,
+          GADTSyntax\" [ghc-users-guide#c00693] and \"the combination of GADTSyntax and ExistentialQuantification
+          is enough to define and use GADTs\" [ghc-users-guide#c00576]. The relation inventory (requires
+          / enables / influences / conflicts-with / alternative-to / quality) has no generalizes-or-specializes
+          slot, so a subsumption relation is being recorded as a dependency. The edge's content is sound;
+          the structure has no place to put it."
+        evidence:
+          - source: ghc-users-guide
+            locator: §6.4.8
+            chunk_id: ghc-users-guide#c00683
+            quote: Any datatype (or newtype) that can be declared in standard Haskell 98 syntax, can
+              also be declared using GADT-style syntax.
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00695
+          - source: ghc-users-guide
+            locator: §6.1.1
+            chunk_id: ghc-users-guide#c00576
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00693
+            quote: GADTs Implies MonoLocalBinds (page 603), GADTSyntax (page 385)
+      - type: scope
+        text: 'The proposed amendment widens the statement to cover "per-constructor contexts, or existential
+          variables," but the same source assigns those axes to adjacent features, not to the ADT→GADT
+          generalization. [ghc-users-guide#c00683] attributes the existential generalization and the changed
+          treatment of constructor contexts to GADTSyntax, described there as allowing GADT syntax "but
+          not GADTs themselves". [ghc-users-guide#c00695] shows the two come apart in the other direction
+          too: a newtype in GADT-style syntax "must declare an ordinary data type, not a GADT" and so
+          may not bind existentials or carry a context — so contexts and existentials are neither sufficient
+          nor exclusive to GADT-ness here. The unamended statement, restricted to non-uniform constructor
+          return types, is exactly what [ghc-users-guide#c00689] uses as the ordinary/generalised criterion
+          and should stand; the context/existential material belongs to gadt-syntax and existential-quantification
+          edges.'
+        evidence:
+          - source: ghc-users-guide
+            locator: §6.4.8
+            chunk_id: ghc-users-guide#c00683
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00695
+          - source: ghc-users-guide
+            locator: §6.4.8
+            chunk_id: ghc-users-guide#c00689
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "I read the primary passage and its neighbours in §6.4.7–6.4.9, plus the Haskell 2010 Report's
+      ordinary-ADT typing rule. The proposer is right on two of three points: the statement is a faithful
+      paraphrase of [ghc-users-guide#c00693], and the `algebraic-data-types` endpoint is independently
+      attested — the Report fixes the uniform constructor rule `K_i :: ∀u1…uk. cx_i ⇒ … → (T u1…uk)` with
+      \"the type variables u_1 through u_k must be distinct\" [haskell-2010-report#c00097], and the sum-of-products
+      reading is corroborated at [krishnamurthi-plai#c00209] and [pierce-attapl-2004#c00721]. The single-source
+      objection is answered.\n\nWhere I disagree is the relation type, and secondarily the amendment.
+      The sources describe GADTs as the broader case of a single declaration mechanism, not as a feature
+      that depends on a second coexisting feature — and GHC's own extension decomposition cuts the amendment's
+      three \"axes\" across three separately-gated features. Two challenges below; the edge's existence
+      and direction are not in dispute, only the type and the proposed statement text."
+    challenges:
+      - type: wrong-structure
+        text: "The sources state a subsumption/generalization relation; `requires` is the nearest available
+          slot and it misreports what they say.\n\nThe carve's own statement says GADTs *generalize* ordinary
+          ADTs. The passages back exactly that and nothing stronger: ordinary and generalised data types
+          are two diagnoses of one declaration grammar — \"If the result type of all constructors has
+          the form T a1 ... an, where a1 ... an are distinct type variables, then the data type is ordinary;
+          otherwise is a generalised data type\" [ghc-users-guide#c00689], and \"It is permitted to declare
+          an ordinary algebraic data type using GADT-style syntax\" [ghc-users-guide#c00695]. The GADT
+          mechanism contains the ordinary one as its degenerate case; it does not consume it as a prerequisite.\n\
+          \n`requires` in this ontology is a dependency between two features a language can have separately
+          — A is unusable unless B is also present. Under that reading the edge is either vacuous (every
+          language with the GADT declaration form has the ordinary form as a subcase by construction,
+          so nothing is constrained) or false (it implies ADTs are a distinct component GADTs call into,
+          which [ghc-users-guide#c00695] contradicts: a GADT-style declaration *is* an ADT declaration,
+          with or without non-uniform results). The proposer's own defence — \"the dependence is definitional,
+          not historical\" — is an argument for a definitional-subsumption relation, which is precisely
+          what `requires` cannot express. The ontology has no `generalizes` / `special-case-of` / `extends`
+          relation, so a conceptual-containment fact is being bent into a dependency edge, and the statement
+          and the type now say different things to any consumer. I am raising this against the structure
+          rather than proposing a swap to `influences`, which would be worse — it would downgrade a definitional
+          containment to a causal nudge."
+        evidence:
+          - source: ghc-users-guide
+            locator: §6.4.8
+            chunk_id: ghc-users-guide#c00689
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00695
+            quote: It is permitted to declare an ordinary algebraic data type using GADT-style 
+              syntax. What makes a GADT into a GADT is not the syntax, but rather the presence of 
+              data constructors whose result type is not just T a b , or which include contexts.
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00693
+      - type: wrong-atomization
+        text: "The offered amendment folds three mechanisms that the source names and gates separately
+          into one feature statement.\n\nThe amendment would make the GADT feature cover \"non-uniform
+          type arguments, per-constructor contexts, or existential variables.\" GHC separates these. Per-constructor
+          contexts made available by pattern matching are attributed to GADT *syntax*, under an extension
+          explicitly described as allowing \"the use of GADT syntax in data type definitions (but not
+          GADTs themselves)\" [ghc-users-guide#c00683] — and that same section demonstrates the context
+          behaviour with `MkSet :: Eq a => [a] -> Set a`, an ordinary data type. Existential variables
+          are a third, separately named extension with its own history and its own restrictions [ghc-users-guide#c00677],
+          [ghc-users-guide#c00682]. The decomposition is made explicit: \"while GADTs is not part of GHC2021,
+          the combination of GADTSyntax and ExistentialQuantification is enough to define and use GADTs\"\
+          \ [ghc-users-guide#c00575].\n\nSo the amendment's second and third disjuncts are capabilities
+          of neighbouring features that GADTs merely implies or re-exposes, not content of the GADT generalization
+          itself. The disjunctive wording in [ghc-users-guide#c00695] is a diagnostic test for whether
+          a given declaration is treated as a GADT, not a claim that contexts and existentials are part
+          of the same atom. Taking it as the latter makes the GADT feature absorb two features the KB
+          will want to carve independently — with their own instances in languages that have existentials
+          without GADTs. The original statement's narrower scope (non-uniform return types) is the better
+          atom; I would reject the amendment and let contexts and existential constructors stay as separate
+          features with their own edges."
+        evidence:
+          - source: ghc-users-guide
+            locator: §6.4.8
+            chunk_id: ghc-users-guide#c00683
+            quote: Allow the use of GADT syntax in data type definitions (but not GADTs themselves; 
+              for this see GADTs (page 391))
+          - source: ghc-users-guide
+            locator: §6.1.1
+            chunk_id: ghc-users-guide#c00575
+            quote: while GADTs (page 391) is not part of GHC2021 (page 316), the combination of 
+              GADTSyntax (page 385) and ExistentialQuantification (page 381) is enough to define and
+              use GADTs.
+          - source: ghc-users-guide
+            locator: §6.4.7
+            chunk_id: ghc-users-guide#c00677
+          - source: ghc-users-guide
+            locator: §6.4.9
+            chunk_id: ghc-users-guide#c00695
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "## Position: concede both challenges. The amendment is withdrawn and the `requires` typing
+      is not defensible from this source.\n\n### 1. The amendment (scope, wrong-atomization) — withdrawn
+      without reservation\n\nBoth challengers read the source correctly and I read it loosely. [ghc-users-guide#c00695]
+      uses \"include contexts\" and \"bind existential variables\" as a *diagnostic* for whether a given
+      declaration is treated as a GADT (\"What makes a GADT into a GADT is not the syntax, but rather
+      the presence of data constructors whose result type is not just `T a b`, or which include contexts\"\
+      ), and I mistook a test for a content inventory. The source then separates exactly those axes out:\n\
+      \n- constraint-in-context-available-by-pattern-matching is attributed to `GADTSyntax`, an extension
+      that explicitly allows \"the use of GADT syntax in data type definitions (but not GADTs themselves)\"\
+      , and is demonstrated there on an ordinary data type, `MkSet :: Eq a => [a] -> Set a` [ghc-users-guide#c00683];\n\
+      - existentials are a separately named extension, and [ghc-users-guide#c00695] states GADTs \"technically
+      does not imply ExistentialQuantification\";\n- the decomposition is stated outright: \"while GADTs
+      is not part of GHC2021, the combination of GADTSyntax and ExistentialQuantification is enough to
+      define and use GADTs\" [ghc-users-guide#c00575] / [ghc-users-guide#c00576].\n\nFolding those into
+      one feature statement would absorb two atoms the KB needs separately. The narrow wording — non-uniform
+      constructor return types, matching the ordinary/generalised criterion in [ghc-users-guide#c00689]
+      — is the better atom and I do not defend the widening.\n\n### 2. The structure (wrong-structure,
+      both challengers) — conceded\n\nI previously defended the edge by saying the dependence is \"definitional,
+      not historical.\" That defence is self-defeating, and the implementer names why: a definitional
+      subsumption is precisely what `requires` cannot carry. The source treats ordinary and generalised
+      data types as two diagnoses of one declaration grammar — \"If the result type of all constructors
+      has the form `T a1 ... an`, where `a1 ... an` are distinct type variables, then the data type is
+      ordinary; otherwise is a generalised data type\" [ghc-users-guide#c00689]; \"It is permitted to
+      declare an ordinary algebraic data type using GADT-style syntax\" [ghc-users-guide#c00695]; \"Any
+      datatype (or newtype) that can be declared in standard Haskell 98 syntax, can also be declared using
+      GADT-style syntax\" [ghc-users-guide#c00683]. Under `requires`-as-dependency the edge is vacuous
+      at best and, read as \"ADTs are a separate component GADTs call into,\" contradicted by [ghc-users-guide#c00695].\n\
+      \nDecisively, where this source *does* state GADTs' prerequisites it names different features: \"\
+      Implies MonoLocalBinds, GADTSyntax\" [ghc-users-guide#c00693], and \"A GADT can only be declared
+      using GADT-style syntax ... the old Haskell 98 syntax for data declarations always declares an ordinary
+      data type\" [ghc-users-guide#c00694]. `algebraic-data-types` is not in that list. I have searched
+      for a passage putting ADTs in a prerequisite position for GADTs and found none; the only relation
+      the corpus asserts is the generalisation in [ghc-users-guide#c00693], which the inventory has no
+      slot for. I also note the single-source referral is not cured: every passage in this debate, mine
+      and the challengers', is `ghc-users-guide`.\n\n### Recommended disposition\n\n1. **Drop `gadt--requires--algebraic-data-types`.**
+      Do not swap it to `influences` — the implementer is right that that downgrades definitional containment
+      to a causal nudge, which is a second misreport rather than a fix.\n2. **Retain the content as a
+      feature-level fact on `gadt`**, in the source's own words and scope: GADTs generalise ordinary algebraic
+      data types by allowing constructors to have richer return types, the return type need not be `T
+      a`, and pattern matching causes type refinement [ghc-users-guide#c00693], [ghc-users-guide#c00694].
+      No relation edge is needed to record this.\n3. **Replacement edges that this source does license
+      as dependencies**, offered in place of the dropped one: `gadt --requires--> gadt-syntax` (\"A GADT
+      can only be declared using GADT-style syntax\" [ghc-users-guide#c00694]; \"Implies ... GADTSyntax\"\
+      \ [ghc-users-guide#c00693]), and `gadt --requires--> mono-local-binds` from the same \"Implies\"\
+      \ line, corroborated by [ghc-users-guide#c01027] (\"Implied by TypeFamilies, GADTs\") and by the
+      `-Wgadt-mono-local-binds` warning, which records that in GHC 9.2 and below \"it was an error to
+      pattern match on a GADT if neither GADTs nor TypeFamilies were enabled\" [ghc-users-guide#c00250].
+      These are genuine two-feature dependencies, not subsumption.\n4. **Backlog item for the relation
+      vocabulary:** the ADT/GADT case is a clean motivating example for a `specialises` / `generalises`
+      slot. Until such a slot exists, the right move is to leave the fact at feature level rather than
+      bend it into `requires` — and both challengers reached that conclusion independently, which I take
+      as the correct outcome here."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The carve's content is sound and its statement is a faithful paraphrase of its evidence: [ghc-users-guide#c00693]
+      says in the carve's own words that GADTs \"generalise ordinary algebraic data types by allowing
+      constructors to have richer return types,\" and [ghc-users-guide#c00689] fixes the ordinary/generalised
+      criterion on constructor result form. The endpoints are both attested and the `algebraic-data-types`
+      endpoint is independently grounded outside GHC's manual by the Haskell 2010 Report's uniform constructor
+      typing rule (\"the type variables u_1 through u_k must be distinct\", [haskell-2010-report#c00097]),
+      with corroboration at [krishnamurthi-plai#c00209] and [pierce-attapl-2004#c00714]. The direction
+      is uncontested by all three participants. So the carve is not what is wrong, and I keep it rather
+      than drop it, notwithstanding the proposer's own recommendation to drop — dropping would discard
+      a well-sourced, correctly-directed relation because the vocabulary cannot name it, and the content
+      would then survive only as an untyped feature-level note.\n\nBoth wrong-structure challenges are
+      upheld on their cited passages. The sources assert subsumption, not prerequisite dependence: ordinary
+      and generalised data types are two diagnoses of one declaration grammar ([ghc-users-guide#c00689]),
+      an ordinary ADT may be declared in GADT-style syntax ([ghc-users-guide#c00695]), and anything declarable
+      in Haskell 98 syntax is declarable in GADT syntax ([ghc-users-guide#c00683]). Decisively, where
+      the source does state GADTs' prerequisites it names other features — \"Implies MonoLocalBinds, GADTSyntax\"\
+      \ [ghc-users-guide#c00693], \"A GADT can only be declared using GADT-style syntax\" [ghc-users-guide#c00694],
+      and \"the combination of GADTSyntax and ExistentialQuantification is enough to define and use GADTs\"\
+      \ [ghc-users-guide#c00576] — and `algebraic-data-types` is absent from that list. Under `requires`-as-two-feature-dependency
+      the edge is vacuous or, read as \"ADTs are a separate component GADTs call into,\" contradicted
+      by [ghc-users-guide#c00695]. The proposer's \"definitional, not historical\" defence is itself an
+      argument for a subsumption relation. Swapping to `influences` would be a worse misreport, downgrading
+      definitional containment to a causal nudge.\n\nWhat the structure would need to hold this carve:
+      a generalises/specialises (or extends / special-case-of) edge type in the relation inventory, expressing
+      that one feature's mechanism contains another's as its degenerate case rather than depending on
+      it as a coexisting prerequisite. Until that slot exists, this edge is typed `requires` only because
+      `requires` is the nearest available slot, and its statement and its type report different things
+      to any consumer. The ADT/GADT pair is a clean motivating example for the structure review.\n\nThe
+      scope and wrong-atomization challenges against the proposer's unprompted amendment are also upheld,
+      and the amendment is withdrawn, so no revision is applied. [ghc-users-guide#c00695] uses \"include
+      contexts\" / \"bind existential variables\" as a diagnostic for whether a declaration is treated
+      as a GADT, not as a content inventory; [ghc-users-guide#c00683] attributes the existential generalisation
+      and the constructor-context behaviour to GADTSyntax, \"but not GADTs themselves,\" demonstrated
+      on an ordinary data type (`MkSet :: Eq a => [a] -> Set a`); and [ghc-users-guide#c00575]/[ghc-users-guide#c00576]
+      decompose the three axes across separately gated extensions. The unamended statement, scoped to
+      non-uniform constructor return types, is the better atom and stands unchanged.\n\nStanding dissent
+      is recorded on two live counts: (1) both challengers' type objection survives this keep — the edge
+      is retained with a type the sources do not support, pending an edge-type slot for subsumption; (2)
+      the single-source referral is not cured for the *relation* itself. The endpoint is multi-sourced,
+      but every passage asserting the GADT→ADT generalisation in this debate is `ghc-users-guide`; the
+      Report and textbook citations attest the baseline, not the relation. The proposer's offered replacement
+      edges (`gadt --requires--> gadt-syntax`, `gadt --requires--> mono-local-binds`) are genuine two-feature
+      dependencies and should be carved separately; they are not substitutes for this one and I make no
+      ruling on them here."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - wrong-structure
+    - scope
+    - wrong-atomization
+  rationale: "The carve's content is sound and its statement is a faithful paraphrase of its evidence:
+    [ghc-users-guide#c00693] says in the carve's own words that GADTs \"generalise ordinary algebraic
+    data types by allowing constructors to have richer return types,\" and [ghc-users-guide#c00689] fixes
+    the ordinary/generalised criterion on constructor result form. The endpoints are both attested and
+    the `algebraic-data-types` endpoint is independently grounded outside GHC's manual by the Haskell
+    2010 Report's uniform constructor typing rule (\"the type variables u_1 through u_k must be distinct\"\
+    , [haskell-2010-report#c00097]), with corroboration at [krishnamurthi-plai#c00209] and [pierce-attapl-2004#c00714].
+    The direction is uncontested by all three participants. So the carve is not what is wrong, and I keep
+    it rather than drop it, notwithstanding the proposer's own recommendation to drop — dropping would
+    discard a well-sourced, correctly-directed relation because the vocabulary cannot name it, and the
+    content would then survive only as an untyped feature-level note.\n\nBoth wrong-structure challenges
+    are upheld on their cited passages. The sources assert subsumption, not prerequisite dependence: ordinary
+    and generalised data types are two diagnoses of one declaration grammar ([ghc-users-guide#c00689]),
+    an ordinary ADT may be declared in GADT-style syntax ([ghc-users-guide#c00695]), and anything declarable
+    in Haskell 98 syntax is declarable in GADT syntax ([ghc-users-guide#c00683]). Decisively, where the
+    source does state GADTs' prerequisites it names other features — \"Implies MonoLocalBinds, GADTSyntax\"\
+    \ [ghc-users-guide#c00693], \"A GADT can only be declared using GADT-style syntax\" [ghc-users-guide#c00694],
+    and \"the combination of GADTSyntax and ExistentialQuantification is enough to define and use GADTs\"\
+    \ [ghc-users-guide#c00576] — and `algebraic-data-types` is absent from that list. Under `requires`-as-two-feature-dependency
+    the edge is vacuous or, read as \"ADTs are a separate component GADTs call into,\" contradicted by
+    [ghc-users-guide#c00695]. The proposer's \"definitional, not historical\" defence is itself an argument
+    for a subsumption relation. Swapping to `influences` would be a worse misreport, downgrading definitional
+    containment to a causal nudge.\n\nWhat the structure would need to hold this carve: a generalises/specialises
+    (or extends / special-case-of) edge type in the relation inventory, expressing that one feature's
+    mechanism contains another's as its degenerate case rather than depending on it as a coexisting prerequisite.
+    Until that slot exists, this edge is typed `requires` only because `requires` is the nearest available
+    slot, and its statement and its type report different things to any consumer. The ADT/GADT pair is
+    a clean motivating example for the structure review.\n\nThe scope and wrong-atomization challenges
+    against the proposer's unprompted amendment are also upheld, and the amendment is withdrawn, so no
+    revision is applied. [ghc-users-guide#c00695] uses \"include contexts\" / \"bind existential variables\"\
+    \ as a diagnostic for whether a declaration is treated as a GADT, not as a content inventory; [ghc-users-guide#c00683]
+    attributes the existential generalisation and the constructor-context behaviour to GADTSyntax, \"\
+    but not GADTs themselves,\" demonstrated on an ordinary data type (`MkSet :: Eq a => [a] -> Set a`);
+    and [ghc-users-guide#c00575]/[ghc-users-guide#c00576] decompose the three axes across separately gated
+    extensions. The unamended statement, scoped to non-uniform constructor return types, is the better
+    atom and stands unchanged.\n\nStanding dissent is recorded on two live counts: (1) both challengers'
+    type objection survives this keep — the edge is retained with a type the sources do not support, pending
+    an edge-type slot for subsumption; (2) the single-source referral is not cured for the *relation*
+    itself. The endpoint is multi-sourced, but every passage asserting the GADT→ADT generalisation in
+    this debate is `ghc-users-guide`; the Report and textbook citations attest the baseline, not the relation.
+    The proposer's offered replacement edges (`gadt --requires--> gadt-syntax`, `gadt --requires--> mono-local-binds`)
+    are genuine two-feature dependencies and should be carved separately; they are not substitutes for
+    this one and I make no ruling on them here."
+  structure_element: edge-types
