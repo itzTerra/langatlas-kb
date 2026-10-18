@@ -1,0 +1,285 @@
+id: d-01-typing-016
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: parametric-polymorphism
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-parametric-polymorphism-01
+  moderator: 2026-10-17-r4-moderator-01-typing-parametric-polymorphism-01
+triggers:
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: parametric-polymorphism
+  from_candidates:
+    - parametric-polymorphism
+  kind: feature
+  id: parametric-polymorphism
+  name: Parametric Polymorphism (Generics)
+  summary: Polymorphism where code is written generically using type variables and instantiated at 
+    particular types, with every instance behaving uniformly.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §23.2
+      chunk_id: pierce-tapl-2002#c00726
+    - source: sebesta-copl
+      locator: §9.10
+      chunk_id: sebesta-copl#c00758
+      quote: Parametric polymorphism is provided by a subprogram that takes generic parameters
+    - source: scott-plp
+      locator: p. 228
+      chunk_id: scott-plp#c00213
+      quote: In parametric polymorphism the code takes a type (or set of types) as a parameter
+  contested:
+    - new-dimension
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-d56742e0b37a
+    verdict: verified
+    admissible: true
+    pairs: 3
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: One of the mutually comparable varieties of polymorphism Strachey/Cardelli-Wegner/Pierce 
+    classify, hence a dimension member.
+  dimension: polymorphism-variety
+  cross_cutting: false
+  aliases:
+    - generics
+    - generic functions
+    - genericity
+  realizes:
+    - polymorphism
+  layer: 3
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Proposer's opening case for `parametric-polymorphism`**\n\nThe carve is well-evidenced and
+      the taxonomy it sits in is attested independently by at least three separate textbook lineages,
+      which is exactly what's needed to justify treating \"polymorphism variety\" as a dimension and parametric
+      polymorphism as a canonical member of it.\n\n1. **The classification itself is explicit and canonical,
+      not invented for this KB.** Pierce states outright: \"Several varieties of polymorphism can be found
+      in modern languages (this classification comes from Strachey, 1967, and Cardelli and Wegner, 1985)\"\
+      \ [pierce-tapl-2002#c00726], immediately followed by the definition used in the carve's summary:
+      parametric polymorphism \"allows a single piece of code to be typed 'generically,' using variables
+      in place of actual types, and then instantiated with particular types as needed. Parametric definitions
+      are uniform: all of their instances behave the same.\" That is almost verbatim what the carve's
+      `summary` field says — uniform instantiation at particular types is the defining criterion, straight
+      from the primary source.\n\n2. **Cardelli & Wegner independently confirm both the definition and
+      its place in a contrastive taxonomy.** \"Parametric polymorphism is obtained when a function works
+      uniformly on a range of types... Ad-hoc polymorphism is obtained when a function works, or appears
+      to work, on several different types... and may behave in unrelated ways for each type\" [cardelli-wegner-1985#c00011].
+      They go further and build a whole figure (\"Figure 1: Varieties of polymorphism\") classifying parametric
+      and inclusion polymorphism as subcategories of *universal* polymorphism, contrasted with *ad-hoc*
+      polymorphism — i.e., the source itself treats \"variety of polymorphism\" as a dimension with mutually
+      exclusive, mutually comparable members. That is direct support for the carve's own dimension rationale
+      (\"new-dimension\").\n\n3. **This isn't idiosyncratic to type-theory sources — the same cut appears
+      in an undergraduate-level textbook independently.** Sebesta: \"Overloaded subprograms provide a
+      particular kind of polymorphism called ad hoc polymorphism... Parametric polymorphism is provided
+      by a subprogram that takes generic parameters... Parametric definitions of subprograms all behave
+      the same\" [sebesta-copl#c00758]. Scott gives the same shape: \"In parametric polymorphism the code
+      takes a type (or set of types) as a parameter\" [scott-plp#c00213]. Three independently-authored
+      sources (Pierce/Strachey/Cardelli-Wegner lineage, Sebesta, Scott) converging on the same cut — parametric
+      vs. ad-hoc vs. (later) inclusion/subtype — is strong grounds for a dimension, not just a single
+      author's idiosyncratic taxonomy.\n\n4. **The aliasing to \"generics\" is textually licensed, not
+      a stretch.** Sebesta: \"Parametrically polymorphic subprograms are often called generic subprograms\"\
+      \ [sebesta-copl#c00758]. Standards bodies confirm the same identification in practice: ECMA-335
+      (\"generics allows a whole family of types and methods to be defined using a pattern... instantiate
+      whichever member of the family is actually required\" [ecma-335-6th#c00313]), the JLS's parameterized
+      types [jls-se25#c00118], and the Go spec's instantiation-by-substitution mechanics [go-lang-spec#c00105]
+      all describe exactly the uniform type-variable-then-instantiate pattern Pierce names \"parametric
+      polymorphism.\" So the feature carve correctly unifies the theoretical name with its common industrial
+      name and mechanism.\n\n5. **`realizes: ['polymorphism']` and `dimension: polymorphism-variety` are
+      structurally sound** given that Cardelli-Wegner's own figure places parametric polymorphism as a
+      subcategory of a polymorphism supertype alongside siblings (ad-hoc, inclusion) — this is the source's
+      own hierarchy, not an imposed one.\n\nThe one thing worth flagging pre-emptively: Pierce distinguishes
+      *impredicative/first-class* parametric polymorphism from *ML-style/let-polymorphism* as sub-varieties
+      within parametric polymorphism itself [pierce-tapl-2002#c00726]. I don't think this undermines the
+      carve — it's consistent with layer-3 feature granularity, where finer parametric-polymorphism sub-varieties
+      (if ever needed) would be separate child features under this one, not a reason to dissolve the parent
+      category. The carve as drafted, scoped at the \"variety of polymorphism\" grain with Strachey/Cardelli-Wegner/Pierce/Sebesta/Scott
+      convergence behind it, is well-supported and should stand.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The carve is well-evidenced for the leaf fact itself — Pierce §23.2, Cardelli & Wegner 
+      (1985), Sebesta, and Scott converge cleanly on the definition and on treating parametric 
+      polymorphism as one of several comparable "varieties of polymorphism," which supports both the
+      carve's content and the `new-dimension` triage. I find one structural tension worth flagging, 
+      not with the carve's existence but with how the dimension is being modeled.
+    challenges:
+      - type: wrong-structure
+        text: "The proposer's own point 5 claims the `dimension: polymorphism-variety` flat-sibling arrangement
+          (parametric / ad-hoc / inclusion-subtype as mutually comparable dimension members) is 'the source's
+          own hierarchy, not an imposed one,' citing Cardelli & Wegner's Figure 1. But C&W's figure is
+          explicitly two-level, not flat: 'Parametric and inclusion polymorphism are classified as the
+          two major subcategories of universal polymorphism, which is contrasted with nonuniversal or
+          ad-hoc polymorphism' [cardelli-wegner-1985#c00011], and again 'There are two major kinds of
+          universal polymorphism... In parametric polymorphism... In inclusion polymorphism...' [cardelli-wegner-1985#c00012].
+          So in C&W's own taxonomy, parametric-polymorphism is not a direct sibling of ad-hoc polymorphism
+          at all — it is a child of an intermediate node (universal polymorphism) that itself is the sibling
+          of ad-hoc. A flat `dimension` field with mutually comparable members has no slot for that intermediate
+          'universal polymorphism' node, so placing parametric-polymorphism as a flat co-equal of ad-hoc
+          polymorphism in the same dimension either silently drops a level of the cited source's classification
+          or misattributes a flat structure to a source that is explicitly two-tiered. This is a structural
+          gap in what a single flat `dimension` can represent, not a reason to reject the parametric-polymorphism
+          carve itself."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The node carve for `parametric-polymorphism` is well-grounded: Pierce §23.2 states the definition
+      nearly verbatim as the carve's summary [pierce-tapl-2002#c00726], Cardelli & Wegner independently
+      confirm both the definition and the \"generic function\" alias [cardelli-wegner-1985#c00011][cardelli-wegner-1985#c00012],
+      and Sebesta/Scott converge on the same cut from an undergraduate-textbook angle [sebesta-copl#c00758][scott-plp#c00213].
+      `realizes: ['polymorphism']` is sound. I have one structural concern about the `dimension: polymorphism-variety`
+      framing itself (flagged `new-dimension`), not about the node's content.\n\nThe carve's note justifies
+      `dimension` status by calling parametric polymorphism \"one of the mutually comparable varieties...
+      Strachey/Cardelli-Wegner/Pierce classify.\" But the sources describing this classification explicitly
+      deny the property a \"dimension\" (an axis along which a feature instance takes one comparable value,
+      by analogy to things like evaluation-order strict/lazy) is normally used to express: mutual exclusivity.
+      Pierce says outright: \"These categories are not exclusive: different forms of polymorphism can
+      be mixed in the same language. For example, Standard ML offers both parametric polymorphism and
+      simple overloading... while Java includes subtyping, overloading, and simple ad-hoc polymorphism...
+      but not... parametric polymorphism\" [pierce-tapl-2002#c00728]. And Cardelli & Wegner's own Figure
+      1 is not a flat list of comparable siblings at all — it's a two-level hierarchy: \"universal polymorphism\"\
+      \ (itself split into parametric and inclusion) is contrasted with \"ad-hoc/nonuniversal polymorphism\"\
+      \ one level up [cardelli-wegner-1985#c00011][cardelli-wegner-1985#c00012]. Treating parametric-polymorphism
+      as a flat dimension-member alongside ad-hoc and inclusion both (a) discards the universal/ad-hoc
+      superclass split that is the actual point of the Strachey/Cardelli-Wegner taxonomy, and (b) misrepresents
+      languages as picking one value from a comparable set when the sources describe freely-combinable,
+      non-exclusive mechanisms. This isn't an argument that the parametric-polymorphism node itself is
+      wrong — it is clearly a sound feature — but that \"dimension\" as a structural device (implying
+      single-select, mutually-exclusive comparable values) has no clean slot for what Strachey/Cardelli-Wegner/Pierce
+      actually describe: an overlapping, hierarchical classification where a language can and typically
+      does instantiate several varieties at once."
+    challenges:
+      - type: wrong-structure
+        text: "The carve justifies `dimension: polymorphism-variety` by calling parametric polymorphism
+          one of several 'mutually comparable varieties,' implying a dimension-style single-select axis.
+          But Pierce explicitly states the varieties are non-exclusive and routinely co-occur in the same
+          language ('These categories are not exclusive: different forms of polymorphism can be mixed
+          in the same language. Standard ML offers both parametric polymorphism and simple overloading...
+          Java includes subtyping, overloading, and simple ad-hoc polymorphism... but not... parametric
+          polymorphism'), and Cardelli & Wegner's own taxonomy is a two-level hierarchy (universal ⊃ {parametric,
+          inclusion} vs. ad-hoc/nonuniversal), not a flat list of comparable siblings. Forcing this into
+          a flat 'dimension' loses the universal/ad-hoc superclass split that is the actual contribution
+          of the source taxonomy and misrepresents a freely-combinable classification as a single-value
+          axis."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §23.2
+            chunk_id: pierce-tapl-2002#c00728
+          - source: cardelli-wegner-1985
+            locator: pp. 4–5
+            chunk_id: cardelli-wegner-1985#c00011
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Both challenges are right, and I concede the `dimension: polymorphism-variety` framing as drafted.\n\
+      \nThe cited evidence confirms the problem precisely:\n\n1. **Structure is two-tiered, not flat.**
+      Cardelli & Wegner state explicitly: \"Parametric and inclusion polymorphism are classified as the
+      two major subcategories of universal polymorphism, which is contrasted with nonuniversal or ad-hoc
+      polymorphism\" [cardelli-wegner-1985#c00011], and \"There are two major kinds of universal polymorphism...
+      In parametric polymorphism... In inclusion polymorphism\" [cardelli-wegner-1985#c00012]. A flat
+      `dimension` with parametric/ad-hoc/inclusion as mutually comparable co-equal members has no slot
+      for the intermediate \"universal polymorphism\" node that is the actual organizing move of the source
+      (it's what separates parametric+inclusion from ad-hoc as a group). My original defense (\"the source's
+      own hierarchy, not an imposed one\") was wrong — it IS imposing a flattening on an explicitly two-level
+      source taxonomy.\n\n2. **Non-exclusivity contradicts single-select-axis semantics.** Pierce is explicit:
+      \"These categories are not exclusive: different forms of polymorphism can be mixed in the same language.
+      Standard ML offers both parametric polymorphism and simple overloading... Java includes subtyping,
+      overloading, and simple ad-hoc polymorphism... but not... parametric polymorphism\" [pierce-tapl-2002#c00728].
+      A `dimension` field, by the convention's own apparent intent (members \"mutually comparable,\" implying
+      a language picks one value along the axis), models an exclusive-choice axis. But the source explicitly
+      describes a freely-combinable feature set, not a partition. Calling it a `dimension` misrepresents
+      what the cited taxonomy actually claims.\n\nBoth challenges target the same root cause and neither
+      disputes that parametric-polymorphism itself is a well-evidenced, legitimately named feature (Pierce
+      §23.2 [pierce-tapl-2002#c00726]: \"allows a single piece of code to be typed 'generically,' using
+      variables in place of actual types, and then instantiated with particular types as needed... all
+      of their instances behave the same\" — matching the carve's summary almost verbatim). The problem
+      is purely in the `dimension`/`cross_cutting` metadata imposed on top of the node.\n\nRecommended
+      amendment: keep the `parametric-polymorphism` node (id, name, summary, evidence, aliases, realizes:
+      polymorphism) as-is — it's solidly sourced. Drop or restructure the dimension claim: either (a)
+      remove `dimension: polymorphism-variety` and `cross_cutting: False` entirely, letting `realizes:
+      ['polymorphism']` carry the relationship without asserting an exclusive-choice axis, or (b) if the
+      carve set wants to preserve C&W's actual structure, introduce an intermediate `universal-polymorphism`
+      node as the dimension-bearing parent of `parametric-polymorphism` and `inclusion-polymorphism` (siblings
+      under it), with `ad-hoc-polymorphism` as the sibling of that whole node — and drop any implication
+      that a language selects only one value, since Pierce's ML/Java examples show multiple co-occurring
+      simultaneously. I don't have a basis to prefer (a) or (b) from the evidence alone; either resolves
+      the misrepresentation the challenges identified, but shipping the current flat/exclusive `dimension`
+      field is not defensible against these citations."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The parametric-polymorphism node itself is solidly evidenced: Pierce §23.2's definition of
+      uniform generic instantiation [pierce-tapl-2002#c00726] matches the carve's summary almost verbatim,
+      and Cardelli & Wegner, Sebesta, and Scott independently converge on the same definition and the
+      generics/generic-subprogram alias. `realizes: ['polymorphism']` is well supported and uncontested.
+      Neither challenger disputes the node's content — both target the `dimension: polymorphism-variety`
+      metadata, and the proposer explicitly conceded the point after reviewing the cited passages, so
+      this is not merely a confident-but-unevidenced challenge.\n\nThe `wrong-structure` challenge is
+      upheld on its merits. Two problems are independently sourced: (1) Cardelli & Wegner's own classification
+      is two-tiered — \"parametric and inclusion polymorphism are classified as the two major subcategories
+      of universal polymorphism, which is contrasted with nonuniversal or ad-hoc polymorphism\" [cardelli-wegner-1985#c00011]
+      — so a flat `dimension` with parametric/ad-hoc/inclusion as co-equal members drops the intermediate
+      \"universal polymorphism\" node that is the actual organizing move of the cited taxonomy. (2) Pierce
+      explicitly denies the exclusivity a single-select `dimension` axis implies: \"These categories are
+      not exclusive: different forms of polymorphism can be mixed in the same language. Standard ML offers
+      both parametric polymorphism and simple overloading... Java includes subtyping, overloading, and
+      simple ad-hoc polymorphism... but not... parametric polymorphism\" [pierce-tapl-2002#c00728]. A
+      dimension model that assumes one value per axis misrepresents a freely-combinable, hierarchical
+      classification as a partition.\n\nThis is a structural gap, not a defect in the node: the `dimension-model`
+      structural element currently has no way to express either (a) hierarchical/nested classification
+      axes, or (b) non-exclusive, co-occurring membership. To hold this carve's `dimension` assignment,
+      the structure would need to either support an intermediate dimension-bearing node (e.g., a `universal-polymorphism`
+      parent carrying `parametric-polymorphism` and `inclusion-polymorphism` as children, sibling to `ad-hoc-polymorphism`)
+      or abandon the single-select-axis semantics for this case and drop `dimension`/`cross_cutting` from
+      this node entirely, letting `realizes` alone carry the relationship. The proposer identified both
+      options but had no evidentiary basis to choose between them, so that choice belongs to the structure
+      review rather than to this node-level carve. The node's own fields (id, name, summary, evidence,
+      aliases, realizes) should stand as drafted pending that structural ruling."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - wrong-structure
+  rationale: "The parametric-polymorphism node itself is solidly evidenced: Pierce §23.2's definition
+    of uniform generic instantiation [pierce-tapl-2002#c00726] matches the carve's summary almost verbatim,
+    and Cardelli & Wegner, Sebesta, and Scott independently converge on the same definition and the generics/generic-subprogram
+    alias. `realizes: ['polymorphism']` is well supported and uncontested. Neither challenger disputes
+    the node's content — both target the `dimension: polymorphism-variety` metadata, and the proposer
+    explicitly conceded the point after reviewing the cited passages, so this is not merely a confident-but-unevidenced
+    challenge.\n\nThe `wrong-structure` challenge is upheld on its merits. Two problems are independently
+    sourced: (1) Cardelli & Wegner's own classification is two-tiered — \"parametric and inclusion polymorphism
+    are classified as the two major subcategories of universal polymorphism, which is contrasted with
+    nonuniversal or ad-hoc polymorphism\" [cardelli-wegner-1985#c00011] — so a flat `dimension` with parametric/ad-hoc/inclusion
+    as co-equal members drops the intermediate \"universal polymorphism\" node that is the actual organizing
+    move of the cited taxonomy. (2) Pierce explicitly denies the exclusivity a single-select `dimension`
+    axis implies: \"These categories are not exclusive: different forms of polymorphism can be mixed in
+    the same language. Standard ML offers both parametric polymorphism and simple overloading... Java
+    includes subtyping, overloading, and simple ad-hoc polymorphism... but not... parametric polymorphism\"\
+    \ [pierce-tapl-2002#c00728]. A dimension model that assumes one value per axis misrepresents a freely-combinable,
+    hierarchical classification as a partition.\n\nThis is a structural gap, not a defect in the node:
+    the `dimension-model` structural element currently has no way to express either (a) hierarchical/nested
+    classification axes, or (b) non-exclusive, co-occurring membership. To hold this carve's `dimension`
+    assignment, the structure would need to either support an intermediate dimension-bearing node (e.g.,
+    a `universal-polymorphism` parent carrying `parametric-polymorphism` and `inclusion-polymorphism`
+    as children, sibling to `ad-hoc-polymorphism`) or abandon the single-select-axis semantics for this
+    case and drop `dimension`/`cross_cutting` from this node entirely, letting `realizes` alone carry
+    the relationship. The proposer identified both options but had no evidentiary basis to choose between
+    them, so that choice belongs to the structure review rather than to this node-level carve. The node's
+    own fields (id, name, summary, evidence, aliases, realizes) should stand as drafted pending that structural
+    ruling."
+  structure_element: dimension-model
