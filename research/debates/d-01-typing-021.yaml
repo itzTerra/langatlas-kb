@@ -1,0 +1,240 @@
+id: d-01-typing-021
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: gradual-typing--requires--static-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-gradual-typing--requires--static-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-gradual-typing--requires--static-typing-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: gradual-typing--requires--static-typing
+  type: requires
+  from: gradual-typing
+  to: static-typing
+  polarity:
+  statement: Gradual typing requires a static type-checking discipline to apply to the parts of the 
+    program that carry annotations.
+  evidence:
+    - source: krishnamurthi-plai
+      locator: p. 173
+      chunk_id: krishnamurthi-plai#c00240
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `gradual-typing--requires--static-typing`**\n\nThe carve is textually well-supported,
+      and the \"single-source\" flag, while procedurally accurate, doesn't weaken the substance of the
+      claim.\n\n**Direct support.** Krishnamurthi is explicit that gradual typing is defined by the combination
+      of annotation plus type-checking: \"In gradual typing, we are going to add annotations to programs
+      and then type-check the program\" [krishnamurthi-plai#c00241]. The preceding passage frames the
+      whole phenomenon as dynamic languages \"adding a static counterpart\" — gradual typing is introduced
+      precisely as the mechanism by which \"type systems have been built for many real-world dynamic languages...
+      you add types 'gradually' to the program, hopefully making it more-and-more typed\" [krishnamurthi-plai#c00240].
+      The annotated portions are not merely decorative: they are fed into a type-checker, which is exactly
+      what \"static type-checking discipline\" means ([turbak-gifford-dcpl#c00958] defines static type
+      checking as \"analyz[ing] a program before executing it to determine whether type information is
+      consistent,\" associating types with phrases rather than runtime values). Without that checking
+      step applied to the annotated parts, \"gradual typing\" collapses into ordinary dynamic typing with
+      inert comments — the type-checking is what makes it typing at all, gradual or otherwise.\n\n**Corroboration
+      beyond the single cited page.** The micro/macro distinction [krishnamurthi-plai#c00241–242] reinforces
+      this from both sides: micro gradual typing's problem is precisely that soundness (a static-checking
+      notion) becomes \"unclear\" once static and dynamic parts commingle — a problem that only arises
+      because a static discipline is supposed to be in force over the annotated parts. Macro gradual typing
+      (Typed Racket) resolves this by cleanly separating \"the typed and the dynamic\" sibling languages,
+      where the typed sibling is \"fully typed\" [krishnamurthi-plai#c00242] — i.e., gradual typing in
+      practice is implemented *as* a fully static type system on one side plus a boundary-checking discipline
+      for values crossing from the dynamic side. [krishnamurthi-plai#c00215] independently confirms the
+      retrofitted-typing pattern (TypeScript, Static Python, Flow) that gradual typing instantiates: adding
+      \"a type system to a language that did not previously have [one],\" with the explicit goal of \"\
+      turn[ing] run-time errors into static type errors.\" That goal is unintelligible without a static-checking
+      discipline being present and applied to the parts now carrying types. Harper's independent treatment
+      of hybrid typing — \"enriching a statically typed language\" with a `dyn` type, where \"dynamic
+      typing is a mode of use of static typing\" [harper-pfpl#c00361] — describes the mirror-image architecture
+      (static base + dynamic escape hatch rather than dynamic base + static annotations) but corroborates
+      the same structural point found across the literature: wherever static and dynamic regions coexist
+      in one program, a static-checking discipline is doing real work over the statically-typed portion,
+      and that discipline's presence is not optional.\n\n**On \"requires\" as the right edge type.** The
+      statement is carefully scoped — not \"gradual typing requires static typing of the whole program\"\
+      \ but \"...to apply to the parts of the program that carry annotations.\" That scoping matches [krishnamurthi-plai#c00240]'s
+      own two-reasons argument (size, and un-typeable constructs like `eval`) for why gradual typing exists
+      at all: it is a design that lets a static discipline reach only part of a program. That is a dependency
+      relationship, not mere association — you cannot have the \"gradual\" annotation-and-check cycle
+      without the static-checking machinery to run on the annotated subset.\n\nThe single-source flag
+      reflects that krishnamurthi-plai is the only source in the corpus that names \"gradual typing\"\
+      \ as a term — but the structural claim it documents (annotate, then statically check the annotated
+      parts) is corroborated by how static type checking is independently defined ([turbak-gifford-dcpl#c00958])
+      and by how the broader static/dynamic hybridization literature ([harper-pfpl#c00361], [krishnamurthi-plai#c00215])
+      treats the same architectural pattern. I'd defend keeping the carve as written.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The carve has real textual support for its core claim, but two technical problems weaken 
+      it as written.
+    challenges:
+      - type: missing-source
+        text: The cited evidence chunk, krishnamurthi-plai#c00240 (p.173), does not actually state 
+          the annotate-then-type-check mechanism the statement rests on. That chunk only explains 
+          why a whole program cannot instantly go from untyped to typed (size, and untypeable 
+          constructs like eval) and then names the resulting phenomenon 'gradual typing'. The 
+          specific claim that gradual typing consists of adding annotations and then type-checking 
+          the program — the sentence the whole 'requires static-typing' dependency is built on — 
+          appears one page later, in c00241 ('In gradual typing, we are going to add annotations to 
+          programs and then type-check the program'), which is not cited. The carve's stated 
+          evidentiary anchor doesn't carry the weight the statement needs; the real support sits in 
+          an uncited chunk.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 173
+            chunk_id: krishnamurthi-plai#c00240
+            quote: type systems have been built for many real-world dynamic languages. These type 
+              systems exhibit a property called gradual typing
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: In gradual typing, we are going to add annotations to programs and then 
+              type-check the program.
+      - type: wrong-atomization
+        text: The statement is scoped to 'a static type-checking discipline...apply[ied] to the 
+          parts of the program that carry annotations' — this describes only the 'micro' gradual 
+          typing architecture, where annotated and unannotated code commingle in one language. But 
+          Krishnamurthi treats this as the architecture whose soundness guarantee is actually broken
+          ('previously we had a clean and simple soundness result for the typed program; now it is 
+          rather unclear what soundness means'), and presents the alternative 'macro' architecture 
+          (exemplified by Typed Racket, called 'canonical') as the one actually studied in depth — 
+          where the required static discipline is not partial annotation-checking within a mixed 
+          program but a wholly separate sibling language that is 'fully typed', with boundary 
+          crossings compiled into run-time contracts rather than resolved by static checking alone. 
+          By writing the dependency as 'static type-checking discipline...applied to annotated 
+          parts', the carve silently picks the micro variant as if it were gradual typing's defining
+          requirement, when the source's own exemplar (macro/Typed Racket) requires a fully static 
+          sibling language plus a run-time contract boundary, not partial in-line type-checking.
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: previously we had a clean and simple soundness result for the typed program; now 
+              it is rather unclear what soundness means
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00242
+          - source: krishnamurthi-plai
+            locator: pp. 176–177
+            chunk_id: krishnamurthi-plai#c00244
+            quote: the type (-> String Number) has been turned into a contract, which halts 
+              execution saying that there is a contract violation
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: The carve draws on real textual support — c00240/c00241 directly ground "annotate then 
+      type-check" as the definition of gradual typing. But the proposer's statement is written in 
+      terms that only fit one of the two architectures the source itself distinguishes, and the 
+      source is explicit that the other architecture doesn't match that framing at all.
+    challenges:
+      - type: wrong-atomization
+        text: "The statement says gradual typing requires static type-checking 'to apply to the parts
+          of the program that carry annotations' — i.e. one program, some parts annotated and checked,
+          others not. That is an accurate paraphrase of the 'micro' school only. Krishnamurthi is explicit
+          that gradual typing splits into two schools with different relationships to static checking:
+          in the 'macro' school (his worked exemplar, Typed Racket), there is no single program with annotated
+          and unannotated parts commingling at all — there are two whole sibling languages, and 'Typed
+          Racket itself is fully typed... it's the combination of Racket and Typed Racket that is gradually
+          typed' [krishnamurthi-plai#c00242]. There, the static discipline doesn't apply to 'parts of
+          the program that carry annotations'; it applies wholesale to an entire sibling language, with
+          gradualness coming from importing across a language boundary, not from annotation density within
+          one program. Worse, for the micro school the source itself undercuts the clean 'static type-checking
+          discipline' framing: once static and dynamic parts commingle freely, 'it is rather unclear what
+          soundness means' and the type system 'needs to somehow deal with constructs it cannot meaningfully
+          type' [krishnamurthi-plai#c00241] — hardly the well-defined static discipline the edge statement
+          presupposes. The single statement is being asked to cover two architectures the source deliberately
+          keeps apart, and it only accurately describes one of them."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00242
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede all three challenges.\n\nmissing-source (type theorist): Confirmed by direct inspection.
+      krishnamurthi-plai#c00240 (p.173) only argues why a whole program can't instantly flip from untyped
+      to typed (size; untypeable constructs like eval) and then names the resulting phenomenon \"gradual
+      typing.\" It never states the annotate-then-type-check mechanism. That claim — \"In gradual typing,
+      we are going to add annotations to programs and then type-check the program\" — is in c00241 (p.174),
+      which the carve does not cite. The cited evidence does not support the statement it's attached to.\n\
+      \nwrong-atomization (type theorist and working language implementer, independently converging):
+      Also confirmed. c00241 and c00242 show the source splits gradual typing into two architectures with
+      different relationships to \"static type-checking discipline\":\n- Micro: annotated/unannotated
+      code commingle in one program — but the source itself says this makes soundness unclear (\"previously
+      we had a clean and simple soundness result for the typed program; now it is rather unclear what
+      soundness means\") and that the type system \"needs to somehow deal with constructs it cannot meaningfully
+      type.\" This undercuts treating \"static type-checking discipline applied to annotated parts\" as
+      a clean, well-defined requirement.\n- Macro (the source's actual worked exemplar, Typed Racket):
+      there's no commingled program at all. \"Typed Racket itself is fully typed — it's the combination
+      of Racket and Typed Racket that is gradually typed\" (c00242), with boundary crossings compiled
+      into run-time contracts (c00244), not resolved by static checking of \"parts that carry annotations.\"\
+      \n\nThe carve's statement silently encodes only the micro variant, using wording (\"apply to the
+      parts of the program that carry annotations\") that doesn't fit the source's own primary exemplar,
+      and anchors to a citation that doesn't even state the annotation-then-check mechanism at all. The
+      underlying \"requires\" direction (gradual typing needs some static discipline) is plausible, but
+      as written the statement and its citation misrepresent the source and should be revised — either
+      retargeted to c00241/c00242 with wording that spans or explicitly names the micro/macro split, or
+      narrowed to one named architecture. I don't contest the challenges; the carve needs rework."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges are upheld on direct inspection of the record. (1) missing-source: c00240 (p.173),
+      the carve's sole citation, only motivates why a whole program can't flip from untyped to typed and
+      names the resulting phenomenon; it does not state the annotate-then-type-check mechanism the statement
+      depends on — that's in the uncited c00241 (p.174). (2) wrong-atomization: the statement's phrasing
+      (\"apply to the parts of the program that carry annotations\") describes only the micro-gradual-typing
+      architecture, while the source's own worked exemplar (macro/Typed Racket, c00242) has no commingled
+      program at all — a fully statically-typed sibling language crosses a run-time contract boundary,
+      not in-line checking of annotated parts. The proposer concedes both. The underlying requires-relationship
+      (gradual typing needs some static-checking discipline over its typed portion) survives and is well
+      supported once correctly cited and scoped, so this is a citation-and-wording fix, not a reason to
+      drop the edge. Revising to cite c00241/c00242 and to phrase the statement so it spans (or names)
+      both the micro and macro architectures resolves both challenges without discarding a sound dependency
+      claim."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - wrong-atomization
+  rationale: "Both challenges are upheld on direct inspection of the record. (1) missing-source: c00240
+    (p.173), the carve's sole citation, only motivates why a whole program can't flip from untyped to
+    typed and names the resulting phenomenon; it does not state the annotate-then-type-check mechanism
+    the statement depends on — that's in the uncited c00241 (p.174). (2) wrong-atomization: the statement's
+    phrasing (\"apply to the parts of the program that carry annotations\") describes only the micro-gradual-typing
+    architecture, while the source's own worked exemplar (macro/Typed Racket, c00242) has no commingled
+    program at all — a fully statically-typed sibling language crosses a run-time contract boundary, not
+    in-line checking of annotated parts. The proposer concedes both. The underlying requires-relationship
+    (gradual typing needs some static-checking discipline over its typed portion) survives and is well
+    supported once correctly cited and scoped, so this is a citation-and-wording fix, not a reason to
+    drop the edge. Revising to cite c00241/c00242 and to phrase the statement so it spans (or names) both
+    the micro and macro architectures resolves both challenges without discarding a sound dependency claim."
+  revision:
+    statement: Gradual typing requires a static type-checking discipline to be applied to the typed 
+      portion of the program — whether realized as in-line checking of annotated code commingled 
+      with untyped code (the micro variant) or as a fully statically typed sibling language whose 
+      values cross a run-time contract boundary into an untyped sibling (the macro variant, e.g. 
+      Typed Racket).
