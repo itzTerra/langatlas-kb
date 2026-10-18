@@ -206,7 +206,7 @@
         "required": ["kind", "detail"],
         "properties": {
           "kind": { "enum": ["rule-candidate", "cross-theme-edge", "unmappable-candidate",
-                             "missing-locator-backend", "structure-friction"] },
+                             "missing-locator-backend", "structure-friction", "trimmed"] },
           "detail": { "type": "string", "minLength": 1 },
           "keys": { "type": "array", "items": { "type": "string" } },
           "area": { "enum": ["ontology", "adjacent"] },

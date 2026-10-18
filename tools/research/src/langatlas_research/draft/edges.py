@@ -20,6 +20,7 @@ from langatlas_research.draft.contested import mark_contested
 from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
 from langatlas_research.draft.findings import FindingOut
 from langatlas_research.draft.minting import committed_qualities
+from langatlas_research.draft.trim import TrimCandidate, trim_to_cap, trimmed_finding, unique_keys
 from langatlas_research.errors import DraftOutputInvalid
 from langatlas_research.survey.chunks import ChunkLookup
 from langatlas_research.survey.claude import run_structured
@@ -184,6 +185,36 @@ def append_edges(ctx, plan: dict, edges, *, lookup: ChunkLookup,
     return {**plan, "edges": [*(plan.get("edges") or []), *new_edges]}, warnings
 
 
+def _trim_over_cap(ctx, out: EdgeDrafterOut, *, cap: int, trimmer, lookup):
+    """Cut an over-cap drafter output down to `cap` entries (D71).
+
+    @param cap: edges plus quality edges the run may keep
+    @param trimmer: the trimmer's `ClaudeRoleConfig`
+    @returns: `(output within the cap, TrimResult or None when nothing was cut)`"""
+    if len(out.edges) + len(out.quality_edges) <= cap:
+        return out, None
+    keys = unique_keys([edge_key(edge.type, edge.frm, edge.to) for edge in out.edges]
+                       + [edge_key("affects-quality", edge.frm, edge.to)
+                          for edge in out.quality_edges])
+    candidates = [TrimCandidate(key, f"{edge.type} {edge.frm} -> {edge.to}: {edge.statement}",
+                                tuple(item.chunk_id for item in edge.evidence))
+                  for key, edge in zip(keys, out.edges)]
+    candidates += [
+        TrimCandidate(
+            key, f"affects-quality {edge.frm} -> {edge.to}: " + "; ".join(
+                f"{a.polarity} ({a.strength}) {a.statement}" for a in edge.assessments),
+            tuple(dict.fromkeys(item.chunk_id for a in edge.assessments
+                                for item in a.evidence)))
+        for key, edge in zip(keys[len(out.edges):], out.quality_edges)]
+    result = trim_to_cap(ctx, candidates, cap, what="edges", role=trimmer, lookup=lookup)
+    kept = set(result.kept)
+    trimmed = out.model_copy(update={
+        "edges": [e for key, e in zip(keys, out.edges) if key in kept],
+        "quality_edges": [q for key, q in zip(keys[len(out.edges):], out.quality_edges)
+                          if key in kept]})
+    return trimmed, result
+
+
 def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                      lookup: ChunkLookup, config: ResearchConfig,
                      mcp_servers: dict | None = None, allowed_tools=(),
@@ -223,6 +254,8 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                             mcp_servers=mcp_servers, allowed_tools=allowed_tools)
     from langatlas_research.draft.structure import BLOCKED, Misfit, synthesize_friction
 
+    out, trim = _trim_over_cap(ctx, out, cap=role.max_candidates,
+                               trimmer=config.draft.trimmer, lookup=lookup)
     misfits = check_shape(out, view, known_qualities, role.max_candidates,
                           collect_misfits=True)
 
@@ -263,7 +296,8 @@ def run_edge_drafter(ctx, cycle: Cycle, plan: dict, *, repo_root: Path | None,
                                   "assessments": assessments, **_tail(edge.note)})
     updated["quality_edges"] = [*(plan.get("quality_edges") or []), *new_quality_edges]
 
-    findings = [*(plan.get("findings") or []), *(f.as_entry() for f in out.findings)]
+    findings = [*(plan.get("findings") or []), *(f.as_entry() for f in out.findings),
+                *([trimmed_finding("edges", trim)] if trim else [])]
     updated["findings"] = [*findings, *synthesize_friction(edge_misfits, findings)]
 
     for warning in warnings:

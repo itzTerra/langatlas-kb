@@ -64,6 +64,12 @@ draft:
     max_claude_messages: 160
     max_packet_terms: 120           # committed nodes shown to the edge drafter
     max_candidates: 60              # edges accepted from one run
+  trimmer:                          # D71: cuts a role's over-cap output down to its cap
+    model: sonnet
+    max_turns: 6
+    max_claude_messages: 12
+    max_packet_terms: 0             # unused: the trimmer sees every over-cap candidate
+    max_candidates: 0               # unused: the cap it enforces is the trimmed role's own
   debate:
     max_messages: 6                 # §7.2's hard cap on a debate's message list
     max_debates_per_cycle: 25       # cost bound; a waiver is the developer's, never an agent's

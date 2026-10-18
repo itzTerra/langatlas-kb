@@ -46,6 +46,7 @@ class DebateConfig:
 class DraftConfig:
     ontologist: ClaudeRoleConfig
     edge_drafter: ClaudeRoleConfig
+    trimmer: ClaudeRoleConfig
     debate: DebateConfig
     bounce_budget: int
 
@@ -98,6 +99,7 @@ class ResearchConfig:
                    draft=DraftConfig(
                        ontologist=ClaudeRoleConfig(**draft["ontologist"]),
                        edge_drafter=ClaudeRoleConfig(**draft["edge_drafter"]),
+                       trimmer=ClaudeRoleConfig(**draft["trimmer"]),
                        debate=DebateConfig(
                            proposer=ClaudeRoleConfig(**debate["proposer"]),
                            challenger=ClaudeRoleConfig(**debate["challenger"]),

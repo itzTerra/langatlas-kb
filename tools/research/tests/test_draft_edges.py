@@ -269,3 +269,49 @@ def test_a_blocked_edge_among_clean_ones_is_indexed_from_the_base_while_the_gate
     old, clean, blocked = updated["edges"]
     assert "blocked" not in old and "blocked" not in clean
     assert blocked["blocked"] == "structure" and "is a concept" in blocked["block_reason"]
+
+
+def _with_edge_cap(config, cap):
+    from dataclasses import replace
+
+    return replace(config, draft=replace(
+        config.draft, edge_drafter=replace(config.draft.edge_drafter, max_candidates=cap)))
+
+
+def test_an_over_cap_run_is_trimmed_by_the_trimmer_instead_of_refused(
+        fake_ctx, research_repo, signed_cycle, plan, fake_lookup, config, prompt):
+    keep = ["type-inference--requires--static-typing",
+            "static-typing--affects-quality--type-safety"]
+    fake_ctx.claude_results.append(_result(OUT))
+    fake_ctx.claude_results.append(_result({"keep": keep, "reason": "weakest alternative-to"}))
+    updated, _ = run_edge_drafter(fake_ctx, signed_cycle, plan, repo_root=research_repo,
+                                  lookup=fake_lookup, config=_with_edge_cap(config, 2),
+                                  prompt=prompt, store=STORE)
+    assert [e["key"] for e in updated["edges"]] == ["type-inference--requires--static-typing"]
+    assert [q["key"] for q in updated["quality_edges"]] == [
+        "static-typing--affects-quality--type-safety"]
+    trimmed = [f for f in updated["findings"] if f["kind"] == "trimmed"]
+    assert trimmed[0]["keys"] == ["type-inference--alternative-to--static-typing"]
+    assert "weakest alternative-to" in trimmed[0]["detail"]
+    assert validate_research_record(updated, "draft", repo_root=research_repo) == []
+
+
+def test_a_trimmer_that_names_a_key_it_was_not_offered_is_refused(
+        fake_ctx, research_repo, signed_cycle, plan, fake_lookup, config, prompt):
+    fake_ctx.claude_results.append(_result(OUT))
+    fake_ctx.claude_results.append(_result({"keep": ["made-up", "also-made-up"], "reason": "r"}))
+    with pytest.raises(DraftOutputInvalid, match="not offered"):
+        run_edge_drafter(fake_ctx, signed_cycle, plan, repo_root=research_repo,
+                         lookup=fake_lookup, config=_with_edge_cap(config, 2),
+                         prompt=prompt, store=STORE)
+
+
+def test_a_trimmer_that_returns_the_wrong_count_is_refused(
+        fake_ctx, research_repo, signed_cycle, plan, fake_lookup, config, prompt):
+    fake_ctx.claude_results.append(_result(OUT))
+    fake_ctx.claude_results.append(_result(
+        {"keep": ["type-inference--requires--static-typing"], "reason": "r"}))
+    with pytest.raises(DraftOutputInvalid, match="not 2"):
+        run_edge_drafter(fake_ctx, signed_cycle, plan, repo_root=research_repo,
+                         lookup=fake_lookup, config=_with_edge_cap(config, 2),
+                         prompt=prompt, store=STORE)

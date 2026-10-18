@@ -2425,6 +2425,11 @@ trigger); the D24 verifier already gates each claim on its citations. In the dra
 the batch is re-atomized after the structure review. After the review, debates cover carves with a
 structural trigger. The per-cycle cap is 25 (`max_debates_per_cycle`), and proposer and challengers
 may run on a cheaper model than the moderator.
+An over-cap role output is no longer refused: a **trimmer** (`r4-trimmer`, `sonnet`) sees every
+candidate with the passages it cites and returns exactly the cap's worth of keys to keep. It only
+selects; the cut is recorded as a `trimmed` finding in the plan. Wired into the ontologist (nodes)
+and the edge drafter (edges plus quality edges); the survey and R6 caps can reuse
+`draft/trim.py`.
 
 ## Top risks to design against (08 — full ranked register in the brainstorm)
 

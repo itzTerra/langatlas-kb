@@ -23,6 +23,7 @@ from langatlas_research.draft.evidence import EvidenceItem, bind_evidence
 from langatlas_research.draft.findings import FindingOut
 from langatlas_research.draft.plan import build_plan_record
 from langatlas_research.draft.structure import Misfit, block_entries, synthesize_friction
+from langatlas_research.draft.trim import TrimCandidate, trim_to_cap, trimmed_finding, unique_keys
 from langatlas_research.errors import DraftOutputInvalid
 from langatlas_research.survey.chunks import ChunkLookup
 from langatlas_research.survey.claude import run_structured
@@ -210,6 +211,25 @@ def _tail(contested_note: str | None, note: str) -> dict:
     return entry
 
 
+def _trim_over_cap(ctx, out: OntologistOut, *, cap: int, trimmer, lookup):
+    """Cut an over-cap ontologist output down to `cap` nodes (D71).
+
+    @param cap: nodes the run may keep
+    @param trimmer: the trimmer's `ClaudeRoleConfig`
+    @returns: `(output within the cap, TrimResult or None when nothing was cut)`"""
+    if len(out.nodes) <= cap:
+        return out, None
+    keys = unique_keys([node.key for node in out.nodes])
+    candidates = [TrimCandidate(key, f"{node.kind} {node.name}: {node.summary}",
+                                tuple(item.chunk_id for item in node.evidence))
+                  for key, node in zip(keys, out.nodes)]
+    result = trim_to_cap(ctx, candidates, cap, what="nodes", role=trimmer, lookup=lookup)
+    kept = set(result.kept)
+    trimmed = out.model_copy(update={
+        "nodes": [n for key, n in zip(keys, out.nodes) if key in kept]})
+    return trimmed, result
+
+
 def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
                    lookup: ChunkLookup, config: ResearchConfig, mcp_servers: dict | None = None,
                    allowed_tools=(), prompt: PromptRef | None = None,
@@ -234,6 +254,8 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
     out, _ = run_structured(ctx, prompt or load_prompt(ONTOLOGIST_PROMPT_ID), variables,
                             output_model=OntologistOut, role_config=role,
                             mcp_servers=mcp_servers, allowed_tools=allowed_tools)
+    out, trim = _trim_over_cap(ctx, out, cap=role.max_candidates,
+                               trimmer=config.draft.trimmer, lookup=lookup)
     misfits = _check_shape(out, store, role.max_candidates)
 
     plan = build_plan_record(cycle=cycle, ontologist_run_id=ctx.run_id,
@@ -262,6 +284,8 @@ def run_ontologist(ctx, cycle: Cycle, *, repo_root: Path | None, survey: dict,
         plan["nodes"].append(entry)
     plan["nodes"] = block_entries(plan["nodes"], misfits)
     plan["findings"] = [finding.as_entry() for finding in out.findings]
+    if trim:
+        plan["findings"].append(trimmed_finding("nodes", trim))
     plan["findings"] += synthesize_friction(misfits, plan["findings"])
 
     for warning in warnings:

@@ -203,3 +203,24 @@ def test_a_stale_sign_off_stops_the_run_before_any_claude_message(
                        prompt=mint_prompt_version("r4-ontologist-test", PROMPT_TEXT,
                                                   root=tmp_path))
     assert fake_ctx.claude_calls == []
+
+
+def test_an_over_cap_run_is_trimmed_and_the_cut_is_recorded(
+        fake_ctx, research_repo, signed_cycle, fake_lookup, config, tmp_path):
+    from dataclasses import replace
+
+    capped = replace(config, draft=replace(
+        config.draft, ontologist=replace(config.draft.ontologist, max_candidates=1)))
+    fake_ctx.claude_results.append(_result(OUT))
+    fake_ctx.claude_results.append(_result({"keep": ["type-system"], "reason": "parent first"}))
+
+    plan, _ = run_ontologist(
+        fake_ctx, signed_cycle, repo_root=research_repo, survey=SURVEY, lookup=fake_lookup,
+        config=capped, prompt=mint_prompt_version("r4-ontologist-test", PROMPT_TEXT,
+                                                  root=tmp_path),
+        now="2026-09-20T10:00:00Z")
+
+    assert [n["key"] for n in plan["nodes"]] == ["type-system"]
+    trimmed = [f for f in plan["findings"] if f["kind"] == "trimmed"]
+    assert trimmed[0]["keys"] == ["static-typing"]
+    assert validate_research_record(plan, "draft", repo_root=research_repo) == []
