@@ -1,7 +1,7 @@
 cycle: 1
 theme: typing
 theme_digest: a04b8d252d28be19
-status: r3-done
+status: r4-drafted
 languages:
   - c
   - java
@@ -11,6 +11,36 @@ languages:
 nodes_minted: []
 artifacts:
   survey: research/surveys/01-typing.yaml
+  draft: research/drafts/01-typing.yaml
+  debates:
+    - research/debates/d-01-typing-001.yaml
+    - research/debates/d-01-typing-002.yaml
+    - research/debates/d-01-typing-003.yaml
+    - research/debates/d-01-typing-005.yaml
+    - research/debates/d-01-typing-006.yaml
+    - research/debates/d-01-typing-007.yaml
+    - research/debates/d-01-typing-008.yaml
+    - research/debates/d-01-typing-009.yaml
+    - research/debates/d-01-typing-010.yaml
+    - research/debates/d-01-typing-011.yaml
+    - research/debates/d-01-typing-012.yaml
+    - research/debates/d-01-typing-013.yaml
+    - research/debates/d-01-typing-014.yaml
+    - research/debates/d-01-typing-015.yaml
+    - research/debates/d-01-typing-016.yaml
+    - research/debates/d-01-typing-017.yaml
+    - research/debates/d-01-typing-018.yaml
+    - research/debates/d-01-typing-019.yaml
+    - research/debates/d-01-typing-020.yaml
+    - research/debates/d-01-typing-021.yaml
+    - research/debates/d-01-typing-022.yaml
+    - research/debates/d-01-typing-023.yaml
+    - research/debates/d-01-typing-024.yaml
+    - research/debates/d-01-typing-025.yaml
+    - research/debates/d-01-typing-026.yaml
+    - research/debates/d-01-typing-027.yaml
+    - research/debates/d-01-typing-028.yaml
+    - research/debates/d-01-typing-029.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-09-15'
