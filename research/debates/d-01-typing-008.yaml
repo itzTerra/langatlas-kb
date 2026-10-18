@@ -1,0 +1,259 @@
+id: d-01-typing-008
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: isorecursive-types
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-isorecursive-types-01
+  moderator: 2026-10-17-r4-moderator-01-typing-isorecursive-types-01
+triggers:
+  - split-candidate
+  - new-dimension
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: isorecursive-types
+  from_candidates:
+    - recursive-types
+  kind: feature
+  id: isorecursive-types
+  name: Iso-Recursive Types
+  summary: A formalization of recursive types in which a recursive type and its one-step unfolding 
+    are distinct but isomorphic, requiring explicit fold/unfold conversions.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §20.2
+      chunk_id: pierce-tapl-2002#c00574
+    - source: pierce-tapl-2002
+      locator: §20.2
+      chunk_id: pierce-tapl-2002#c00575
+  contested:
+    - split-candidate
+    - new-dimension
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: Split out of the single recursive-types candidate because sources (Pierce, Turbak & Gifford)
+    present iso- vs equi- as a genuine two-valued design choice for how recursive types are 
+    formalized.
+  dimension: recursive-type-formation
+  cross_cutting: false
+  aliases:
+    - isorecursive types
+  realizes:
+    - type-soundness
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "I defend the iso-recursive-types carve as drafted, and argue the \"single-source\" flag is
+      simply outdated once the fuller corpus is checked.\n\n**Not single-source — four independent textbook
+      treatments converge.**\n- Pierce TAPL §20.2 states the defining question directly: \"What is the
+      relation between the type µX.T and its one-step unfolding?\" and gives iso-recursive's answer —
+      \"different, but isomorphic,\" witnessed by fold/unfold primitives that form an isomorphism (annihilated
+      by E-UNFLDFLD) [pierce-tapl-2002#c00574] [pierce-tapl-2002#c00575]. Pierce revisits it in §21.11
+      as a distinct subtyping regime (the rigid-µ \"Amber rule\") [pierce-tapl-2002#c00662].\n- Turbak
+      & Gifford independently formalize \"isorecursive type-equivalence rules\" (trec-α, trec-β) and contrast
+      them with equirecursive equivalence using a worked counterexample (Tib4, equi-equivalent but NOT
+      iso-equivalent to the others) — direct proof the two formalizations are extensionally different,
+      not stylistic variants [turbak-gifford-dcpl#c01060] [turbak-gifford-dcpl#c01061] [turbak-gifford-dcpl#c01067].\n\
+      - Harper's PFPl gives FPC's rec/fold/unfold with explicit statics (21.2a/b) and dynamics including
+      the fold-then-unfold cancellation rule (21.3d), mirroring Pierce's E-UNFLDFLD under different notation
+      — the same mechanism, independently formalized [harper-pfpl#c00320].\n- Pierce ATTAPL separately
+      observes that ML/Java constructor-fold / pattern-match-unfold behavior is \"characteristic of isorecursive
+      types\" [pierce-attapl-2004#c00721].\n\nFour independently-authored sources naming and formalizing
+      the same mechanism is strong convergent evidence, not a single-source carve. I'd resolve the flag
+      by adding these citations to the evidence list rather than by weakening or merging the carve.\n\n\
+      **\"New-dimension\"/\"split-candidate\" reflects correct ontology work, not a weakness.** Pierce
+      frames iso vs. equi as a genuine two-valued fork over one well-posed question [pierce-tapl-2002#c00574];
+      Turbak & Gifford's Tib4 example shows the two choices are behaviorally distinguishable, not just
+      presentational [turbak-gifford-dcpl#c01061] [turbak-gifford-dcpl#c01067]. A `dimension: recursive-type-formation`
+      field forcing exactly this choice, splitting iso out of the monolithic `recursive-types` candidate,
+      is exactly the right move — not a hedge requiring scrutiny.\n\n**Definition and `realizes` link
+      check out.** The summary (\"distinct but isomorphic...explicit fold/unfold conversions\") tracks
+      the sources' own language almost verbatim [pierce-tapl-2002#c00574] [pierce-tapl-2002#c00575] [harper-pfpl#c00320].
+      `realizes: [type-soundness]` is supported: Harper's explicit fold/unfold statics directly underwrite
+      his Safety theorem for FPC [harper-pfpl#c00320], and Pierce notes equi-recursive types create metatheoretic
+      difficulties with other sound typing features that iso's explicitness avoids [pierce-tapl-2002#c00575].\n\
+      \n**Proposed resolution:** keep the carve unchanged in content; extend its evidence list with turbak-gifford-dcpl#c01060/c01061/c01067
+      and harper-pfpl#c00320, which fully resolves the single-source flag."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The core carve is solid. Pierce §20.2 directly frames iso vs. equi as a two-valued answer to
+      a single well-posed question (c00574), gives iso's distinguishing formal apparatus — fold/unfold
+      witnessing an isomorphism, with E-UNFLDFLD as the cancellation law (c00575) — and Harper's FPC independently
+      formalizes the identical mechanism with matching statics/dynamics (harper-pfpl#c00320). Turbak &
+      Gifford's Tib4 counterexample shows the two formalizations are extensionally distinguishable, not
+      stylistic variants. That's convergent, multi-source support for the split; \"single-source\" is
+      resolved by adding these citations as proposed, and \"new-dimension\"/\"split-candidate\" reflects
+      a real fork in the literature, not an invented one.\n\nOne narrower issue remains with the `realizes:
+      [type-soundness]` edge, which the proposer's defense doesn't actually address on its merits (it
+      only cites Harper's Safety theorem for FPC, which is an iso-recursive calculus by construction —
+      not evidence that soundness is distinctively iso's contribution).\n\nPierce §20.2 states explicitly,
+      in the very passage used as evidence for the carve, that under the equi-recursive alternative \"\
+      existing definitions, safety theorems, and proofs remain unchanged\" (so long as they don't rely
+      on induction on type expressions) [pierce-tapl-2002#c00575]. That is, type-soundness is preserved
+      by *both* branches of the `recursive-type-formation` dimension — it is a property of recursive types
+      as a mechanism, not something iso-recursive-types specifically realizes in contrast to its sibling.
+      Attaching `realizes: type-soundness` to the iso leaf (while presumably the equi-recursive-types
+      sibling carries the same edge, or doesn't) either duplicates a shared property onto both leaves
+      for no discriminating reason, or misattributes to one branch a property the source says is common
+      to the dimension. The edge's scope is broader than the node it's attached to: it belongs on the
+      shared `recursive-types` parent/dimension, not asserted as something this specific formalization-choice
+      contributes.\n\nThis doesn't call the split or the node's definition into question — only the one
+      `realizes` edge, whose justification oversteps what Pierce's own cited passage supports."
+    challenges:
+      - type: scope
+        text: "The `realizes: [type-soundness]` edge claims type-soundness as something iso-recursive-types
+          specifically contributes, but the cited Pierce passage (the carve's own evidence) states that
+          type soundness ('safety theorems, and proofs') is preserved just as well under the equi-recursive
+          alternative, provided induction on type expressions isn't used. Type-soundness compatibility
+          is therefore a property of the shared recursive-types mechanism, not a distinguishing contribution
+          of the iso branch of the dimension, so the edge's scope exceeds what belongs on this specific
+          leaf."
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §20.2
+            chunk_id: pierce-tapl-2002#c00575
+          - source: harper-pfpl
+            locator: §21.1
+            chunk_id: harper-pfpl#c00320
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The carve is substantively sound. The proposer's rebuttal to \"single-source\" holds up against
+      the corpus: Pierce TAPL §20.2 states the defining two-valued question and gives iso-recursive's
+      \"different, but isomorphic\" answer witnessed by fold/unfold with the E-UNFLDFLD annihilation rule
+      [pierce-tapl-2002#c00574][pierce-tapl-2002#c00575]; Turbak & Gifford independently formalize isorecursive
+      trec-α/trec-β rules and use the Tib4 counterexample to show iso- and equi-recursive equivalence
+      are extensionally different, not stylistic variants [turbak-gifford-dcpl#c01060][turbak-gifford-dcpl#c01061][turbak-gifford-dcpl#c01067];
+      Harper's FPC gives the same fold/unfold statics and a matching fold-then-unfold cancellation dynamics
+      rule (21.3d) [harper-pfpl#c00320]; and Pierce ATTAPL independently names ML's constructor-fold/pattern-match-unfold
+      behavior as \"characteristic of isorecursive types\" [pierce-attapl-2004#c00721]. Four independently
+      authored formalizations of the same iso/equi fork is convergence, not single-sourcing, and the \"\
+      split-candidate\"/\"new-dimension\" flags describe correct ontology work given Pierce's own framing
+      of iso vs. equi as a genuine two-valued answer to one well-posed question [pierce-tapl-2002#c00574].
+      One soft spot remains in the realizes:[type-soundness] link, raised below as a scope challenge;
+      it does not warrant re-carving, only tightening the edge or its justification."
+    challenges:
+      - type: scope
+        text: The realizes:[type-soundness] link is defended by citing Harper's Safety theorem for 
+          FPC and Pierce's remark about equi-recursive "metatheoretic difficulties," but the 
+          adjacent Pierce passage states that under equi-recursive types, "existing definitions, 
+          safety theorems, and proofs remain unchanged" — i.e. equi-recursive types are themselves 
+          type-sound in the base system. The difficulties Pierce flags are specific to combining 
+          equi-recursion with other advanced features (bounded quantification, type operators), not 
+          a soundness failure that iso-recursive uniquely fixes. Harper's Safety theorem likewise is
+          stated for FPC's particular iso-recursive construction, not as a comparative claim that 
+          equi-recursive formulations lack it. As written, realizes:[type-soundness] implies 
+          iso-recursive-types is what delivers type soundness for recursive types generally, which 
+          overclaims relative to what either source actually supports; the edge should instead point
+          at something like proof-engineering simplicity or decidability, or be scoped/qualified to 
+          the specific metatheoretic-difficulty claim.
+        evidence:
+          - source: pierce-tapl-2002
+            locator: §20.2
+            chunk_id: pierce-tapl-2002#c00574
+            quote: Existing definitions, safety theorems, and proofs remain unchanged, as long as 
+              they do not depend on induction on type expressions
+          - source: pierce-tapl-2002
+            locator: §20.2
+            chunk_id: pierce-tapl-2002#c00575
+            quote: the interactions between equi-recursive types and other advanced typing features 
+              such as bounded quantification and type operators can be quite complex, leading to 
+              significant theoretical difficulties
+          - source: harper-pfpl
+            locator: §21.1
+            chunk_id: harper-pfpl#c00321
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Both challenges are correct on the specific point they target, and I concede the `realizes:
+      [type-soundness]` edge as written.\n\nThe cited evidence does not support type-soundness as a distinguishing
+      contribution of the iso branch:\n\n- pierce-tapl-2002#c00574 states plainly, of the equi-recursive
+      alternative: \"Existing definitions, safety theorems, and proofs remain unchanged, as long as they
+      do not depend on induction on type expressions.\" That is Pierce asserting equi-recursive types
+      are themselves sound in the base system — soundness is not something iso-recursive uniquely delivers.\n\
+      - pierce-tapl-2002#c00575/#c00576 locate the real cost of equi-recursion elsewhere: \"the interactions
+      between equi-recursive types and other advanced typing features such as bounded quantification and
+      type operators can be quite complex, leading to significant theoretical difficulties... or even
+      undecidable typechecking problems.\" This is about proof/implementation complexity and decidability
+      when equi-recursion is combined with other features, not a soundness gap in the recursive-types
+      mechanism itself.\n- harper-pfpl#c00320's Theorem 21.1 (Safety) is proved for FPC's particular iso-recursive
+      construction. Nothing in that passage is framed comparatively against an equi-recursive formulation
+      lacking safety — Harper simply never builds the equi-recursive alternative in this chapter, so this
+      can't be read as \"iso uniquely achieves safety.\"\n\nSo `realizes: [type-soundness]` overclaims:
+      it implies the iso-recursive leaf is what delivers type soundness for recursive types, when the
+      shared mechanism (recursive types generally, either formalization) is what the soundness theorem
+      actually attaches to. I agree with [the working language implementer] that the edge should be removed
+      from this leaf, and if a realizes-style edge is wanted here it should instead point at something
+      like decidable/metatheoretically-simpler typechecking-in-combination-with-other-features (bounded
+      quantification, type operators) — which is what the cited passages actually support as iso-recursive's
+      distinguishing payoff — rather than type-soundness.\n\nI do not think this affects the rest of the
+      carve. The node itself — iso-recursive types as a distinct, evidenced leaf of a genuine two-valued
+      `recursive-type-formation` dimension, with the fold/unfold isomorphism as its defining mechanism
+      — is squarely supported by pierce-tapl-2002#c00574/#c00575 and unchallenged by either critique;
+      both challenges are scoped only to the outgoing `realizes` edge. Recommend: drop `realizes: [type-soundness]`,
+      keep the rest of the carve as drafted.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The node itself is well-evidenced and the structural flags that triggered debate (single-source,
+      split-candidate, new-dimension) are resolved on the record: Pierce TAPL §20.2 frames iso- vs. equi-recursive
+      formalization as a genuine two-valued answer to one well-posed question, and three further independent
+      sources (Turbak & Gifford's trec-α/β rules plus the Tib4 counterexample, Harper's FPC fold/unfold
+      statics/dynamics, Pierce ATTAPL's ML/Java observation) converge on the same mechanism — this is
+      convergent multi-source support, not a single-source carve, and the dimension split is a correctly-motivated
+      carve, not a hedge. No participant disputed the node's definition or the dimension split; all contest
+      activity converged on one edge.\n\nThe `realizes: [type-soundness]` edge does not survive scrutiny
+      and the proposer explicitly concedes it after both challengers (type theorist and language implementer)
+      independently cite the same passage: Pierce's own cited evidence (pierce-tapl-2002#c00574) states
+      that under the equi-recursive alternative \"existing definitions, safety theorems, and proofs remain
+      unchanged\" — i.e., soundness is preserved by both branches of the dimension, not a distinguishing
+      contribution of the iso leaf. Harper's Safety theorem is proved for FPC's particular iso-recursive
+      construction without any comparative claim against an equi-recursive formulation lacking it, so
+      it cannot be read as \"iso uniquely delivers soundness.\" This is unanimous once surfaced: the edge's
+      scope exceeds the node it's attached to and should be removed. No replacement edge is adopted here
+      since no cited passage pins down a precise alternative target (the proposer's own suggestion — decidability/proof-engineering
+      simplicity under combination with bounded quantification/type operators — is directionally right
+      but not yet carved as a target node, so it is left for a future edge rather than invented here).\n\
+      \nEvidence should be broadened per the uncontested proposer resolution to reflect the convergent
+      sourcing explicitly."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - scope
+  rationale: "The node itself is well-evidenced and the structural flags that triggered debate (single-source,
+    split-candidate, new-dimension) are resolved on the record: Pierce TAPL §20.2 frames iso- vs. equi-recursive
+    formalization as a genuine two-valued answer to one well-posed question, and three further independent
+    sources (Turbak & Gifford's trec-α/β rules plus the Tib4 counterexample, Harper's FPC fold/unfold
+    statics/dynamics, Pierce ATTAPL's ML/Java observation) converge on the same mechanism — this is convergent
+    multi-source support, not a single-source carve, and the dimension split is a correctly-motivated
+    carve, not a hedge. No participant disputed the node's definition or the dimension split; all contest
+    activity converged on one edge.\n\nThe `realizes: [type-soundness]` edge does not survive scrutiny
+    and the proposer explicitly concedes it after both challengers (type theorist and language implementer)
+    independently cite the same passage: Pierce's own cited evidence (pierce-tapl-2002#c00574) states
+    that under the equi-recursive alternative \"existing definitions, safety theorems, and proofs remain
+    unchanged\" — i.e., soundness is preserved by both branches of the dimension, not a distinguishing
+    contribution of the iso leaf. Harper's Safety theorem is proved for FPC's particular iso-recursive
+    construction without any comparative claim against an equi-recursive formulation lacking it, so it
+    cannot be read as \"iso uniquely delivers soundness.\" This is unanimous once surfaced: the edge's
+    scope exceeds the node it's attached to and should be removed. No replacement edge is adopted here
+    since no cited passage pins down a precise alternative target (the proposer's own suggestion — decidability/proof-engineering
+    simplicity under combination with bounded quantification/type operators — is directionally right but
+    not yet carved as a target node, so it is left for a future edge rather than invented here).\n\nEvidence
+    should be broadened per the uncontested proposer resolution to reflect the convergent sourcing explicitly."
+  revision:
+    realizes: []
