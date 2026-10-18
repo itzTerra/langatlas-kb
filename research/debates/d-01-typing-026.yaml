@@ -1,0 +1,403 @@
+id: d-01-typing-026
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: gradual-typing--requires--dynamic-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-gradual-typing--requires--dynamic-typing-02
+  moderator: 2026-10-17-r4-moderator-01-typing-gradual-typing--requires--dynamic-typing-02
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: gradual-typing--requires--dynamic-typing
+  type: requires
+  from: gradual-typing
+  to: dynamic-typing
+  polarity:
+  statement: Gradual typing requires a dynamic/untyped counterpart language or mode that the typed 
+    parts interoperate with and migrate from.
+  evidence:
+    - source: krishnamurthi-plai
+      locator: p. 174
+      chunk_id: krishnamurthi-plai#c00241
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "## Case for `gradual-typing --requires--> dynamic-typing`\n\n**1. The cited chunk states the
+      dependency directly, in both of the two forms it distinguishes.**\n\n`krishnamurthi-plai#c00241`
+      partitions gradual typing into exactly two schools, and a dynamic/untyped counterpart is constitutive
+      of each:\n\n- *Macro*: \"In the macro approach, there are **two languages**: the typed and the dynamic
+      one… so similar that they have the same run-time system and can freely share values.\" The dynamic
+      sibling is not incidental infrastructure; it is one of the two halves. The passage then names the
+      migration direction the carve asserts: \"the programmer will gradually migrate part of their codebase
+      **from the dynamic to the typed language**, typically a function at a time.\" And it names the interoperation:
+      \"Each language can import code from the other, but when importing into typed code, the programmer
+      must specify a type for the imported code.\"\n- *Micro*: \"we can add annotations to **any subset**
+      of the variables,\" yielding a language where \"any parts of a program can be static and any other
+      parts dynamic, and they can freely commingle.\" The unannotated remainder is the dynamic counterpart
+      — here a *mode* within one language rather than a sibling language.\n\nThis is why the carve's statement
+      says \"counterpart language **or mode**.\" That disjunction is not hedging; it is precisely the
+      micro/macro split the source draws. The edge holds across both branches, which is the strongest
+      position for a `requires` edge: there is no variant of gradual typing in the cited taxonomy that
+      lacks a dynamic counterpart.\n\n**2. The surrounding section establishes the requirement as definitional,
+      not merely typical.**\n\n`krishnamurthi-plai#c00239` frames the whole phenomenon as \"dynamic languages
+      **adding a static counterpart**\" — i.e. gradual typing arises on top of a pre-existing dynamic
+      language, by construction. `krishnamurthi-plai#c00240` gives the two reasons \"we cannot expect
+      the whole program to make an instant transition from untyped to typed\" (size; some parts \"may
+      not even be typeable,\" e.g. `eval`), and defines the term on that basis: \"These type systems exhibit
+      a property called gradual typing: as the name suggests, you add types 'gradually' to the program.\"\
+      \ Adding types *gradually* presupposes something there before the types, and something still untyped
+      at every intermediate state. A gradually typed system with no dynamic counterpart would have nothing
+      to be gradual with respect to.\n\n`krishnamurthi-plai#c00242` supplies the confirming exemplar and,
+      usefully, the *negative* case: \"technically, it's the combination of Racket and Typed Racket that
+      is gradually typed — **Typed Racket itself is fully typed**.\" The source explicitly withholds the
+      label \"gradually typed\" from the typed half taken alone, and grants it only to the pairing with
+      the dynamic language. That is as close to an authorial statement of the `requires` relation as a
+      prose textbook gets.\n\n**3. On \"single-source\": the dependency is corroborated in a second corpus
+      source.**\n\n`harper-pfpl#c00361` describes hybrid typing as enriching a static language \"with
+      a distinguished type, `dyn`, of dynamic values,\" into which \"the dynamically typed language… may
+      be embedded by regarding a dynamically typed program as a statically typed program of type `dyn`.\"\
+      \ Harper reaches the same structure from the opposite starting point — static language first rather
+      than dynamic language first — and still finds a dynamic counterpart indispensable, realized as a
+      mode (`dyn`) inside the static language. Two independent authors, opposite construction orders,
+      same dependency. I propose amending the carve's evidence list to add `krishnamurthi-plai#c00239`,
+      `krishnamurthi-plai#c00240`, `krishnamurthi-plai#c00242`, and `harper-pfpl#c00361`, which should
+      discharge the single-source flag.\n\n**4. Scope limits I concede up front, so they are not mistaken
+      for overreach.**\n\n- The edge is about a dynamic/untyped *counterpart within the gradually typed
+      system*, not a claim that the host language must be a dynamically typed language in the whole-language
+      sense. `harper-pfpl#c00361` is explicit that \"dynamic typing is a mode of use of static typing,\"\
+      \ and that `dyn` is definable as a recursive type rather than needing to be primitive. The carve's
+      \"or mode\" wording already accommodates this; I would resist any amendment that narrows it to \"\
+      language.\"\n- The source offers no quantitative or strength claim, and the carve makes none.\n\
+      - `harper-pfpl#c00361` says static and dynamic \"are not opposed to one another, but may coexist
+      harmoniously.\" This cuts *for* the carve, not against it: it is the coexistence that the `requires`
+      edge records. It would, however, be evidence against any companion `conflicts-with` edge between
+      the same two features.\n\nOn the strength of `#c00241` alone the edge is sound; with `#c00239`,
+      `#c00240`, `#c00242` and `harper-pfpl#c00361` it is multiply sourced and survives the flag that
+      sent it here. I defend the carve as written, with the evidence list extended."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The core relation is sound and I do not challenge it. Krishnamurthi makes the dependency constitutive
+      rather than typical: gradual typing is introduced as the property of \"dynamic languages adding
+      a static counterpart\" (#c00239), defined as adding types \"gradually\" to a program that pre-exists
+      them (#c00240), and the label is explicitly withheld from the typed half alone — \"technically,
+      it's the combination of Racket and Typed Racket that is gradually typed—Typed Racket itself is fully
+      typed\" (#c00242). The proposer's reading of #c00241 is accurate for both branches. A `requires`
+      edge is the right relation type, and the proposer's concession that no `conflicts-with` edge may
+      stand between these two nodes is correct on #c00361 (\"not opposed to one another, but may coexist
+      harmoniously\").\n\nTwo challenges remain, neither against the relation itself.\n\nFirst, the single-source
+      flag is not discharged. The Harper passage offered as independent corroboration is about *hybrid
+      typing* — a static language enriched with a type `dyn` — and Harper's \"dynamic typing\" in that
+      sentence does not denote the feature on the `to` side of this edge. His settled position is that
+      \"every dynamic language is inherently a static language in which we confine ourselves to a (needlessly)
+      restricted type discipline\" (#c00346) and that \"so-called dynamically typed languages are, in
+      fact, statically typed\" (#c00343). Against the sense of `dynamic-typing` the rest of the corpus
+      uses — all values carry run-time-inspectable type annotations (turbak-gifford-dcpl#c00958; vanroy-haridi-2003#c00236)
+      — citing #c00361 as a second witness equivocates on the term: it would make the edge read \"gradual
+      typing requires a particular recursive type definable inside a static language,\" which is not what
+      the carve asserts. Harper is also not writing about gradual typing at all; #c00373 notes he expects
+      the dynamic/static opposition to \"fade away,\" a framing orthogonal to migration. The edge stays
+      single-source on Krishnamurthi §\"Gradual Typing\", and the four Krishnamurthi chunks are one continuous
+      argument in one section, not independent attestation. I would accept the added Krishnamurthi chunks
+      as evidence and keep the flag.\n\nSecond, the carve's \"counterpart language **or mode**\" disjunction
+      absorbs the distinction the source treats as its primary structuring of gradual typing — the section
+      is titled \"Micro Versus Macro\" (#c00241) — and the two branches make the dependency hold on different
+      objects. In macro, the `to` side is a whole sibling dynamic language with its own run-time boundary
+      discipline: \"there are two languages… Each language can import code from the other, but when importing
+      into typed code, the programmer must specify a type for the imported code.\" In micro, there is
+      no second language and no import boundary; there is one \"much more complex language\" in which
+      annotated and unannotated code \"freely commingle… even in a single expression or line,\" and the
+      unannotated remainder is a region lacking annotations rather than a dynamic typing discipline being
+      depended on. The source attaches materially different consequences to the two — in micro \"it is
+      rather unclear what soundness means,\" and \"the type system needs to somehow deal with constructs
+      it cannot meaningfully type (like eval)\" — consequences absent from the macro branch. The project's
+      concept/feature/feature-instance vocabulary can carry this: micro and macro gradual typing as two
+      features realizing one concept, each with its own `requires` edge, rather than one edge whose statement
+      is true only under a disjunction the reader must unpack. I am not asking to narrow the edge to \"\
+      language\" — that would be wrong in the other direction; I am asking that the disjunction not be
+      the unit of record."
+    challenges:
+      - type: missing-source
+        text: "The single-source flag is not discharged by the offered corroboration. `harper-pfpl#c00361`
+          concerns hybrid typing — a static language enriched with a type `dyn` — and Harper's \"dynamic
+          typing is a mode of use of static typing\" there does not refer to the feature on this edge's
+          `to` side. Harper holds that \"so-called dynamically typed languages are, in fact, statically
+          typed\" (#c00343) and that \"every dynamic language is inherently a static language\" (#c00346),
+          whereas the corpus sense of `dynamic-typing` used elsewhere is a language-level discipline where
+          values carry run-time-inspectable types (turbak-gifford-dcpl#c00958, vanroy-haridi-2003#c00236).
+          Reading #c00361 as a second witness equivocates between a type inside a static language and
+          a typing discipline; Harper is also not discussing gradual typing or migration. The remaining
+          four chunks are one continuous passage of a single section in one textbook, so the edge is still
+          attested by one source."
+        evidence:
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+          - source: harper-pfpl
+            locator: §22.4
+            chunk_id: harper-pfpl#c00343
+          - source: turbak-gifford-dcpl
+            locator: §11.3.1
+            chunk_id: turbak-gifford-dcpl#c00958
+          - source: harper-pfpl
+            locator: §24.5
+            chunk_id: harper-pfpl#c00373
+            quote: For this reason one might expect that the opposition between dynamic and static 
+              typing would fade away, but industrial and academic trends suggest otherwise.
+      - type: wrong-atomization
+        text: "`gradual-typing` is carved as one feature, so the edge must state its dependency disjunctively
+          (\"counterpart language **or** mode\"). But the cited source's primary organizing distinction
+          for gradual typing is exactly this split — the section is titled \"Micro Versus Macro\" — and
+          the dependency holds on a different object in each branch. Macro depends on a second sibling
+          language with an explicit import/annotation boundary; micro has one language with no boundary
+          at all, where the `to` side is an unannotated remainder inside a single expression rather than
+          a dynamic typing discipline. The source assigns the two branches different consequences (unclear
+          soundness, untypeable constructs in micro only), so one edge with a disjunctive statement records
+          less than the source says. The project's concept/feature split can hold micro and macro as two
+          features of one concept, each with its own edge."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: Within this broad principle, there are two schools of thought.
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The core dependency is well sourced in Krishnamurthi, and I do not dispute the edge's truth:
+      `#c00240` makes gradualness definitional (\"you add types 'gradually' to the program\"), `#c00239`
+      frames the whole phenomenon as \"dynamic languages adding a static counterpart,\" and `#c00242`
+      explicitly withholds \"gradually typed\" from the typed half alone. On the `from`/`to` content the
+      proposer is right.\n\nMy objections are about (a) whether the single-source flag is actually discharged
+      by the Harper citation offered, and (b) whether the ontology can host what the source says the bearer
+      of gradual typing is. I also flag, more weakly, that the carve's \"language **or** mode\" disjunction
+      is doing work that the source treats as a hard split between two schools."
+    challenges:
+      - type: missing-source
+        text: "The proposed second source does not corroborate this claim, so the single-source flag stands.
+          `harper-pfpl#c00361` is about **hybrid typing**, not gradual typing: \"A hybrid language is
+          one that combines static and dynamic typing by enriching a statically typed language with a
+          distinguished type, dyn, of dynamic values.\" Nothing in it mentions annotation, migration,
+          incrementality, or partial conversion — the three properties that make Krishnamurthi's edge
+          a `requires` rather than a mere coexistence. Harper's own notes make the conflation fatal: `harper-pfpl#c00373`
+          says \"Most modern statically typed languages, such as Java or Haskell or OCaml or SML, include
+          a type similar to dyn, or admit recursive types with which to define it.\" If the presence of
+          a dyn-like mode were evidence about gradual typing, Harper would have committed himself to SML
+          and Haskell being gradually typed, which he plainly does not claim. Harper's point is the reverse
+          of a dependency claim: `#c00346` argues the static/dynamic opposition \"is illusory\" because
+          \"every dynamic language is inherently a static language in which we confine ourselves to a
+          (needlessly) restricted type discipline.\" That is a reduction of dynamic typing to static typing,
+          not a statement that a gradually typed system needs a dynamic counterpart. Searching the corpus
+          for gradual typing restricted to harper-pfpl returns only the hybrid-typing and Chapter 23/24
+          material — Harper's text appears not to treat gradual typing at all. The four additional Krishnamurthi
+          chunks the proposer offers (`#c00239`, `#c00240`, `#c00242`) are good and should be added, but
+          they are the same source and the same section run; they strengthen the evidence without making
+          it multi-source. The flag needs a genuinely second author on gradual typing, not Harper on hybrid
+          typing."
+        evidence:
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+            quote: A hybrid language is one that combines static and dynamic typing by enriching a 
+              statically typed language with a distinguished type, dyn , of dynamic values.
+          - source: harper-pfpl
+            locator: §24.5
+            chunk_id: harper-pfpl#c00373
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+      - type: wrong-structure
+        text: "In the macro school — the one the source treats as canonical and studies in depth — the
+          thing that bears gradual typing is not a language. `krishnamurthi-plai#c00242`: \"technically,
+          it's the combination of Racket and Typed Racket that is gradually typed—Typed Racket itself
+          is fully typed.\" And `#c00241`: \"there are two languages: the typed and the dynamic one...
+          we'll refer to them as 'sibling' languages... they may not have the same constructs (e.g., the
+          typed language would not contain eval).\" The project's vocabulary defines a feature instance
+          as \"a realisation of a feature in a specific system (a particular language).\" Under macro
+          gradual typing there is no particular language to attach the instance to: Racket is not gradually
+          typed (no type system), Typed Racket is not gradually typed (fully typed, per the source), and
+          the pair is not a language in the ontology's sense. A `requires` edge between two feature nodes
+          can only say \"a language realizing A also realizes B,\" but the source's claim is \"a language
+          realizing the typed half interoperates with a *separate sibling language* realizing the dynamic
+          half, with a value-crossing boundary and a differing construct set between them.\" That is a
+          relation between two language artifacts, not between two features of one artifact, and the edge
+          is being bent into the available slot. Note the asymmetry this hides: the micro case genuinely
+          is one language with two modes and does fit a feature-to-feature edge; the macro case does not.
+          The carve reads as true only because the disjunction \"counterpart language or mode\" lets the
+          edge mean two structurally different things. I am not asking for a different edge — I am flagging
+          that the ontology has no slot for a feature whose bearer is a language pair, and that this carve
+          is where that gap shows."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00242
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+      - type: wrong-atomization
+        text: "Weaker, and I raise it only because this edge is the first place it bites: a single `gradual-typing`
+          node collapses what the source presents as a hard disjunction, not a spectrum. `krishnamurthi-plai#c00241`
+          is titled \"Micro Versus Macro\" and opens \"within this broad principle, there are two schools
+          of thought,\" then separates them on properties that matter for any downstream edge or quality
+          claim. Micro: \"there is now a much more complex language where any parts of a program can be
+          static and any other parts dynamic, and they can freely commingle in the same body of code,
+          even in a single expression or line,\" and crucially \"previously we had a clean and simple
+          soundness result for the typed program; now it is rather unclear what soundness means.\" Macro:
+          \"Instead of freely mixing code between typed and untyped, we only have to figure out what happens
+          when values travel between the languages, not within each one.\" Those are different mechanisms
+          with different soundness stories and different interop surfaces. The proposer treats the carve's
+          \"language **or** mode\" wording as faithfully tracking this split — but a disjunction inside
+          a single edge statement records the split as a wording accommodation rather than as structure.
+          If micro and macro were separate features, each would get a clean, non-disjunctive `requires`
+          edge, and the \"unclear what soundness means\" cost would be attachable to micro alone rather
+          than smeared across both. I concede the edge survives either atomization, so this is a node-level
+          objection surfacing through an edge debate, not a claim that the edge is false."
+        evidence:
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+            quote: Within this broad principle, there are two schools of thought.
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "## 1. Missing-source: conceded in full\n\nBoth challengers are right and I withdraw the Harper
+      corroboration. `harper-pfpl#c00361` defines a *hybrid* language — \"a statically typed language
+      with a distinguished type, dyn, of dynamic values\" — and its closing line (\"dynamic typing is
+      a mode of use of static typing\") is a claim about a type constructor inside a static language,
+      not about the `to`-side feature as the corpus elsewhere fixes it (`turbak-gifford-dcpl#c00958`:
+      \"all values conceptually carry type annotations that can be inspected at run time\"). The implementer's
+      reductio is decisive: `harper-pfpl#c00373` says Java, Haskell, OCaml and SML \"include a type similar
+      to dyn,\" so if a dyn-like mode were evidence about gradual typing, Harper would be committed to
+      SML being gradually typed. He says nothing about annotation, incremental migration, or partial conversion.
+      My own searches confirm the negative: querying the corpus for gradual typing and for optional-annotation/boundary-check
+      material returns only `krishnamurthi-plai` (`#c00239`, `#c00240`, `#c00241`, `#c00242`, plus the
+      retrofitting run `#c00215`/`#c00229`) and otherwise unrelated hits (`cardelli-wegner-1985#c00009`
+      on static vs. strong typing; `pierce-tapl-2002#c00669` on type reconstruction). **The single-source
+      flag is not discharged and should stand.** `#c00239`/`#c00240`/`#c00242` should be added as same-source
+      corroboration — they carry the migration and the \"cannot expect the whole program to make an instant
+      transition from untyped to typed\" clause that makes this a dependency rather than coexistence —
+      but they do not change the source count.\n\n## 2. Atomization and structure: conceded, with a concrete
+      amendment\n\nI had defended the \"language **or** mode\" disjunction as faithful tracking of the
+      source. On re-reading, the challengers have the better of it: `#c00241` is titled \"Micro Versus
+      Macro,\" says \"there are two schools of thought,\" and gives the two branches different mechanisms
+      and different consequences — micro has \"a much more complex language where any parts of a program
+      can be static and any other parts dynamic... even in a single expression or line\" and \"it is rather
+      unclear what soundness means\"; macro has \"two languages... 'sibling' languages\" that \"may not
+      have the same constructs\" and where \"we only have to figure out what happens when values travel
+      between the languages.\" A disjunction inside one statement records that as wording rather than
+      as structure, and it hides exactly the asymmetry the implementer names: micro is one language with
+      two modes and fits a feature-to-feature edge; macro's bearer is a language pair, and `#c00242` says
+      so outright — \"technically, it's the combination of Racket and Typed Racket that is gradually typed—Typed
+      Racket itself is fully typed.\" Against the project's definition of a feature instance as \"a realisation
+      of a feature in a specific system (a particular language),\" macro has no particular language to
+      attach an instance to.\n\n**Amendment I propose:**\n\n1. Split the node: `micro-gradual-typing`
+      and `macro-gradual-typing` as two features of one `gradual-typing` concept, per `#c00241`'s own
+      organizing distinction.\n2. Replace this edge with a single non-disjunctive one: `micro-gradual-typing
+      --requires--> dynamic-typing`, statement: *\"Micro gradual typing requires that unannotated parts
+      of the same program remain dynamically typed, so static and dynamic parts commingle within one language.\"\
+      * This is same-bearer, one language, and directly supported — `#c00241` for the commingling, `#c00240`
+      for why the dynamic remainder is unavoidable (\"Some parts of the program may not even be typeable,\"\
+      \ and such constructs \"enter the language because it's dynamic and doesn't have to worry about
+      a static type discipline\"). Evidence: `krishnamurthi-plai#c00241`, `#c00240`, `#c00239`. Still
+      single-source; keep the flag.\n3. Do **not** force the macro dependency into a feature-to-feature
+      `requires`. Its content per `#c00241`/`#c00242` is a relation between two sibling language artifacts
+      with a value-crossing boundary and differing construct sets — the implementer is right that the
+      ontology has no slot for a feature whose bearer is a language pair. Record it as a deferred structural
+      gap rather than booking a true-sounding edge that means something different from the micro one.\n\
+      \nOne correction to the type theorist's framing, which does not change the outcome: micro's unannotated
+      remainder is not merely \"an unannotated remainder\" — `#c00240` ties it to the language being dynamic
+      and lacking a static type discipline, so the `to` side there is the discipline, not an absence.
+      That is why I think the micro edge survives as a real `requires` and should be kept rather than
+      dropped along with the rest."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Missing-source is upheld, and the proposer conceded it. harper-pfpl#c00361 defines a *hybrid*
+      language — a static language enriched with a type `dyn` — and says nothing about annotation, incrementality,
+      or migration, the properties that make this a dependency rather than coexistence. The implementer's
+      reductio from #c00373 (Java, Haskell, OCaml, SML \"include a type similar to dyn\") is decisive:
+      if a dyn-like mode were evidence about gradual typing, Harper would be committed to SML being gradually
+      typed. Harper's #c00343/#c00346 also fix his \"dynamic typing\" as a restricted static discipline,
+      not the corpus sense (turbak-gifford-dcpl#c00958). The four Krishnamurthi chunks are one continuous
+      section run; they corroborate but do not multiply the source. Flag stands.\n\nWrong-atomization
+      is upheld on the cited passage's own face: #c00241 is titled \"Micro Versus Macro,\" opens \"there
+      are two schools of thought,\" and attaches materially different consequences to each (unclear soundness
+      and untypeable constructs in micro; a value-crossing import boundary and differing construct sets
+      in macro). A disjunction inside one statement records that split as wording rather than structure.
+      Both challengers and, on re-reading, the proposer converge here; the convergence is grounded in
+      the passage, not in deference.\n\nWrong-structure is also upheld on #c00242: under macro the bearer
+      of gradual typing is neither Racket nor Typed Racket but their combination, which is not \"a particular
+      language\" and therefore has no feature-instance slot. I keep the carve rather than dropping it
+      because the micro half is a genuine same-bearer feature-to-feature `requires` — #c00240 grounds
+      the dynamic remainder in the language lacking a static discipline, so the `to` side is a discipline
+      and not a mere absence of annotations. I reject the type theorist's framing of micro's remainder
+      as only \"an unannotated remainder\"; #c00240 does not support that reading.\n\nThe carve is therefore
+      narrowed to the micro branch. For the structure review: holding the macro claim would require a
+      record kind whose bearer is a language pair (or a cross-artifact edge type between two feature instances
+      in different languages, with the value-crossing boundary and divergent construct sets as its payload).
+      Until that exists, the macro dependency is unrecorded.\n\nStanding dissent is recorded: the macro
+      dependency, which the source treats as the canonical school, is left out of the knowledge base by
+      this decision, and the single-source flag on what remains is live."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - wrong-atomization
+    - wrong-structure
+  rationale: "Missing-source is upheld, and the proposer conceded it. harper-pfpl#c00361 defines a *hybrid*
+    language — a static language enriched with a type `dyn` — and says nothing about annotation, incrementality,
+    or migration, the properties that make this a dependency rather than coexistence. The implementer's
+    reductio from #c00373 (Java, Haskell, OCaml, SML \"include a type similar to dyn\") is decisive: if
+    a dyn-like mode were evidence about gradual typing, Harper would be committed to SML being gradually
+    typed. Harper's #c00343/#c00346 also fix his \"dynamic typing\" as a restricted static discipline,
+    not the corpus sense (turbak-gifford-dcpl#c00958). The four Krishnamurthi chunks are one continuous
+    section run; they corroborate but do not multiply the source. Flag stands.\n\nWrong-atomization is
+    upheld on the cited passage's own face: #c00241 is titled \"Micro Versus Macro,\" opens \"there are
+    two schools of thought,\" and attaches materially different consequences to each (unclear soundness
+    and untypeable constructs in micro; a value-crossing import boundary and differing construct sets
+    in macro). A disjunction inside one statement records that split as wording rather than structure.
+    Both challengers and, on re-reading, the proposer converge here; the convergence is grounded in the
+    passage, not in deference.\n\nWrong-structure is also upheld on #c00242: under macro the bearer of
+    gradual typing is neither Racket nor Typed Racket but their combination, which is not \"a particular
+    language\" and therefore has no feature-instance slot. I keep the carve rather than dropping it because
+    the micro half is a genuine same-bearer feature-to-feature `requires` — #c00240 grounds the dynamic
+    remainder in the language lacking a static discipline, so the `to` side is a discipline and not a
+    mere absence of annotations. I reject the type theorist's framing of micro's remainder as only \"\
+    an unannotated remainder\"; #c00240 does not support that reading.\n\nThe carve is therefore narrowed
+    to the micro branch. For the structure review: holding the macro claim would require a record kind
+    whose bearer is a language pair (or a cross-artifact edge type between two feature instances in different
+    languages, with the value-crossing boundary and divergent construct sets as its payload). Until that
+    exists, the macro dependency is unrecorded.\n\nStanding dissent is recorded: the macro dependency,
+    which the source treats as the canonical school, is left out of the knowledge base by this decision,
+    and the single-source flag on what remains is live."
+  revision:
+    statement: 'Micro gradual typing requires that the unannotated parts of the same program remain dynamically
+      typed: annotations may be added to any subset of variables, so statically and dynamically typed
+      parts commingle within one language, down to a single expression.'
+    note: "Narrowed from `gradual-typing` to the micro branch. The macro branch of Krishnamurthi's \"\
+      Micro Versus Macro\" split (p. 174) is deliberately not recorded as a feature-to-feature edge: its
+      bearer is a pair of sibling languages (\"it's the combination of Racket and Typed Racket that is
+      gradually typed—Typed Racket itself is fully typed\"), which the current record kinds cannot host.
+      Deferred to structure review. Evidence remains one source (krishnamurthi-plai, one continuous section);
+      the single-source flag is NOT discharged."
+  structure_element: record-kinds
