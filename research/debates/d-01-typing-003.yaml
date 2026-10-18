@@ -1,0 +1,223 @@
+id: d-01-typing-003
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: equirecursive-types
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-equirecursive-types-01
+  moderator: 2026-10-17-r4-moderator-01-typing-equirecursive-types-01
+triggers:
+  - split-candidate
+  - new-dimension
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: equirecursive-types
+  from_candidates:
+    - recursive-types
+  kind: feature
+  id: equirecursive-types
+  name: Equi-Recursive Types
+  summary: A formalization of recursive types in which a recursive type is definitionally equal to 
+    its own unfolding, with equivalence checked by the typechecker rather than witnessed by 
+    conversions.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §20.2
+      chunk_id: pierce-tapl-2002#c00574
+      quote: The equi-recursive approach takes these two type expressions as definitionally equal — 
+        interchangeable in all contexts
+    - source: turbak-gifford-dcpl
+      locator: §11.8.6
+      chunk_id: turbak-gifford-dcpl#c01066
+    - source: pierce-tapl-2002
+      locator: §20.2
+      chunk_id: pierce-tapl-2002#c00575
+      quote: The equi-recursive style is arguably more intuitive, but places stronger demands on the
+        typechecker
+  contested:
+    - split-candidate
+    - new-dimension
+  debate_id:
+  status: proposed
+  verification:
+  note: Other exclusive value of the recursive-type-formation axis.
+  dimension: recursive-type-formation
+  cross_cutting: false
+  aliases:
+    - equirecursive types
+  realizes:
+    - type-soundness
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for equi-recursive-types as its own node.**\n\nPierce states the carve criterion
+      directly, as a binary branch point with no third option: \"In the literature on type systems, there
+      are two basic approaches to recursive types... What is the relation between the type µX.T and its
+      one-step unfolding?\" [pierce-tapl-2002#c00574]. The equi-recursive branch is defined precisely
+      as the carve's summary states: \"The equi-recursive approach takes these two type expressions as
+      definitionally equal — interchangeable in all contexts... It is the typechecker's responsibility
+      to make sure that a term of one type will be allowed as an argument to a function expecting the
+      other\" [pierce-tapl-2002#c00574]. This is exactly \"equivalence checked by the typechecker rather
+      than witnessed by conversions\" — the carve's wording tracks the source almost verbatim.\n\nTurbak
+      & Gifford independently corroborate this as a named, textbook-standard alternative with its own
+      formal machinery: \"two recursive types are considered to be equivalent if their complete (potentially
+      infinite) unwindings are equal\" [turbak-gifford-dcpl#c01061], developed via dedicated coinductive
+      equivalence rules with assumption sets (Figure 11.28) [turbak-gifford-dcpl#c01065, #c01066] distinct
+      from the iso-recursive α/β rules (Figure 11.27) [turbak-gifford-dcpl#c01060]. Both sources use the
+      exact same \"equi-recursive\" label, and both show it is not a minor notational variant but changes
+      what counts as equal: T_ib1 and T_ib4 are equi-recursive-equivalent but *not* isorecursive-equivalent
+      [turbak-gifford-dcpl#c01067] — a real, independently-citable formal divergence, not just a stylistic
+      difference.\n\nPierce also names genuine, consequential tradeoffs that justify splitting rather
+      than merging: equi-recursive \"places stronger demands on the typechecker, which must effectively
+      infer the points where fold and unfold annotations should occur,\" and its interaction with other
+      features \"can be quite complex, leading to significant theoretical difficulties... or even undecidable
+      typechecking problems (Solomon, 1978)\" [pierce-tapl-2002#c00575]. This shows the two formulations
+      have different metatheoretic cost profiles — exactly the kind of distinction that should be surfaced
+      as separate features along a `recursive-type-formation` dimension rather than folded into one generic
+      \"recursive types\" node, since a language's choice here is a distinct, observable, consequential
+      design decision (e.g., ML/Java's implicit fold/unfold at constructor/pattern-match or method-invocation
+      sites [pierce-tapl-2002#c00576] vs. languages exposing equi-recursive unification in the typechecker
+      itself, per Chapter 21's coinductive subtyping algorithm [pierce-tapl-2002#c00582]).\n\nThe `realizes:
+      ['type-soundness']` link and `dimension: recursive-type-formation` with iso-recursive as \"other
+      exclusive value\" is well-supported: both are explicitly framed as two exhaustive, mutually exclusive
+      answers to one formal question (how is µX.T related to its unfolding), each compatible with soundness
+      (Harper's FPC gives safety for the iso-style treatment [harper-pfpl#c00320], and Pierce's Chapter
+      21 develops the coinductive foundations making equi-recursive typechecking itself sound and decidable
+      in the systems treated).\n\nI'd defend this carve as drafted. The main thing worth scrutinizing
+      — which I'll leave to the opposing side to raise if they wish — is whether `cross_cutting: False`
+      is right given that equi- vs iso- recursion also interacts with subtyping formulation (Amber rule
+      for iso [pierce-tapl-2002#c00662] vs. coinductive subtyping for equi [pierce-tapl-2002#c00582]),
+      but that interaction doesn't by itself undermine treating type-formation as the primary, single-dimension
+      axis the carve targets.\n"
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "No challenges. This carve is well-supported by the corpus and I'd let it stand.\n\nPierce poses
+      the carving criterion itself as a binary, exhaustive branch over a single formal question — \"there
+      are two basic approaches to recursive types... What is the relation between the type µX.T and its
+      one-step unfolding?\" [pierce-tapl-2002#c00574] — and the equi-recursive branch is defined exactly
+      as the node's summary states: the two expressions are \"definitionally equal — interchangeable in
+      all contexts,\" with the typechecker (not fold/unfold conversions) responsible for equivalence [pierce-tapl-2002#c00574].
+      Turbak & Gifford independently confirm this is a named, textbook-standard alternative with its own
+      non-trivial formal machinery (coinductive equivalence with assumption sets, Figure 11.28 [turbak-gifford-dcpl#c01065])
+      that is provably not reducible to the iso-recursive α/β rules — T_ib1 and T_ib4 are equi-equivalent
+      but not iso-equivalent [turbak-gifford-dcpl#c01067], a genuine formal divergence rather than cosmetic
+      difference. That two independent textbooks converge on the same label and the same binary, mutually-exclusive
+      framing is about as strong a case for a `dimension` carve with two `from_candidates`-splitting exclusive
+      values as this kind of evidence gets.\n\nThe one thing I considered pushing on was the `realizes:
+      ['type-soundness']` link, since the most heavily cited consequence of the equi-recursive choice
+      in the evidence is actually a *decidability/complexity* cost — \"significant theoretical difficulties...
+      or even undecidable typechecking problems (Solomon, 1978)\" [pierce-tapl-2002#c00575] — not a soundness
+      one. But Pierce's own Chapter 21 is explicitly built to give equi-recursive typechecking (with subtyping)
+      a sound coinductive foundation [pierce-tapl-2002#c00582], so the realizes link is defensible even
+      if it doesn't surface the decidability tension that's the more interesting story in the cited passages.
+      That's a completeness quibble about an edge, not a reason to challenge the node carve itself, so
+      I'm not raising it as a formal objection."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "No challenges raised. I checked the three usual failure modes for this kind of split-candidate/new-dimension
+      carve against the corpus and each held up on direct citation.\n\n1. Exclusive/exhaustive dimension:
+      Pierce frames recursive-type-formation as a genuine binary with no third option — \"there are two
+      basic approaches to recursive types... What is the relation between the type µX.T and its one-step
+      unfolding?\" [pierce-tapl-2002#c00574]. This is not the carve imposing a dichotomy; it's reporting
+      one stated in the source.\n\n2. Real formal divergence, not notational variance: Turbak & Gifford
+      give equi-recursive its own coinductive equivalence machinery (assumption-set rules) distinct from
+      the iso-recursive α/β unwinding rules, and exhibit a concrete pair of types (T_ib1, T_ib4) that
+      are equi-equivalent but not iso-equivalent [turbak-gifford-dcpl#c01060]. That's an observable, consequential
+      difference, which supports giving each branch its own feature node under one dimension rather than
+      treating \"recursive types\" as a single undifferentiated node.\n\n3. The realizes: type-soundness
+      link: directly licensed by Pierce's statement that switching to the equi- formulation leaves \"\
+      existing definitions, safety theorems, and proofs\" unchanged [pierce-tapl-2002#c00574]. I checked
+      whether the chapter's own caveat about undecidable typechecking (Solomon, 1978) [pierce-tapl-2002#c00575]
+      undermines this — it doesn't, since undecidability of typeability and soundness-given-typability
+      are orthogonal properties; a system can have both an undecidable or complex typechecking problem
+      and a sound type system once a program is accepted.\n\nI also tested the one soft spot the proposer
+      flagged themselves — whether cross_cutting: False is defensible given the subtyping interaction
+      — and the source resolves it in the carve's favor: Pierce notes the core equi-recursive difficulty
+      (coinductive equivalence checking) persists even in the absence of subtyping, \"A system with equi-recursive
+      types but not subtyping would be only a little simpler, since we would still need to check equivalence
+      of recursive types\" [pierce-tapl-2002#c00582]. That's evidence the defining mechanism is intrinsic
+      to the type-formation axis itself, not borrowed from subtyping, so cross_cutting: False stands rather
+      than being undermined.\n\nGiven direct, on-point citations support the atomization, the dimension
+      framing, and the realizes edge, and the one plausible weak point resolves against rather than for
+      a challenge, I'm not manufacturing an objection here — this carve is sound as drafted."
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "The evidence directly and precisely supports this carve, and I confirm it after re-checking
+      the corpus. No challenges were raised, and on inspection I find none worth raising myself.\n\nPierce
+      TAPL §20.2 is explicit that \"there are two basic approaches to recursive types\" distinguished
+      by \"the relation between the type µX.T and its one-step unfolding\" [pierce-tapl-2002#c00574]:
+      the equi-recursive approach treats µX.T and its unfolding as \"definitionally equal — interchangeable
+      in all contexts,\" with it being \"the typechecker's responsibility\" to establish this [pierce-tapl-2002#c00574],
+      versus the iso-recursive approach where they are \"different, but isomorphic,\" related by explicit
+      fold/unfold witnesses [pierce-tapl-2002#c00575]. This is exactly the clean binary the carve's `dimension:
+      recursive-type-formation` axis models, and the carve's summary (\"definitionally equal,\" \"equivalence
+      checked by the typechecker rather than witnessed by conversions\") tracks the source almost verbatim.
+      The companion evaluative claim — \"more intuitive, but places stronger demands on the typechecker\"\
+      \ — is also a direct quote [pierce-tapl-2002#c00575].\n\nThis is corroborated independently by the
+      chapter-21 overview, which restates that \"equi-recursive types... are definitionally equivalent
+      to their unfoldings,\" and notes that implementing them (unlike iso-recursive types, which are \"\
+      comparatively straightforward\") requires the machinery of coinduction over infinite trees [pierce-tapl-2002#c00582]
+      — confirming the \"equivalence checked by the typechecker\" clause is not a throwaway remark but
+      reflects substantial theoretical weight in the source. The index entry showing equi-recursive types
+      span a sustained treatment (pp. 275, 281–313) [pierce-tapl-2002#c01294] further shows this is a
+      load-bearing distinction in TAPL, not an incidental aside, supporting a dedicated `layer: 3` feature
+      node rather than a note folded under a generic \"recursive types\" entry.\n\nMutual exclusivity
+      with the sibling value (iso-recursive-types) is also textually grounded: Pierce frames the two as
+      alternative \"presentations\" of the same underlying concept, not independently combinable features
+      — \"Both approaches are widely used,\" stated as alternatives [pierce-tapl-2002#c00575]. The `realizes:
+      ['type-soundness']` link is reasonable background context (TAPL's whole recursive-types treatment
+      lives inside a type-soundness framework), though not itself the crux of the split.\n\nThe `new-dimension`
+      flag is warranted: `recursive-type-formation` (equi- vs. iso-) is genuinely orthogonal to other
+      typing axes already in the ontology (e.g., nominal/structural typing, variance), and the source
+      treats it as its own formal choice point (\"What is the relation between...\"), not a sub-case of
+      an existing dimension.\n\nI recommend the moderator accept the carve as drafted."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "No challenges were raised against this carve by either challenger; both explicitly reviewed
+      the standard failure modes (dimension exclusivity/exhaustiveness, real vs. notational formal divergence,
+      soundness of the realizes link, cross_cutting status) and found the corpus support solid. Pierce
+      TAPL §20.2 states the carve criterion verbatim as a binary, exhaustive branch point (\"there are
+      two basic approaches to recursive types... What is the relation between the type µX.T and its one-step
+      unfolding?\") and defines equi-recursive exactly as the summary states. Turbak & Gifford independently
+      corroborate with distinct coinductive machinery and a concrete example (T_ib1 vs T_ib4) showing
+      genuine formal divergence from iso-recursive, not mere notational variance — this supports the split-candidate/new-dimension
+      flags that sent it to debate. The realizes: type-soundness link is reasonably grounded (Pierce notes
+      safety theorems carry over, and Ch. 21 builds a sound coinductive foundation for equi-recursive
+      typing), even though the more salient cited consequence is a decidability/complexity cost rather
+      than a soundness one — this is a minor completeness point, not a challenge-worthy defect. The cross_cutting:
+      False flag was specifically tested against the subtyping interaction and resolved in the carve's
+      favor by direct quote (the coinductive equivalence-checking burden persists even without subtyping).
+      No contradiction exists between sourced positions; both sources agree. No standing dissent remains."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: false
+  rounds: 0
+  upheld_challenges: []
+  rationale: "No challenges were raised against this carve by either challenger; both explicitly reviewed
+    the standard failure modes (dimension exclusivity/exhaustiveness, real vs. notational formal divergence,
+    soundness of the realizes link, cross_cutting status) and found the corpus support solid. Pierce TAPL
+    §20.2 states the carve criterion verbatim as a binary, exhaustive branch point (\"there are two basic
+    approaches to recursive types... What is the relation between the type µX.T and its one-step unfolding?\"\
+    ) and defines equi-recursive exactly as the summary states. Turbak & Gifford independently corroborate
+    with distinct coinductive machinery and a concrete example (T_ib1 vs T_ib4) showing genuine formal
+    divergence from iso-recursive, not mere notational variance — this supports the split-candidate/new-dimension
+    flags that sent it to debate. The realizes: type-soundness link is reasonably grounded (Pierce notes
+    safety theorems carry over, and Ch. 21 builds a sound coinductive foundation for equi-recursive typing),
+    even though the more salient cited consequence is a decidability/complexity cost rather than a soundness
+    one — this is a minor completeness point, not a challenge-worthy defect. The cross_cutting: False
+    flag was specifically tested against the subtyping interaction and resolved in the carve's favor by
+    direct quote (the coinductive equivalence-checking burden persists even without subtyping). No contradiction
+    exists between sourced positions; both sources agree. No standing dissent remains."
