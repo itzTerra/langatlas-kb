@@ -1,0 +1,274 @@
+id: d-01-typing-007
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: hybrid-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-hybrid-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-hybrid-typing-01
+triggers:
+  - new-dimension
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: hybrid-typing
+  from_candidates:
+    - hybrid-typing
+  kind: feature
+  id: hybrid-typing
+  name: Hybrid Typing
+  summary: A language design combining statically typed and dynamically typed fragments within one 
+    type system, mediated by a designated dynamic type whose values carry run-time class tags.
+  evidence:
+    - source: harper-pfpl
+      locator: §24.1
+      chunk_id: harper-pfpl#c00362
+    - source: harper-pfpl
+      locator: §23.3
+      chunk_id: harper-pfpl#c00355
+  contested:
+    - new-dimension
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: Fourth exclusive value of the discipline-time axis, distinguished from gradual typing by 
+    using one mediating type rather than migrating whole program fragments.
+  dimension: static-dynamic-typing-discipline
+  cross_cutting: false
+  aliases:
+    - hybrid language
+  realizes:
+    - type-checking
+  layer: 3
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Case for Hybrid Typing as a carve-worthy node**\n\nThe carve is tightly sourced to Harper's
+      own terminology, not an inference layered on top of it. Section 24.1 is literally titled \"A Hybrid
+      Language\" [harper-pfpl#c00362], and it introduces HPCF by adding exactly one new type, `dyn`, described
+      as \"the type of dynamically classified values,\" with a constructor that \"attaches a classifier
+      to a value,\" a destructor that \"recovers the value classified with the given classifier,\" and
+      a discriminator that \"tests the class of a classified value\" [harper-pfpl#c00362]. That is precisely
+      \"a designated dynamic type whose values carry run-time class tags\" — the carve's summary is a
+      direct paraphrase of the source's own description of its own named construct, not an invented abstraction.\n\
+      \nThe static/dynamic fragments are both present and both typed: the surrounding statics rules show
+      ordinary PCF types (`nat`, `dyn ⇀ dyn`) coexisting with `dyn` in the same judgment system (24.1a–24.1f),
+      and HPCF's safety theorem (24.2) is proved the same way as for a fully static language — preservation
+      and progress — which is the technical signature of \"combining statically and dynamically typed
+      fragments within one type system\" rather than running two separate languages side by side.\n\n\
+      Section 23.3 earns its place as supporting evidence rather than padding: it is the motivating \"\
+      Critique of Dynamic Typing\" that explains *why* a hybrid construct is needed at all — DPCF's dynamics
+      \"must enforce at run-time conditions that need not be checked at all in a statically typed language\"\
+      \ and \"classification is not free,\" concluding \"for that we need a static type system\" [harper-pfpl#c00357].
+      That line is the textbook's own bridge from pure dynamic typing into the hybrid chapter; citing
+      it alongside 24.1 shows the carve isn't cherry-picking a single paragraph but following the author's
+      own argumentative arc toward the hybrid construct.\n\nOn the two flagged concerns:\n\n- *single-source*:
+      true as cited, but the source is a primary, named-by-the-author construct (the chapter's own title
+      is \"Hybrid Language\"), not a secondary gloss requiring triangulation. A single authoritative primary-source
+      definition is adequate grounding for a feature node, especially since the term and mechanism are
+      explicit in the text rather than reconstructed.\n- *new-dimension*: the note correctly scopes this
+      as the fourth exclusive value of `static-dynamic-typing-discipline`, distinguished from gradual
+      typing by the *mediating-type* mechanism (one `dyn` type within a single program) rather than gradual
+      typing's *fragment-migration* mechanism (whole modules/regions moving between disciplines). This
+      distinction is real in the source: HPCF's `dyn` is a single type threaded through otherwise-static
+      code via explicit `new`/`cast`/`inst` operations, not a gradient of annotation completeness across
+      program regions.\n\nI'd keep the carve as drafted. Happy to narrow the summary's phrasing further
+      if an opponent can show the \"class tags\" language overreaches the source, but on the two citations
+      given, the carve is a faithful, well-grounded node."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: The core sourcing for `dyn` as HPCF's hybrid construct (§24.1) is accurate and well-cited.
+      But I have two challenges about how the carve places this construct on the 
+      `static-dynamic-typing-discipline` dimension.
+    challenges:
+      - type: wrong-atomization
+        text: "The carve makes hybrid-typing a fourth exclusive value of the discipline-time axis, coordinate
+          with (and distinguished from) static and dynamic typing. But the cited source's own characterization
+          of hybrid typing is the opposite of a parallel fourth category: 'Static and dynamic types are
+          not opposed to one another, but may coexist harmoniously... one may say that dynamic typing
+          is a mode of use of static typing, reconciling an apparent opposition between them' [harper-pfpl#c00361].
+          Harper's broader argument across this material is explicitly anti-taxonomic: 'the supposed opposition
+          is illusory... every dynamic language is inherently a static language' [harper-pfpl#c00346],
+          and HPCF's safety theorem is proved exactly as for a static language via preservation/progress
+          [harper-pfpl#c00363]. Placing 'hybrid' as a sibling exclusive value next to 'static' and 'dynamic'
+          on the same axis reintroduces the very opposition the source says HPCF dissolves, rather than
+          modeling what the source actually claims: hybrid languages are static languages with one added
+          type."
+        evidence:
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: harper-pfpl
+            locator: pp. 225–226
+            chunk_id: harper-pfpl#c00346
+          - source: harper-pfpl
+            locator: §24.1
+            chunk_id: harper-pfpl#c00363
+      - type: missing-source
+        text: The note grounds the carve's novelty on a contrast with gradual typing ('distinguished
+          from gradual typing by using one mediating type rather than migrating whole program 
+          fragments'), but neither cited passage (§24.1, §23.3) mentions gradual typing, and a 
+          direct search of the source for 'gradual typing' returns no hits at all — the term and the
+          fragment-migration mechanism it's contrasted against are simply absent from Harper's text.
+          The distinguishing claim that anchors why this needs to be a separate node from gradual 
+          typing is therefore asserted without any source backing, from either of the two cited 
+          chunks or elsewhere in this corpus.
+        evidence:
+          - source: harper-pfpl
+            locator: §24.1
+            chunk_id: harper-pfpl#c00362
+            quote: The type dyn is the type of dynamically classiﬁed values.
+          - source: harper-pfpl
+            locator: §23.3
+            chunk_id: harper-pfpl#c00357
+            quote: For that we need a static type system.
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: Two challenges below; I did not find grounds for a third beyond redundancy with these.
+    challenges:
+      - type: wrong-structure
+        text: "The carve forces hybrid typing into the ontology's 'exclusive value of a dimension' slot
+          — a fourth coequal, mutually-exclusive point on `static-dynamic-typing-discipline` alongside
+          static/dynamic/gradual. But Harper's own framing of the construct is explicitly the opposite
+          of a sibling discipline: the section titled 'Hybrid Typing' says 'Static and dynamic types are
+          not opposed to one another, but may coexist harmoniously... one may say that dynamic typing
+          is a mode of use of static typing, reconciling an apparent opposition between them' [harper-pfpl#c00361],
+          and the later chapter restates this as the book's thesis: 'dynamic typing is but a mode of use
+          of static typing, one in which dynamically typed values are of type dyn, a particular recursive
+          sum type' [harper-pfpl#c00399]. Harper is dissolving the static/dynamic opposition, not adding
+          a fourth exclusive category to it. The ontology's dimension/exclusive-value structure has no
+          slot for 'this source argues the axis's categories collapse into an embedding relationship'
+          — so modeling HPCF as a fourth discrete discipline-value bends the source's argument to fit
+          a structure (mutually exclusive axis values) it is explicitly arguing against."
+        evidence:
+          - source: harper-pfpl
+            locator: p. 235
+            chunk_id: harper-pfpl#c00361
+          - source: harper-pfpl
+            locator: p. 257
+            chunk_id: harper-pfpl#c00399
+      - type: missing-source
+        text: The note's load-bearing claim — that hybrid typing is distinguished from gradual 
+          typing by mechanism (single mediating `dyn` type vs. fragment migration across program 
+          regions) — is not supported by either cited passage. §24.1 [harper-pfpl#c00362] and §23.3 
+          [harper-pfpl#c00357] describe DPCF/HPCF and never mention gradual typing or compare 
+          mechanisms to it. The only source in the corpus that actually describes a comparable 
+          mechanism, 'macro' gradual typing, characterizes it as two sibling languages sharing a 
+          run-time system where 'we only have to figure out what happens when values travel between 
+          the languages' and 'the programmer must specify a type for the imported code' when 
+          importing into typed code [krishnamurthi-plai#c00241] — a 
+          boundary-cast-with-classification scheme that looks structurally close to, not clearly 
+          distinct from, HPCF's new/cast/inst operations on a single dyn type. Without a cited 
+          source that actually draws the mediating-type-vs-fragment-migration line, the carve's 
+          claim to occupy a distinct, non-redundant point on the axis rests on an inference the two 
+          citations don't make.
+        evidence:
+          - source: harper-pfpl
+            locator: §24.1
+            chunk_id: harper-pfpl#c00362
+          - source: krishnamurthi-plai
+            locator: p. 174
+            chunk_id: krishnamurthi-plai#c00241
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "I concede both challenges; the evidence is unambiguous and converges from two separate critics
+      on the same textual facts.\n\nWrong-atomization/wrong-structure: harper-pfpl#c00361 (p. 235) — the
+      very section the carve is built from — states \"Static and dynamic types are not opposed to one
+      another, but may coexist harmoniously... one may say that dynamic typing is a mode of use of static
+      typing, reconciling an apparent opposition between them.\" This is restated as the book's thesis
+      at harper-pfpl#c00399 (p. 257) and harper-pfpl#c00346 (pp. 225–226, \"every dynamic language is
+      inherently a static language\"), and structurally confirmed by harper-pfpl#c00363, where HPCF's
+      safety theorem is proved exactly as for a static language (preservation via the dynamics, progress
+      via the statics). The carve's own cited evidence (§24.1/§23.3) therefore supports the opposite of
+      what the node claims: Harper is dissolving the static/dynamic opposition into an embedding (dyn
+      as one recursive type within a static system), not adding a fourth sibling value coordinate with
+      static/dynamic/gradual on an exclusive-value dimension. The \"exclusive value of a dimension\" slot
+      has no way to represent \"this source collapses the axis's categories into an embedding relationship,\"\
+      \ so the carve bends the source to fit a structure the source is explicitly arguing against. Both
+      the type theorist and the implementer are right, and the two independent framings reinforce rather
+      than merely repeat each other.\n\nMissing-source on gradual typing: I searched harper-pfpl directly
+      for \"gradual typing\" and found nothing — every hit returned was dynamic/hybrid-typing material,
+      confirming the term's absence from the source. Neither cited chunk (harper-pfpl#c00362/c00363/c00364
+      for §24.1, or harper-pfpl#c00355/c00356/c00357 for §23.3) mentions gradual typing, fragment migration,
+      or draws any mechanism-based distinction from it. The note's distinguishing claim is simply unsupported
+      by the two citations given, as both challengers independently found.\n\nI don't think this is salvageable
+      as currently structured. My recommendation: drop `hybrid-typing` as a fourth exclusive value of
+      `static-dynamic-typing-discipline` entirely. The HPCF material is legitimate and citable, but it
+      should be re-carved as a feature realized within the static side of the discipline axis (a static
+      type system enriched with one designated recursive sum type `dyn`, per harper-pfpl#c00362/c00399),
+      not as a sibling discipline. The gradual-typing contrast in the note should be removed until a source
+      that actually compares the two mechanisms is found — krishnamurthi-plai#c00241 (macro gradual typing
+      as cross-language boundary casts) is the closest candidate in the corpus and would need to be evaluated
+      on its own terms, not retrofitted to this carve's existing citations."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges are upheld on the evidence, and the proposer concedes fully, so this is not
+      a case of defending the carve against an unsupported challenge. harper-pfpl#c00361 (p.235, the very
+      section the carve cites), restated at #c00399 (p.257) and #c00346 (pp.225-226), explicitly dissolves
+      the static/dynamic opposition rather than adding a sibling discipline: \"dynamic typing is a mode
+      of use of static typing... reconciling an apparent opposition.\" HPCF's safety theorem (#c00363)
+      is proved exactly as for a static language. Modeling hybrid-typing as a fourth coequal exclusive
+      value of `static-dynamic-typing-discipline` therefore forces the source's embedding claim into a
+      mutually-exclusive-axis-value slot that cannot represent it — the dimension-model structure has
+      no way to express \"this source collapses these axis values into an embedding relationship.\" That
+      is a genuine wrong-structure finding: the dimension model needs either a non-exclusive/embedding
+      relation type or this node needs to sit off the axis entirely as a feature realized within the static
+      side, not coordinate with static/dynamic/gradual. Separately, the note's gradual-typing contrast
+      (mediating-type vs. fragment-migration) is unsupported by either cited chunk and by a corpus-wide
+      search for \"gradual typing\" in harper-pfpl — upheld as missing-source. The underlying HPCF material
+      (dyn as a designated type with run-time class tags) remains well-sourced and carve-worthy on its
+      own technical merits; only its placement as a dimension value and the gradual-typing distinguishing
+      claim are unsupported. I revise rather than drop: remove the dimension assignment, rephrase the
+      summary to state the embedding relationship Harper actually argues (a static type system enriched
+      with one recursive type `dyn`), and strike the unsupported gradual-typing clause from the note until
+      a source comparing the two mechanisms is found."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 2
+  upheld_challenges:
+    - wrong-structure
+    - missing-source
+  rationale: "Both challenges are upheld on the evidence, and the proposer concedes fully, so this is
+    not a case of defending the carve against an unsupported challenge. harper-pfpl#c00361 (p.235, the
+    very section the carve cites), restated at #c00399 (p.257) and #c00346 (pp.225-226), explicitly dissolves
+    the static/dynamic opposition rather than adding a sibling discipline: \"dynamic typing is a mode
+    of use of static typing... reconciling an apparent opposition.\" HPCF's safety theorem (#c00363) is
+    proved exactly as for a static language. Modeling hybrid-typing as a fourth coequal exclusive value
+    of `static-dynamic-typing-discipline` therefore forces the source's embedding claim into a mutually-exclusive-axis-value
+    slot that cannot represent it — the dimension-model structure has no way to express \"this source
+    collapses these axis values into an embedding relationship.\" That is a genuine wrong-structure finding:
+    the dimension model needs either a non-exclusive/embedding relation type or this node needs to sit
+    off the axis entirely as a feature realized within the static side, not coordinate with static/dynamic/gradual.
+    Separately, the note's gradual-typing contrast (mediating-type vs. fragment-migration) is unsupported
+    by either cited chunk and by a corpus-wide search for \"gradual typing\" in harper-pfpl — upheld as
+    missing-source. The underlying HPCF material (dyn as a designated type with run-time class tags) remains
+    well-sourced and carve-worthy on its own technical merits; only its placement as a dimension value
+    and the gradual-typing distinguishing claim are unsupported. I revise rather than drop: remove the
+    dimension assignment, rephrase the summary to state the embedding relationship Harper actually argues
+    (a static type system enriched with one recursive type `dyn`), and strike the unsupported gradual-typing
+    clause from the note until a source comparing the two mechanisms is found."
+  revision:
+    dimension:
+    summary: A static type system enriched with a single designated type `dyn`, described by Harper 
+      as embedding dynamic typing within static typing rather than opposing it; `dyn`'s values carry
+      run-time class tags via explicit new/cast/inst operations.
+    note: "Not a sibling discipline-value: Harper's own argument (harper-pfpl#c00361, #c00399, #c00346)
+      is that hybrid typing dissolves the static/dynamic opposition by embedding dyn as one type within
+      an otherwise static system, which the discipline axis's exclusive-value model cannot represent.
+      The prior contrast with gradual typing is removed pending a source that actually compares the two
+      mechanisms."
+  structure_element: dimension-model
