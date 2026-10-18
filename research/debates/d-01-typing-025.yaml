@@ -1,0 +1,247 @@
+id: d-01-typing-025
+cycle: 1
+theme: typing
+target:
+  list: edges
+  key: nominal-typing--alternative-to--structural-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-nominal-typing--alternative-to--structural-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-nominal-typing--alternative-to--structural-typing-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: nominal-typing--alternative-to--structural-typing
+  type: alternative-to
+  from: nominal-typing
+  to: structural-typing
+  polarity:
+  statement: Nominal and structural typing are the two named, competing conventions for deciding 
+    whether two types are compatible — by declared name versus by shape.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §19.3
+      chunk_id: pierce-tapl-2002#c00525
+  contested:
+    - single-source
+  debate_id:
+  status: proposed
+  verification:
+  note: ''
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for nominal-typing--alternative-to--structural-typing**\n\nThe carve is sound,
+      and the \"single-source\" flag is resolved by corpus evidence found this session.\n\nPierce (pierce-tapl-2002#c00524–#c00525)
+      defines the pair precisely: \"Type systems like Java's, in which names are significant and subtyping
+      is explicitly declared, are called nominal. Type systems like most of the ones in this book, in
+      which names are inessential and subtyping is defined directly on the structures of types are called
+      structural.\" That is exactly the carve's statement — two named, competing conventions for type
+      compatibility, by declared name vs. by shape.\n\nThis is independently corroborated, under matching
+      terminology, by three more sources:\n- Sebesta (sebesta-copl#c00562): \"There are two approaches
+      to defining type equivalence: name type equivalence and structure type equivalence\" — same pairing,
+      same two-way framing, applied to type equivalence generally (not just subtyping).\n- Scott (scott-plp#c00423,
+      #c00439, #c00518): contrasts \"structural equivalence\" and \"name equivalence\" throughout, explicitly
+      as alternative design approaches (\"structural equivalence retains its advocates\" vs. name equivalence's
+      greater popularity), and poses them as a comparison question to the reader.\n- Krishnamurthi (krishnamurthi-plai#c00234,
+      #c00012): a section titled \"Nominal Types, Structural Types, and Subtyping,\" demonstrating with
+      Java that a structurally-identical class is rejected under nominal rules — the same name-vs-shape
+      contrast.\n\nSo four independent textbooks (Pierce, Sebesta, Scott, Krishnamurthi) converge on this
+      exact two-way, named distinction — the single-source concern no longer holds.\n\nOn the carve's
+      construction: the statement is accurate and conservative. It doesn't claim either is superior (avoiding
+      the Sammet-style \"presence isn't a good indicator of worth\" trap), doesn't restrict the claim
+      to Java-style explicit subtyping (Sebesta's \"type equivalence\" framing shows the name/shape distinction
+      is broader than subtype declarations), and I found no third major named alternative in the corpus
+      — nominal and structural are presented everywhere as an exhaustive, mutually exclusive pair a language's
+      type system commits to. That mutual exclusivity is exactly what `alternative-to` should capture:
+      these aren't features that combine or require each other, they're competing answers to the same
+      design question (how do we decide two types are \"the same\" or compatible).\n\nRecommendation:
+      keep the carve as drafted, updating evidence to cite the four corroborating chunks (pierce-tapl-2002#c00525,
+      sebesta-copl#c00562, scott-plp#c00423, krishnamurthi-plai#c00234) rather than Pierce alone, which
+      directly resolves the reason it was sent to debate."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "No challenges. The carve is sound, and the single-source flag is resolved.\n\nPierce defines
+      the exact pair the carve states: \"Type systems like Java's, in which names are significant and
+      subtyping is explicitly declared, are called nominal. Type systems like most of the ones in this
+      book, in which names are inessential and subtyping is defined directly on the structures of types
+      are called structural\" (pierce-tapl-2002#c00524–#c00525). That is precisely \"two named, competing
+      conventions for deciding whether two types are compatible — by declared name versus by shape.\"\n\
+      \nChecking the corpus independently (not just taking the proposer's word), I find the same two-way,
+      mutually exclusive framing recurring under matching terminology across multiple independent textbooks:\n\
+      - Krishnamurthi devotes a titled section, \"Nominal Types, Structural Types, and Subtyping,\" to
+      exactly this contrast, demonstrating with a Java example that a structurally identical class is
+      rejected under nominal rules because \"what matters is which actual (named) class, not what structure
+      of class, created the value\" (krishnamurthi-plai#c00234), and defines the structural counterpart
+      explicitly as \"this is called structural typing\" (krishnamurthi-plai#c00235), naming \"duck typing\"\
+      \ only as informal slang for the same concept rather than a third alternative.\n- Pierce himself
+      treats the pair as jointly exhaustive design poles rather than independent features, discussing
+      advantages/disadvantages of nominal \"over\" structural presentations (pierce-tapl-2002#c00527),
+      consistent with `alternative-to` rather than a `requires`/`enables` relation.\n- I searched specifically
+      for a third named competing convention (e.g., duck typing as a separate mechanism) and found none
+      in the corpus — every source treats nominal/structural as the complete two-way split, which supports
+      the carve's framing of them as alternatives rather than one being a special case of the other.\n\
+      \nI did notice that Krishnamurthi and Harper's index (\"behavioral vs structural\" subtyping, harper-pfpl#c00876)
+      treat *subtyping* as a further question layered on top of either nominal or structural typing (krishnamurthi-plai#c00238:
+      \"This is an account of how subtyping works for nominal systems... We can also define subtyping
+      for structural systems\"). That's a genuine nuance — nominal/structural is more precisely about
+      type identity/matching than about subtyping specifically — but it doesn't undermine this edge: the
+      carve's two endpoints (nominal-typing, structural-typing) and their mutual-exclusivity as competing
+      conventions survive that nuance intact; it would at most motivate a separate, additional edge about
+      subtyping-as-a-layer, not a challenge to this one. Since that's a \"would carve additionally\" observation
+      rather than a defect in the cited carve, it doesn't meet the bar for a typed challenge.\n\nGiven
+      four independent sources (Pierce, Sebesta, Scott, Krishnamurthi) converge on the same named binary
+      with no third alternative anywhere in the corpus, I'm not raising a challenge — doing so would manufacture
+      a dispute the sources don't support."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "The Pierce citation is accurate as far as it goes, and four textbooks do converge on naming
+      this contrast — but two things in the corpus itself complicate the carve as stated.\n\nFirst, the
+      sources the proposer added to fix \"single-source\" don't actually all describe the same phenomenon
+      Pierce describes, and the corpus is explicit that they're different. Scott (scott-plp#c00396, p.423)
+      defines type equivalence and type compatibility as two separate rule categories of a type system:
+      \"Type equivalence rules determine when the types of two values are the same. Type compatibility
+      rules determine when a value of a given type can be used in a given context.\" Pierce's §19.3 nominal/structural
+      split is specifically about *subtyping* — \"names are significant and subtyping is explicitly declared\"\
+      \ (pierce-tapl-2002#c00525) — which is a compatibility/substitutability question. Sebesta's and
+      Scott's nominal/structural split (sebesta-copl#c00562, scott-plp#c00423) is specifically about *type
+      equivalence* — \"are these the same type,\" independent of substitutability. The carve's statement
+      papers over this with the word \"compatible,\" but the corpus keeps equivalence and subtyping/compatibility
+      as distinct, separately-defined axes rather than one mechanism. Citing Pierce (subtyping) and Sebesta/Scott
+      (equivalence) together for one unified \"nominal vs structural, deciding type compatibility\" edge
+      atomizes two source-distinguished questions into one.\n\nSecond, the \"competing conventions\" framing
+      oversells the exclusivity the sources actually claim. Sebesta's own corroborating passage immediately
+      qualifies the dichotomy: \"There are some variations of these two approaches, and many languages
+      use combinations of them\" (sebesta-copl#c00562). If real languages routinely combine nominal and
+      structural rules rather than choosing one, that's in tension with modeling them as a clean either/or
+      `alternative-to` pair rather than two independently-combinable design dimensions."
+    challenges:
+      - type: wrong-atomization
+        text: "The carve's 'deciding whether two types are compatible' blends two source-distinguished
+          questions: Pierce's nominal/structural split is specifically about subtyping (substitutability),
+          while Sebesta's and Scott's nominal/structural split is specifically about type equivalence
+          (sameness). Scott explicitly keeps these as separate rule categories of a type system, so citing
+          both under one 'compatibility' statement merges concepts the corpus treats as distinct."
+        evidence:
+          - source: scott-plp
+            locator: p. 423
+            chunk_id: scott-plp#c00396
+            quote: Type equivalence rules determine when the types of two values are the same. Type 
+              compatibility rules determine when a value of a given type can be used in a given 
+              context.
+          - source: pierce-tapl-2002
+            locator: §19.3
+            chunk_id: pierce-tapl-2002#c00525
+          - source: sebesta-copl
+            locator: §6.15
+            chunk_id: sebesta-copl#c00562
+      - type: scope
+        text: The carve frames nominal and structural typing as competing, mutually-exclusive 
+          conventions, but the corroborating source itself notes languages commonly combine both 
+          approaches rather than choosing one, which undercuts modeling this as a strict 
+          alternative-to pair.
+        evidence:
+          - source: sebesta-copl
+            locator: §6.15
+            chunk_id: sebesta-copl#c00562
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "**Conceding wrong-atomization, proposing a narrowed carve; scope challenge dissolves under
+      the fix.**\n\nThe challenger is right that the original statement blends two source-distinguished
+      questions. Pierce's §19.3 nominal/structural split is embedded in his subtyping track (Chs. 15–19:
+      \"the subtype relation is now defined between type names...\") [pierce-tapl-2002#c00525, #c00381,
+      #c00382, #c01338]. Sebesta's §6.15 nominal/structural split is explicitly about **type equivalence**,
+      introduced as a narrower notion than \"compatibility\" [sebesta-copl#c00562, #c00564]. Scott's version
+      is likewise filed under equivalence/casts (strict/loose name equivalence vs. structural equivalence),
+      not subtyping [scott-plp#c00422, #c00423]. Using \"compatible\" to cover both, as the carve does,
+      merges concepts the corpus keeps apart. I concede this.\n\n**Fix:** narrow the statement to the
+      subtyping-definition question that Pierce §19.3 actually addresses:\n\n> Nominal and structural
+      typing are the two named conventions for defining the subtype relation between types — by declared
+      name (nominal) versus by structural comparison (structural).\n\nThis also properly resolves the
+      single-source flag: Krishnamurthi's PLAI treats the same subtyping-definition split independently,
+      under its own \"Nominal Types\" / \"Structural Types\" / \"Nominal Subtyping\" sections, with the
+      Java mt/empty example showing nominal subtyping rejects a structurally-identical substitute [krishnamurthi-plai#c00234,
+      #c00238, #c00014]. That gives a genuine second source for the *subtyping* claim, instead of borrowing
+      Sebesta/Scott from the distinct equivalence question.\n\n**On scope:** the challenge's cited support
+      (sebesta-copl §6.15, \"many languages use combinations of them\" [sebesta-copl#c00562]) is Sebesta's
+      observation about combining *equivalence* rules — a claim about the question the carve no longer
+      invokes once narrowed. Neither Pierce nor Krishnamurthi describes a single subtype relation defined
+      partly nominally and partly structurally at once; both present nominal vs. structural as the two
+      ways a type system's subtyping relation gets defined [pierce-tapl-2002#c00525; krishnamurthi-plai#c00014].
+      I have no evidence either way on whether one subtyping relation can mix both in practice, so I flag
+      that as an open point rather than claim full closure — but the specific evidence this scope challenge
+      relies on stops applying once the carve is correctly scoped to subtyping rather than equivalence/compatibility
+      generally.\n\n**Net:** wrong-atomization is correct — adopt the narrowed, subtyping-scoped statement,
+      re-sourced to Pierce §19.3 + Krishnamurthi-PLAI (nominal/structural subtyping sections), dropping
+      Sebesta/Scott (which belong to the separate type-equivalence carve). The scope challenge's evidence
+      does not transfer to this narrowed statement."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Challenger-b's wrong-atomization challenge is upheld: the corpus genuinely treats \"deciding
+      whether two types are compatible\" as two distinct questions — Pierce's §19.3 nominal/structural
+      split is about how the subtype relation is defined, while Sebesta's/Scott's nominal/structural split
+      is about type equivalence, a separately-defined rule category (Scott explicitly: \"Type equivalence
+      rules determine when the types of two values are the same. Type compatibility rules determine when
+      a value... can be used in a given context,\" scott-plp#c00396). The proposer's original fix for
+      \"single-source\" borrowed Sebesta/Scott for the equivalence question and merged it with Pierce's
+      subtyping claim under one \"compatibility\" statement — exactly the atomization error the challenger
+      identified, and the proposer conceded it.\n\nThe proposer's narrowed replacement is well-supported
+      and resolves both the atomization problem and the original single-source flag on its own terms:
+      Pierce §19.3 (pierce-tapl-2002#c00525) and Krishnamurthi's PLAI \"Nominal Types, Structural Types,
+      and Subtyping\" sections (krishnamurthi-plai#c00234, #c00238, #c00014) independently describe the
+      same two-way split specifically for defining the subtype relation, with Krishnamurthi's Java example
+      showing a structurally-identical class rejected under nominal subtyping rules.\n\nChallenger-b's
+      scope challenge (languages combine nominal and structural approaches rather than choosing one) cited
+      sebesta-copl §6.15, which on inspection is Sebesta's observation about combining *type-equivalence*
+      rules, not subtyping-definition rules — a claim about the question the narrowed carve no longer
+      makes. Neither Pierce nor Krishnamurthi describes a single subtype relation defined partly nominally
+      and partly structurally; both present the two as the exhaustive ways a system's subtyping relation
+      is defined. The scope challenge's evidence doesn't transfer to the subtyping-scoped statement, so
+      it is not upheld against the revised carve. There remains an open, evidence-free question (noted
+      by the proposer) about whether a single subtyping relation could in practice mix both — but with
+      no corpus evidence either way and no participant pressing it as a live objection to the narrowed
+      claim, this doesn't rise to a standing dissent."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: false
+  rounds: 1
+  upheld_challenges:
+    - wrong-atomization
+  rationale: "Challenger-b's wrong-atomization challenge is upheld: the corpus genuinely treats \"deciding
+    whether two types are compatible\" as two distinct questions — Pierce's §19.3 nominal/structural split
+    is about how the subtype relation is defined, while Sebesta's/Scott's nominal/structural split is
+    about type equivalence, a separately-defined rule category (Scott explicitly: \"Type equivalence rules
+    determine when the types of two values are the same. Type compatibility rules determine when a value...
+    can be used in a given context,\" scott-plp#c00396). The proposer's original fix for \"single-source\"\
+    \ borrowed Sebesta/Scott for the equivalence question and merged it with Pierce's subtyping claim
+    under one \"compatibility\" statement — exactly the atomization error the challenger identified, and
+    the proposer conceded it.\n\nThe proposer's narrowed replacement is well-supported and resolves both
+    the atomization problem and the original single-source flag on its own terms: Pierce §19.3 (pierce-tapl-2002#c00525)
+    and Krishnamurthi's PLAI \"Nominal Types, Structural Types, and Subtyping\" sections (krishnamurthi-plai#c00234,
+    #c00238, #c00014) independently describe the same two-way split specifically for defining the subtype
+    relation, with Krishnamurthi's Java example showing a structurally-identical class rejected under
+    nominal subtyping rules.\n\nChallenger-b's scope challenge (languages combine nominal and structural
+    approaches rather than choosing one) cited sebesta-copl §6.15, which on inspection is Sebesta's observation
+    about combining *type-equivalence* rules, not subtyping-definition rules — a claim about the question
+    the narrowed carve no longer makes. Neither Pierce nor Krishnamurthi describes a single subtype relation
+    defined partly nominally and partly structurally; both present the two as the exhaustive ways a system's
+    subtyping relation is defined. The scope challenge's evidence doesn't transfer to the subtyping-scoped
+    statement, so it is not upheld against the revised carve. There remains an open, evidence-free question
+    (noted by the proposer) about whether a single subtyping relation could in practice mix both — but
+    with no corpus evidence either way and no participant pressing it as a live objection to the narrowed
+    claim, this doesn't rise to a standing dissent."
+  revision:
+    statement: Nominal and structural typing are the two named conventions for defining the subtype 
+      relation between types — by declared name (nominal) versus by structural comparison 
+      (structural).
