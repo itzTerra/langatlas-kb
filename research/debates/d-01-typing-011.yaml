@@ -1,0 +1,318 @@
+id: d-01-typing-011
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: strong-weak-typing
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-strong-weak-typing-01
+  moderator: 2026-10-17-r4-moderator-01-typing-strong-weak-typing-01
+triggers:
+  - ontologist-flagged
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: strong-weak-typing
+  from_candidates:
+    - strong-weak-typing
+  kind: concept
+  id: strong-weak-typing
+  name: Strong vs. Weak Typing
+  summary: An informally and inconsistently defined axis judging a language by how reliably it 
+    detects misuses of values that would constitute type errors, at compile or run time.
+  evidence:
+    - source: cardelli-wegner-1985
+      locator: §1
+      chunk_id: cardelli-wegner-1985#c00009
+    - source: scott-plp
+      locator: pp. 538–539
+      chunk_id: scott-plp#c00518
+  contested:
+    - ontologist-flagged
+  debate_id:
+  status: proposed
+  verification:
+  note: Kept as a single concept rather than a dimension because sources give it no crisp, mutually 
+    exclusive set of feature values. Different sources (Cardelli & Wegner vs. Scott) give 
+    non-equivalent definitions, and the axis is explicitly non-binary (static implies strong but not
+    conversely), so it is unclear this should be one node rather than split per source tradition.
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Opening case for `strong-weak-typing`**\n\nThe carve is right to keep this as one concept
+      node, and new evidence strengthens it.\n\nThe key fact about \"strong vs. weak typing\" in the literature
+      is not that authors talk about different things under that name — it's that they all gesture at
+      the same informally-felt axis (\"how well does this language catch type misuses?\") while disagreeing
+      on the precise cash-out. That disagreement is itself a documented phenomenon, not an artifact of
+      sloppy carving:\n\n- **Kaijanaho (2015)** states it as an explicit survey point: \"a type system
+      is characterized as strong or weak based on how well it detects type errors. Definitions like these
+      are fairly commonly accepted (see, e.g., Sheil 1981; Cardelli and Wegner 1985; Allende et al. 2013;
+      ...; Harper 2014), but... they are not accepted by all authors\" [kaijanaho-2015#c00071]. This secondary
+      source treats strong/weak typing as *one* recognized, contested axis spanning exactly the primary
+      sources the carve cites — confirming the carve's framing almost verbatim.\n- **Cardelli & Wegner
+      (1985)**: strongly typed = all expressions type-consistent; \"every statically typed language is
+      strongly typed but the converse is not necessarily true\" [cardelli-wegner-1985#c00009] — exactly
+      the non-binary, static-implies-strong relationship the carve's note calls out.\n- **Scott (PLP)**:
+      strongly typed = \"never allows an operation to be applied to an object that does not support it\"\
+      ; statically typed = \"enforces strong typing at compile time\" [scott-plp#c00518] — structurally
+      parallel to Cardelli & Wegner (static ⊂ strong) but via operation-applicability rather than type-consistency
+      of expressions: a genuinely different technical handle on the same intuition.\n- **Sebesta (COPL)**
+      independently confirms the carve's \"loosely defined\" framing: \"Strong typing is widely acknowledged
+      as being a highly valuable language characteristic. Unfortunately, it is often loosely defined,
+      and it is sometimes used in computing literature without being defined at all\" [sebesta-copl#c00560].
+      Sebesta's own operationalization (errors \"always detected,\" compile or run time) is graded in
+      practice — Java/C# are \"nearly strongly typed,\" and coercion \"weakens\" strong typing by degrees
+      rather than flipping a bit [sebesta-copl#c00561].\n- **Van Roy & Haridi (2003)** add a fourth variant:
+      \"strongly-typed\" = any language whose type system is enforced at all, contrasted with \"weakly-typed\"\
+      \ = type representations manipulable directly by the program; they fold dynamic and static typing
+      both under \"strong\" and explicitly decline to discuss weakly-typed languages further [vanroy-haridi-2003#c00236].\n\
+      - **Harper (PFPL)** reconstructs the same underlying concern (\"mismatches cannot arise during execution,\"\
+      \ preservation + progress) without ever using \"strong/weak\" vocabulary, preferring \"type safety\"\
+      /\"soundness\" [harper-pfpl#c00111, #c00085].\n\nThat last point is the strongest argument *for*
+      one node rather than per-source splitting: Harper shows the informal \"strong/weak\" vocabulary
+      and the formal safety-theorem vocabulary are pointing at the same underlying concern from different
+      formality levels. Splitting \"strong/weak typing\" into one node per source tradition would manufacture
+      several concepts out of what is really one informally-named axis with a known formalization problem
+      — exactly the over-fragmentation the KB should avoid for soft/folk concepts. A single concept node
+      with an honest note about definitional inconsistency accurately represents what the sources jointly
+      show: a real, widely-invoked PL-discourse axis that has resisted crisp, mutually exclusive formalization
+      — not a cluster of unrelated ideas sharing a name by accident.\n\nI'd keep the carve as drafted,
+      strengthening its evidence list with kaijanaho-2015#c00071 (secondary source explicitly framing
+      the cross-source inconsistency) and sebesta-copl#c00560/#c00561 (independent \"loosely defined\"\
+      \ + graded-coercion confirmation), and optionally noting harper-pfpl's type-safety treatment as
+      the formalized counterpart explaining why the folk axis persists despite resisting precise capture
+      — not as a merge target."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve is largely sound: Kaijanaho explicitly frames \"strong vs. weak typing\" as one contested
+      axis spanning exactly the primary-source tradition the node draws on [kaijanaho-2015#c00071], and
+      Cardelli & Wegner, Scott, Sebesta, and Van Roy & Haridi all independently converge on the same \"\
+      how reliably are type misuses caught/enforced\" intuition while disagreeing on its precise cash-out
+      — which is itself the documented phenomenon, not an artifact of sloppy carving. I raise one narrow
+      missing-source challenge rather than contesting the carve's core judgment."
+    challenges:
+      - type: missing-source
+        text: "The carve's summary and note characterize strong typing as irreducibly 'informally and
+          inconsistently defined,' resisting any crisp formalization — but Harper (PFPL), when introducing
+          type safety, writes: 'Most contemporary programming languages are safe (or, type safe, or strongly
+          typed)' and then gives this a fully crisp, binary characterization via the Preservation+Progress
+          safety theorem. That is a fourth primary-source usage of the very term 'strongly typed,' and
+          unlike Cardelli & Wegner's or Scott's graded/loophole-based accounts, it is not informal at
+          all — it is a theorem that either holds or fails for a given language. The evidence list (cardelli-wegner-1985#c00009,
+          scott-plp#c00518) omits this source, so the carve's claim that the axis 'gives no crisp, mutually
+          exclusive set of feature values' is drawn from a sample that excludes the one source that actually
+          supplies a crisp, binary formalization under this exact name. At minimum harper-pfpl#c00111
+          belongs in the evidence list, and the summary/note should be qualified to acknowledge that at
+          least one major source treats 'strongly typed' as synonymous with a precise safety theorem rather
+          than a loosely-graded property."
+        evidence:
+          - source: harper-pfpl
+            locator: p. 71
+            chunk_id: harper-pfpl#c00111
+            quote: Most contemporary programming languages are safe (or, type safe , or strongly 
+              typed ). Informally, this means that certain kinds of mismatches cannot arise during 
+              execution.
+          - source: cardelli-wegner-1985
+            locator: §1
+            chunk_id: cardelli-wegner-1985#c00009
+            quote: Languages in which all expressions are type-consistent are called strongly typed 
+              languages.
+          - source: scott-plp
+            locator: pp. 538–539
+            chunk_id: scott-plp#c00518
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "I raise one challenge against this carve, not against keeping it as a single discourse-level
+      node, but against what the ontology's concept→feature→feature-instance structure is implicitly committed
+      to once this becomes a `concept` node.\n\nThe proposer is right that the sources all gesture at
+      the same felt axis and that this is a documented, not accidental, inconsistency (Kaijanaho explicitly
+      frames it as one contested survey point). But \"one contested axis exists in the discourse\" and
+      \"this can be a `concept` node the way the ontology uses that term\" are different claims. In this
+      project's vocabulary, a `concept` is meant to ground `feature` realizations — per-language feature
+      instances that can be compared. For that to work, a concept needs *some* criterion, even a fuzzy
+      one, that different languages can be checked against consistently. What the sources actually give
+      instead are definitions that are not just differently worded but operationally incompatible when
+      applied to the same languages:\n\n- Cardelli & Wegner: strong = all expressions type-consistent,
+      with static ⊂ strong [cardelli-wegner-1985#c00009].\n- Scott: strong = no operation ever applied
+      to an unsupporting object, explicitly graded — \"C89 is significantly more strongly typed than its
+      predecessor dialects, but still significantly less strongly typed than Pascal\" [scott-plp#c00397]
+      — a comparative scale, not a classifier.\n- Sebesta: strong = *all* type errors always detected,
+      applied as a near-binary classifier that fails C/C++ outright for having unchecked unions [sebesta-copl#c00560].\n\
+      - Van Roy & Haridi: strong = type system enforced *at all* (lumping static and dynamic together),
+      with weak typing explicitly set aside and not discussed further [vanroy-haridi-2003#c00236] — a
+      criterion so permissive it would call most real languages \"strong,\" including ones Sebesta and
+      Scott call weak.\n- Harper: glosses \"strongly typed\" as a synonym for the formally *proved* safety
+      theorem (preservation + progress) for a specific calculus [harper-pfpl#c00111] — a fourth register,
+      this one not graded or informal at all, and not reducible to any of the above three without additional
+      argument.\n\nThese aren't paraphrases of one criterion; applying them to the same language (e.g.,
+      C, or a hypothetical dynamically-checked language) yields different strong/weak verdicts depending
+      on which source's definition is used. That's a sharper problem than \"informally and inconsistently
+      defined\" suggests — it's not merely vague, it's multiply and incompatibly operationalized. The
+      ontology's structure has no modeled slot for a concept whose very identity criterion is contested
+      in this load-bearing way, distinct from a concept that's merely informal-but-coherent (e.g., \"\
+      readability\"). Forcing it into one `concept` node either leaves future `feature`/`feature-instance`
+      work with no way to decide, per language, which source's criterion the feature instance is realizing,
+      or silently picks one source's definition and misrepresents the node's own evidence note as covering
+      that choice. This is a structural fit problem, not a request to re-carve."
+    challenges:
+      - type: wrong-structure
+        text: The sources don't just word the strong/weak axis differently, they give operationally 
+          incompatible classifiers (type-consistency vs. graded operation-enforcement vs. 
+          all-errors-detected vs. enforcement-exists-at-all vs. a proved safety theorem) that 
+          disagree on real languages. The ontology's concept→feature→feature-instance structure 
+          assumes a concept has at least one stable criterion for feature instances to realize; this
+          concept has none that the sources agree on, so the structure has no slot for what's being 
+          carved here beyond a single contested-term node, and downstream feature-instance work on 
+          this concept has no principled way to pick a criterion.
+        evidence:
+          - source: scott-plp
+            locator: pp. 423–425
+            chunk_id: scott-plp#c00397
+            quote: C89 is significantly more strongly typed than its predecessor dialects, but still
+              significantly less strongly typed than Pascal.
+          - source: sebesta-copl
+            locator: §6.14
+            chunk_id: sebesta-copl#c00560
+            quote: C and C++ are not strongly typed languages because both include union types, 
+              which are not type checked.
+          - source: vanroy-haridi-2003
+            locator: §2.7.3
+            chunk_id: vanroy-haridi-2003#c00236
+          - source: harper-pfpl
+            locator: p. 71
+            chunk_id: harper-pfpl#c00111
+          - source: cardelli-wegner-1985
+            locator: §1
+            chunk_id: cardelli-wegner-1985#c00009
+            quote: every statically typed language is strongly typed but the converse is not 
+              necessarily true
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "Both challenges are well-evidenced and I concede them, with one structural point I still want
+      to defend.\n\n**missing-source — conceded.** harper-pfpl#c00111 is a clean counterexample to the
+      carve's framing. Cardelli & Wegner and Scott give graded, loophole/enforcement-based accounts, but
+      Harper states flatly that \"strongly typed\" is a synonym for type safety and gives it a binary,
+      proof-theoretic criterion: Theorem 6.1, the conjunction of Preservation and Progress. That is not
+      informal, and it is not a matter of degree — a language either has a proof of safety or it doesn't.
+      The current summary (\"informally and inconsistently defined... resisting any crisp formalization\"\
+      ) and evidence list, by omitting Harper, overstate the case: at least one major primary-source usage
+      of this exact term is fully crisp. I'll add harper-pfpl#c00111 to evidence and reword the summary
+      to something like: \"An axis judging a language by how reliably it detects type misuses, defined
+      inconsistently across sources — ranging from graded, loophole-based accounts (Cardelli & Wegner,
+      Scott, Sebesta) to a binary, theorem-based criterion (Harper's Preservation+Progress safety theorem).\"\
+      \n\n**wrong-structure — largely conceded.** Laid side by side, the sources don't just phrase one
+      criterion differently; they give incompatible tests that a single language can pass under one and
+      fail under another:\n- Scott (scott-plp#c00397): enforcement exists at all, applied gradedly via
+      \"loopholes\" — C89 is \"significantly more strongly typed\" than K&R C but still less than Pascal.
+      This is a spectrum, not a predicate.\n- Sebesta (sebesta-copl#c00560–561): *all* type errors are
+      detected — also treated gradedly in practice (\"nearly strongly typed\" for Java/C#), and explicitly
+      weakened by coercion even absent casts/unions.\n- Harper (harper-pfpl#c00111): a binary proved theorem,
+      syntactic, no reference to \"detection\" or runtime checks at all.\n- vanroy-haridi-2003 §2.7.3
+      and sebesta's own cross-reference to Gehani (1983) in the review questions (sebesta-copl#c00578
+      Q19) point at yet other, non-equivalent framings — the sources themselves flag that the term has
+      multiple incompatible lineages.\n\nThis is exactly the \"no stable criterion for feature instances
+      to realize\" problem the challenge names, and it's worse than the original note already said: the
+      note hedged at \"non-equivalent definitions... non-binary,\" but the real finding is that the definitions
+      aren't even measuring the same kind of thing (one is a enforcement-coverage spectrum, one is a proved
+      syntactic theorem). I agree downstream feature-instance work must not silently pick one criterion
+      and apply it as if it were agreed.\n\nWhere I'd still push back on the conclusion, not the evidence:
+      I don't think this means the node should be deleted or silently split into per-source nodes without
+      a decision. The carve's note already raised that fork as an open question; the challenges confirm
+      the fork is real but don't resolve it. My proposal: keep a single concept node, but repurpose it
+      explicitly as a *terminological* node that documents the disagreement itself (with evidence spanning
+      cardelli-wegner-1985#c00009, scott-plp#c00518/#c00397, sebesta-copl#c00560, harper-pfpl#c00111),
+      and add an explicit instruction in the note that no feature-instance should be authored against
+      this concept using an unstated criterion — any instance claim must name which source's test it is
+      satisfying. That preserves a single addressable node for the common term while directly fixing the
+      structural hazard the challenge identifies, without presupposing a per-tradition split that hasn't
+      been designed yet."
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "Both challenges land on evidence the proposer accepts. missing-source is upheld on its face:
+      harper-pfpl#c00111 glosses \"strongly typed\" as synonymous with a binary, proof-theoretic safety
+      theorem (Preservation+Progress), which the original evidence list (Cardelli & Wegner, Scott) omits
+      — the carve's summary overstated \"informally and inconsistently defined\" by sampling only graded/informal
+      accounts. wrong-structure is also upheld: laid side by side, the sources don't give paraphrases
+      of one criterion but operationally incompatible tests (type-consistency-of-expressions vs. graded
+      enforcement-coverage vs. all-errors-always-detected vs. enforcement-exists-at-all vs. a proved syntactic
+      theorem) that can disagree on the same language. The ontology's concept→feature→feature-instance
+      structure presumes a concept has at least one stable, agreed criterion for instances to realize
+      against; this concept currently has none, so any future feature-instance authored against it risks
+      silently picking one source's test and misrepresenting the node as neutral across all of them.\n\
+      \nI don't think this motivates drop, merge, or an unplanned per-tradition split (challenger-b itself
+      declines to demand that, and the proposer's own counter-argument — that Harper's formal safety work
+      and the folk strong/weak vocabulary are pointing at the same underlying concern from different formality
+      levels — is a real reason not to fragment a single informally-named discourse axis into several
+      nodes prematurely). Escalation isn't warranted either: the proposer concedes the facts, and the
+      fix the challenge calls for (don't let the node imply a shared criterion it doesn't have) is already
+      specifiable without developer adjudication. So I revise rather than keep, split, or escalate: broaden
+      the evidence list to include the Harper and Scott-graded sources, reword the summary/note so the
+      node is explicit that it documents a *contested term* rather than one settled axis, and add an instruction
+      that any future feature-instance work against this concept must name which source's criterion it
+      is satisfying rather than treating the node as a shared yardstick.\n\nThe deeper fork challenger-b
+      raises — whether this should eventually become several per-tradition concept nodes once feature-instance
+      work actually needs to pick a criterion — is correctly identified by the proposer as real but not
+      resolved by this debate; it's deferred rather than settled, so I record a standing dissent even
+      though the carve survives as revised."
+resolution:
+  outcome: converged-after-revision
+  disposition: revise
+  standing_dissent: true
+  rounds: 2
+  upheld_challenges:
+    - missing-source
+    - wrong-structure
+  rationale: "Both challenges land on evidence the proposer accepts. missing-source is upheld on its face:
+    harper-pfpl#c00111 glosses \"strongly typed\" as synonymous with a binary, proof-theoretic safety
+    theorem (Preservation+Progress), which the original evidence list (Cardelli & Wegner, Scott) omits
+    — the carve's summary overstated \"informally and inconsistently defined\" by sampling only graded/informal
+    accounts. wrong-structure is also upheld: laid side by side, the sources don't give paraphrases of
+    one criterion but operationally incompatible tests (type-consistency-of-expressions vs. graded enforcement-coverage
+    vs. all-errors-always-detected vs. enforcement-exists-at-all vs. a proved syntactic theorem) that
+    can disagree on the same language. The ontology's concept→feature→feature-instance structure presumes
+    a concept has at least one stable, agreed criterion for instances to realize against; this concept
+    currently has none, so any future feature-instance authored against it risks silently picking one
+    source's test and misrepresenting the node as neutral across all of them.\n\nI don't think this motivates
+    drop, merge, or an unplanned per-tradition split (challenger-b itself declines to demand that, and
+    the proposer's own counter-argument — that Harper's formal safety work and the folk strong/weak vocabulary
+    are pointing at the same underlying concern from different formality levels — is a real reason not
+    to fragment a single informally-named discourse axis into several nodes prematurely). Escalation isn't
+    warranted either: the proposer concedes the facts, and the fix the challenge calls for (don't let
+    the node imply a shared criterion it doesn't have) is already specifiable without developer adjudication.
+    So I revise rather than keep, split, or escalate: broaden the evidence list to include the Harper
+    and Scott-graded sources, reword the summary/note so the node is explicit that it documents a *contested
+    term* rather than one settled axis, and add an instruction that any future feature-instance work against
+    this concept must name which source's criterion it is satisfying rather than treating the node as
+    a shared yardstick.\n\nThe deeper fork challenger-b raises — whether this should eventually become
+    several per-tradition concept nodes once feature-instance work actually needs to pick a criterion
+    — is correctly identified by the proposer as real but not resolved by this debate; it's deferred rather
+    than settled, so I record a standing dissent even though the carve survives as revised."
+  revision:
+    summary: A contested discourse axis judging a language by how reliably it detects or disallows 
+      type misuses, defined inconsistently and sometimes operationally incompatibly across sources —
+      ranging from graded, enforcement/loophole-based accounts (Cardelli & Wegner, Scott, Sebesta) 
+      to a binary, proof-theoretic criterion (Harper's Preservation+Progress safety theorem). 
+      Treated here as a terminological node documenting the disagreement, not as a concept with one 
+      agreed identity criterion.
+    note: "Kept as a single terminological concept node rather than split per source tradition, because
+      the sources jointly document one named, widely-invoked discourse axis rather than several unrelated
+      ideas sharing a name by accident (Kaijanaho explicitly frames it this way; Harper's formal safety-theorem
+      treatment and the folk strong/weak vocabulary point at the same underlying concern from different
+      formality levels). However, the sources give operationally incompatible classifiers, not just differently-worded
+      versions of one test: type-consistency-of-expressions (Cardelli & Wegner), graded enforcement/loophole
+      coverage (Scott), all-errors-always-detected (Sebesta), enforcement-exists-at-all lumping static+dynamic
+      (Van Roy & Haridi), and a binary proved syntactic theorem (Harper) — these can disagree on the same
+      language. This concept therefore has no single stable criterion for feature instances to realize.
+      Any future feature-instance or feature work authored against this concept must explicitly name which
+      source's criterion it is satisfying; it must not treat the node as a shared yardstick. Whether this
+      eventually warrants a per-tradition split is an open design question, not resolved by this note."
+  structure_element: concept-feature-split
