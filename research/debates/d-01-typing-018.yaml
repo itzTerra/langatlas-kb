@@ -1,0 +1,193 @@
+id: d-01-typing-018
+cycle: 1
+theme: typing
+target:
+  list: nodes
+  key: let-polymorphism
+opened: '2026-10-17'
+runs:
+  debate: 2026-10-17-r4-debate-01-typing-let-polymorphism-01
+  moderator: 2026-10-17-r4-moderator-01-typing-let-polymorphism-01
+triggers:
+  - single-source
+personas:
+  proposer: the ontologist
+  moderator: the moderator
+  challenger_a: the type theorist
+  challenger_b: the working language implementer
+pre_challenge:
+  key: let-polymorphism
+  from_candidates:
+    - let-polymorphism
+  kind: concept
+  id: let-polymorphism
+  name: Let-Polymorphism (ML-Style)
+  summary: A restricted form of parametric polymorphism confined to top-level let-bindings, trading 
+    first-class polymorphism for automatic, decidable type reconstruction.
+  evidence:
+    - source: pierce-tapl-2002
+      locator: §23.2
+      chunk_id: pierce-tapl-2002#c00726
+    - source: pierce-tapl-2002
+      locator: §22.7
+      chunk_id: pierce-tapl-2002#c00715
+  contested:
+    - single-source
+  debate_id:
+  status: verified
+  verification:
+    fact_id: f-fb85d56d9804
+    verdict: verified
+    admissible: true
+    pairs: 2
+    run_id: 2026-10-17-r4-verify-01-typing-04
+  note: Kept as a concept (a restriction/variant on parametric polymorphism as a theoretical device)
+    rather than forced into the polymorphism-variety dimension, since it specializes an existing 
+    value rather than naming a new one.
+  waiver: 'Developer waiver: weaker trigger set, over the per-cycle debate cap of 12; draft-only batch
+    (D70) is re-atomized after the structure review.'
+messages:
+  - seq: 1
+    role: proposer
+    persona: the ontologist
+    text: "**Case for keeping `let-polymorphism` as a concept node**\n\nThe carve was flagged \"single-source,\"\
+      \ but that concern dissolves on inspection: at least two independent textbook traditions describe
+      the identical restriction with the identical name and identical rationale, which is exactly the
+      kind of cross-corroboration the project wants before trusting a carve.\n\n1. **Definition matches
+      verbatim across sources.** Pierce defines it as \"the form known as ML-style or let-polymorphism,
+      which restricts polymorphism to top-level let-bindings, disallowing functions that take polymorphic
+      values as arguments, and obtains in return a convenient and natural form of automatic type reconstruction\"\
+      \ [pierce-tapl-2002#c00726]. Turbak & Gifford independently converge on the same name and the same
+      trade-off: \"The approach to type reconstruction based on let polymorphism is sometimes called Hindley-Damas-Milner
+      (HDM) type reconstruction... This approach is widely recognized as a 'sweet spot' in the design
+      space of type reconstruction systems and is used in many practical type reconstruction systems,
+      most notably those of ML and Haskell\" [turbak-gifford-dcpl#c01247]. Two textbooks, written independently,
+      landing on the same concept with the same name is strong corroboration, not a single source.\n\n\
+      2. **It is a distinguishable, specializable thing, not just prose.** Pierce's §23.2 taxonomy of
+      polymorphism varieties explicitly nests it under parametric polymorphism as a named variant with
+      its own defining restriction and its own payoff: \"The most powerful form of parametric polymorphism
+      is the impredicative or first-class polymorphism... More common in practice is the form known as
+      ML-style or let-polymorphism, which restricts polymorphism to top-level let-bindings... and obtains
+      in return a convenient and natural form of automatic type reconstruction\" [pierce-tapl-2002#c00726].
+      That's precisely the summary the carve gives.\n\n3. **It has further-corroborated internal structure
+      that only makes sense as a standalone concept**, not a property of some other node: the value restriction
+      that makes it type-safe with mutable references [pierce-tapl-2002#c00715, c00716], and documented
+      practical consequences in a real implementation — GHC's `MonoLocalBinds`/let-generalisation machinery
+      exists specifically to manage when ML-style let-generalization applies [ghc-users-guide#c01029,
+      c01027]. A carve that has load-bearing sub-mechanisms (value restriction) and real-world implementation
+      consequences (GHC's monomorphism-restriction interactions) earns its place as a node rather than
+      being folded into \"parametric polymorphism\" generically.\n\n4. **The note's framing is correct
+      and should be kept.** This is a *restriction/variant of an existing theoretical device* (parametric
+      polymorphism), not a new independent polymorphism-variety sibling to ad-hoc/parametric in Strachey's
+      classification [pierce-tapl-2002#c00726] — so \"concept, specializing an existing value\" is the
+      right ontological placement rather than shoehorning it into the polymorphism-variety dimension.\n\
+      \nI'd keep the carve as drafted; the single-source flag is addressed by turbak-gifford-dcpl's independent,
+      convergent treatment, and the carve's boundaries (restricted to let-bindings, trades first-class
+      polymorphism for decidable reconstruction) are exactly what both sources say."
+  - seq: 2
+    role: challenger-a
+    persona: the type theorist
+    text: "The carve holds up. The \"single-source\" flag was the only concern raised against it, and
+      it dissolves on inspection: Pierce TAPL §22.7/§23.2 and Turbak & Gifford DCPL §13.4.3 independently
+      converge on the same name (\"let-polymorphism,\" \"ML-style,\" \"Hindley-Damas-Milner\"), the same
+      mechanism (restriction to top-level let-bindings), and the same trade-off (decidable reconstruction
+      in exchange for giving up first-class polymorphism) — that is genuine cross-corroboration, not a
+      restated single source [pierce-tapl-2002#c00726, turbak-gifford-dcpl#c01247].\n\nThe summary's claims
+      are each directly supported: the let-binding restriction and the \"disallowing functions that take
+      polymorphic values as arguments\" / automatic-reconstruction trade-off come verbatim from Pierce's
+      own taxonomy entry [pierce-tapl-2002#c00726], and the load-bearing value-restriction sub-mechanism
+      that makes it type-safe under mutable references is independently corroborated in both Pierce (§22.7,
+      and again in ATTAPL's Remark 7.4.1 and §10.5 treatment) and Turbak & Gifford's FLEX/SP purity restriction
+      [pierce-tapl-2002#c00715/c00716, pierce-attapl-2004#c00392, c00680, turbak-gifford-dcpl#c01127].
+      The note's placement decision — concept specializing parametric polymorphism rather than a sibling
+      value in a polymorphism-variety dimension — also tracks the source faithfully: Pierce's own §23.2
+      structure nests \"ML-style or let-polymorphism\" as a sub-form under parametric polymorphism, not
+      as a top-level variety alongside ad-hoc polymorphism [pierce-tapl-2002#c00726], so the carve isn't
+      inventing a hierarchy the literature doesn't support.\n\nI don't have visibility into neighboring
+      ontology nodes (e.g. how first-class/impredicative polymorphism or a general type-reconstruction
+      node are carved) to respectably ground a redundancy or structural-fit objection, and nothing in
+      the retrieved passages suggests the carve's boundary is mis-set. I'm raising no challenges — this
+      is a case where the flagged concern was addressed and the carve should be recorded as settled."
+  - seq: 3
+    role: challenger-b
+    persona: the working language implementer
+    text: "No challenge. The single-source concern is resolved: Pierce §22.7/§23.2 and Turbak & Gifford
+      §13.4.3/Notes independently converge on the same name, the same restriction (top-level let-bindings
+      only, no polymorphic function arguments), and the same trade-off (decidable reconstruction for lost
+      first-class polymorphism) — e.g. Turbak & Gifford's value-restriction account [turbak-gifford-dcpl#c01286]
+      matches Pierce's [pierce-tapl-2002#c00716] in substance despite independent authorship. The carve's
+      boundaries mirror Pierce's own explicit taxonomy, which nests let-polymorphism as a named restriction
+      within parametric polymorphism, distinct from first-class polymorphism and from ad-hoc polymorphism
+      [pierce-tapl-2002#c00726]. The node's placement as a concept specializing an existing theoretical
+      device, rather than a new sibling in a polymorphism-variety dimension, is exactly what the cited
+      taxonomy supports. I see no atomization, layering, or structural problem worth raising."
+  - seq: 4
+    role: proposer
+    persona: the ontologist
+    text: "No challenges were raised against this carve, and the evidence directly supports it as drafted,
+      so I defend it as-is.\n\n**Definition is textually exact.** §23.2 states the carve's core claim
+      almost verbatim: \"ML-style or let-polymorphism... restricts polymorphism to top-level let-bindings,
+      disallowing functions that take polymorphic values as arguments, and obtains in return a convenient
+      and natural form of automatic type reconstruction\" [pierce-tapl-2002#c00726]. This is the trade
+      the summary names: restricted scope (top-level let) traded for decidable, automatic reconstruction.
+      §22.7 corroborates with the original motivating example (the `double` function that can't be used
+      polymorphically across Nat and Bool without duplication under the simply-typed system), and names
+      it \"let-polymorphism (also ML-style or Damas-Milner polymorphism),\" tracing it to Milner (1978)
+      [pierce-tapl-2002#c00709].\n\n**\"Restricted form of parametric polymorphism\" is correct, not just
+      loosely true.** §23.2 explicitly frames let-polymorphism as a variety sitting under the parametric-polymorphism
+      umbrella, contrasted with the more powerful impredicative/first-class polymorphism and with ad-hoc
+      polymorphism [pierce-tapl-2002#c00726]. §23.8 reinforces the \"restriction\" framing precisely:
+      let-polymorphism \"is sometimes called prenex polymorphism because it can be viewed as a fragment
+      of System F in which type variables range only over quantifier-free types (monotypes) and in which...
+      polytypes... are not allowed to appear on the left-hand sides of arrows\" — i.e., a syntactically
+      restricted fragment of full polymorphism, not an unrelated mechanism [pierce-tapl-2002#c00768].\n\
+      \n**\"Trading first-class polymorphism for decidable reconstruction\" is the source's own stated
+      rationale**, not an inference: §23.8 says plainly that for full System F, \"the loss of type reconstruction
+      is sometimes considered to be too heavy a price to pay,\" motivating \"restricted fragments... with
+      more tractable reconstruction problems,\" of which let-polymorphism is \"the most popular\" [pierce-tapl-2002#c00768].
+      The decidability side of the trade is corroborated elsewhere in the corpus (full/partial reconstruction
+      for System F is undecidable, while ML-style reconstruction is the tractable fragment) [pierce-tapl-2002#c00721].\n\
+      \n**The modeling choice (concept, not a new node in the polymorphism-variety dimension) is defensible
+      on the source's own terms.** Pierce treats varieties of polymorphism (parametric / ad-hoc, and within
+      parametric: impredicative vs. let-style) as a classification (§23.2), and separately treats let-polymorphism
+      as a fragment/restriction of a existing device (System F) via prenex-form syntactic restriction
+      (§23.8). The carve's note — that this specializes an existing value (parametric polymorphism) rather
+      than naming an independent new variety — matches how the source itself derives let-polymorphism
+      *from* System F as a restricted fragment, rather than presenting it as a sibling category alongside
+      ad-hoc polymorphism.\n\nSingle-sourcing is a real limitation worth flagging for the record, but
+      it's single-sourcing to a canonical, authoritative PL-theory textbook treatment that is internally
+      consistent across three separate sections (§22.7, §23.2, §23.8), not a thin or ambiguous citation.
+      I have no basis to amend the carve and recommend keeping it as drafted.\n"
+  - seq: 5
+    role: moderator
+    persona: the moderator
+    text: "The sole flag against this carve was \"single-source.\" The debate record shows that concern
+      dissolves: Pierce TAPL §22.7/§23.2/§23.8 and Turbak & Gifford DCPL independently converge on the
+      same name (\"let-polymorphism\"/\"ML-style\"/\"Hindley-Damas-Milner\"), the same restriction (confined
+      to top-level let-bindings, no polymorphic function arguments), and the same trade-off (decidable/automatic
+      reconstruction traded for first-class polymorphism), with the value-restriction sub-mechanism corroborated
+      across both sources and additionally in Pierce's ATTAPL. That is genuine independent cross-corroboration,
+      not a restated single citation. No participant raised a structural, atomization, or boundary challenge;
+      two of three explicitly declined to challenge, finding the carve's summary and note faithful to
+      the sources' own framing (a restricted fragment/variant nested under parametric polymorphism per
+      Pierce §23.2/§23.8, not a new sibling in a polymorphism-variety dimension). The note's placement
+      choice is independently defensible on the cited taxonomy. No contradiction exists between the sources
+      — they agree. No live objection remains."
+resolution:
+  outcome: resolved
+  disposition: keep
+  standing_dissent: false
+  rounds: 0
+  upheld_challenges: []
+  rationale: "The sole flag against this carve was \"single-source.\" The debate record shows that concern
+    dissolves: Pierce TAPL §22.7/§23.2/§23.8 and Turbak & Gifford DCPL independently converge on the same
+    name (\"let-polymorphism\"/\"ML-style\"/\"Hindley-Damas-Milner\"), the same restriction (confined
+    to top-level let-bindings, no polymorphic function arguments), and the same trade-off (decidable/automatic
+    reconstruction traded for first-class polymorphism), with the value-restriction sub-mechanism corroborated
+    across both sources and additionally in Pierce's ATTAPL. That is genuine independent cross-corroboration,
+    not a restated single citation. No participant raised a structural, atomization, or boundary challenge;
+    two of three explicitly declined to challenge, finding the carve's summary and note faithful to the
+    sources' own framing (a restricted fragment/variant nested under parametric polymorphism per Pierce
+    §23.2/§23.8, not a new sibling in a polymorphism-variety dimension). The note's placement choice is
+    independently defensible on the cited taxonomy. No contradiction exists between the sources — they
+    agree. No live objection remains."
