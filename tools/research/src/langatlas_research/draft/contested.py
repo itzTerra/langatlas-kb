@@ -108,9 +108,11 @@ def mark_contested(plan: dict, *, repo_root: Path | None = None, store=None) -> 
 def open_carves(plan: dict) -> list[str]:
     """Contested entries that have neither been debated nor waived — what `draft debate`
     works through and what `draft finalize` refuses to close over. A minted entry is not
-    open: git already holds it, so there is nothing left to debate."""
+    open: git already holds it, so there is nothing left to debate. A waiver is read from its
+    own field, not from `status`: the verifier moves a waived entry on to `verified`."""
     return [entry["key"] for _name, entry in entries(plan)
             if entry.get("contested") and entry.get("debate_id") is None
+            and not entry.get("waiver")
             and entry.get("status") not in ("waived", *_TERMINAL)
             and not is_blocked(entry)]
 

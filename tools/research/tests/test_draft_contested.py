@@ -133,6 +133,12 @@ def test_open_carves_lists_only_undebated_unwaived_contested_entries(signed_cycl
     assert open_carves(plan) == ["a"]
 
 
+def test_a_waiver_still_closes_a_carve_after_the_verifier_moves_it_on(signed_cycle):
+    plan = _plan(signed_cycle, nodes=[
+        _node("a", contested=["merged-candidates"], status="verified", waiver="developer call")])
+    assert open_carves(plan) == []
+
+
 def test_waiving_records_the_reason_and_closes_the_carve(signed_cycle):
     plan = _plan(signed_cycle, nodes=[_node("a", contested=["single-source"])])
     waived = waive(plan, "a", "Pierce is the only book that defines it; that is fine")
