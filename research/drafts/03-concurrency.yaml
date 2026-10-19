@@ -1,0 +1,3953 @@
+cycle: 3
+theme: concurrency
+theme_digest: 2bb7d5e7d229092f
+generated_at: '2026-10-19T16:47:11Z'
+survey: research/surveys/03-concurrency.yaml
+runs:
+  ontologist: 2026-10-19-r4-atomize-03-concurrency-01
+  edge_drafter: 2026-10-19-r4-edges-03-concurrency-01
+dimensions:
+  - key: channel-synchrony
+    slug: channel-synchrony
+    label: Channel synchrony
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Whether a communication completes only when both parties are ready, or merely when buffer 
+      space/a buffered value exists; sources present capacity zero versus nonzero as one axis.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: racy-program-semantics
+    slug: racy-program-semantics
+    label: Semantics given to programs containing data races
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: 'Scott presents this as a per-language choice: in some languages a racy program is simply erroneous,
+      in others the behaviour of racy programs is constrained.'
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+qualities:
+  - key: composability
+    slug: composability
+    label: Composability
+    summary: How safely existing abstractions built with a feature can be called from inside new, 
+      larger operations without breaking their correctness.
+    contested:
+      - new-quality
+    debate_id:
+    status: waived
+    verification:
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+nodes:
+  - key: concurrency
+    from_candidates:
+      - concurrency
+    kind: concept
+    id: concurrency
+    name: Concurrency
+    summary: Organising a program as several logically independent activities, each executing at its
+      own pace, which do not interfere except where the programmer arranges communication.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §1.10
+        chunk_id: vanroy-haridi-2003#c00097
+        quote: We would like our program to have several independent activities, each of which 
+          executes at its own pace. This is called concurrency .
+      - source: ghc-users-guide
+        locator: §5.5
+        chunk_id: ghc-users-guide#c00297
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-146ee4050c23
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Root concept of the theme, carved above any particular construct because sources define it
+      as a structuring property independent of how activities are created.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: parallelism
+    from_candidates:
+      - parallelism-vs-concurrency
+      - concurrent-parallel-distributed
+    kind: concept
+    id: parallelism
+    name: Parallelism
+    summary: Simultaneous physical execution of independent computations in order to make a program 
+      run faster; an implementation and efficiency concern that does not change what a program 
+      means.
+    evidence:
+      - source: ghc-users-guide
+        locator: §5.5
+        chunk_id: ghc-users-guide#c00297
+      - source: vanroy-haridi-2003
+        locator: §4.7.4
+        chunk_id: vanroy-haridi-2003#c00582
+      - source: harper-pfpl
+        locator: §38.5
+        chunk_id: harper-pfpl#c00628
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2b7f4abdc854
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Split from concurrency rather than kept as one 'parallelism versus concurrency' node, 
+      because three sources define each side positively and contrast them only to separate the two.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: interleaving-semantics
+    from_candidates:
+      - interleaving-semantics
+      - quasi-concurrency
+    kind: concept
+    id: interleaving-semantics
+    name: Interleaving semantics
+    summary: A language-level account of concurrency in which there is one global sequence of atomic
+      computation steps and threads take turns, so any parallel execution is observationally 
+      equivalent to some interleaving.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.1.1
+        chunk_id: vanroy-haridi-2003#c00450
+        quote: threads take turns doing computation steps. Computation steps do not overlap, or in 
+          other words, each computation step is atomic.
+      - source: vanroy-haridi-2003
+        locator: §13.1
+        chunk_id: vanroy-haridi-2003#c01315
+      - source: turbak-gifford-dcpl
+        locator: §16.3.7
+        chunk_id: turbak-gifford-dcpl#c01541
+    contested:
+      - merged-candidates
+      - split-candidate
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-dff2819b3de8
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Kept as a semantic account of the whole model rather than a property of threads, since 
+      both Van Roy and Turbak define program behaviour as the set of possible interleavings.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: observable-nondeterminism
+    from_candidates:
+      - observable-nondeterminism
+    kind: concept
+    id: observable-nondeterminism
+    name: Observable nondeterminism
+    summary: The property that a concurrent program admits more than one interleaving, so its 
+      externally visible result can differ between runs because the order of independent 
+      interactions is not determined.
+    evidence:
+      - source: turbak-gifford-dcpl
+        locator: §16.3.7
+        chunk_id: turbak-gifford-dcpl#c01541
+        quote: A concurrent program with more than one interleaving exhibits nondeterministic 
+          behavior.
+      - source: vanroy-haridi-2003
+        locator: p. 620
+        chunk_id: vanroy-haridi-2003#c00987
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-789031e41c7a
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as a property of program behaviour, distinct from the mechanisms (ports, select) 
+      that introduce it.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: data-race
+    from_candidates:
+      - data-race
+    kind: concept
+    id: data-race
+    name: Data race
+    summary: Two conflicting accesses to the same memory location from different activities that are
+      not ordered by the language's happens-before relation, at least one of them a write and not 
+      atomic.
+    evidence:
+      - source: jls-se25
+        locator: §17.4
+        chunk_id: jls-se25#c01117
+        quote: When a program contains two conflicting accesses (§17.4.1) that are not ordered by a 
+          happens-before relationship, it is said to contain a data race .
+      - source: c23-n3220
+        locator: §5.1.2
+        chunk_id: c23-n3220#c00091
+      - source: rust-fls
+        locator: § B.160. data race¶
+        chunk_id: rust-fls#c00621
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-cb1d71167080
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: 'Minted although the survey listed no candidate for it: the theme names races as a hazard and
+      three language specifications define the term normatively.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: mutual-exclusion
+    from_candidates:
+      - mutual-exclusion
+    kind: concept
+    id: mutual-exclusion
+    name: Mutual exclusion
+    summary: The guarantee that at most one activity at a time executes a designated critical 
+      section, so that the sequence of operations inside appears atomic to every other activity.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §13.6
+        chunk_id: jones-hosking-moss-2012#c00689
+        quote: it is desired to guarantee that at most one thread at a time can be executing certain
+          code, called a critical section
+      - source: scott-plp
+        locator: p. 872
+        chunk_id: scott-plp#c00833
+        quote: Mutual exclusion ensures that only one thread is executing some critical section of 
+          code at a given point in time.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4f8cd8c0d890
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Minted from the shared-state literature the survey under-covered; it is the concept that 
+      locks, monitors and semaphores all realise.
+  - key: condition-synchronization
+    from_candidates:
+      - condition-synchronization
+    kind: concept
+    id: condition-synchronization
+    name: Condition synchronization
+    summary: Making an activity wait until a predicate over shared state holds, so that cooperating 
+      activities such as a producer and consumer proceed only when it is safe to do so.
+    evidence:
+      - source: scott-plp
+        locator: p. 872
+        chunk_id: scott-plp#c00833
+        quote: Condition synchronization allows a thread to wait for a precondition, often expressed
+          as a predicate on the value(s) in one or more shared variables.
+      - source: sebesta-copl
+        locator: §13.2.1
+        chunk_id: sebesta-copl#c00994
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-dc583ffefd55
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Separated from mutual exclusion because Scott argues explicitly that it is not a form of 
+      mutual exclusion and both are needed independently.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: deadlock
+    from_candidates:
+      - deadlock
+    kind: concept
+    id: deadlock
+    name: Deadlock
+    summary: A loss of progress in which each of a set of activities waits for a resource or 
+      communication held or not yet offered by another, so none can ever continue.
+    evidence:
+      - source: sebesta-copl
+        locator: §13.2.1
+        chunk_id: sebesta-copl#c00998
+        quote: Neither relinquishes the resource it possesses, and as a result, both lose their 
+          liveness
+      - source: hoare-1978-csp
+        locator: p. 4
+        chunk_id: hoare-1978-csp#c00013
+        quote: It is also possible that the delay will never be ended, for example, if a group of 
+          processes are attempting communication but none of their input and output commands 
+          correspond with each other. This form of failure is known as a deadlock.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3d419aaf3f52
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as its own hazard rather than a case of lost liveness because both a textbook and a
+      primary source name and define it separately.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: liveness
+    from_candidates:
+      - liveness
+    kind: concept
+    id: liveness
+    name: Liveness
+    summary: The property that a required event will eventually occur, so progress is continually 
+      made; its failure modes include deadlock, livelock and the indefinite starvation of individual
+      activities.
+    evidence:
+      - source: sebesta-copl
+        locator: §13.2.1
+        chunk_id: sebesta-copl#c00998
+        quote: liveness means that if some event—say, program completion—is supposed to occur, it 
+          will occur, eventu- ally
+      - source: jones-hosking-moss-2012
+        locator: p. 527
+        chunk_id: jones-hosking-moss-2012#c01199
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2654b8fac6c7
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: One node for the progress property, with starvation and livelock as its named failures, 
+      because the sources define them only against it.
+  - key: progress-guarantee
+    from_candidates:
+      - progress-guarantee
+    kind: concept
+    id: progress-guarantee
+    name: Progress guarantee
+    summary: 'A graded classification of concurrent algorithms by the progress they promise under contention:
+      wait-free (every activity progresses), lock-free (some activity finishes infinitely often) and obstruction-free.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §13.4
+        chunk_id: jones-hosking-moss-2012#c00681
+        quote: A concurrent algorithm is wait-free if every thread can always make progress, 
+          regardless of the actions of other threads.
+      - source: jones-hosking-moss-2012
+        locator: §13.8
+        chunk_id: jones-hosking-moss-2012#c00705
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §6
+        chunk_id: iso-iec-14882-cpp20-n4861#c00207
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-0e61e67c6cdc
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: A single graded concept rather than three nodes, since the sources present the levels as 
+      one ordered scale from strongest to weakest.
+  - key: memory-consistency-model
+    from_candidates:
+      - memory-consistency-model
+    kind: concept
+    id: memory-consistency-model
+    name: Memory consistency model
+    summary: A language-level specification of which operations are guaranteed to be ordered across 
+      activities, usually by a happens-before relation, so that race-free programs behave as if 
+      execution were sequentially consistent.
+    evidence:
+      - source: scott-plp
+        locator: pp. 884–885
+        chunk_id: scott-plp#c00847
+        quote: The model specifies which language-level operations are guaranteed to be ordered 
+          across threads.
+      - source: jls-se25
+        locator: §17.4
+        chunk_id: jls-se25#c01117
+        quote: A program is correctly synchronized if and only if all sequentially consistent 
+          executions are free of data races.
+      - source: go-memory-model
+        locator: '#model'
+        chunk_id: go-memory-model#c00005
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2fab9bfc7956
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Minted as one concept covering happens-before and the data-race-freedom guarantee, because
+      every specification read states them together as the model's content.
+  - key: message-passing
+    from_candidates:
+      - message-passing
+      - asynchronous-signals-between-processes
+      - unreliable-send-semantics
+    kind: concept
+    id: message-passing
+    name: Message passing
+    summary: An interaction discipline in which activities share no mutable store and communicate 
+      only by sending and receiving values, so no explicit mutual exclusion over shared data is 
+      required.
+    evidence:
+      - source: hoare-1978-csp
+        locator: pp. 1–2
+        chunk_id: hoare-1978-csp#c00004
+        quote: They may not communicate with each other by updating global variables.
+      - source: erlang-erts-processes
+        locator: '#sending-signals'
+        chunk_id: erlang-erts-processes#c00008
+      - source: vanroy-haridi-2003
+        locator: §4.9.3
+        chunk_id: vanroy-haridi-2003#c00613
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-441b33a75039
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Absorbs the signal-only and unreliable-send candidates, which state delivery policies of 
+      this discipline rather than separate carves.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: process-isolation
+    from_candidates:
+      - process-isolation
+      - heavyweight-vs-lightweight-process
+      - cooperative-vs-competitive-concurrency
+    kind: concept
+    id: process-isolation
+    name: Process isolation
+    summary: A design in which each activity has its own private store and shares no mutable 
+      resources, so one activity's state or failure cannot directly corrupt another's.
+    evidence:
+      - source: hoare-1978-csp
+        locator: p. 1
+        chunk_id: hoare-1978-csp#c00003
+      - source: hoare-1978-csp
+        locator: pp. 1–2
+        chunk_id: hoare-1978-csp#c00004
+      - source: pep-684
+        locator: § The GIL
+        chunk_id: pep-684#c00003
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ba14448f2cf7
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved around the no-shared-mutable-state property; the heavyweight/lightweight and 
+      cooperative/competitive candidates are contrasts drawn against it, not independent ideas.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: declarative-concurrency
+    from_candidates:
+      - declarative-concurrency
+      - demand-driven-concurrency
+      - single-assignment-variable
+    kind: concept
+    id: declarative-concurrency
+    name: Declarative concurrency
+    summary: A concurrency model in which communication is only through monotonically bound 
+      variables, so adding activities cannot change a program's result and the partitioning of work 
+      between threads is semantically irrelevant.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §1.11
+        chunk_id: vanroy-haridi-2003#c00098
+        quote: 'First, calculations work correctly independent of how they are partitioned between threads.
+          Second, calculations are patient: they do not signal errors, but simply wait.'
+      - source: vanroy-haridi-2003
+        locator: §4.2.3
+        chunk_id: vanroy-haridi-2003#c00470
+      - source: vanroy-haridi-2003
+        locator: pp. 620–621
+        chunk_id: vanroy-haridi-2003#c00988
+    contested:
+      - merged-candidates
+      - split-candidate
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-fb463dda8b15
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One concept for the deterministic model; the demand-driven variant and single-assignment 
+      store are refinements of it in the same source rather than separate carves.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: dataflow-synchronization
+    from_candidates:
+      - dataflow-synchronization
+    kind: concept
+    id: dataflow-synchronization
+    name: Dataflow synchronization
+    summary: Blocking an operation until its arguments are available, so that execution order is 
+      determined by data dependencies rather than by a programmer-chosen static order.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2.4.1
+        chunk_id: vanroy-haridi-2003#c00168
+        quote: If some other activity (to be determined later) binds Y then the stopped execution 
+          can continue as if nothing had perturbed the normal ﬂow of execution. This is called 
+          dataﬂow behavior .
+      - source: vanroy-haridi-2003
+        locator: §2.5.3
+        chunk_id: vanroy-haridi-2003#c00209
+      - source: vanroy-haridi-2003
+        locator: §1.11
+        chunk_id: vanroy-haridi-2003#c00098
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6a969dba3ea5
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Kept separate from declarative concurrency because the same source introduces it for 
+      sequential and concurrent settings alike, before any determinism claim.
+  - key: structured-concurrency
+    from_candidates:
+      - structured-concurrency
+    kind: concept
+    id: structured-concurrency
+    name: Structured concurrency
+    summary: Organising concurrent work as a hierarchy of tasks and child tasks whose lifetimes are 
+      bounded by their parents' scopes, so cancellation, errors and priority flow along the 
+      hierarchy.
+    evidence:
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00018
+        quote: task groups naturally propagate status from child tasks to the parent
+      - source: swift-se-0317
+        locator: '#introduction'
+        chunk_id: swift-se-0317#c00001
+        quote: establishing a well-defined hierarchy of tasks which allows for cancellation, error 
+          propagation, priority management, and other tricky details of concurrency management to be
+          handled transparently
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-bb3d32b5d63a
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Carved as the organising principle that task groups, child tasks and scoped threads each 
+      realise in a different language.
+  - key: task-as-unit-of-concurrency
+    from_candidates:
+      - task-as-unit-of-concurrency
+    kind: concept
+    id: task
+    name: Task as the unit of concurrency
+    summary: 'Taking a schedulable task, rather than a thread, as the primary concurrency entity: a task
+      has no internal concurrency itself and is run by some scheduler on whatever thread is available.'
+    evidence:
+      - source: swift-se-0317
+        locator: '#introduction'
+        chunk_id: swift-se-0317#c00001
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00016
+        quote: A *task group* defines a scope in which one can create new child tasks 
+          programmatically.
+      - source: openmp-api-6-0
+        locator: §13.6
+        chunk_id: openmp-api-6-0#c00769
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9cda3b9bf60d
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Minted as a concept distinct from thread because the sources make the task the semantic 
+      unit while explicitly leaving thread assignment to an executor.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: preemption
+    from_candidates:
+      - preemption-and-context-switch
+      - cooperative-multithreading
+    kind: concept
+    id: preemption
+    name: Preemption
+    summary: Involuntary removal of a running activity from its processor by a scheduler, for 
+      example on expiry of a time slice, with enough state saved that execution can later resume.
+    evidence:
+      - source: sebesta-copl
+        locator: §13.2.1
+        chunk_id: sebesta-copl#c00998
+        quote: Time slice expiration
+      - source: scott-plp
+        locator: p. 928
+        chunk_id: scott-plp#c00894
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-92951c8cb510
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as the scheduling concept; I did not mint the preemptive/cooperative design axis 
+      because I found no passage in this session defining the cooperative pole.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: work-and-span-cost-model
+    from_candidates:
+      - work-and-span-cost-model
+      - greedy-scheduling-bound
+      - space-bound-of-parallel-schedule
+    kind: concept
+    id: work-and-span-cost-model
+    name: Work and span cost model
+    summary: Characterising a parallel computation by the total work it performs and the length of 
+      its critical path, from which sequential and parallel complexity, available parallelism and 
+      scheduling bounds are derived.
+    evidence:
+      - source: harper-pfpl
+        locator: §38.2
+        chunk_id: harper-pfpl#c00614
+        quote: the work cost is the sequential complex- ity, and the depth cost is the parallel 
+          complexity, of the computation
+      - source: harper-pfpl
+        locator: §38.2
+        chunk_id: harper-pfpl#c00611
+      - source: harper-pfpl
+        locator: p. 379
+        chunk_id: harper-pfpl#c00606
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-69c05bd1ee40
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Merged with the greedy time bound and busy-leaves space bound, which are theorems stated 
+      relative to this model rather than independent carves.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: work-stealing
+    from_candidates:
+      - work-stealing
+      - work-sharing-vs-work-stealing
+      - load-based-inlining
+      - lazy-task-creation
+    kind: concept
+    id: work-stealing
+    name: Work stealing
+    summary: A distributed scheduling strategy in which each worker keeps its ready work in its own 
+      deque and an idle worker takes work from the deque of a randomly chosen victim.
+    evidence:
+      - source: blumofe-leiserson-1999
+        locator: p. 11
+        chunk_id: blumofe-leiserson-1999#c00023
+        quote: The processor becomes a thief and attempts to steal work from a victim processor 
+          chosen uniformly at random.
+      - source: lea-2000-forkjoin
+        locator: pp. 2–3
+        chunk_id: lea-2000-forkjoin#c00007
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ffc97de30c0e
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Absorbs the work-sharing contrast; the lazy-task-creation and load-based-inlining 
+      candidates are runtime techniques I could not evidence in this session and are reported as 
+      findings.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: supervision-hierarchy
+    from_candidates:
+      - supervision-hierarchy
+      - non-local-error-handling
+    kind: concept
+    id: supervision-hierarchy
+    name: Supervision hierarchy
+    summary: A tree of activities in which supervising activities do no work of their own but detect
+      the failure of workers and restart or repair them.
+    evidence:
+      - source: erlang-erts-processes
+        locator: '#error-handling'
+        chunk_id: erlang-erts-processes#c00024
+        quote: This feature can be used to build hierarchical program structures where some 
+          processes are supervising other processes, for example, restarting them if they terminate 
+          abnormally.
+      - source: armstrong-2010-cacm
+        locator: p. 5
+        chunk_id: armstrong-2010-cacm#c00015
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-cdab2ff8c85e
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Merged with non-local error handling, which is the same source's statement of why the 
+      hierarchy must span separate activities.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: fail-fast-crash-only
+    from_candidates:
+      - fail-fast-crash-only
+    kind: concept
+    id: fail-fast-crash-only
+    name: Fail-fast, crash-only activities
+    summary: A policy under which an activity that cannot meet its specification terminates 
+      immediately and leaves correction to another activity, instead of defending locally against 
+      the error.
+    evidence:
+      - source: armstrong-2010-cacm
+        locator: p. 5
+        chunk_id: armstrong-2010-cacm#c00016
+        quote: processes that cannot perform the task they were told to do should crash immediately.
+          Another process will correct the error. This is exactly the opposite of defen- sive 
+          programming
+      - source: armstrong-2010-cacm
+        locator: p. 5
+        chunk_id: armstrong-2010-cacm#c00015
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d4df3ad626f3
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as a policy concept rather than a feature, since it constrains how programs are 
+      written rather than adding a construct.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: actor-model
+    from_candidates:
+      - actor-serial-message-processing
+      - port-object
+      - actor-reentrancy
+    kind: concept
+    id: actor-model
+    name: Actor model
+    summary: A concurrency model in which each activity owns private mutable state, is reachable 
+      only by asynchronous messages placed in its mailbox, and processes those messages one at a 
+      time so none of its own code runs concurrently.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00007
+        quote: An actor processes the messages in its mailbox one-at-a-time, so that a given actor 
+          will never have two concurrently-executing tasks running actor-isolated code.
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00008
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b3f358a8aaf8
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One concept for the isolated-state-plus-serial-mailbox model; Van Roy's port object is the
+      same carve under another name, and reentrancy is a refinement captured in this node's note.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: static-data-race-prevention
+    from_candidates:
+      - static-data-race-prevention
+    kind: concept
+    id: static-data-race-prevention
+    name: Static data-race prevention
+    summary: Using the type system or isolation rules to reject at compile time programs that could 
+      race, instead of relying on programmer discipline or dynamic detection.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00005
+        quote: With actors, the attempt to reference `other.balance` triggers a compiler error, 
+          because `balance` may only be referenced on `self`.
+      - source: rust-reference
+        locator: p. 495
+        chunk_id: rust-reference#c00654
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f4ce50e93cba
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Carved as the shared goal of marker types and actor isolation checking, which two 
+      different languages realise differently.
+  - key: suspension-point
+    from_candidates:
+      - suspension-point
+      - async-state-machine-lowering
+    kind: concept
+    id: suspension-point
+    name: Suspension point
+    summary: A place, usually marked in the source, where an asynchronous activity may stop running 
+      and later resume, possibly on a different execution context and after other work has run.
+    evidence:
+      - source: rust-fls
+        locator: § 6.20. Await Expressions¶
+        chunk_id: rust-fls#c00243
+        quote: An await expression is an expression that polls a future, suspending the execution of
+          the future until the future is ready.
+      - source: swift-se-0306
+        locator: '#actor-reentrancy'
+        chunk_id: swift-se-0306#c00016
+        quote: When an actor-isolated function suspends, reentrancy allows other work to execute on 
+          the actor before the original actor-isolated function resumes
+    contested:
+      - merged-candidates
+      - split-candidate
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ce5c4efc9679
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Kept as the semantic notion that await syntax marks; the state-machine lowering candidate 
+      is an implementation of it rather than a distinct carve.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: cooperative-cancellation
+    from_candidates:
+      - cooperative-cancellation
+      - cancellation-propagation
+      - priority-inheritance-escalation
+    kind: concept
+    id: cooperative-cancellation
+    name: Cooperative cancellation
+    summary: Cancellation that only takes effect where code checks for it, introducing no hidden 
+      control flow, and that propagates recursively from a cancelled activity to its descendants.
+    evidence:
+      - source: swift-se-0304
+        locator: '#cancellation'
+        chunk_id: swift-se-0304#c00024
+        quote: As we mentioned before, the effect of cancellation on a task is synchronous and 
+          cooperative.
+      - source: swift-se-0317
+        locator: '#cancellation-and-async-let-child-tasks'
+        chunk_id: swift-se-0317#c00018
+        quote: Cancellation propagates recursively through the task hierarchy from parent to child 
+          tasks.
+      - source: swift-se-0304
+        locator: '#task-group-cancellation'
+        chunk_id: swift-se-0304#c00061
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-56f728020997
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Merged cancellation and its downward propagation into one node because the sources state 
+      them as two halves of a single cancellation semantics; priority propagation is folded in as 
+      the parallel case.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: message-ordering-guarantee
+    from_candidates:
+      - message-ordering-guarantee
+    kind: concept
+    id: message-ordering-guarantee
+    name: Pairwise message ordering guarantee
+    summary: A specification that messages sent from one activity to one destination are delivered 
+      in send order, while no order is guaranteed between messages from different senders.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00043
+        quote: Channels act as first-in-first-out queues. For example, if one goroutine sends values
+          on a channel and a second goroutine receives them, the values are received in the order 
+          sent.
+      - source: go-memory-model
+        locator: '#chan'
+        chunk_id: go-memory-model#c00011
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e00f08227aaf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Carved as an ordering guarantee a language specifies, parallel to the memory consistency 
+      model but over messages rather than memory.
+  - key: rendezvous
+    from_candidates:
+      - csp-synchronous-communication
+    kind: concept
+    id: rendezvous
+    name: Synchronous communication (rendezvous)
+    summary: Communication in which matched send and receive operations in two activities complete 
+      together with no buffering, each delaying until the partner is ready.
+    evidence:
+      - source: hoare-1978-csp
+        locator: p. 4
+        chunk_id: hoare-1978-csp#c00013
+        quote: Commands which correspond are executed simultaneously, and their combined effect is 
+          to assign the value of the expression of the output command to the target variable of the 
+          input command.
+      - source: hoare-1978-csp
+        locator: pp. 1–2
+        chunk_id: hoare-1978-csp#c00004
+      - source: vanroy-haridi-2003
+        locator: §8.7
+        chunk_id: vanroy-haridi-2003#c01068
+    contested:
+      - split-candidate
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7e535a51d627
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as the semantics, so that both CSP channels and Ada's accept-based entry calls can 
+      point at it.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: transactional-memory
+    from_candidates:
+      - transactional-memory
+    kind: concept
+    id: transactional-memory
+    name: Transactional memory
+    summary: Achieving atomicity by letting labelled code blocks run speculatively and commit all 
+      their shared-memory effects or none, with conflicting transactions aborted and retried, rather
+      than by acquiring locks.
+    evidence:
+      - source: scott-plp
+        locator: pp. 909–910
+        chunk_id: scott-plp#c00872
+        quote: all we really want is a composable atomic construct. Transactional memory (TM) is an 
+          attempt to provide exactly that.
+      - source: jones-hosking-moss-2012
+        locator: §13.9
+        chunk_id: jones-hosking-moss-2012#c00723
+      - source: ghc-users-guide
+        locator: §6.15.2
+        chunk_id: ghc-users-guide#c01080
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-1a679e254e94
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: 'Minted although absent from the survey inventory: the theme names transactions explicitly and
+      three sources define the mechanism as an alternative to locking.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: fork-join-parallelism
+    from_candidates:
+      - fork-join-parallelism
+    kind: concept
+    id: fork-join-parallelism
+    name: Fork-join parallelism
+    summary: Hierarchically nested parallelism in which a computation forks two or more 
+      subcomputations that may proceed in parallel and then joins them to combine their results 
+      before continuing.
+    evidence:
+      - source: harper-pfpl
+        locator: p. 379
+        chunk_id: harper-pfpl#c00606
+        quote: Nested parallelism has a hierarchical structure arising from forking two (or more) 
+          parallel computations, then joining these computations to combine their results before 
+          proceeding.
+      - source: frigo-leiserson-randall-1998
+        locator: p. 2
+        chunk_id: frigo-leiserson-randall-1998#c00006
+      - source: lea-2000-forkjoin
+        locator: p. 2
+        chunk_id: lea-2000-forkjoin#c00005
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-19009ea0df6c
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Minted because three parallelism sources treat this shape as the structure their cost 
+      models and schedulers assume.
+  - key: thread
+    from_candidates:
+      - thread
+    kind: feature
+    id: thread
+    name: Thread
+    summary: An independently executing sequence of instructions inside a program, created by a 
+      language construct, which proceeds concurrently with its siblings and shares the surrounding 
+      store with them.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §1.10
+        chunk_id: vanroy-haridi-2003#c00097
+        quote: A thread is simply an executing program like the functions we saw before. The 
+          diﬀerence is that a program can have more than one thread.
+      - source: vanroy-haridi-2003
+        locator: §13.1
+        chunk_id: vanroy-haridi-2003#c01315
+      - source: go-lang-spec
+        locator: '#Go_statements'
+        chunk_id: go-lang-spec#c00167
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-286d03a82957
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Layer 2 rather than 1 because sources define a thread by its behaviour in the store, 
+      independently of the particular spawning syntax.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - thread of control
+      - task
+      - locus of control
+    realizes:
+      - concurrency
+      - interleaving-semantics
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: spawn
+    from_candidates:
+      - goroutine
+      - spawn-and-process-identity
+    kind: feature
+    id: spawn
+    name: Spawn construct
+    summary: A statement or expression that starts a given call executing as a new independent 
+      activity, with the creator continuing without waiting for the result.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Go_statements'
+        chunk_id: go-lang-spec#c00167
+        quote: A "go" statement starts the execution of a function call as an independent concurrent
+          thread of control, or goroutine, within the same address space.
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00103
+      - source: frigo-leiserson-randall-1998
+        locator: p. 2
+        chunk_id: frigo-leiserson-randall-1998#c00006
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-f507692e7d3a
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One syntactic carve for the create-an-activity construct, merging the Go-specific 
+      candidate; the returned addressable identity it sometimes yields is noted rather than split 
+      out.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - go statement
+      - spawn
+      - thread statement
+    realizes:
+      - concurrency
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: coroutine
+    from_candidates:
+      - coroutine
+      - quasi-concurrency
+      - coroutines-from-continuations
+    kind: feature
+    id: coroutine
+    name: Coroutine
+    summary: A subprogram with more than one entry point whose execution can be suspended with all 
+      local state retained, and later resumed from the point of suspension, so that exactly one 
+      partner runs at a time.
+    evidence:
+      - source: python-langref-3
+        locator: § 6.2.10. Yield expressions
+        chunk_id: python-langref-3#c00208
+        quote: they yield multiple times, they have more than one entry point and their execution 
+          can be suspended
+    contested:
+      - merged-candidates
+      - split-candidate
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-865d865831af
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Absorbs quasi-concurrency, which names the one-at-a-time interleaving this feature 
+      produces, and the continuation-based implementation technique.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - symmetric unit control model
+    realizes:
+      - concurrency
+      - interleaving-semantics
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: generator
+    from_candidates:
+      - generator-as-coroutine
+    kind: feature
+    id: generator
+    name: Generator
+    summary: A producer object obtained from a function containing a yield expression, which 
+      suspends at each yield returning a value to its caller, retains all local state, and resumes 
+      where it left off when next asked.
+    evidence:
+      - source: python-langref-3
+        locator: § 6.2.10. Yield expressions
+        chunk_id: python-langref-3#c00208
+        quote: a generator function cannot control where the execution should continue after it 
+          yields; the control is always transferred to the generator’s caller
+      - source: python-langref-3
+        locator: § 6.2.10. Yield expressions
+        chunk_id: python-langref-3#c00207
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-04f7339d6bfc
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Kept separate from coroutine because the source states the distinguishing restriction 
+      (control always returns to the caller); this feature-specialises-feature relation is reported 
+      as structure friction.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - iterator
+      - yield expression
+    realizes:
+      - concurrency
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: future
+    from_candidates:
+      - future
+      - poll-based-future
+    kind: feature
+    id: future
+    name: Future
+    summary: A value standing for the eventual result of a computation that may proceed 
+      concurrently; an activity that needs the result suspends until the future is ready.
+    evidence:
+      - source: rust-fls
+        locator: § 6.20. Await Expressions¶
+        chunk_id: rust-fls#c00243
+        quote: An await expression is an expression that polls a future, suspending the execution of
+          the future until the future is ready.
+      - source: rust-reference
+        locator: p. 357
+        chunk_id: rust-reference#c00456
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-4c934003104c
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: The poll-driven variant is folded in as an implementation of the same feature rather than 
+      a separate carve.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - placeholder
+      - promise
+      - poll-based future
+    realizes:
+      - dataflow-synchronization
+      - task
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: dataflow-variable
+    from_candidates:
+      - dataflow-variable
+      - single-assignment-variable
+    kind: feature
+    id: dataflow-variable
+    name: Dataflow variable
+    summary: A variable that may be created unbound and bound at most once, where any operation 
+      needing its value waits until the binding exists, giving implicit synchronisation between 
+      activities.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2.2.8
+        chunk_id: vanroy-haridi-2003#c00147
+        quote: Execution waits until the variable is bound and then continues.
+      - source: vanroy-haridi-2003
+        locator: §4.9.3
+        chunk_id: vanroy-haridi-2003#c00613
+        quote: binding a variable is a kind of send and waiting until a variable is bound is a kind 
+          of receive
+      - source: vanroy-haridi-2003
+        locator: §4.2.3
+        chunk_id: vanroy-haridi-2003#c00470
+    contested:
+      - merged-candidates
+      - split-candidate
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-270ee7b1b2c6
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Single-assignment store and dataflow variable are the same carve in this source, described
+      once as a store property and once as a communication channel.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - declarative variable
+      - logic variable
+      - I-structure
+    realizes:
+      - dataflow-synchronization
+      - declarative-concurrency
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: stream-communication
+    from_candidates:
+      - stream-objects
+      - stream-merger-limitation
+    kind: feature
+    id: stream-communication
+    name: Stream communication
+    summary: Connecting activities by a list that is extended incrementally by its producer, where 
+      the consumer blocks on the still-unbound tail, giving a declarative producer-consumer 
+      pipeline.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.2.3
+        chunk_id: vanroy-haridi-2003#c00470
+        quote: declare L1 L2 in thread L=1|L1 end thread L1=2|3|L2 end thread L2=4|nil end
+      - source: vanroy-haridi-2003
+        locator: §4.9.3
+        chunk_id: vanroy-haridi-2003#c00613
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3f4c8936b7cc
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: The fixed-read-pattern limitation candidate is a constraint on this feature, recorded in 
+      findings rather than minted as a node.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - streams
+      - stream objects
+    realizes:
+      - declarative-concurrency
+      - dataflow-synchronization
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: channel
+    from_candidates:
+      - channel
+      - port-asynchronous-channel
+      - channel-direction-types
+    kind: feature
+    id: channel
+    name: Channel
+    summary: A first-class typed conduit by which concurrently executing activities communicate by 
+      sending and receiving element values, behaving as a first-in-first-out queue.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00042
+        quote: A channel provides a mechanism for concurrently executing functions to communicate by
+          sending and receiving values of a specified element type.
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00043
+    contested:
+      - merged-candidates
+      - split-candidate
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-8e2f79f52a83
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One node for the first-class conduit; its capacity choice is carved as the layer-3 pair 
+      below and its directional typing is noted here rather than split out.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - port
+      - communication channel
+    realizes:
+      - message-passing
+      - message-ordering-guarantee
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: channel-close
+    from_candidates:
+      - channel-close
+    kind: feature
+    id: channel-close
+    name: Channel closing
+    summary: An operation recording that no further values will be sent on a channel, after which 
+      receives complete immediately with the zero value and an indication that the channel is 
+      closed.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Receive_operator'
+        chunk_id: go-lang-spec#c00128
+        quote: A receive operation on a closed channel can always proceed immediately, yielding the 
+          element type's zero value after any previously sent values have been received.
+      - source: go-memory-model
+        locator: '#chan'
+        chunk_id: go-memory-model#c00011
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-86eb1b8400cb
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Minted separately from the channel because it adds a distinct termination semantics that 
+      also participates in the memory model.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - close
+    realizes:
+      - message-passing
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: select-statement
+    from_candidates:
+      - select-statement
+      - nondeterministic-choice
+    kind: feature
+    id: select-statement
+    name: Select over communications
+    summary: A construct that waits on several possible communications at once and proceeds with one
+      that is ready, choosing arbitrarily when more than one is, and blocking when none is and no 
+      default branch exists.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Select_statements'
+        chunk_id: go-lang-spec#c00168
+        quote: If one or more of the communications can proceed, a single one that can proceed is 
+          chosen via a uniform pseudo-random selection.
+      - source: hoare-1978-csp
+        locator: pp. 1–2
+        chunk_id: hoare-1978-csp#c00004
+        quote: If several input guards of a set of alternatives have ready destinations, only one is
+          selected and the others have no effect; but the choice between them is arbitrary.
+      - source: sebesta-copl
+        locator: §13.6.1
+        chunk_id: sebesta-copl#c01026
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6f30c22a35ff
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: 'Merged with the nondeterministic-wait candidate: CSP guarded input, Ada selective wait and
+      Go select are one feature across three surface syntaxes.'
+    dimension:
+    cross_cutting: false
+    aliases:
+      - guarded input command
+      - selective wait
+      - WaitTwo
+    realizes:
+      - message-passing
+      - observable-nondeterminism
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: mailbox
+    from_candidates:
+      - mailbox
+      - priority-messages
+    kind: feature
+    id: mailbox
+    name: Mailbox
+    summary: A per-activity queue into which incoming messages are placed on arrival and from which 
+      the owning activity removes them when it chooses to receive.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00007
+        quote: These messages are stored in the actor's "mailbox"
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00104
+      - source: erlang-erts-processes
+        locator: '#receiving-exit-signals'
+        chunk_id: erlang-erts-processes#c00026
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b8f483721252
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Priority insertion into the queue is an option on this feature in one source, not a carve 
+      of its own.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - message queue
+    realizes:
+      - message-passing
+      - actor-model
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: selective-receive
+    from_candidates:
+      - selective-receive
+      - receive-timeout
+    kind: feature
+    id: selective-receive
+    name: Selective receive
+    summary: A receive construct that uses pattern matching to take the first matching message out 
+      of a mailbox, leaving non-matching messages queued for later.
+    evidence:
+      - source: armstrong-2010-cacm
+        locator: p. 5
+        chunk_id: armstrong-2010-cacm#c00016
+        quote: counter(N) -> receive tick -> counter(N+1); {From, read} -> From ! {self(), N}, 
+          counter(N) end.
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00104
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2bc8447994eb
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: The optional timeout clause is folded in as a modifier of this construct; I found no 
+      separate defining passage for it this session.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - receive with guards
+      - after clause
+    realizes:
+      - message-passing
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: process-link
+    from_candidates:
+      - process-link-error-propagation
+      - asymmetric-process-monitor
+    kind: feature
+    id: process-link
+    name: Process link
+    summary: A bidirectional association between two activities such that the termination of one 
+      sends an exit signal carrying its reason to the other, grouping their failures together.
+    evidence:
+      - source: erlang-erts-processes
+        locator: '#links'
+        chunk_id: erlang-erts-processes#c00023
+        quote: If one of the participants of a link terminates, it will send an exit signal to the 
+          other participant. The exit signal will contain the exit reason of the terminated 
+          participant.
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00103
+      - source: armstrong-2010-cacm
+        locator: p. 5
+        chunk_id: armstrong-2010-cacm#c00015
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-236d27010bca
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: The one-directional monitor is the asymmetric variant of this same association and is 
+      folded in rather than minted separately for budget.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - link set
+      - monitor
+      - error-propagation channel
+    realizes:
+      - supervision-hierarchy
+      - fail-fast-crash-only
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: exit-signal-trapping
+    from_candidates:
+      - exit-signal-trapping
+    kind: feature
+    id: exit-signal-trapping
+    name: Trapping exit signals
+    summary: An opt-in flag by which an activity converts incoming exit signals into ordinary 
+      messages in its mailbox instead of dying from them, letting it handle other activities' 
+      failures.
+    evidence:
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00104
+      - source: erlang-erts-processes
+        locator: '#receiving-exit-signals'
+        chunk_id: erlang-erts-processes#c00026
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-699e1e4ef7b2
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Minted separately from the link because it is an independent per-activity setting that 
+      changes what receiving a signal does.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - system process
+      - trap_exit
+    realizes:
+      - supervision-hierarchy
+    layer: 2
+  - key: actor-isolation
+    from_candidates:
+      - actor-isolation
+    kind: feature
+    id: actor-isolation
+    name: Actor isolation
+    summary: A compile-time checked rule confining an object's mutable state to its own isolation 
+      domain, so that code outside may touch it only through asynchronous, serialised requests.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00005
+        quote: The error message notes that `balance` is *actor-isolated*, meaning that it can only 
+          be accessed directly from within the specific actor it is tied to
+      - source: swift-se-0306
+        locator: '#references-and-actor-isolation'
+        chunk_id: swift-se-0306#c00029
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-348db40e749c
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: A feature rather than the model itself, because it is the checked language rule that 
+      enforces the actor model's isolation.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - isolation domain
+      - nonisolated
+    realizes:
+      - actor-model
+      - process-isolation
+      - static-data-race-prevention
+    layer: 2
+  - key: thread-safety-marker-type
+    from_candidates:
+      - send-and-sync-marker-traits
+      - sendable-types
+    kind: feature
+    id: thread-safety-marker-type
+    name: Concurrency-safety marker type
+    summary: An automatically derived type-level property stating that values of a type may be 
+      transferred to, or shared with, another concurrently executing domain without introducing data
+      races.
+    evidence:
+      - source: rust-reference
+        locator: p. 495
+        chunk_id: rust-reference#c00654
+        quote: The Sync trait indicates that a value of this type is safe to share between multiple 
+          threads.
+      - source: rust-fls
+        locator: § B.661. sync type¶
+        chunk_id: rust-fls#c01105
+      - source: rust-reference
+        locator: p. 331
+        chunk_id: rust-reference#c00426
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b7f87aad418e
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Merged two languages' candidates into one feature because both are marker types 
+      restricting what may cross a concurrency boundary; the transfer-versus-share split within it 
+      is noted, not minted.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - Send
+      - Sync
+      - Sendable
+      - auto trait
+    realizes:
+      - static-data-race-prevention
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: scoped-threads
+    from_candidates:
+      - scoped-threads
+    kind: feature
+    id: scoped-threads
+    name: Scoped threads
+    summary: Threads spawned inside a lexical scope that are all guaranteed to be joined before the 
+      scope returns, which lets them borrow data that does not outlive the scope.
+    evidence:
+      - source: rust-std-thread-scope
+        locator: § Expand description
+        chunk_id: rust-std-thread-scope#c00000
+        quote: Unlike non-scoped threads, scoped threads can borrow non-'static data, as the scope 
+          guarantees all threads will be joined at the end of the scope.
+      - source: rust-rfc-3151
+        locator: '#summary'
+        chunk_id: rust-rfc-3151#c00000
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-82bdabf1e8f1
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as a feature realising structured concurrency over threads rather than tasks, which
+      is why it earns its own node beside task groups.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - thread::scope
+    realizes:
+      - structured-concurrency
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: task-group
+    from_candidates:
+      - task-group
+      - child-task
+      - async-let-binding
+    kind: feature
+    id: task-group
+    name: Task group
+    summary: 'A scope to which an arbitrary number of child tasks can be added programmatically and from
+      which none may escape: on exit all have completed, been awaited, or been cancelled.'
+    evidence:
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00016
+        quote: A *task group* defines a scope in which one can create new child tasks 
+          programmatically.
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00018
+      - source: swift-se-0304
+        locator: '#task-group-cancellation'
+        chunk_id: swift-se-0304#c00061
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-44057ba1bf9c
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: 'Merged with child task and the implicit async-let binding: in these proposals the child task
+      is defined by the group scope and async let is sugar for one.'
+    dimension:
+    cross_cutting: false
+    aliases:
+      - withTaskGroup
+      - child task
+      - async let
+    realizes:
+      - structured-concurrency
+      - task
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: async-await
+    from_candidates:
+      - async-await
+      - async-state-machine-lowering
+    kind: feature
+    id: async-await
+    name: async/await
+    summary: A pair of annotations letting a function be marked as possibly suspending and its 
+      callers mark the points at which they wait for it, so asynchronous code is written in direct 
+      sequential style.
+    evidence:
+      - source: rust-reference
+        locator: p. 357
+        chunk_id: rust-reference#c00456
+        quote: An await expression is a syntactic construct for suspending a computation provided by
+          an implementation of std::future::IntoFuture until the given future is ready to produce a 
+          value.
+      - source: rust-fls
+        locator: § 6.20. Await Expressions¶
+        chunk_id: rust-fls#c00243
+      - source: swift-se-0306
+        locator: '#references-and-actor-isolation'
+        chunk_id: swift-se-0306#c00029
+    contested:
+      - merged-candidates
+      - split-candidate
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-59c967f688d6
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: Layer 1 because it is the surface marking; its semantic content is the suspension-point 
+      concept it realises.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - await expression
+      - await operator
+    realizes:
+      - suspension-point
+      - task
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: executor
+    from_candidates:
+      - executor
+    kind: feature
+    id: executor
+    name: Executor
+    summary: A runtime service that owns the decision of when, and on which thread, a submitted unit
+      of asynchronous work runs; a serial executor runs its work one item at a time.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00008
+        quote: each actor instance contains its own serial executor (also in the [Structured 
+          Concurrency][sc] proposal). The default serial executor is responsible for running the 
+          partial tasks one-at-a-time.
+      - source: swift-se-0304
+        locator: '#table-of-contents'
+        chunk_id: swift-se-0304#c00001
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-351f00b1e7de
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Carved as a feature because it is a program-visible object that decides scheduling, 
+      distinct from the task that is scheduled.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - serial executor
+      - scheduler
+    realizes:
+      - task
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: thread-pool
+    from_candidates:
+      - thread-pool
+      - virtual-threads
+    kind: feature
+    id: thread-pool
+    name: Thread pool
+    summary: A fixed set of worker threads to which units of work are submitted and which execute 
+      them, decoupling the number of submitted activities from the number of underlying threads.
+    evidence:
+      - source: lea-2000-forkjoin
+        locator: p. 2
+        chunk_id: lea-2000-forkjoin#c00005
+        quote: A simple control and management facility (here, FJTaskRunnerGroup) sets up worker 
+          pools and initiates execution of a given fork/join task
+      - source: lea-2000-forkjoin
+        locator: pp. 2–3
+        chunk_id: lea-2000-forkjoin#c00007
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c33883dd3fea
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: The virtual-thread candidate is the same decoupling seen from the activity side; I could 
+      not evidence it this session and report it as a finding instead of minting a thread-weight 
+      axis.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - worker pool
+      - carrier threads
+    realizes:
+      - task
+      - parallelism
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: lock
+    from_candidates:
+      - lock
+    kind: feature
+    id: lock
+    name: Mutual exclusion lock
+    summary: An object that at most one activity can hold at a time, acquired before and released 
+      after a critical section, so that the enclosed sequence appears atomic to other activities.
+    evidence:
+      - source: jls-se25
+        locator: §17.1
+        chunk_id: jls-se25#c01099
+        quote: Each object in Java is associated with a monitor, which a thread can lock or unlock .
+          Only one thread at a time may hold a lock on a monitor.
+      - source: scott-plp
+        locator: pp. 837–839
+        chunk_id: scott-plp#c00796
+      - source: jones-hosking-moss-2012
+        locator: §13.6
+        chunk_id: jones-hosking-moss-2012#c00689
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0ecf6261c224
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Minted from sources the survey did not cover; it is the minimal construct realising mutual
+      exclusion, below monitors and above atomic primitives.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - mutex
+      - synchronized statement
+      - spin lock
+    realizes:
+      - mutual-exclusion
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: monitor
+    from_candidates:
+      - monitor
+    kind: feature
+    id: monitor
+    name: Monitor
+    summary: An abstraction bundling shared data with operations that automatically exclude one 
+      another in time, where an operation can wait on a condition variable and another can signal it
+      to resume a waiter.
+    evidence:
+      - source: scott-plp
+        locator: pp. 896–897
+        chunk_id: scott-plp#c00857
+        quote: any operation may suspend itself by wait ing on a condition variable. An operation 
+          may also signal a condition variable, in which case one of the waiting threads is resumed
+      - source: vanroy-haridi-2003
+        locator: §8.4.2
+        chunk_id: vanroy-haridi-2003#c01029
+      - source: sebesta-copl
+        locator: §13.6.4
+        chunk_id: sebesta-copl#c01033
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-087ab94f0061
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One node for the monitor including its condition variables, since the sources define 
+      condition variables only as parts of a monitor; Ada's protected object is listed as an alias.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - conditional critical section
+      - guarded method
+      - protected object
+      - condition variable
+    realizes:
+      - mutual-exclusion
+      - condition-synchronization
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: semaphore
+    from_candidates:
+      - channel-as-counting-semaphore
+    kind: feature
+    id: semaphore
+    name: Semaphore
+    summary: A counter with two atomic operations, one that decrements it and waits while it would 
+      go negative and one that increments it and wakes a waiter, usable for both mutual exclusion 
+      and condition synchronisation.
+    evidence:
+      - source: scott-plp
+        locator: pp. 892–894
+        chunk_id: scott-plp#c00855
+      - source: sebesta-copl
+        locator: §13.3.1
+        chunk_id: sebesta-copl#c01003
+      - source: hoare-1978-csp
+        locator: p. 8
+        chunk_id: hoare-1978-csp#c00027
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-36f0dbc56150
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: The bounded-channel-as-semaphore candidate is an idiom reproducing this feature with 
+      another, so it is recorded as a finding rather than a node.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - binary semaphore
+      - counting semaphore
+      - P and V
+    realizes:
+      - mutual-exclusion
+      - condition-synchronization
+    layer: 2
+  - key: atomic-block
+    from_candidates:
+      - atomic-block
+    kind: feature
+    id: atomic-block
+    name: Atomic block
+    summary: A code block labelled atomic whose shared-memory effects all take place or none do, 
+      which the implementation may run speculatively and abort and retry on conflict, with an 
+      explicit retry to wait for a precondition.
+    evidence:
+      - source: scott-plp
+        locator: pp. 909–910
+        chunk_id: scott-plp#c00872
+      - source: ghc-users-guide
+        locator: §6.15.2
+        chunk_id: ghc-users-guide#c01080
+      - source: jones-hosking-moss-2012
+        locator: §13.9
+        chunk_id: jones-hosking-moss-2012#c00724
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-abfb0f2ec284
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: The syntactic construct is carved apart from the transactional-memory concept because the 
+      same concept is also delivered by library transactional variables.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - atomically
+      - transaction
+    realizes:
+      - transactional-memory
+      - mutual-exclusion
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: parallel-loop-construct
+    from_candidates:
+      - parallel-loop-construct
+    kind: feature
+    id: parallel-loop-construct
+    name: Worksharing-loop construct
+    summary: A directive stating that the iterations of an associated loop nest are to be 
+      distributed across the threads of a team and executed in parallel, with an implied barrier at 
+      the end unless suppressed.
+    evidence:
+      - source: openmp-api-6-0
+        locator: §13.6
+        chunk_id: openmp-api-6-0#c00769
+      - source: openmp-api-6-0
+        locator: §13.6.1
+        chunk_id: openmp-api-6-0#c00772
+      - source: openmp-api-6-0
+        locator: §2
+        chunk_id: openmp-api-6-0#c00220
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-1a33fe5f0b15
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: Minted because the theme's cost-model side needs the data-parallel construct, and the 
+      specification defines it independently of task-based concurrency.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - parallel for
+      - parallel do
+      - worksharing construct
+    realizes:
+      - parallelism
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: synchronous-channel
+    from_candidates:
+      - buffered-vs-unbuffered-channel
+      - csp-synchronous-communication
+    kind: feature
+    id: synchronous-channel
+    name: Unbuffered (synchronous) channel
+    summary: A channel of zero capacity, on which a communication succeeds only when a sender and a 
+      receiver are both ready, so each side delays until the other arrives.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00042
+        quote: If the capacity is zero or absent, the channel is unbuffered and communication 
+          succeeds only when both a sender and receiver are ready.
+      - source: go-lang-spec
+        locator: '#Send_statements'
+        chunk_id: go-lang-spec#c00146
+      - source: hoare-1978-csp
+        locator: p. 4
+        chunk_id: hoare-1978-csp#c00013
+    contested:
+      - merged-candidates
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d5a0875b0ee4
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: One pole of the capacity axis, carved as a design choice because the Go specification and 
+      CSP both present readiness-coupled communication as a deliberate alternative to buffering.
+    dimension: channel-synchrony
+    cross_cutting: false
+    aliases:
+      - rendezvous channel
+    realizes:
+      - rendezvous
+      - message-passing
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: asynchronous-channel
+    from_candidates:
+      - buffered-vs-unbuffered-channel
+      - port-asynchronous-channel
+    kind: feature
+    id: asynchronous-channel
+    name: Buffered (asynchronous) channel
+    summary: A channel with capacity, on which a send succeeds without blocking while the buffer has
+      room and a receive succeeds while it is non-empty, decoupling the two parties in time.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00042
+        quote: Otherwise, the channel is buffered and communication succeeds without blocking if the
+          buffer is not full (sends) or not empty (receives).
+      - source: go-lang-spec
+        locator: '#Send_statements'
+        chunk_id: go-lang-spec#c00146
+      - source: go-memory-model
+        locator: '#chan'
+        chunk_id: go-memory-model#c00011
+    contested:
+      - merged-candidates
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-8eb9276cccf9
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: The other pole of the same axis; Van Roy's unbounded port is the limiting case and is 
+      listed here rather than minted separately.
+    dimension: channel-synchrony
+    cross_cutting: false
+    aliases:
+      - port
+      - buffered channel
+    realizes:
+      - message-passing
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: undefined-behavior-on-data-race
+    from_candidates:
+      - undefined-behavior-on-data-race
+    kind: feature
+    id: undefined-behavior-on-data-race
+    name: Data race as undefined behaviour
+    summary: A language rule under which any execution containing a data race has entirely 
+      unspecified semantics, so a program with a race is simply erroneous.
+    evidence:
+      - source: c23-n3220
+        locator: §5.1.2
+        chunk_id: c23-n3220#c00091
+        quote: Any such data race results in undefined behavior.
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §6
+        chunk_id: iso-iec-14882-cpp20-n4861#c00204
+      - source: scott-plp
+        locator: pp. 885–887
+        chunk_id: scott-plp#c00849
+        quote: In some languages (Ada and C++ among them), a program with races is simply erroneous.
+    contested:
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b4e67a5d45d8
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: A design choice rather than a semantic fact, because Scott contrasts it directly with the 
+      alternative taken by other languages.
+    dimension: racy-program-semantics
+    cross_cutting: false
+    aliases:
+      - erroneous program
+    realizes:
+      - memory-consistency-model
+      - data-race
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: constrained-semantics-for-racy-programs
+    from_candidates:
+      - constrained-semantics-for-racy-programs
+    kind: feature
+    id: constrained-semantics-for-racy-programs
+    name: Constrained semantics for racy programs
+    summary: A language rule under which a program containing data races still obeys all other 
+      language rules, its reads being restricted to values actually written, so races cannot destroy
+      system integrity.
+    evidence:
+      - source: scott-plp
+        locator: pp. 885–887
+        chunk_id: scott-plp#c00849
+        quote: In other languages (notably Java), the behavior of racy programs is constrained in 
+          ways that help ensure system integrity.
+      - source: jls-se25
+        locator: §17.4
+        chunk_id: jls-se25#c01117
+      - source: jls-se25
+        locator: §17.4
+        chunk_id: jls-se25#c01124
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e71f3ad63b8c
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: The opposite pole of the same axis, needed so the dimension has two member features.
+    dimension: racy-program-semantics
+    cross_cutting: false
+    aliases:
+      - safe semantics for races
+      - out-of-thin-air prohibition
+    realizes:
+      - memory-consistency-model
+      - data-race
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+edges:
+  - key: stream-communication--requires--dataflow-variable
+    type: requires
+    from: stream-communication
+    to: dataflow-variable
+    polarity:
+    statement: Stream communication represents a stream as a list whose tail is an unbound dataflow 
+      variable, so it cannot exist without dataflow variables.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.3
+        chunk_id: vanroy-haridi-2003#c00483
+      - source: vanroy-haridi-2003
+        locator: §4.3.1
+        chunk_id: vanroy-haridi-2003#c00485
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-46e25affa803
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: selective-receive--requires--mailbox
+    type: requires
+    from: selective-receive
+    to: mailbox
+    polarity:
+    statement: Selective receive picks a message matching a pattern out of the receiving process's 
+      mailbox, leaving the other queued messages untouched, so it presupposes a mailbox.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §5.6.3
+        chunk_id: vanroy-haridi-2003#c00710
+        quote: Messages are taken out of a mailbox with the receive operation. It uses pattern 
+          matching to pick out a desired message, leaving the other messages unchanged.
+      - source: armstrong-2007-hopl
+        locator: pp. 5–6
+        chunk_id: armstrong-2007-hopl#c00025
+        quote: The message is put in a “save queue” and processed later and the receive statement 
+          carries on waiting for the messages it is interested in.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-155b5ecbf74b
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: process-link--enables--exit-signal-trapping
+    type: enables
+    from: process-link
+    to: exit-signal-trapping
+    polarity:
+    statement: Process links propagate an exit signal to every linked process, which is what 
+      trapping exits converts into an ordinary message a surviving process can handle.
+    evidence:
+      - source: armstrong-2003-thesis
+        locator: §3.5.6
+        chunk_id: armstrong-2003-thesis#c00104
+      - source: armstrong-2003-thesis
+        locator: §2
+        chunk_id: armstrong-2003-thesis#c00270
+        quote: A process can change this default behaviour by trapping exits , this causes all exit 
+          signals sent to a process to be turned into messages.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-caffc0a12431
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: monitor--alternative-to--semaphore
+    type: alternative-to
+    from: monitor
+    to: semaphore
+    polarity:
+    statement: 'Monitors and semaphores are competing answers to the same synchronization question: monitors
+      were proposed as a solution to the problems of semaphores, and each can express everything the other
+      can.'
+    evidence:
+      - source: scott-plp
+        locator: pp. 894–896
+        chunk_id: scott-plp#c00856
+        quote: Monitors were suggested by Dijkstra [Dij72] as a solution to the problems of 
+          semaphores.
+      - source: scott-plp
+        locator: pp. 898–899
+        chunk_id: scott-plp#c00859
+        quote: 'semaphores and monitors are equally powerful: each can express all forms of synchronization
+          expressible with the other'
+      - source: sebesta-copl
+        locator: §13.4.4
+        chunk_id: sebesta-copl#c01015
+        quote: Monitors are a better way to provide competition synchronization than are semaphores
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2b3b77e04a86
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: atomic-block--alternative-to--lock
+    type: alternative-to
+    from: atomic-block
+    to: lock
+    polarity:
+    statement: Atomic blocks backed by transactional memory are an alternative to locks for 
+      achieving atomicity, proposed because locks are too low level and do not compose.
+    evidence:
+      - source: scott-plp
+        locator: pp. 909–910
+        chunk_id: scott-plp#c00872
+      - source: scott-plp
+        locator: pp. 910–911
+        chunk_id: scott-plp#c00873
+        quote: 'The basic idea of TM is very simple: the programmer labels code blocks as atomic'
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ced1099d6ed2
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: undefined-behavior-on-data-race--conflicts-with--constrained-semantics-for-racy-programs
+    type: conflicts-with
+    from: undefined-behavior-on-data-race
+    to: constrained-semantics-for-racy-programs
+    polarity:
+    statement: A language either declares racy programs erroneous with wholly unspecified behaviour 
+      or constrains what a racy program may do, and the two answers cannot both govern the same racy
+      program.
+    evidence:
+      - source: scott-plp
+        locator: pp. 885–887
+        chunk_id: scott-plp#c00849
+        quote: In some languages (Ada and C++ among them), a program with races is simply erroneous.
+          In other languages (notably Java), the behavior of racy programs is constrained in ways 
+          that help ensure system integrity.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a16efc16db7e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: thread-safety-marker-type--requires--thread
+    type: requires
+    from: thread-safety-marker-type
+    to: thread
+    polarity:
+    statement: Concurrency-safety marker types classify values by whether they are safe to transfer 
+      across or share between thread boundaries, so they presuppose threads.
+    evidence:
+      - source: rust-fls
+        locator: § 17.1. Send and Sync¶
+        chunk_id: rust-fls#c00395
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9cc97d1fbf47
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: scoped-threads--requires--thread
+    type: requires
+    from: scoped-threads
+    to: thread
+    polarity:
+    statement: Scoped threads are threads spawned inside a scope that are joined before the scope 
+      exits, so they are a restricted way of using threads.
+    evidence:
+      - source: rust-std-thread-scope
+        locator: '#example'
+        chunk_id: rust-std-thread-scope#c00002
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-812023bfcc84
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: actor-isolation--requires--mailbox
+    type: requires
+    from: actor-isolation
+    to: mailbox
+    polarity:
+    statement: Actor isolation permits cross-actor access to isolated state only through 
+      asynchronous calls turned into messages stored in the actor's mailbox and processed one at a 
+      time.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00007
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-88efc25e6c64
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: actor-isolation--requires--executor
+    type: requires
+    from: actor-isolation
+    to: executor
+    polarity:
+    statement: An isolated actor serialises the work in its isolation domain by owning a serial 
+      executor that runs its partial tasks one at a time.
+    evidence:
+      - source: swift-se-0306
+        locator: '#actor-isolation'
+        chunk_id: swift-se-0306#c00008
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a2628c0be299
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: async-await--requires--future
+    type: requires
+    from: async-await
+    to: future
+    polarity:
+    statement: An await expression polls a future and suspends the awaiting computation until that 
+      future is ready, so async/await is defined in terms of futures.
+    evidence:
+      - source: rust-fls
+        locator: § 6.20. Await Expressions¶
+        chunk_id: rust-fls#c00243
+        quote: An await expression is an expression that polls a future, suspending the execution of
+          the future until the future is ready.
+      - source: rust-reference
+        locator: p. 358
+        chunk_id: rust-reference#c00458
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-dea861d064cf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: async-await--requires--coroutine
+    type: requires
+    from: async-await
+    to: coroutine
+    polarity:
+    statement: An await expression suspends the enclosing coroutine and may appear only in a 
+      suspension context of that coroutine, so async/await depends on coroutine machinery.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §7
+        chunk_id: iso-iec-14882-cpp20-n4861#c00308
+        quote: The co_await expression is used to suspend evaluation of a coroutine ( 9.5.4 ) while 
+          awaiting completion of the computation represented by the operand expression.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5e6b5a34e34b
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: coroutine--enables--thread
+    type: enables
+    from: coroutine
+    to: thread
+    polarity:
+    statement: Thread implementations are commonly built on coroutines by hiding the explicit 
+      transfer behind a scheduler and adding preemption.
+    evidence:
+      - source: scott-plp
+        locator: pp. 865–867
+        chunk_id: scott-plp#c00826
+      - source: scott-plp
+        locator: pp. 622–623
+        chunk_id: scott-plp#c00604
+        quote: it is easy to build a simple thread package given coroutines
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9563580ec5f6
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: coroutine--alternative-to--thread
+    type: alternative-to
+    from: coroutine
+    to: thread
+    polarity:
+    statement: 'Coroutines and threads are competing answers to how several loci of control interleave:
+      a coroutine is a nonpreemptive thread transferred explicitly by the program, whereas threads are
+      switched implicitly by the system.'
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.4.2
+        chunk_id: vanroy-haridi-2003#c00512
+      - source: scott-plp
+        locator: pp. 622–623
+        chunk_id: scott-plp#c00604
+        quote: threads are substantially easier to use, because they eliminate the need for explicit
+          transfer operations
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-abe110e242b1
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: spawn--enables--thread
+    type: enables
+    from: spawn
+    to: thread
+    polarity:
+    statement: A spawn construct is what brings a new locus of control into existence, naming the 
+      procedure or function the new thread or process initially runs.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.4.2
+        chunk_id: vanroy-haridi-2003#c00512
+      - source: vanroy-haridi-2003
+        locator: §5.6.1
+        chunk_id: vanroy-haridi-2003#c00703
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7f5d8df86800
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: select-statement--requires--channel
+    type: requires
+    from: select-statement
+    to: channel
+    polarity:
+    statement: A select statement chooses among a set of pending send and receive operations on 
+      channels, so it cannot exist without channels.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Select_statements'
+        chunk_id: go-lang-spec#c00168
+        quote: A "select" statement chooses which of a set of possible send or receive operations 
+          will proceed.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c3f13b22d363
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: channel-close--requires--channel
+    type: requires
+    from: channel-close
+    to: channel
+    polarity:
+    statement: Channel closing is an operation on a channel whose effect is observed by receives 
+      that report whether a value was sent before the channel was closed.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00042
+        quote: A channel may be closed with the built-in function close. The multi-valued assignment
+          form of the receive operator reports whether a received value was sent before the channel 
+          was closed.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-bb1f8e5c22dd
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: asynchronous-channel--alternative-to--synchronous-channel
+    type: alternative-to
+    from: asynchronous-channel
+    to: synchronous-channel
+    polarity:
+    statement: 'Unbuffered and buffered channels are the two answers to whether a send must rendezvous
+      with a receiver: with zero capacity communication succeeds only when sender and receiver are both
+      ready, otherwise it succeeds while the buffer has room.'
+    evidence:
+      - source: go-lang-spec
+        locator: '#Channel_types'
+        chunk_id: go-lang-spec#c00042
+        quote: If the capacity is zero or absent, the channel is unbuffered and communication 
+          succeeds only when both a sender and receiver are ready. Otherwise, the channel is 
+          buffered and communication succeeds without blocking if the buffer is not full
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-24f5f87605b8
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: asynchronous-channel--enables--semaphore
+    type: enables
+    from: asynchronous-channel
+    to: semaphore
+    polarity:
+    statement: A buffered channel can model a counting semaphore, its capacity bounding the number 
+      of simultaneous uses, which is a common idiom for limiting concurrency.
+    evidence:
+      - source: go-memory-model
+        locator: '#chan'
+        chunk_id: go-memory-model#c00012
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-46a8c9500a73
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: task-group--requires--spawn
+    type: requires
+    from: task-group
+    to: spawn
+    polarity:
+    statement: A task group is a scope whose purpose is to create child tasks programmatically, so 
+      it needs a construct that starts a new child task.
+    evidence:
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00016
+        quote: A *task group* defines a scope in which one can create new child tasks 
+          programmatically.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-13f2508b539a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: task-group--requires--async-await
+    type: requires
+    from: task-group
+    to: async-await
+    polarity:
+    statement: 'A task group is an asynchronous scope: its child tasks are implicitly awaited when the
+      scope returns, and results are collected by awaiting the group.'
+    evidence:
+      - source: swift-se-0304
+        locator: '#task-groups'
+        chunk_id: swift-se-0304#c00048
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00018
+        quote: By the time the scope exits, the child task must either have completed, or it will be
+          implicitly awaited.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5e6f15dcf2e4
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: future--alternative-to--task-group
+    type: alternative-to
+    from: future
+    to: task-group
+    polarity:
+    statement: Task groups and future-based task APIs are competing answers to running and 
+      collecting concurrent subcomputations; unlike futures, a task group lets no reference to a 
+      child task escape its scope.
+    evidence:
+      - source: swift-se-0304
+        locator: '#task-groups-and-child-tasks'
+        chunk_id: swift-se-0304#c00020
+        quote: By contrast with future-based task APIs, there is no way in which a reference to the 
+          child task can escape the scope in which the child task is created.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-af2561291e53
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: dataflow-variable--alternative-to--future
+    type: alternative-to
+    from: dataflow-variable
+    to: future
+    polarity:
+    statement: Futures (single-assignment variables) and dataflow variables are two techniques for 
+      the same dataflow-execution job, differing in that a dataflow variable may be bound repeatedly
+      to compatible partial values.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §4.9.5
+        chunk_id: vanroy-haridi-2003#c00621
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-10eadc1c2b1e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: future--enables--stream-communication
+    type: enables
+    from: future
+    to: stream-communication
+    polarity:
+    statement: Parallel futures let a producer build a work list whose tail is computed 
+      concurrently, so that producing the next element overlaps consuming the previous one.
+    evidence:
+      - source: harper-pfpl
+        locator: §39.4
+        chunk_id: harper-pfpl#c00643
+        quote: On each iteration the producer generates a parallel future to produce the tail. This 
+          computation proceeds after the producer returns so that it overlaps subsequent 
+          computation.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d5914e59d920
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: thread-pool--requires--thread
+    type: requires
+    from: thread-pool
+    to: thread
+    polarity:
+    statement: A thread pool is a set of worker threads that hold and run submitted tasks, so it 
+      presupposes threads.
+    evidence:
+      - source: lea-2000-forkjoin
+        locator: pp. 2–3
+        chunk_id: lea-2000-forkjoin#c00007
+        quote: Each worker thread maintains runnable tasks in its own scheduling queue.
+      - source: blumofe-leiserson-1999
+        locator: pp. 9–10
+        chunk_id: blumofe-leiserson-1999#c00020
+        quote: employing a single centralized thread pool at which all processors must contend for 
+          access
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5bfd801f7f93
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: executor--requires--thread
+    type: requires
+    from: executor
+    to: thread
+    polarity:
+    statement: An executor accepts submitted jobs and arranges for some thread to run them, so it 
+      sits on top of an underlying thread system.
+    evidence:
+      - source: swift-se-0304
+        locator: '#executors'
+        chunk_id: swift-se-0304#c00012
+        quote: An executor is a service which accepts the submission of jobs and arranges for some 
+          thread to run them.
+      - source: swift-se-0304
+        locator: '#tasks'
+        chunk_id: swift-se-0304#c00008
+        quote: Swift assumes the existence of an underlying thread system. Tasks are scheduled by 
+          the system to run on these system threads.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-1c03cf61f7da
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: executor--influences--async-await
+    type: influences
+    from: executor
+    to: async-await
+    polarity: +
+    statement: 'The executor an asynchronous function runs on shapes await behaviour: a call to the same
+      executor need not suspend, and the function resumes on the executor it started on.'
+    evidence:
+      - source: swift-se-0304
+        locator: '#executors'
+        chunk_id: swift-se-0304#c00012
+        quote: This allows the function to avoid unnecessarily suspending when making a call to the 
+          same executor, and it allows the function to resume executing on the same executor it 
+          started on.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6429b298faba
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: parallel-loop-construct--requires--thread
+    type: requires
+    from: parallel-loop-construct
+    to: thread
+    polarity:
+    statement: A worksharing-loop construct distributes the collapsed loop iterations across the 
+      threads of the team executing the enclosing parallel region, so it presupposes threads.
+    evidence:
+      - source: openmp-api-6-0
+        locator: §13.6
+        chunk_id: openmp-api-6-0#c00769
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f2c28f01daa6
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: monitor--requires--lock
+    type: requires
+    from: monitor
+    to: lock
+    polarity:
+    statement: A monitor adds wait points to a lock, exposing the same mutual-exclusion region that 
+      only one thread may execute at a time.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §8.2.3
+        chunk_id: vanroy-haridi-2003#c01007
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-03cf1423272a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+quality_edges:
+  - key: semaphore--affects-quality--safety
+    from: semaphore
+    to: safety
+    assessments:
+      - key: safety
+        polarity: hurts
+        strength: strong
+        statement: Semaphores give an unsafe programming environment because their correct use 
+          cannot be checked statically and a single omitted wait or release causes buffer overflow, 
+          insecure access or deadlock.
+        evidence:
+          - source: sebesta-copl
+            locator: §13.3.4
+            chunk_id: sebesta-copl#c01010
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6b0689ec6eb7
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: semaphore--affects-quality--readability
+    from: semaphore
+    to: readability
+    assessments:
+      - key: readability
+        polarity: hurts
+        strength: moderate
+        statement: Because semaphore operations are plain subroutine calls that tend to be scattered
+          through a program, semaphore-based code is hard to read and maintain.
+        evidence:
+          - source: scott-plp
+            locator: pp. 894–896
+            chunk_id: scott-plp#c00856
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-58c27a8d5eb8
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: monitor--affects-quality--safety
+    from: monitor
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: moderate
+        statement: Monitors improve safety over semaphores by encapsulating shared data with its 
+          operations and transferring responsibility for competition synchronization to the run-time
+          system.
+        evidence:
+          - source: sebesta-copl
+            locator: §13.4
+            chunk_id: sebesta-copl#c01011
+          - source: sebesta-copl
+            locator: §13.4.4
+            chunk_id: sebesta-copl#c01015
+            quote: Monitors are a better way to provide competition synchronization than are 
+              semaphores, primarily because of the problems of semaphores
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ef287c35867f
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-03-concurrency-03
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: lock--affects-quality--composability
+    from: lock
+    to: composability
+    assessments:
+      - key: composability
+        polarity: hurts
+        strength: strong
+        statement: 'Because the correctness of lock-based code depends on locking order, lock-based program
+          fragments do not compose: an existing lock-based abstraction cannot safely be called from inside
+          a new critical section.'
+        evidence:
+          - source: scott-plp
+            locator: pp. 909–910
+            chunk_id: scott-plp#c00872
+            quote: 'the fact that correctness depends on locking order means that lock-based program fragments
+              do not compose : we cannot take existing lock-based abstractions and safely call them from
+              within a new critical section'
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-22cb7c3ff92d
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: atomic-block--affects-quality--ease-of-use
+    from: atomic-block
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: improves
+        strength: moderate
+        statement: Atomic blocks make concurrent code easier to write and to check, because the 
+          programmer only labels a block atomic, need not name the object on which mutual exclusion 
+          is implemented, and the resulting code is easier to see to be correct.
+        evidence:
+          - source: scott-plp
+            locator: pp. 910–911
+            chunk_id: scott-plp#c00873
+            quote: TM avoids the need to specify object(s) on which to implement mutual exclusion. 
+              It also allows the condition test to be placed anywhere inside the atomic block.
+          - source: jones-hosking-moss-2012
+            locator: §13.9
+            chunk_id: jones-hosking-moss-2012#c00727
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2580c3fcae78
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: undefined-behavior-on-data-race--affects-quality--safety
+    from: undefined-behavior-on-data-race
+    to: safety
+    assessments:
+      - key: safety
+        polarity: hurts
+        strength: strong
+        statement: Making a data race undefined behaviour means a single unordered read and write 
+          leaves the semantics of the whole program unspecified, so it may display any behaviour 
+          whatsoever.
+        evidence:
+          - source: scott-plp
+            locator: pp. 885–887
+            chunk_id: scott-plp#c00849
+            quote: if a C++ program contains an unordered read and write of the same location l , 
+              the semantics of the program as a whole are entirely unspecified; it can display any 
+              behavior whatsoever
+          - source: rust-fls
+            locator: § 17. Concurrency¶
+            chunk_id: rust-fls#c00394
+            quote: It is undefined behavior if two or more threads engage in a data race.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-49bce9442a35
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: constrained-semantics-for-racy-programs--affects-quality--safety
+    from: constrained-semantics-for-racy-programs
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: strong
+        statement: 'Constraining the behaviour of racy programs preserves system integrity: a racy program
+          must still obey the normal language rules, each read returning the value of some actual write,
+          so a data race cannot cause unrelated incorrect behaviour.'
+        evidence:
+          - source: scott-plp
+            locator: pp. 885–887
+            chunk_id: scott-plp#c00849
+          - source: jls-se25
+            locator: §17.4
+            chunk_id: jls-se25#c01117
+            quote: Therefore, a data race cannot cause incorrect behavior such as returning the 
+              wrong length for an array.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-bd42b640d83a
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: thread-safety-marker-type--affects-quality--safety
+    from: thread-safety-marker-type
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: strong
+        statement: Concurrency-safety marker types prevent data races at the type level by 
+          restricting which values may be transferred across or shared between threads.
+        evidence:
+          - source: rust-fls
+            locator: § 17.1. Send and Sync¶
+            chunk_id: rust-fls#c00395
+            quote: The Rust programming language provides the core::marker::Send and 
+              core::marker::Sync traits for preventing data races at the type level.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-26ced82f12d5
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: actor-isolation--affects-quality--safety
+    from: actor-isolation
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: strong
+        statement: Actor isolation statically rules out data races on an actor's mutable state, 
+          because isolated state is reachable only from code running in the actor's isolation 
+          domain, which never runs two tasks concurrently.
+        evidence:
+          - source: swift-se-0306
+            locator: '#actor-isolation'
+            chunk_id: swift-se-0306#c00005
+            quote: the attempt to reference `other.balance` triggers a compiler error, because 
+              `balance` may only be referenced on `self`
+          - source: swift-se-0306
+            locator: '#actor-isolation'
+            chunk_id: swift-se-0306#c00007
+            quote: This ensures that there are no data races on actor-isolated mutable state, 
+              because there is no concurrency in any code that can access actor-isolated state.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-036f0848c18b
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: dataflow-variable--affects-quality--safety
+    from: dataflow-variable
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: moderate
+        statement: Synchronising threads on dataflow variables removes race conditions, because a 
+          program in the declarative concurrent model has no observable nondeterminism.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: pp. 281–282
+            chunk_id: vanroy-haridi-2003#c00445
+          - source: vanroy-haridi-2003
+            locator: §2.2.8
+            chunk_id: vanroy-haridi-2003#c00148
+            quote: This property of order-independence makes possible the declarative concurrency of
+              Chapter 4.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b2bae25de456
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: dataflow-variable--affects-quality--simplicity
+    from: dataflow-variable
+    to: simplicity
+    assessments:
+      - key: simplicity
+        polarity: improves
+        strength: moderate
+        statement: Dataflow-variable synchronisation is what makes this form of concurrency simple, 
+          since order-independent bindings always give the same result however the threads 
+          interleave.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: pp. 281–282
+            chunk_id: vanroy-haridi-2003#c00445
+            quote: the deep reason why this form of concurrency is so simple is that programs have 
+              no observable nondeterminism
+          - source: vanroy-haridi-2003
+            locator: §2.2.8
+            chunk_id: vanroy-haridi-2003#c00148
+            quote: If we do two concurrent operations, say A=23 and B=A+1 , then with the fourth 
+              solution this will always run correctly and give the answer B=24 .
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-656250edd020
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: future--affects-quality--performance
+    from: future
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Futures increase a program's potential parallelism by removing inessential 
+          dependencies, allowing the computation of a value and its use to proceed concurrently.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §4.9.5
+            chunk_id: vanroy-haridi-2003#c00621
+          - source: harper-pfpl
+            locator: §39.4
+            chunk_id: harper-pfpl#c00643
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-72d14411fba7
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: selective-receive--affects-quality--expressiveness
+    from: selective-receive
+    to: expressiveness
+    assessments:
+      - key: expressiveness
+        polarity: improves
+        strength: moderate
+        statement: Selective receive is a large part of the expressiveness of Erlang-style 
+          concurrent programming, because automatically buffering out-of-order messages avoids the 
+          state-space explosion of handling them explicitly.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §5.6.3
+            chunk_id: vanroy-haridi-2003#c00710
+          - source: armstrong-2007-hopl
+            locator: pp. 5–6
+            chunk_id: armstrong-2007-hopl#c00025
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a34fa79dc087
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: selective-receive--affects-quality--readability
+    from: selective-receive
+    to: readability
+    assessments:
+      - key: readability
+        polarity: improves
+        strength: moderate
+        statement: Picking a wanted message out of the mailbox by pattern matching yields 
+          particularly compact and readable code.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §5.6.3
+            chunk_id: vanroy-haridi-2003#c00710
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-85caff9a8b63
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: selective-receive--affects-quality--performance
+    from: selective-receive
+    to: performance
+    assessments:
+      - key: performance
+        polarity: hurts
+        strength: moderate
+        statement: A receive that matches only expected patterns must search the whole message 
+          queue, which is very expensive for processes with long queues unless an optimisation 
+          bounds the search.
+        evidence:
+          - source: erlang-eff-guide-processes
+            locator: '#fetching-received-messages'
+            chunk_id: erlang-eff-guide-processes#c00004
+            quote: it means that the entire message queue must be searched until it finds a matching
+              message. This is very expensive for processes with long message queues
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-289210fb0b60
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: coroutine--affects-quality--ease-of-use
+    from: coroutine
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: hurts
+        strength: moderate
+        statement: Coroutines are harder to use than threads because the programmer must perform 
+          explicit transfer operations and must transfer control often enough to avoid starving 
+          other coroutines.
+        evidence:
+          - source: scott-plp
+            locator: pp. 622–623
+            chunk_id: scott-plp#c00604
+            quote: threads are substantially easier to use, because they eliminate the need for 
+              explicit transfer operations
+          - source: vanroy-haridi-2003
+            locator: §4.4.2
+            chunk_id: vanroy-haridi-2003#c00513
+            quote: Each coroutine has the responsibility to transfer control often enough so that 
+              the others have a chance to execute. If this is not done correctly, then a coroutine 
+              might never have a chance to execute.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3e3f73eb2dd2
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: task-group--affects-quality--ease-of-use
+    from: task-group
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: improves
+        strength: moderate
+        statement: Task groups remove manual error propagation and cancellation management, since 
+          child tasks are implicitly awaited and are cancelled automatically when the scope exits by
+          throwing.
+        evidence:
+          - source: swift-se-0304
+            locator: '#task-groups-and-child-tasks'
+            chunk_id: swift-se-0304#c00018
+            quote: Structured concurrency means we don't have to manually propagate errors and 
+              manage cancellation
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d482b0aa47b7
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: task-group--affects-quality--performance
+    from: task-group
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: weak
+        statement: Bounding a child task's lifetime to its group's scope makes creating the child 
+          task substantially more efficient and unlocks optimisation opportunities for the compiler 
+          and runtime.
+        evidence:
+          - source: swift-se-0304
+            locator: '#child-tasks'
+            chunk_id: swift-se-0304#c00010
+            quote: It also makes creating the child task substantially more efficient.
+          - source: swift-se-0304
+            locator: '#task-groups-and-child-tasks'
+            chunk_id: swift-se-0304#c00020
+            quote: also unlocks numerous optimization opportunities for the compiler and runtime
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-945ac03dcf65
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: thread-pool--affects-quality--performance
+    from: thread-pool
+    to: performance
+    assessments:
+      - key: performance
+        polarity: hurts
+        strength: moderate
+        statement: A single centralized thread pool does not scale, because all processors must 
+          contend for access to it; distributing the ready queues per worker avoids that contention.
+        evidence:
+          - source: blumofe-leiserson-1999
+            locator: pp. 9–10
+            chunk_id: blumofe-leiserson-1999#c00020
+            quote: This lack of scalability is a consequence of employing a single centralized 
+              thread pool at which all processors must contend for access.
+          - source: blumofe-leiserson-1999
+            locator: p. 10
+            chunk_id: blumofe-leiserson-1999#c00021
+            quote: the centralized thread pool of the Busy-Leaves Algorithm is distributed across 
+              the processors
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-984eb84dd302
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: asynchronous-channel--affects-quality--safety
+    from: asynchronous-channel
+    to: safety
+    assessments:
+      - key: safety
+        polarity: hurts
+        strength: weak
+        statement: 'Buffering a channel weakens the ordering guarantee a send-receive pair provides: a
+          program guaranteed to observe a prior write over an unbuffered channel loses that guarantee
+          once the channel has capacity.'
+        evidence:
+          - source: go-memory-model
+            locator: '#chan'
+            chunk_id: go-memory-model#c00011
+            quote: If the channel were buffered (e.g., c = make(chan int, 1)) then the program would
+              not be guaranteed to print "hello, world".
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-38510049112a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+  - key: scoped-threads--affects-quality--expressiveness
+    from: scoped-threads
+    to: expressiveness
+    assessments:
+      - key: expressiveness
+        polarity: improves
+        strength: moderate
+        statement: Scoped threads let spawned threads borrow, and even mutably borrow, local 
+          variables of the spawning function, which unscoped spawning cannot express.
+        evidence:
+          - source: rust-std-thread-scope
+            locator: '#example'
+            chunk_id: rust-std-thread-scope#c00002
+            quote: // We can even mutably borrow `x` here, // because no other threads are using it.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e98b985ece91
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-03-concurrency-02
+    note: ''
+findings:
+  - kind: rule-candidate
+    detail: An exit signal becomes an ordinary mailbox message only when a process link (or explicit
+      exit) exists AND the receiver has set its trap-exit flag; neither feature alone produces that 
+      effect, and the exit reason 'kill' overrides the trap. The combination, not either feature, is
+      what makes supervision work.
+    keys:
+      - process-link
+      - exit-signal-trapping
+      - mailbox
+  - kind: rule-candidate
+    detail: A select construct becomes non-blocking only in combination with a default branch; with 
+      buffered channels it also becomes a bounded-concurrency limiter (acquire by send, release by 
+      receive), i.e. a semaphore built from two other features.
+    keys:
+      - select-statement
+      - asynchronous-channel
+      - semaphore
+  - kind: rule-candidate
+    detail: Locks and channel operations only establish cross-activity ordering because the memory 
+      consistency model designates them synchronisation operations (unlock happens-before subsequent
+      lock; send synchronised-before completion of the matching receive). The ordering effect is a 
+      property of the pair, not of the lock or channel alone.
+    keys:
+      - lock
+      - channel
+      - memory-consistency-model
+  - kind: rule-candidate
+    detail: Scoped threads can borrow non-static local data only because the join-at-scope-exit 
+      guarantee combines with the marker-type/borrow rules; the scope alone does not make the borrow
+      sound.
+    keys:
+      - scoped-threads
+      - thread-safety-marker-type
+  - kind: cross-theme-edge
+    detail: Concurrency-safety marker types (Send/Sync/Sendable) and directional channel types are 
+      type-system features; their definition belongs to the types theme while their purpose is here.
+    keys:
+      - thread-safety-marker-type
+      - channel
+  - kind: cross-theme-edge
+    detail: Coroutines, generators, yield and await are control-flow/continuation constructs shared 
+      with the control-flow theme; coroutines-from-continuations in particular is a 
+      first-class-continuation result.
+    keys:
+      - coroutine
+      - generator
+      - async-await
+  - kind: cross-theme-edge
+    detail: Fail-fast activities, links and supervision trees connect to the error-handling theme 
+      (exceptions, defensive programming) which owns the local-handling alternative they reject.
+    keys:
+      - fail-fast-crash-only
+      - process-link
+  - kind: cross-theme-edge
+    detail: The distributed tier of the concurrent/parallel/distributed taxonomy (physically 
+      separated processors, lost node connections, distributed references) belongs to a distribution
+      theme, not here.
+    keys:
+      - parallelism
+      - process-isolation
+  - kind: unmappable-candidate
+    detail: stream-merger-limitation ('a declarative stream reader must know which producer sends 
+      next') is a negative structural claim about streams, not an idea or a construct; it reads as a
+      constraint fact attached to stream-communication.
+    keys:
+      - stream-communication
+  - kind: unmappable-candidate
+    detail: work-sharing-vs-work-stealing, heavyweight-vs-lightweight-process and 
+      cooperative-vs-competitive-concurrency are pairwise comparisons; each was folded into the pole
+      the sources define positively, leaving no node for the comparison itself.
+    keys:
+      - work-stealing
+      - process-isolation
+  - kind: unmappable-candidate
+    detail: 'Candidates I could not evidence in this session and therefore did not mint: virtual-threads,
+      lazy-task-creation, load-based-inlining, granularity-of-parallelism, receive-timeout, priority-messages,
+      asymmetric-process-monitor, channel-as-counting-semaphore. All look mintable with one more reading
+      pass; a thread-weight design axis (kernel-level versus runtime-scheduled lightweight threads) in
+      particular is probably a real dimension.'
+    keys: []
+  - kind: structure-friction
+    detail: "generator specialises coroutine: the source defines a generator precisely by a restriction
+      on coroutine control transfer ('cannot control where the execution should continue after it yields').
+      realizes only points features at concepts, so this feature-specialises-feature relation has nowhere
+      to go; the same holds for asymmetric monitors versus bidirectional links and for unbuffered channels
+      versus channels."
+    keys:
+      - generator
+      - coroutine
+    area: ontology
+    element: realizes
+  - kind: structure-friction
+    detail: Van Roy presents declarative-concurrency, message-passing and shared-state concurrency 
+      as alternative computation models a language picks among, i.e. values on one axis. But the 
+      sources define them as models/disciplines, which I carved as concepts, and the dimension model
+      requires values to be layer-3 features. Either dimensions need to admit concept values, or 
+      'model adopted by a language' needs its own record kind.
+    keys:
+      - declarative-concurrency
+      - message-passing
+      - mutual-exclusion
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: Interleaving semantics, memory consistency models and message ordering guarantees are 
+      specifications a language makes about itself, not constructs a programmer writes nor 
+      theory-independent ideas. I filed them as concepts, but they behave like per-language 
+      guarantee records whose content varies (sequential consistency, DRF-SC, pairwise FIFO); the 
+      two layer-3 nodes I minted on racy-program-semantics are a partial workaround.
+    keys:
+      - interleaving-semantics
+      - memory-consistency-model
+      - message-ordering-guarantee
+    area: ontology
+    element: concept-feature-split
+  - kind: structure-friction
+    detail: The work/span cost model, greedy scheduling bound and busy-leaves space bound are 
+      quantitative guarantees about implementations (time within W/P + span, space at most P times 
+      serial). Merged into one concept they lose their separate quantitative content; they would be 
+      better expressed as measurable qualities or theorem records attached to a scheduler feature.
+    keys:
+      - work-and-span-cost-model
+      - work-stealing
+    area: ontology
+    element: qualities
+  - kind: rule-candidate
+    detail: 'Supervision hierarchies need process links and trapping exits together: links propagate the
+      exit signal to a whole group, and only a process that has set trap_exit survives to receive it as
+      a message and restart the workers. Neither feature alone produces the supervisor effect.'
+    keys:
+      - process-link
+      - exit-signal-trapping
+      - spawn
+  - kind: rule-candidate
+    detail: "Scoped threads give safe borrowing of a parent's locals only in combination with concurrency-safety
+      marker types and the borrow discipline: the scope bounds the lifetime while Send/Sync decide what
+      may cross the thread boundary. The safety claim holds only for the pair."
+    keys:
+      - scoped-threads
+      - thread-safety-marker-type
+  - kind: rule-candidate
+    detail: 'async/await only yields concurrency in combination with an executor: an await that suspends
+      the task is useful only because the executor can run other submitted jobs on that thread meanwhile,
+      and the task resumes on the executor it started on.'
+    keys:
+      - async-await
+      - executor
+  - kind: rule-candidate
+    detail: 'Asynchronous generators arise only from async/await and generators together: a yield expression
+      inside an async def function defines an asynchronous generator whose methods return awaitables.
+      Neither feature alone has this effect.'
+    keys:
+      - async-await
+      - generator
+  - kind: structure-friction
+    detail: Several pairs stand in a specialisation ('refines' / 'is a restricted form of') relation
+      that none of the five edge types expresses. Van Roy & Haridi say monitors refine locks with 
+      wait points and transactions refine locks with a commit/abort exit, and the Python reference 
+      says a generator differs from a coroutine only in that it cannot control where execution 
+      continues after it yields. I had to force 'requires' for monitor->lock and omit 
+      atomic-block->lock and generator->coroutine entirely. A 'specialises'/'refines' edge type 
+      would express these.
+    keys:
+      - monitor
+      - lock
+      - atomic-block
+      - generator
+      - coroutine
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: "Unbuffered and buffered channels (layer 3) are variants of the layer-2 channel node, and
+      selective receive is a variant of plain receive; the only available type for the variant/parent
+      relation is 'requires', which overstates it. Likewise several well-sourced relations in this theme
+      point at concept nodes that are not legal endpoints: dataflow variables enable declarative concurrency,
+      select introduces observable nondeterminism, actor isolation realises process isolation, work stealing
+      underlies thread pools. These are among the most frequently stated claims in the literature and
+      currently have nowhere to go."
+    keys:
+      - synchronous-channel
+      - asynchronous-channel
+      - channel
+      - dataflow-variable
+      - select-statement
+    area: ontology
+    element: edge-types
+  - kind: cross-theme-edge
+    detail: thread-safety-marker-type is a type-system feature (auto-derived marker traits, 
+      type-level data-race prevention) and belongs partly to a Types theme; its edge to thread 
+      crosses themes.
+    keys:
+      - thread-safety-marker-type
+  - kind: cross-theme-edge
+    detail: undefined-behavior-on-data-race and constrained-semantics-for-racy-programs are 
+      memory-model / undefined-behaviour features; C23 lists a data race among its undefined 
+      behaviours alongside unrelated UB, so these nodes also sit in a Memory-and-safety theme.
+    keys:
+      - undefined-behavior-on-data-race
+      - constrained-semantics-for-racy-programs
+  - kind: cross-theme-edge
+    detail: 'async-await, coroutine and generator connect to control-flow and iteration features outside
+      Concurrency: Python generators are the iteration protocol, and C++ co_await is an expression form
+      with its own suspension-context rules in the expression grammar.'
+    keys:
+      - async-await
+      - coroutine
+      - generator
+  - kind: cross-theme-edge
+    detail: "atomic-block connects to error handling: a transaction's exceptional exit is an abort that
+      undoes its state changes, and GHC's STM exposes retry/orElse as composition operators, so the edge
+      touches an Error-handling theme."
+    keys:
+      - atomic-block
