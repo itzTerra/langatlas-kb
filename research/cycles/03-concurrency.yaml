@@ -1,7 +1,7 @@
 cycle: 3
 theme: concurrency
 theme_digest: 2bb7d5e7d229092f
-status: r3-done
+status: r4-drafted
 languages:
   - elixir
   - rust
@@ -11,6 +11,7 @@ languages:
 nodes_minted: []
 artifacts:
   survey: research/surveys/03-concurrency.yaml
+  draft: research/drafts/03-concurrency.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-10-03'
