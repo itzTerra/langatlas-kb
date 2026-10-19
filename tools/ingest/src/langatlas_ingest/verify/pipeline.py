@@ -15,6 +15,7 @@ from langatlas_ingest.verify.quotes import (
 from langatlas_ingest.verify.stage0 import run_stage0
 from langatlas_ingest.verify.tiering import needs_escalation, sampled_for_second_opinion
 from langatlas_ingest.verify.verdicts import Assertion, PairVerdict
+from langatlas_pipeline.errors import ContextTooLarge
 from langatlas_pipeline.prompts import load_prompt
 
 
@@ -246,10 +247,19 @@ def verify_pair(ctx, conn, *, claim: ClaimInput, citation: CitationInput,
     elif verdict_name == "supported" and sampled_for_second_opinion(
             claim.fact_id, citation.source_id, citation.locator,
             rate=config.second_opinion_rate):
-        second = _run_stage3(ctx, conn, claim=claim, citation=citation, evidence=evidence,
-                             alias=second_opinion, store=deps.store,
-                             grep_chunk_ids=grep_chunk_ids)
-        if second.verdict != verdict_name:
+        try:
+            second = _run_stage3(ctx, conn, claim=claim, citation=citation,
+                                 evidence=evidence, alias=second_opinion, store=deps.store,
+                                 grep_chunk_ids=grep_chunk_ids)
+        except ContextTooLarge:
+            # The gauge's model has a smaller window than the primary's; a chunk it cannot
+            # read must not sink the whole batch. Only a mandatory vote has to be held.
+            if config.mandatory_second_opinion:
+                raise
+            second = None
+            detail_parts.append(f"second opinion skipped: evidence exceeds {second_opinion}'s"
+                                f" context window")
+        if second is not None and second.verdict != verdict_name:
             detail_parts.append(
                 f"second-opinion-disagreement: {second_opinion} said {second.verdict}")
             if config.mandatory_second_opinion:

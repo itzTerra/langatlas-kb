@@ -93,6 +93,8 @@ class ScriptedCtx:
         self.aliases.append(alias)
         self.messages.append(messages)
         item = self.outputs.pop(0)
+        if isinstance(item, Exception):
+            raise item
         parsed, resolved_model = item if isinstance(item, tuple) else (item, "deepseek-v4")
         return FakeCompletion(parsed, resolved_model)
 
@@ -294,6 +296,27 @@ def test_a_mandatory_second_vote_downgrades_a_disputed_supported():
                       deps=deps())
     assert got.verdict == "partial"
     assert got.model == "second-opinion-model"
+
+
+def test_an_oversized_chunk_skips_the_gauge_second_opinion_not_the_batch():
+    from langatlas_pipeline.errors import ContextTooLarge
+
+    config = IngestConfig.load(overrides={"second_opinion_rate": 1.0})
+    ctx = ScriptedCtx(ent("supported"), ContextTooLarge("mini", 38344, 32768))
+    got = verify_pair(ctx, None, claim=CLAIM, citation=CITATION, config=config,
+                      deps=deps())
+    assert got.verdict == "supported"
+    assert "second opinion skipped" in got.detail
+
+
+def test_an_oversized_chunk_still_fails_a_mandatory_second_vote():
+    from langatlas_pipeline.errors import ContextTooLarge
+
+    config = IngestConfig.load(overrides={"second_opinion_rate": 1.0,
+                                          "mandatory_second_opinion": True})
+    ctx = ScriptedCtx(ent("supported"), ContextTooLarge("mini", 38344, 32768))
+    with pytest.raises(ContextTooLarge):
+        verify_pair(ctx, None, claim=CLAIM, citation=CITATION, config=config, deps=deps())
 
 
 def test_a_registry_existence_claim_needs_no_evidence():
