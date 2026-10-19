@@ -1,0 +1,4049 @@
+cycle: 2
+theme: memory-management
+theme_digest: 6f27faeff90ccc69
+generated_at: '2026-10-17T11:28:15Z'
+survey: research/surveys/02-memory-management.yaml
+runs:
+  ontologist: 2026-10-17-r4-atomize-02-memory-management-01
+  edge_drafter: 2026-10-18-r4-edges-02-memory-management-02
+dimensions:
+  - key: gc-collector-algorithm
+    slug: gc-collector-algorithm
+    label: GC collector algorithm family
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: The classic tracing/non-tracing algorithm families (mark-sweep, semispace copying, 
+      mark-compact, reference counting) that Jones/Hosking/Moss present as the base algorithmic 
+      choices for reclaiming storage; set multi because real runtimes commonly combine them across 
+      generations or subsystems (e.g. copying young generation + mark-compact old generation).
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: concurrent-gc-barrier-invariant
+    slug: concurrent-gc-barrier-invariant
+    label: Concurrent-collector tracing invariant
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: A concurrent/incremental tracing collector must pick one of two mutually exclusive 
+      invariant-preservation strategies (insertion vs deletion barrier) to stay correct while the 
+      mutator runs.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: pointer-finding-precision
+    slug: pointer-finding-precision
+    label: Root/pointer-finding precision
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Whether a collector treats ambiguous stack/register words as possible pointers 
+      (conservative) or has compiler-supplied exact pointer maps (accurate); the two are presented 
+      as alternatives for the same problem.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: free-space-management-strategy
+    slug: free-space-management-strategy
+    label: Free-space management strategy
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Alternative data-structure strategies an allocator uses to track and locate free memory; 
+      set multi because segregated fits typically layers free lists per size class and real 
+      allocators mix strategies.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: gc-pause-mitigation-technique
+    slug: gc-pause-mitigation-technique
+    label: GC pause-mitigation technique
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Orthogonal techniques (incremental, concurrent, parallel) that split or overlap collector 
+      work with the mutator or other threads; a single collector commonly uses more than one 
+      simultaneously, hence multi.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: smart-pointer-ownership-model
+    slug: smart-pointer-ownership-model
+    label: Smart-pointer ownership model
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: A given smart-pointer type is either strictly single-owner or shared/reference-counted, 
+      the central axis C++ draws between unique_ptr and shared_ptr.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+qualities:
+  - key: predictability
+    slug: predictability
+    label: Timing predictability
+    summary: How bounded and predictable a program's timing behaviour is, especially its freedom 
+      from unpredictable memory-management pauses.
+    contested:
+      - new-quality
+    debate_id:
+    status: waived
+    verification:
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+nodes:
+  - key: tricolour-abstraction
+    from_candidates:
+      - tricolour-abstraction
+    kind: concept
+    id: tricolour-abstraction
+    name: Tricolour abstraction
+    summary: A model that colours heap objects white, grey or black during tracing to reason about 
+      collector progress and about which invariants a concurrent or incremental collector must 
+      preserve.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §2.2
+        chunk_id: jones-hosking-moss-2012#c00124
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5799cc644e0a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept as a standalone concept because it is the shared reasoning tool underlying multiple 
+      distinct tracing algorithms (mark-sweep, copying, mark-compact) rather than part of any one of
+      them.
+  - key: weak-generational-hypothesis
+    from_candidates:
+      - weak-generational-hypothesis
+    kind: concept
+    id: weak-generational-hypothesis
+    name: Weak generational hypothesis
+    summary: The empirical observation that most allocated objects become unreachable very soon 
+      after allocation, which motivates segregating the heap by object age.
+    evidence:
+      - source: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 1
+        chunk_id: degenbaev-et-al-2016-concurrent-marking#c00001
+      - source: v8-orinoco-trash-talk
+        locator: '#generational-layout'
+        chunk_id: v8-orinoco-trash-talk#c00004
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3ffcec61e14f
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Separated from generational-garbage-collection because it is the empirical justification 
+      for that design, not the design itself.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: reference-counting-cycle-problem
+    from_candidates:
+      - reference-counting-cycle-problem
+    kind: concept
+    id: reference-counting-cycle-problem
+    name: Reference-count cycle uncollectability
+    summary: The inherent inability of plain reference counting to reclaim isolated cyclic data 
+      structures, since every object in the cycle keeps a nonzero count from another member.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00206
+      - source: pep-442
+        locator: § Definitions
+        chunk_id: pep-442#c00002
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-329390352474
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Carved separately from reference-counting-gc as the specific limitation that motivates 
+      cyclic-reference-counting as a feature fix.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: gc-mutator-interface
+    from_candidates:
+      - gc-mutator-interface
+    kind: concept
+    id: gc-mutator-interface
+    name: Mutator/collector interface
+    summary: The abstract set of operations (allocation, pointer read, pointer write) that any 
+      collector must intercept or augment in order to track and reclaim storage correctly.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 53
+        chunk_id: jones-hosking-moss-2012#c00109
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-a8df71eb7961
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as a concept rather than folded into any one algorithm because every collector 
+      algorithm in this theme is specified against this same interface.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: ownership
+    from_candidates:
+      - ownership-rust
+    kind: concept
+    id: ownership
+    name: Ownership
+    summary: A discipline in which each value has exactly one owning binding responsible for its 
+      eventual destruction, tracked statically by the compiler rather than at runtime.
+    evidence:
+      - source: rust-fls
+        locator: § 15.5. Passing Conventions¶
+        chunk_id: rust-fls#c00379
+      - source: jones-hosking-moss-2012
+        locator: §1.1
+        chunk_id: jones-hosking-moss-2012#c00071
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-671ec1f4102c
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Named by the general literature term rather than the Rust-specific candidate label, since 
+      the discipline is described generically before being instantiated by any one language.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: borrowing
+    from_candidates:
+      - borrowing
+    kind: concept
+    id: borrowing
+    name: Borrowing
+    summary: A mechanism for creating a temporary reference to a value without transferring 
+      ownership of it, checked against aliasing and mutation rules.
+    evidence:
+      - source: rust-fls
+        locator: § 15.4. Borrowing¶
+        chunk_id: rust-fls#c00378
+      - source: rust-reference
+        locator: p. 329
+        chunk_id: rust-reference#c00423
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b833aa625b6a
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Distinguished from ownership because it is the complementary discipline governing 
+      temporary, non-owning access rather than lifecycle responsibility.
+  - key: move-semantics
+    from_candidates:
+      - move-semantics
+    kind: concept
+    id: move-semantics
+    name: Move semantics
+    summary: The transfer of ownership of a value from one binding to another that leaves the source
+      binding unusable, rather than copying the value's contents.
+    evidence:
+      - source: rust-fls
+        locator: § 15.5. Passing Conventions¶
+        chunk_id: rust-fls#c00379
+      - source: wg21-n1856
+        locator: § Addition - Class template unqiue_ptr
+        chunk_id: wg21-n1856#c00019
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-90edd36f615a
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from ownership as the operational mechanism by which ownership is 
+      transferred between bindings.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: region-based-memory-management
+    from_candidates:
+      - region-based-memory-management
+    kind: concept
+    id: region-based-memory-management
+    name: Region-based memory management
+    summary: A discipline that allocates values into lexically or statically inferred regions which 
+      are reclaimed as a whole unit, often in constant time.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 193
+        chunk_id: jones-hosking-moss-2012#c00421
+      - source: pierce-attapl-2004
+        locator: §3.7
+        chunk_id: pierce-attapl-2004#c00210
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9f5f916db0f4
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept as a concept distinct from its concrete realisations (arena allocation, RTSJ scoped 
+      memory) which are the languages' features implementing it.
+  - key: region-inference
+    from_candidates:
+      - region-inference
+    kind: concept
+    id: region-inference
+    name: Region inference
+    summary: A static analysis, originating with Tofte and Talpin, that automatically assigns 
+      program values to regions and inserts the corresponding region allocation and deallocation 
+      points.
+    evidence:
+      - source: pierce-attapl-2004
+        locator: §3.8
+        chunk_id: pierce-attapl-2004#c00214
+      - source: pierce-attapl-2004
+        locator: §3.8
+        chunk_id: pierce-attapl-2004#c00216
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-71381016afa8
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Separated from region-based-memory-management because it is the compiler analysis that 
+      automates region placement, not the storage discipline itself.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: object-resurrection
+    from_candidates:
+      - object-resurrection
+    kind: concept
+    id: object-resurrection
+    name: Object resurrection
+    summary: The situation in which a finalizer creates a new reference to the object being 
+      finalized, postponing or repeating its destruction.
+    evidence:
+      - source: python-langref-3
+        locator: § 3.3.1. Basic customization
+        chunk_id: python-langref-3#c00103
+      - source: pep-442
+        locator: § Reference-counted disposal
+        chunk_id: pep-442#c00005
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7e6326168f65
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as its own concept because it is a hazard that cuts across any language offering 
+      finalizers, not a property of one finalizer design.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: reference-strength-hierarchy
+    from_candidates:
+      - reference-strength-hierarchy
+    kind: concept
+    id: reference-strength-hierarchy
+    name: Reference strength hierarchy
+    summary: A ranked set of reference kinds, each defining a different threshold of reachability a 
+      collector honours before it will reclaim the referent.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 273
+        chunk_id: jones-hosking-moss-2012#c00626
+      - source: jones-hosking-moss-2012
+        locator: pp. 275–276
+        chunk_id: jones-hosking-moss-2012#c00633
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-fa5a9fb87006
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept as the organising concept over the individual weak-reference feature rather than 
+      merged into it.
+  - key: write-barrier
+    from_candidates:
+      - write-barrier
+    kind: concept
+    id: write-barrier
+    name: Write barrier
+    summary: Code the collector injects into pointer-store operations to record information, such as
+      cross-generation or cross-region pointers, that later collection phases need for correctness.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 53
+        chunk_id: jones-hosking-moss-2012#c00109
+      - source: jones-hosking-moss-2012
+        locator: pp. 374–375
+        chunk_id: jones-hosking-moss-2012#c00844
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-2ac841bbe711
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from read-barrier as the store-side half of the barrier concept.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: read-barrier
+    from_candidates:
+      - read-barrier
+    kind: concept
+    id: read-barrier
+    name: Read barrier
+    summary: Code the collector injects into pointer-load operations, used by some concurrent and 
+      copying collectors to maintain tracing invariants as the mutator reads pointers.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 376–377
+        chunk_id: jones-hosking-moss-2012#c00847
+      - source: jones-hosking-moss-2012
+        locator: p. 377
+        chunk_id: jones-hosking-moss-2012#c00849
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ba4eb845258b
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from write-barrier as the load-side half of the barrier concept.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: gc-safe-point
+    from_candidates:
+      - gc-safe-point
+    kind: concept
+    id: gc-safe-point
+    name: GC safe point
+    summary: A program location at which it is correct to suspend a thread for garbage collection 
+      because the collector's invariants about pointer locations hold there.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §11.6
+        chunk_id: jones-hosking-moss-2012#c00525
+      - source: jones-hosking-moss-2012
+        locator: §11.6
+        chunk_id: jones-hosking-moss-2012#c00524
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-30c4ecf860b4
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as the concept that motivates the stack-map feature rather than merging with it.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: escape-analysis
+    from_candidates:
+      - escape-analysis
+    kind: concept
+    id: escape-analysis
+    name: Escape analysis
+    summary: A static analysis determining whether an object's lifetime is confined to its 
+      allocating method or thread, which can then enable stack allocation or lock elision.
+    evidence:
+      - source: choi-et-al-1999
+        locator: p. 1
+        chunk_id: choi-et-al-1999#c00000
+      - source: choi-et-al-1999
+        locator: p. 1
+        chunk_id: choi-et-al-1999#c00002
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-22ecb7bd20ae
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as the analysis concept distinct from the stack-allocation-of-heap-objects 
+      optimisation it enables.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: splitting-and-coalescing
+    from_candidates:
+      - splitting-and-coalescing
+      - wilderness-preservation
+    kind: concept
+    id: splitting-and-coalescing
+    name: Splitting and coalescing
+    summary: Allocator mechanics of dividing a free block to satisfy a smaller request and merging 
+      adjacent free blocks back together, including deferred coalescing and special treatment of the
+      heap's growable wilderness boundary.
+    evidence:
+      - source: wilson-et-al-1995
+        locator: p. 3
+        chunk_id: wilson-et-al-1995#c00007
+      - source: scott-plp
+        locator: p. 185
+        chunk_id: scott-plp#c00172
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00185
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-76d9c431d688
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded the wilderness-preservation heuristic in as a specific application of this same 
+      splitting/coalescing policy space rather than minting a separate node for it, to keep the 
+      carve at concept granularity the sources actually evidence.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: internal-fragmentation
+    from_candidates:
+      - internal-fragmentation
+    kind: concept
+    id: internal-fragmentation
+    name: Internal fragmentation
+    summary: Wasted space inside an allocated block left over when a request is rounded up to a 
+      larger standard size class.
+    evidence:
+      - source: scott-plp
+        locator: p. 185
+        chunk_id: scott-plp#c00172
+      - source: jones-hosking-moss-2012
+        locator: p. 72
+        chunk_id: jones-hosking-moss-2012#c00150
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-58c5649667ac
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept distinct from external-fragmentation as waste located inside a block rather than 
+      between blocks.
+  - key: external-fragmentation
+    from_candidates:
+      - external-fragmentation
+      - fragmentation-time-varying-behavior
+    kind: concept
+    id: external-fragmentation
+    name: External fragmentation
+    summary: Heap-wide wastage where free memory exists but no contiguous region is large enough to 
+      satisfy a request; empirically this arises from isolated object deaths and time-varying 
+      allocation phase behaviour rather than a fixed statistical property.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 72
+        chunk_id: jones-hosking-moss-2012#c00150
+      - source: wilson-et-al-1995
+        locator: §2
+        chunk_id: wilson-et-al-1995#c00045
+      - source: wilson-et-al-1995
+        locator: §2
+        chunk_id: wilson-et-al-1995#c00056
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6fa27ed588bd
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded in the time-varying-behaviour finding as the explanatory mechanism for external 
+      fragmentation specifically, rather than minting it as an independent concept.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: distributed-garbage-collection
+    from_candidates:
+      - distributed-garbage-collection
+      - weighted-reference-counting
+      - time-lease-reclamation
+    kind: concept
+    id: distributed-garbage-collection
+    name: Distributed garbage collection
+    summary: Reclamation across process or machine boundaries, combining a local collector with 
+      cross-process techniques such as weighted-credit reference counting or renewable time leases 
+      to tolerate partial failure.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §11.7.4
+        chunk_id: vanroy-haridi-2003#c01253
+      - source: jones-hosking-moss-2012
+        locator: pp. 562–563
+        chunk_id: jones-hosking-moss-2012#c01276
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-71f96255c19f
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded the two named cross-process techniques (weighted reference counting, time leases) 
+      in as instances of this concept rather than minting them as separate features, since each one 
+      both extends reference counting and belongs to the distributed-GC problem, a 
+      feature-specialises-feature relation the model cannot cleanly express at feature level either 
+      way.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: heap-sizing-and-tuning
+    from_candidates:
+      - heap-sizing-and-tuning
+      - idle-time-gc-scheduling
+      - collector-control-api
+    kind: concept
+    id: heap-sizing-and-tuning
+    name: Heap sizing and collector tuning
+    summary: Mechanisms and heuristics, including promotion thresholds, growth factors, idle-time 
+      scheduling and programmatic collection requests, that adjust collector behaviour to meet pause
+      or throughput goals.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 166
+        chunk_id: jones-hosking-moss-2012#c00356
+      - source: ghc-users-guide
+        locator: §5.7.3
+        chunk_id: ghc-users-guide#c00406
+      - source: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 4
+        chunk_id: degenbaev-et-al-2016-concurrent-marking#c00008
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c3e80fbd4892
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded idle-time scheduling and the programmatic control API in as aspects of tuning 
+      collector behaviour, since none of the three was independently evidenced as a design distinct 
+      from the others at the granularity this survey supports.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: substructural-types
+    from_candidates:
+      - linear-types
+      - affine-types
+    kind: concept
+    id: substructural-types
+    name: Substructural types (linear and affine)
+    summary: 'Type disciplines that restrict how many times a value may be used: linear types require
+      every value be consumed exactly once, while affine types only require at most once, permitting discard
+      but not duplication.'
+    evidence:
+      - source: pierce-attapl-2004
+        locator: §1.1
+        chunk_id: pierce-attapl-2004#c00018
+      - source: pierce-attapl-2004
+        locator: §1.2
+        chunk_id: pierce-attapl-2004#c00025
+      - source: ghc-users-guide
+        locator: §6.4.22
+        chunk_id: ghc-users-guide#c00814
+    contested:
+      - merged-candidates
+      - ontologist-flagged
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ef4c532708c5
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Merged because the sources introduce and contrast the two disciplines together as points 
+      on the same usage-count axis. Type theory usually treats linear and affine as logically 
+      distinct substructural disciplines (duality of exchange/weakening/contraction), so a reviewer 
+      may prefer splitting this back into two nodes once the type-systems theme is atomized.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: storage-duration
+    from_candidates:
+      - storage-duration
+    kind: concept
+    id: storage-duration
+    name: Storage duration classes
+    summary: A classification (static, thread, automatic, allocated) of an object's lifetime that 
+      determines when its storage is reserved and when it is released.
+    evidence:
+      - source: c23-n3220
+        locator: §6.2.4
+        chunk_id: c23-n3220#c00130
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §6
+        chunk_id: iso-iec-14882-cpp20-n4861#c00152
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-1f86c0da53a3
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as a concept because every systems language exhibits several of these classes 
+      simultaneously; it classifies lifetimes rather than choosing among alternative language 
+      designs.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: dangling-pointer
+    from_candidates:
+      - dangling-pointer
+    kind: concept
+    id: dangling-pointer
+    name: Dangling pointer
+    summary: A pointer that still refers to the address of storage which has already been 
+      deallocated or reused for another object.
+    evidence:
+      - source: szekeres-et-al-2013
+        locator: pp. 3–4
+        chunk_id: szekeres-et-al-2013#c00009
+      - source: vanroy-haridi-2003
+        locator: §2.4.7
+        chunk_id: vanroy-haridi-2003#c00190
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-94755563afcf
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from use-after-free as the stale-pointer condition itself rather than the 
+      act of exploiting it.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: use-after-free
+    from_candidates:
+      - use-after-free
+    kind: concept
+    id: use-after-free
+    name: Use-after-free / double-free
+    summary: A temporal memory-safety violation in which freed memory is read, written, or freed 
+      again through a stale pointer, often exploitable.
+    evidence:
+      - source: szekeres-et-al-2013
+        locator: pp. 3–4
+        chunk_id: szekeres-et-al-2013#c00009
+      - source: szekeres-et-al-2013
+        locator: p. 10
+        chunk_id: szekeres-et-al-2013#c00033
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ef29163e1235
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from dangling-pointer as the act of operating on a dangling pointer rather 
+      than the condition of being dangling.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: memory-leak
+    from_candidates:
+      - memory-leak
+    kind: concept
+    id: memory-leak
+    name: Memory leak
+    summary: A defect where unreachable or no-longer-needed storage is never reclaimed, causing 
+      memory usage to grow until resources are exhausted.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2.4.7
+        chunk_id: vanroy-haridi-2003#c00190
+      - source: jones-hosking-moss-2012
+        locator: §1.1
+        chunk_id: jones-hosking-moss-2012#c00070
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0de3239af373
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from space-leak as the general, language-independent failure mode.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: space-leak
+    from_candidates:
+      - space-leak
+      - heap-retainer-profiling
+    kind: concept
+    id: space-leak
+    name: Space leak
+    summary: A leak specific to lazy or garbage-collected languages where reachable but logically 
+      dead data, often unevaluated thunks, is retained; diagnosed in practice by retainer profiling 
+      that identifies which live structures keep the dead data reachable.
+    evidence:
+      - source: ghc-users-guide
+        locator: §8.5.2
+        chunk_id: ghc-users-guide#c01303
+      - source: ghc-users-guide
+        locator: §5.3.2
+        chunk_id: ghc-users-guide#c00269
+      - source: ghc-users-guide
+        locator: §8.5.2
+        chunk_id: ghc-users-guide#c01302
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-58b8123a0e71
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded retainer profiling in as the diagnostic technique for this specific failure mode 
+      rather than minting a separate tooling feature under a tight node budget.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: temporal-memory-safety
+    from_candidates:
+      - temporal-memory-safety
+    kind: concept
+    id: temporal-memory-safety
+    name: Temporal memory safety enforcement
+    summary: Guarantees or defenses that prevent a pointer from being used outside its referent's 
+      lifetime, addressing the dangling-pointer and use-after-free classes of bugs.
+    evidence:
+      - source: szekeres-et-al-2013
+        locator: p. 10
+        chunk_id: szekeres-et-al-2013#c00033
+      - source: c23-n3220
+        locator: §6.2.4
+        chunk_id: c23-n3220#c00130
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ecb37539f5cc
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as the umbrella property that ownership, borrowing and garbage collection all 
+      variously provide, rather than merged into any single mechanism.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: non-standard-pointer-handling
+    from_candidates:
+      - interior-pointer
+      - safely-derived-pointer
+      - foreign-code-handle
+      - pinning
+    kind: concept
+    id: non-standard-pointer-handling
+    name: Non-standard pointer handling at the collector boundary
+    summary: "The family of techniques a collector needs for pointers that do not cleanly address a managed
+      object's start: interior/derived pointers, pointers whose managed provenance must be proven safe,
+      handles for foreign code, and temporarily pinning an otherwise-movable object."
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 231
+        chunk_id: jones-hosking-moss-2012#c00512
+      - source: jones-hosking-moss-2012
+        locator: §11.12
+        chunk_id: jones-hosking-moss-2012#c00590
+      - source: jones-hosking-moss-2012
+        locator: §11.4
+        chunk_id: jones-hosking-moss-2012#c00520
+    contested:
+      - merged-candidates
+      - single-source
+      - ontologist-flagged
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-648c46894ac6
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: 'Merged four closely-related edge cases the source treats together (§11.4/§11.12) under a tight
+      node budget, since each is a facet of the same problem: a collector classifying or stabilising pointers
+      it cannot trace in the ordinary way. This is an aggressive four-way merge; a future pass with more
+      budget may want to split interior-pointer handling (a moving-GC concern) back out from pinning and
+      foreign-handle provenance (an interop-safety concern), since they serve different collector responsibilities.'
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: smart-pointer
+    from_candidates:
+      - smart-pointer
+    kind: concept
+    id: smart-pointer
+    name: Smart pointer
+    summary: A library-level idea of a type that overloads pointer-like operations to automate 
+      storage reclamation, instantiated by distinct unique- and shared-ownership designs.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §1.1
+        chunk_id: jones-hosking-moss-2012#c00072
+      - source: wg21-n1450
+        locator: § C. Class template shared_ptr
+        chunk_id: wg21-n1450#c00041
+    contested:
+      - ontologist-flagged
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-abda249c8aa5
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Recast from the surveyor's feature hint to a concept, since it is the general pattern 
+      realised distinctly by unique-ownership-pointer and shared-ownership-pointer rather than a 
+      single realisation itself. The recast from feature to concept is a judgement call; it could 
+      instead be read as a feature with unique/shared pointers as its own sub-features, which the 
+      current model cannot express (see realizes structure-friction).
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: mark-sweep-collection
+    from_candidates:
+      - mark-sweep-collection
+    kind: feature
+    id: mark-sweep-collection
+    name: Mark-sweep garbage collection
+    summary: A tracing collector that marks reachable objects from the roots, then sweeps the entire
+      heap freeing anything left unmarked.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 56–57
+        chunk_id: jones-hosking-moss-2012#c00117
+      - source: jones-hosking-moss-2012
+        locator: p. 57
+        chunk_id: jones-hosking-moss-2012#c00118
+    contested:
+      - new-dimension
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9cafc1794b94
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: A layer-3 design choice because the literature treats it as one of several mutually 
+      comparable collector algorithms on the same axis.
+    dimension: gc-collector-algorithm
+    cross_cutting: false
+    aliases:
+      - mark and sweep
+    realizes:
+      - gc-mutator-interface
+      - tricolour-abstraction
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: semispace-copying-collection
+    from_candidates:
+      - semispace-copying-collection
+      - cheney-scan
+    kind: feature
+    id: semispace-copying-collection
+    name: Semispace copying collection
+    summary: A tracing collector that evacuates live objects from one half of the heap to the other,
+      compacting as it copies; typically implemented with Cheney's breadth-first scanning algorithm,
+      which uses the to-space itself as the scan/free work-list.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §4.1
+        chunk_id: jones-hosking-moss-2012#c00176
+      - source: jones-hosking-moss-2012
+        locator: pp. 86–87
+        chunk_id: jones-hosking-moss-2012#c00178
+      - source: turbak-gifford-dcpl
+        locator: pp. 1159–1160
+        chunk_id: turbak-gifford-dcpl#c01754
+    contested:
+      - merged-candidates
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f5a2d0dc46e3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded Cheney's scan in as the standard implementation technique of this feature rather 
+      than minting it separately, since it specialises this feature rather than realising a distinct
+      concept.
+    dimension: gc-collector-algorithm
+    cross_cutting: false
+    aliases:
+      - stop-and-copy GC
+      - copying garbage collection
+      - Cheney's algorithm
+    realizes:
+      - gc-mutator-interface
+      - tricolour-abstraction
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: mark-compact-collection
+    from_candidates:
+      - mark-compact-collection
+      - compaction-order
+    kind: feature
+    id: mark-compact-collection
+    name: Mark-compact garbage collection
+    summary: A tracing collector that marks live objects then slides or relocates them in place, 
+      according to some compaction order (arbitrary, linearising, or sliding), to eliminate 
+      fragmentation without needing a second heap half.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 72
+        chunk_id: jones-hosking-moss-2012#c00150
+      - source: jones-hosking-moss-2012
+        locator: p. 73
+        chunk_id: jones-hosking-moss-2012#c00153
+      - source: v8-orinoco-trash-talk
+        locator: '#compaction'
+        chunk_id: v8-orinoco-trash-talk#c00003
+    contested:
+      - merged-candidates
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-5804eec667cd
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded compaction-order in as this feature's defining policy variable rather than minting 
+      a separate node for an unevidenced three-way split.
+    dimension: gc-collector-algorithm
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - gc-mutator-interface
+      - tricolour-abstraction
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: generational-garbage-collection
+    from_candidates:
+      - generational-garbage-collection
+    kind: feature
+    id: generational-garbage-collection
+    name: Generational garbage collection
+    summary: A collector strategy that segregates objects by age into generations and collects 
+      younger generations more often, exploiting that most objects die young.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 154
+        chunk_id: jones-hosking-moss-2012#c00328
+      - source: dotnet-gc-fundamentals
+        locator: '#generations'
+        chunk_id: dotnet-gc-fundamentals#c00009
+      - source: v8-orinoco-trash-talk
+        locator: '#generational-layout'
+        chunk_id: v8-orinoco-trash-talk#c00004
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ebf8428277d8
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept at layer 2, not layer 3, because no candidate evidences a distinct opposing 
+      'non-generational' feature to pair it with on a dimension.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - generation scavenging
+    realizes:
+      - weak-generational-hypothesis
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: reference-counting-gc
+    from_candidates:
+      - reference-counting-gc
+      - deferred-reference-counting
+    kind: feature
+    id: reference-counting-gc
+    name: Reference counting
+    summary: A direct reclamation scheme that tags each object with a count of pointers to it and 
+      frees it when the count drops to zero; deferred variants skip incrementing or decrementing 
+      counts for pointers stored in roots to reduce mutator overhead.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00205
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00201
+      - source: jones-hosking-moss-2012
+        locator: p. 124
+        chunk_id: jones-hosking-moss-2012#c00259
+    contested:
+      - merged-candidates
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-2b3b9deb0ca9
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded deferred reference counting in as a mutator-overhead optimisation of this same 
+      feature rather than minting it separately, since it specialises reference counting rather than
+      realising a distinct concept.
+    dimension: gc-collector-algorithm
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - gc-mutator-interface
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: cyclic-reference-counting
+    from_candidates:
+      - cyclic-reference-counting
+    kind: feature
+    id: cyclic-reference-counting
+    name: Cyclic (trial-deletion) reference counting
+    summary: A partial-tracing extension to reference counting that finds and reclaims garbage 
+      cycles by trial-decrementing suspect subgraphs to see whether they become internally 
+      self-sustaining.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.5
+        chunk_id: jones-hosking-moss-2012#c00225
+      - source: jones-hosking-moss-2012
+        locator: §18.5
+        chunk_id: jones-hosking-moss-2012#c01021
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f49bffaa3f3d
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept separate from reference-counting-gc because it directly realises a named concept (the
+      cycle problem) rather than being a pure overhead micro-optimisation.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - the Recycler
+    realizes:
+      - reference-counting-cycle-problem
+    layer: 2
+  - key: unique-ownership-pointer
+    from_candidates:
+      - unique-ownership-pointer
+    kind: feature
+    id: unique-ownership-pointer
+    name: Unique-ownership pointer
+    summary: A smart pointer providing strict single-ownership semantics that destroys its referent 
+      when the pointer itself is destroyed, and transfers ownership by move.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §1
+        chunk_id: iso-iec-14882-cpp20-n4861#c01375
+      - source: wg21-n1856
+        locator: § Addition - Class template unqiue_ptr
+        chunk_id: wg21-n1856#c00024
+    contested:
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0019df108732
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Layer-3 because the C++ standardisation sources frame unique vs shared ownership as the 
+      central, mutually exclusive choice for a smart-pointer type.
+    dimension: smart-pointer-ownership-model
+    cross_cutting: false
+    aliases:
+      - unique_ptr
+      - auto_ptr (superseded)
+    realizes:
+      - smart-pointer
+      - move-semantics
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: shared-ownership-pointer
+    from_candidates:
+      - shared-ownership-pointer
+    kind: feature
+    id: shared-ownership-pointer
+    name: Shared-ownership (reference-counted) pointer
+    summary: A smart pointer implementing shared ownership of a referent, where the last owner to 
+      release it is responsible for destroying it, typically via reference counting.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §1
+        chunk_id: iso-iec-14882-cpp20-n4861#c01375
+      - source: wg21-n1450
+        locator: § C. Class template shared_ptr
+        chunk_id: wg21-n1450#c00041
+    contested:
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-8ddbb5e13390
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Paired with unique-ownership-pointer as the other value on the same ownership-model axis.
+    dimension: smart-pointer-ownership-model
+    cross_cutting: false
+    aliases:
+      - shared_ptr
+    realizes:
+      - smart-pointer
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: finalizer
+    from_candidates:
+      - finalizer
+    kind: feature
+    id: finalizer
+    name: Finalizer
+    summary: A method the runtime invokes on an object before reclaiming its storage, used to 
+      release resources that storage reclamation alone cannot free.
+    evidence:
+      - source: ecma-334-7th
+        locator: §15.13
+        chunk_id: ecma-334-7th#c00822
+      - source: jls-se25
+        locator: §12.6
+        chunk_id: jls-se25#c00647
+      - source: python-langref-3
+        locator: § 3.3.1. Basic customization
+        chunk_id: python-langref-3#c00103
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-739bb837b51f
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept distinct from destructor as a collector-scheduled, non-deterministic hook rather than
+      a scope-exit-triggered one.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - __del__
+    realizes: []
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: destructor
+    from_candidates:
+      - destructor
+      - drop-scope
+      - using-statement-dispose-pattern
+    kind: feature
+    id: destructor
+    name: Destructor
+    summary: A deterministic member function invoked at a well-defined point of scope exit (its drop
+      scope) to release an object's resources; languages lacking a native destructor often provide 
+      an equivalent idiom such as a using-statement/Dispose pattern.
+    evidence:
+      - source: ecma-334-7th
+        locator: §15.13
+        chunk_id: ecma-334-7th#c00821
+      - source: rust-fls
+        locator: § 15.7. Destructors¶
+        chunk_id: rust-fls#c00382
+      - source: rust-reference
+        locator: pp. 475–476
+        chunk_id: rust-reference#c00617
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3cf113c8c403
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded drop-scope in as the lexical rule that determines when this feature fires, and the 
+      using/Dispose pattern in as its library-idiom analogue in languages without native 
+      destructors, to stay within the node budget.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - Drop::drop
+      - IDisposable
+      - using statement
+    realizes: []
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: weak-reference
+    from_candidates:
+      - weak-reference
+      - ephemeron
+    kind: feature
+    id: weak-reference
+    name: Weak reference
+    summary: A reference that does not by itself keep its referent alive, letting the collector 
+      reclaim the referent while the reference is cleared; an ephemeron refines this by keeping an 
+      associated value strongly reachable only while a separate key remains reachable.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §12.2
+        chunk_id: jones-hosking-moss-2012#c00619
+      - source: jones-hosking-moss-2012
+        locator: p. 277
+        chunk_id: jones-hosking-moss-2012#c00637
+      - source: sivaramakrishnan-et-al-2020
+        locator: p. 15
+        chunk_id: sivaramakrishnan-et-al-2020#c00043
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f7bfd70d57a6
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded ephemeron in as a key/value refinement of the same weak-reference idea rather than 
+      minting a separate node under a tight node budget.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - reference-strength-hierarchy
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: insertion-barrier
+    from_candidates:
+      - incremental-update-vs-snapshot-barriers
+    kind: feature
+    id: insertion-barrier
+    name: Incremental-update (insertion) barrier
+    summary: A write-barrier technique for concurrent collectors that preserves a strong tracing 
+      invariant by recording every newly inserted pointer so no black object ever points to an 
+      unmarked white one.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 374–375
+        chunk_id: jones-hosking-moss-2012#c00844
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-99459a31a187
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Split out of the surveyor's bundled dichotomy as one of its two named, individually 
+      describable member techniques.
+    dimension: concurrent-gc-barrier-invariant
+    cross_cutting: false
+    aliases:
+      - incremental-update barrier
+    realizes:
+      - write-barrier
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: deletion-barrier
+    from_candidates:
+      - incremental-update-vs-snapshot-barriers
+    kind: feature
+    id: deletion-barrier
+    name: Snapshot-at-the-beginning (deletion) barrier
+    summary: A barrier technique for concurrent collectors that preserves a weaker tracing invariant
+      by recording pointers about to be overwritten, so the collector can trace the heap as it stood
+      at the start of the collection cycle.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 376–377
+        chunk_id: jones-hosking-moss-2012#c00847
+      - source: jones-hosking-moss-2012
+        locator: p. 377
+        chunk_id: jones-hosking-moss-2012#c00849
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-24cf7657a5fd
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Split out as the second named member of the same dichotomy, paired with insertion-barrier 
+      on the concurrent-gc-barrier-invariant dimension.
+    dimension: concurrent-gc-barrier-invariant
+    cross_cutting: false
+    aliases:
+      - snapshot-at-the-beginning
+      - deletion barrier
+    realizes:
+      - read-barrier
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: card-table-remembered-set
+    from_candidates:
+      - card-table-remembered-set
+    kind: feature
+    id: card-table-remembered-set
+    name: Card table remembered set
+    summary: A side table dividing the heap into small cards, marked dirty by write barriers so 
+      generational or regional collectors can find cross-region pointers cheaply without rescanning 
+      the whole heap.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 246–247
+        chunk_id: jones-hosking-moss-2012#c00556
+      - source: jones-hosking-moss-2012
+        locator: §10.4
+        chunk_id: jones-hosking-moss-2012#c00428
+      - source: jones-hosking-moss-2012
+        locator: p. 379
+        chunk_id: jones-hosking-moss-2012#c00853
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-100ad522ed11
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept at layer 2 since it is a specific data-structure realisation of the write-barrier 
+      concept rather than itself an axis of comparable alternatives in the survey.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - write-barrier
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: conservative-garbage-collection
+    from_candidates:
+      - conservative-garbage-collection
+    kind: feature
+    id: conservative-garbage-collection
+    name: Conservative garbage collection
+    summary: A collection technique for uncooperative languages that treats ambiguous stack or 
+      register slots as possible pointers, without compiler-supplied type information to say which 
+      really are pointers.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §2.4
+        chunk_id: jones-hosking-moss-2012#c00129
+      - source: jones-hosking-moss-2012
+        locator: p. 147
+        chunk_id: jones-hosking-moss-2012#c00309
+    contested:
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-87b2aeea8a25
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Layer-3 as the alternative to accurate-pointer-finding on the same precision axis.
+    dimension: pointer-finding-precision
+    cross_cutting: false
+    aliases:
+      - Boehm-Demers-Weiser collector
+    realizes:
+      - gc-mutator-interface
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: accurate-pointer-finding
+    from_candidates:
+      - accurate-pointer-finding
+    kind: feature
+    id: accurate-pointer-finding
+    name: Accurate (type-precise) pointer finding
+    summary: A technique giving the collector exact knowledge of which stack, register or object 
+      slots hold pointers, which enables moving collection that conservative collectors cannot 
+      safely perform.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §2.4
+        chunk_id: jones-hosking-moss-2012#c00129
+      - source: jones-hosking-moss-2012
+        locator: p. 228
+        chunk_id: jones-hosking-moss-2012#c00502
+    contested:
+      - new-dimension
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6e5ebde1b0a3
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Recast from the surveyor's concept hint to a feature so it can stand as the opposing value
+      to conservative-garbage-collection on the pointer-finding-precision dimension.
+    dimension: pointer-finding-precision
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - gc-safe-point
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: stack-map
+    from_candidates:
+      - stack-map
+    kind: feature
+    id: stack-map
+    name: Stack map
+    summary: A compiler-generated table describing which stack-frame slots hold pointers at a given 
+      instruction, consulted by the collector while scanning roots at a GC safe point.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 228
+        chunk_id: jones-hosking-moss-2012#c00502
+      - source: jones-hosking-moss-2012
+        locator: §11.12
+        chunk_id: jones-hosking-moss-2012#c00590
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4ae79246b502
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept at layer 2 as the concrete data structure realising accurate root-finding at a safe 
+      point, rather than itself a point of cross-language design comparison.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - gc-safe-point
+    layer: 2
+  - key: stack-allocation-of-heap-objects
+    from_candidates:
+      - stack-allocation-of-heap-objects
+    kind: feature
+    id: stack-allocation-of-heap-objects
+    name: Compiler-driven stack allocation
+    summary: An optimisation that places an object on the call stack instead of the heap when escape
+      analysis proves the object does not outlive its allocating frame.
+    evidence:
+      - source: choi-et-al-1999
+        locator: p. 13
+        chunk_id: choi-et-al-1999#c00037
+      - source: choi-et-al-1999
+        locator: p. 17
+        chunk_id: choi-et-al-1999#c00049
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3b6017206373
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept as the optimisation feature that escape analysis, the concept, enables.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - escape-analysis
+    layer: 2
+  - key: free-list-allocation
+    from_candidates:
+      - free-list-allocation
+      - allocator-fit-policy
+    kind: feature
+    id: free-list-allocation
+    name: Free-list allocation
+    summary: An allocator design that records free memory cells in a data structure and selects one 
+      to satisfy each allocation request, according to a fit policy such as first-, next- or 
+      best-fit.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §7.2
+        chunk_id: jones-hosking-moss-2012#c00267
+      - source: jones-hosking-moss-2012
+        locator: pp. 132–134
+        chunk_id: jones-hosking-moss-2012#c00274
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00185
+    contested:
+      - merged-candidates
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-229bb882bdf6
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded the allocator-fit-policy concept in as this feature's internal search policy, since
+      the survey evidences the bundled policy space rather than separately evidencing first-fit, 
+      next-fit and best-fit as individually citable nodes.
+    dimension: free-space-management-strategy
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: segregated-fits-allocation
+    from_candidates:
+      - segregated-fits-allocation
+    kind: feature
+    id: segregated-fits-allocation
+    name: Segregated-fits allocation
+    summary: An allocator design maintaining a separate free list per size class so that most 
+      allocations and frees run in constant time.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §7.4
+        chunk_id: jones-hosking-moss-2012#c00281
+      - source: jones-hosking-moss-2012
+        locator: §7.5
+        chunk_id: jones-hosking-moss-2012#c00286
+    contested:
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ac566119a720
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: A sibling strategy to free-list-allocation on the same axis, distinguished by size-class 
+      segregation.
+    dimension: free-space-management-strategy
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: buddy-system-allocation
+    from_candidates:
+      - buddy-system-allocation
+    kind: feature
+    id: buddy-system-allocation
+    name: Buddy system allocation
+    summary: An allocator scheme using power-of-two, or Fibonacci, size classes that splits and 
+      coalesces blocks with their unique buddy neighbour.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 137–138
+        chunk_id: jones-hosking-moss-2012#c00285
+      - source: scott-plp
+        locator: p. 185
+        chunk_id: scott-plp#c00172
+      - source: wilson-et-al-1995
+        locator: §3
+        chunk_id: wilson-et-al-1995#c00113
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-11396cc7a0b2
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: A third member of the free-space-management-strategy axis, distinguished by its 
+      buddy-pairing split/coalesce rule.
+    dimension: free-space-management-strategy
+    cross_cutting: false
+    aliases:
+      - Fibonacci buddy system
+    realizes:
+      - splitting-and-coalescing
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: bitmapped-fits-allocation
+    from_candidates:
+      - bitmapped-fits-allocation
+    kind: feature
+    id: bitmapped-fits-allocation
+    name: Bitmapped-fits allocation
+    summary: An allocator technique that uses a side bitmap of free or allocated granules to search 
+      for a fit faster than scanning the heap's free cells directly.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 132–134
+        chunk_id: jones-hosking-moss-2012#c00274
+    contested:
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-5bb622e6e35d
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: A fourth member of the free-space-management-strategy axis, distinguished by its bitmap 
+      side-structure.
+    dimension: free-space-management-strategy
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: arena-obstack-allocation
+    from_candidates:
+      - arena-obstack-allocation
+    kind: feature
+    id: arena-obstack-allocation
+    name: Arena / obstack bulk-release allocation
+    summary: A custom allocator style that bump-allocates objects into a chunked region and frees an
+      entire phase's objects at once, rather than tracking individual object lifetimes.
+    evidence:
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00191
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00192
+      - source: pierce-attapl-2004
+        locator: §3.8
+        chunk_id: pierce-attapl-2004#c00216
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-f47651cc201c
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept as the concrete, manually-managed realisation of the region-based-memory-management 
+      concept.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - obstacks
+      - zone system
+    realizes:
+      - region-based-memory-management
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: thread-local-allocation-buffer
+    from_candidates:
+      - thread-local-allocation-buffer
+      - thread-local-garbage-collection
+    kind: feature
+    id: thread-local-allocation-buffer
+    name: Thread-local allocation buffer
+    summary: A per-thread chunk of heap space from which a thread allocates without synchronising 
+      with other threads, refilled from a global pool as needed; some runtimes extend this idea to 
+      thread-local collection, reclaiming each thread's private heaplet independently and promoting 
+      objects to shared status only when they escape.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §7.7
+        chunk_id: jones-hosking-moss-2012#c00299
+      - source: jones-hosking-moss-2012
+        locator: §7.7
+        chunk_id: jones-hosking-moss-2012#c00300
+      - source: jones-hosking-moss-2012
+        locator: p. 189
+        chunk_id: jones-hosking-moss-2012#c00410
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ae5718eeb3f3
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded thread-local garbage collection in as the natural extension of thread-local 
+      allocation to thread-local reclamation, under the node budget.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - local allocation buffer (LAB)
+    realizes: []
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: incremental-garbage-collection
+    from_candidates:
+      - incremental-concurrent-parallel-gc
+    kind: feature
+    id: incremental-garbage-collection
+    name: Incremental garbage collection
+    summary: A collector design that splits its work into small steps interleaved with mutator 
+      execution, to reduce the length of any single pause.
+    evidence:
+      - source: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 6
+        chunk_id: degenbaev-et-al-2016-concurrent-marking#c00014
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-758303e843a9
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Split out of the surveyor's bundled triad as one of three orthogonal, individually named 
+      pause-mitigation techniques.
+    dimension: gc-pause-mitigation-technique
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: concurrent-garbage-collection
+    from_candidates:
+      - incremental-concurrent-parallel-gc
+    kind: feature
+    id: concurrent-garbage-collection
+    name: Concurrent garbage collection
+    summary: A collector design that runs collector work on its own thread(s) simultaneously with 
+      the mutator, using barriers to preserve tracing invariants.
+    evidence:
+      - source: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 6
+        chunk_id: degenbaev-et-al-2016-concurrent-marking#c00014
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-ddccca850374
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Split out as the second member of the triad; distinguished from incremental by overlapping
+      rather than interleaving with the mutator.
+    dimension: gc-pause-mitigation-technique
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: parallel-garbage-collection
+    from_candidates:
+      - incremental-concurrent-parallel-gc
+    kind: feature
+    id: parallel-garbage-collection
+    name: Parallel garbage collection
+    summary: A collector design that uses multiple threads to perform a single collection's work 
+      faster, typically during an otherwise stop-the-world pause.
+    evidence:
+      - source: degenbaev-et-al-2016-concurrent-marking
+        locator: p. 6
+        chunk_id: degenbaev-et-al-2016-concurrent-marking#c00014
+    contested:
+      - split-candidate
+      - new-dimension
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-374fc36ca0d1
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Split out as the third member of the triad; distinguished from concurrent by not needing 
+      to run alongside a live mutator.
+    dimension: gc-pause-mitigation-technique
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: scoped-memory
+    from_candidates:
+      - scoped-memory
+      - immortal-memory
+    kind: feature
+    id: scoped-memory
+    name: Scoped and immortal memory areas
+    summary: "Real-time-Java memory regions outside the garbage-collected heap: a scoped memory area has
+      a programmer-defined lifetime and is reclaimed when all referents leave scope, while an immortal
+      memory area's objects are never reclaimed during normal execution; both give real-time code GC-latency-free
+      access to storage."
+    evidence:
+      - source: rtsj-1-0-2-spec
+        locator: p. 48
+        chunk_id: rtsj-1-0-2-spec#c00083
+      - source: rtsj-1-0-2-spec
+        locator: p. 47
+        chunk_id: rtsj-1-0-2-spec#c00081
+      - source: rtsj-1-0-2-spec
+        locator: pp. 200–201
+        chunk_id: rtsj-1-0-2-spec#c00392
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-072e2d5a1196
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Folded immortal memory in as the degenerate, never-reclaimed case of the same RTSJ 
+      non-heap-region family as scoped memory, under the node budget.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - region-based-memory-management
+      - storage-duration
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: malloc-free-manual-allocation
+    from_candidates:
+      - malloc-free-manual-allocation
+    kind: feature
+    id: malloc-free-manual-allocation
+    name: malloc/free manual heap allocation
+    summary: C-style explicit allocation and deallocation functions that hand out and reclaim raw 
+      storage entirely under programmer control.
+    evidence:
+      - source: c23-n3220
+        locator: §7.24.3
+        chunk_id: c23-n3220#c00792
+      - source: c23-n3220
+        locator: §7.24.3
+        chunk_id: c23-n3220#c00790
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b6205fc2a5cf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: Kept at layer 2 standalone rather than forced onto a 'manual vs automatic' dimension, 
+      since no second candidate in this survey evidences an explicit opposing feature at the same 
+      granularity.
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes:
+      - storage-duration
+    layer: 2
+  - key: automatic-reference-counting-objc
+    from_candidates:
+      - automatic-reference-counting-objc
+    kind: feature
+    id: automatic-reference-counting-objc
+    name: Automatic Reference Counting (ARC)
+    summary: Compiler-inserted retain/release memory management for Objective-C objects that frees 
+      programmers from writing manual retain/release calls, but still requires the programmer to 
+      break reference cycles manually.
+    evidence:
+      - source: clang-arc-spec
+        locator: § General#
+        chunk_id: clang-arc-spec#c00006
+      - source: clang-arc-spec
+        locator: § Retain count semantics#
+        chunk_id: clang-arc-spec#c00010
+      - source: clang-arc-spec
+        locator: § Semantics#
+        chunk_id: clang-arc-spec#c00029
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7260bd1fa5c7
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Kept separate from reference-counting-gc as a specific compiler-automation of it that 
+      still leaves the cycle problem unsolved, a feature-specialises-feature relation the realizes 
+      field cannot express (see findings).
+    dimension:
+    cross_cutting: false
+    aliases: []
+    realizes: []
+    layer: 2
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: prolog-trail-and-backtracking-reclamation
+    from_candidates:
+      - prolog-trail-and-backtracking-reclamation
+      - prolog-cut-choice-point-discard
+      - atom-and-clause-garbage-collection
+      - logic-programming-memory-management
+    kind: feature
+    id: prolog-trail-and-backtracking-reclamation
+    name: Trail and choice-point reclamation on backtracking
+    summary: A WAM mechanism that records conditional variable bindings on a trail, and discards 
+      them along with their choice-point frame on backtracking or on an explicit cut, so heap and 
+      stack space used since the choice point can be reclaimed; Prolog systems also separately 
+      garbage-collect interned atoms and retracted or erased clauses.
+    evidence:
+      - source: aitkaci-wam-1991
+        locator: §4.2
+        chunk_id: aitkaci-wam-1991#c00053
+      - source: aitkaci-wam-1991
+        locator: pp. 126–127
+        chunk_id: aitkaci-wam-1991#c00145
+      - source: swipl-manual-memory
+        locator: §4.43.1
+        chunk_id: swipl-manual-memory#c00001
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d9f1df7319ee
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: Merged the cut-driven discard mechanism and atom/clause collection into the general 
+      trail-and-backtracking reclamation feature, and folded in the broader logic-programming 
+      liveness-analysis survey as supporting context, to stay within the node budget while keeping 
+      the WAM-specific mechanism as one coherent, citable node.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - choice point frame
+      - cut
+      - garbage_collect_atoms
+      - garbage_collect_clauses
+    realizes: []
+    layer: 2
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+edges:
+  - key: card-table-remembered-set--enables--generational-garbage-collection
+    type: enables
+    from: card-table-remembered-set
+    to: generational-garbage-collection
+    polarity:
+    statement: Card tables implement the remembered set that lets a generational collector record 
+      inter-generational pointers and so collect a young generation without tracing the whole heap.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 167–168
+        chunk_id: jones-hosking-moss-2012#c00360
+        quote: The data structure used to record inter-generational pointers is called a remembered 
+          set
+      - source: jones-hosking-moss-2012
+        locator: p. 379
+        chunk_id: jones-hosking-moss-2012#c00853
+        quote: Card tables can be used by both generational and concurrent collectors.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d87b095fee02
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: semispace-copying-collection--enables--generational-garbage-collection
+    type: enables
+    from: semispace-copying-collection
+    to: generational-garbage-collection
+    polarity:
+    statement: Copying collection makes generational collection practical, because most generational
+      collectors manage the nursery by copying, where few survivors give a low mark/cons ratio.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 154
+        chunk_id: jones-hosking-moss-2012#c00328
+        quote: Most generational collectors manage younger generations by copying.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-bab470a4ea0a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: insertion-barrier--enables--concurrent-garbage-collection
+    type: enables
+    from: insertion-barrier
+    to: concurrent-garbage-collection
+    polarity:
+    statement: An incremental-update insertion barrier preserves the strong tricolour invariant and 
+      is one of the barriers concurrent mark-sweep collectors adopt to stay correct while the 
+      mutator runs.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 373–374
+        chunk_id: jones-hosking-moss-2012#c00841
+      - source: jones-hosking-moss-2012
+        locator: p. 386
+        chunk_id: jones-hosking-moss-2012#c00870
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8fa66b578d54
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: deletion-barrier--enables--concurrent-garbage-collection
+    type: enables
+    from: deletion-barrier
+    to: concurrent-garbage-collection
+    polarity:
+    statement: A snapshot-at-the-beginning deletion barrier shades the target of an overwritten 
+      pointer and is one of the barrier mechanisms that keeps concurrent marking correct.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 377
+        chunk_id: jones-hosking-moss-2012#c00848
+      - source: jones-hosking-moss-2012
+        locator: p. 386
+        chunk_id: jones-hosking-moss-2012#c00870
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3188493bd0cf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: insertion-barrier--enables--incremental-garbage-collection
+    type: enables
+    from: insertion-barrier
+    to: incremental-garbage-collection
+    polarity:
+    statement: Insertion (incremental-update) barriers inform the collector of pointers the mutator 
+      inserts behind the wavefront, which is what lets marking be broken into increments.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 373–374
+        chunk_id: jones-hosking-moss-2012#c00841
+        quote: solutions that address D1/T1 mutations incremental update techniques because they 
+          inform the collector of incremental changes made by the mutator
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c49988cec562
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: deletion-barrier--alternative-to--insertion-barrier
+    type: alternative-to
+    from: deletion-barrier
+    to: insertion-barrier
+    polarity:
+    statement: Insertion and deletion barriers are the two competing barrier families for 
+      maintaining a tricolour invariant during concurrent or incremental marking.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §15.2
+        chunk_id: jones-hosking-moss-2012#c00843
+      - source: jones-hosking-moss-2012
+        locator: p. 377
+        chunk_id: jones-hosking-moss-2012#c00848
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a8cbe143bb4f
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: concurrent-garbage-collection--alternative-to--parallel-garbage-collection
+    type: alternative-to
+    from: concurrent-garbage-collection
+    to: parallel-garbage-collection
+    polarity:
+    statement: 'Parallel stop-the-world collection and concurrent collection are competing answers to
+      reducing pause times: using all processors during a pause versus running the collector alongside
+      the mutator.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 366
+        chunk_id: jones-hosking-moss-2012#c00825
+        quote: one way to reduce pause times on a multiprocessor is to run a full collection cycle 
+          with multiple collector threads acting in parallel while all the mutators are stopped
+      - source: jones-hosking-moss-2012
+        locator: p. 44
+        chunk_id: jones-hosking-moss-2012#c00085
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-52a7bb2bce21
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: concurrent-garbage-collection--alternative-to--incremental-garbage-collection
+    type: alternative-to
+    from: concurrent-garbage-collection
+    to: incremental-garbage-collection
+    polarity:
+    statement: Incremental collection interleaves collector increments with the mutator while 
+      concurrent collection runs collector threads in parallel with it; both are rival ways to cut 
+      pause times.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 366
+        chunk_id: jones-hosking-moss-2012#c00825
+        quote: Interleaving mutator and collector execution in this way is called incremental 
+          collection
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ff47c71cc26c
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: stack-map--enables--accurate-pointer-finding
+    type: enables
+    from: stack-map
+    to: accurate-pointer-finding
+    polarity:
+    statement: Compiler-generated stack maps are what allow a collector to find pointers accurately 
+      in stack frames and registers at a collection point.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 227
+        chunk_id: jones-hosking-moss-2012#c00500
+        quote: the space needed to store stack maps can be a considerable fraction of the size of 
+          the code
+      - source: jones-hosking-moss-2012
+        locator: §11.12
+        chunk_id: jones-hosking-moss-2012#c00590
+        quote: Systems generally provide stack maps to determine from a return address the function 
+          within which the address lies.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e7077b19cd42
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: accurate-pointer-finding--enables--semispace-copying-collection
+    type: enables
+    from: accurate-pointer-finding
+    to: semispace-copying-collection
+    polarity:
+    statement: Accurate pointer finding enables copying collection, because moving an object safely 
+      requires updating every pointer to it, which demands precise knowledge of which slots hold 
+      pointers.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §11.2
+        chunk_id: jones-hosking-moss-2012#c00469
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-e738e198ee8b
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: accurate-pointer-finding--enables--mark-compact-collection
+    type: enables
+    from: accurate-pointer-finding
+    to: mark-compact-collection
+    polarity:
+    statement: In-place compaction relocates live objects and updates all references to them, which 
+      requires accurate rather than estimated pointer identification.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §11.2
+        chunk_id: jones-hosking-moss-2012#c00469
+      - source: jones-hosking-moss-2012
+        locator: p. 72
+        chunk_id: jones-hosking-moss-2012#c00150
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-16e9b0be84a2
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: accurate-pointer-finding--alternative-to--conservative-garbage-collection
+    type: alternative-to
+    from: accurate-pointer-finding
+    to: conservative-garbage-collection
+    polarity:
+    statement: Conservative pointer finding and type-accurate pointer finding are the two competing 
+      answers to how a collector identifies references in roots and objects.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §11.2
+        chunk_id: jones-hosking-moss-2012#c00469
+      - source: jones-hosking-moss-2012
+        locator: p. 147
+        chunk_id: jones-hosking-moss-2012#c00309
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-58f7b80c5ff4
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: conservative-garbage-collection--influences--semispace-copying-collection
+    type: influences
+    from: conservative-garbage-collection
+    to: semispace-copying-collection
+    polarity: '-'
+    statement: Conservative scanning constrains copying collection, since an object directly 
+      referenced from ambiguous roots cannot be moved and must be pinned.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 147
+        chunk_id: jones-hosking-moss-2012#c00309
+        quote: conservative collection cannot move any object directly referenced by the roots
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-e8aea8757cd3
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: cyclic-reference-counting--requires--reference-counting-gc
+    type: requires
+    from: cyclic-reference-counting
+    to: reference-counting-gc
+    polarity:
+    statement: 'Trial-deletion cycle collection is an extension of reference counting: it starts from
+      the reference counts and temporarily decrements them to find isolated garbage cycles.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.5
+        chunk_id: jones-hosking-moss-2012#c00224
+        quote: The most widely adopted automatic mechanisms for handling cycles through reference 
+          counting use a technique called trial deletion
+      - source: jones-hosking-moss-2012
+        locator: p. 124
+        chunk_id: jones-hosking-moss-2012#c00259
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f713efa66b4e
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: weak-reference--influences--reference-counting-gc
+    type: influences
+    from: weak-reference
+    to: reference-counting-gc
+    polarity: +
+    statement: 'Weak references shape how reference counting is used: if strong references never close
+      a cycle, the strong-pointer graph becomes amenable to plain reference counting.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.5
+        chunk_id: jones-hosking-moss-2012#c00223
+        quote: If strong references are never allowed to form a cycle, then the strong-pointer graph
+          will be amenable to standard reference counting.
+      - source: clang-arc-spec
+        locator: § General#
+        chunk_id: clang-arc-spec#c00006
+        quote: It does not provide a cycle collector; users must explicitly manage the lifetime of 
+          their objects, breaking cycles manually or with weak or unsafe references.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-1c24b2422c38
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: cyclic-reference-counting--alternative-to--weak-reference
+    type: alternative-to
+    from: cyclic-reference-counting
+    to: weak-reference
+    polarity:
+    statement: Trial-deletion cycle collection and programmer-declared weak references are rival 
+      answers to the uncollectable-cycle problem of reference counting.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.5
+        chunk_id: jones-hosking-moss-2012#c00223
+      - source: jones-hosking-moss-2012
+        locator: §5.5
+        chunk_id: jones-hosking-moss-2012#c00224
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0817b947a3e0
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: automatic-reference-counting-objc--requires--reference-counting-gc
+    type: requires
+    from: automatic-reference-counting-objc
+    to: reference-counting-gc
+    polarity:
+    statement: ARC is reference counting with the retain and release operations inserted by the 
+      compiler, so it presupposes a reference-counted object model.
+    evidence:
+      - source: clang-arc-spec
+        locator: § General#
+        chunk_id: clang-arc-spec#c00006
+        quote: Automatic Reference Counting implements automatic memory management for Objective-C 
+          objects and blocks, freeing the programmer from the need to explicitly insert retains and 
+          releases.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c297b6fc00c5
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: shared-ownership-pointer--requires--reference-counting-gc
+    type: requires
+    from: shared-ownership-pointer
+    to: reference-counting-gc
+    polarity:
+    statement: 'A shared-ownership smart pointer is built on reference counting: the last owner in the
+      sharing set destroys the object.'
+    evidence:
+      - source: wg21-n1450
+        locator: § C. Class template shared_ptr
+        chunk_id: wg21-n1450#c00041
+        quote: shared_ptr implements semantics of shared ownership; the last remaining owner of the 
+          pointer is responsible for destroying the object
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00202
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7137845bba11
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: shared-ownership-pointer--alternative-to--unique-ownership-pointer
+    type: alternative-to
+    from: shared-ownership-pointer
+    to: unique-ownership-pointer
+    polarity:
+    statement: 'Unique-ownership and shared-ownership smart pointers are competing ownership policies
+      for library-managed heap objects: a single owner versus reference-counted sharing.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00202
+      - source: jones-hosking-moss-2012
+        locator: §1.1
+        chunk_id: jones-hosking-moss-2012#c00072
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-567c820a3527
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: destructor--enables--shared-ownership-pointer
+    type: enables
+    from: destructor
+    to: shared-ownership-pointer
+    polarity:
+    statement: C++ destructors give the hook through which smart pointer templates drive reference 
+      counting for shared data structures.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 269–270
+        chunk_id: jones-hosking-moss-2012#c00614
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-623e8f7171c4
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: destructor--enables--unique-ownership-pointer
+    type: enables
+    from: destructor
+    to: unique-ownership-pointer
+    polarity:
+    statement: Unique-ownership pointers rely on destruction of the owning pointer to destroy the 
+      owned object.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §5.1
+        chunk_id: jones-hosking-moss-2012#c00202
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-e9a9229d55ca
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: destructor--alternative-to--finalizer
+    type: alternative-to
+    from: destructor
+    to: finalizer
+    polarity:
+    statement: 'Destructors and finalizers are competing cleanup mechanisms: destructors run deterministically
+      at a known point, finalizers run nondeterministically before the collector reclaims storage.'
+    evidence:
+      - source: ecma-334-7th
+        locator: §15.13
+        chunk_id: ecma-334-7th#c00821
+        quote: In C++, a destructor is called in a determinate manner, whereas, in C#, a finalizer 
+          is not.
+      - source: jones-hosking-moss-2012
+        locator: p. 270
+        chunk_id: jones-hosking-moss-2012#c00615
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-570ea95029f5
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: finalizer--influences--weak-reference
+    type: influences
+    from: finalizer
+    to: weak-reference
+    polarity: '-'
+    statement: Finalization complicates weak-reference semantics, since an object awaiting 
+      finalisation must be retained and weak and phantom references must be cleared and enqueued in 
+      strength order around it.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 275–276
+        chunk_id: jones-hosking-moss-2012#c00633
+      - source: jones-hosking-moss-2012
+        locator: p. 275
+        chunk_id: jones-hosking-moss-2012#c00632
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7e479c080329
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: free-list-allocation--alternative-to--segregated-fits-allocation
+    type: alternative-to
+    from: free-list-allocation
+    to: segregated-fits-allocation
+    polarity:
+    statement: Segregated-fits allocation competes with a single free list by replacing the search 
+      for a fitting cell with size-indexed lists.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: §7.4
+        chunk_id: jones-hosking-moss-2012#c00279
+        quote: Much of the time consumed by a basic free-list allocator is spent searching for a 
+          free cell of appropriate size. Hence, using multiple free-lists whose members are 
+          segregated by size can speed allocation
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f11611184616
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: bitmapped-fits-allocation--alternative-to--free-list-allocation
+    type: alternative-to
+    from: bitmapped-fits-allocation
+    to: free-list-allocation
+    polarity:
+    statement: 'Bitmapped fits is a rival way to find a fitting cell: the allocator scans a side bitmap
+      of free granules instead of a linked list of free cells.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 132–134
+        chunk_id: jones-hosking-moss-2012#c00274
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ae936d7861fc
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: buddy-system-allocation--alternative-to--free-list-allocation
+    type: alternative-to
+    from: buddy-system-allocation
+    to: free-list-allocation
+    polarity:
+    statement: Buddy systems compete with general free-list allocators, approximating best fit 
+      through a hierarchical power-of-two split-and-coalesce discipline.
+    evidence:
+      - source: wilson-et-al-1995
+        locator: §3
+        chunk_id: wilson-et-al-1995#c00109
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00205
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ae23ddc1a210
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: arena-obstack-allocation--alternative-to--malloc-free-manual-allocation
+    type: alternative-to
+    from: arena-obstack-allocation
+    to: malloc-free-manual-allocation
+    polarity:
+    statement: Arena/obstack allocation is a rival to per-object malloc/free, deallocating a whole 
+      batch of objects at once instead of freeing each object individually.
+    evidence:
+      - source: wilson-et-al-1995
+        locator: §4
+        chunk_id: wilson-et-al-1995#c00192
+        quote: it is often easier for the programmer to manage batches of objects than to code 
+          freeing routines that free each object individually
+      - source: hanson-1990
+        locator: p. 3
+        chunk_id: hanson-1990#c00006
+        quote: All objects with lifetime t are deallocated at once by calling deallocate
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e646aef0c9a3
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: mark-sweep-collection--alternative-to--reference-counting-gc
+    type: alternative-to
+    from: mark-sweep-collection
+    to: reference-counting-gc
+    polarity:
+    statement: 'Reference counting and tracing mark-sweep are rival reclamation disciplines: they compute
+      different fixed points of reachability, counting incoming references versus tracing from roots.'
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 124
+        chunk_id: jones-hosking-moss-2012#c00259
+        quote: Tracing collectors compute the least fixed-point, whereas reference counting 
+          collectors compute the greatest, so they cannot (by themselves) reclaim cyclic garbage.
+      - source: jones-hosking-moss-2012
+        locator: §5.7
+        chunk_id: jones-hosking-moss-2012#c00236
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ea383e6dabba
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: mark-compact-collection--alternative-to--semispace-copying-collection
+    type: alternative-to
+    from: mark-compact-collection
+    to: semispace-copying-collection
+    polarity:
+    statement: In-place compaction and semispace copying are the two competing strategies for 
+      compacting live objects to eliminate external fragmentation.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 72
+        chunk_id: jones-hosking-moss-2012#c00150
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d1c584375040
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: mark-sweep-collection--alternative-to--semispace-copying-collection
+    type: alternative-to
+    from: mark-sweep-collection
+    to: semispace-copying-collection
+    polarity:
+    statement: Mark-sweep and semispace copying are competing tracing designs, trading cheap 
+      collection that may fragment the heap against a single compacting pass that halves the usable 
+      heap.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: p. 84
+        chunk_id: jones-hosking-moss-2012#c00174
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-620e0f669840
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: semispace-copying-collection--enables--thread-local-allocation-buffer
+    type: enables
+    from: semispace-copying-collection
+    to: thread-local-allocation-buffer
+    polarity:
+    statement: Sequential bump-pointer allocation in a compacted heap lets each mutator thread be 
+      given its own local allocation buffer with little metadata and no synchronisation.
+    evidence:
+      - source: jones-hosking-moss-2012
+        locator: pp. 94–95
+        chunk_id: jones-hosking-moss-2012#c00193
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4e06138015b7
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+quality_edges:
+  - key: malloc-free-manual-allocation--affects-quality--safety
+    from: malloc-free-manual-allocation
+    to: safety
+    assessments:
+      - key: safety
+        polarity: hurts
+        strength: strong
+        statement: Explicit deallocation is the direct cause of dangling pointers, double frees and 
+          memory leaks, errors that are among the most common and costly in real programs.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §1.1
+            chunk_id: jones-hosking-moss-2012#c00069
+          - source: scott-plp
+            locator: p. 187
+            chunk_id: scott-plp#c00174
+          - source: vanroy-haridi-2003
+            locator: §2.4.7
+            chunk_id: vanroy-haridi-2003#c00190
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6ce5ae9b63bf
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: malloc-free-manual-allocation--affects-quality--performance
+    from: malloc-free-manual-allocation
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: If the programmer can correctly identify the end of an object's lifetime without 
+          heavy run-time bookkeeping, explicit deallocation gives faster execution and a simpler 
+          implementation than automatic collection.
+        evidence:
+          - source: scott-plp
+            locator: p. 187
+            chunk_id: scott-plp#c00174
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-58a74be3265e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: reference-counting-gc--affects-quality--performance
+    from: reference-counting-gc
+    to: performance
+    assessments:
+      - key: performance
+        polarity: hurts
+        strength: strong
+        statement: Reference counting taxes every pointer read and write and requires expensive 
+          synchronisation in multithreaded programs, imposing a much larger throughput tax than 
+          tracing.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §5.7
+            chunk_id: jones-hosking-moss-2012#c00236
+            quote: Reference counting taxes every pointer read and write operation and thus imposes 
+              a much larger tax on throughput than tracing does.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-0d6c30a0895f
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: reference-counting-gc--affects-quality--memory-efficiency
+    from: reference-counting-gc
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: improves
+        strength: moderate
+        statement: Simple reference counting reclaims an object's space promptly, as soon as the 
+          last pointer to it is removed.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §5.7
+            chunk_id: jones-hosking-moss-2012#c00236
+            quote: Simple reference counting can reclaim the space occupied by an object as soon as 
+              the last pointer to that object is removed.
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: Reference counting cannot reclaim cycles of garbage and the counts themselves 
+          increase the size of every object.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §5.7
+            chunk_id: jones-hosking-moss-2012#c00236
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2e04c2d8adef
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: automatic-reference-counting-objc--affects-quality--ease-of-use
+    from: automatic-reference-counting-objc
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: improves
+        strength: strong
+        statement: ARC removes the need for the programmer to write retain and release calls by 
+          hand, making reference-counted memory management automatic.
+        evidence:
+          - source: clang-arc-spec
+            locator: § General#
+            chunk_id: clang-arc-spec#c00006
+            quote: freeing the programmer from the need to explicitly insert retains and releases
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-22ba5096343e
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: automatic-reference-counting-objc--affects-quality--memory-efficiency
+    from: automatic-reference-counting-objc
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: ARC ships no cycle collector, so reference cycles are retained unless the 
+          programmer breaks them manually or with weak references.
+        evidence:
+          - source: clang-arc-spec
+            locator: § General#
+            chunk_id: clang-arc-spec#c00006
+            quote: It does not provide a cycle collector; users must explicitly manage the lifetime 
+              of their objects, breaking cycles manually or with weak or unsafe references.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-f5eaa56c2c99
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: every citation tops out at `partial`; narrow the claim to what the
+        cited text actually supports and resubmit'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: unique-ownership-pointer--affects-quality--safety
+    from: unique-ownership-pointer
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: moderate
+        statement: Unique-ownership pointers provide safe storage reclamation by overloading pointer
+          operations with strict ownership semantics, so the object dies with its single owner.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §1.1
+            chunk_id: jones-hosking-moss-2012#c00072
+          - source: jones-hosking-moss-2012
+            locator: §5.1
+            chunk_id: jones-hosking-moss-2012#c00202
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-937cdaa42132
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: finalizer--affects-quality--ease-of-use
+    from: finalizer
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: hurts
+        strength: moderate
+        statement: Finalizers are hard to use correctly because neither the timing, the thread, nor 
+          the ordering of finalizer invocation is specified.
+        evidence:
+          - source: jls-se25
+            locator: §12.6
+            chunk_id: jls-se25#c00647
+          - source: tc39-weakrefs
+            locator: '#locating-and-responding-to-external-resource-leaks'
+            chunk_id: tc39-weakrefs#c00009
+            quote: this technique is unreliable and may lead to resource exhaustion
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-88819a4093c4
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: generational-garbage-collection--affects-quality--performance
+    from: generational-garbage-collection
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: strong
+        statement: Concentrating collection effort on a small young generation both shortens 
+          expected pauses and raises throughput, by processing long-lived data less often and 
+          allocating sequentially in the nursery.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §9.13
+            chunk_id: jones-hosking-moss-2012#c00380
+            quote: Generational garbage collection has proved to be a highly effective organisation,
+              offering significant performance improvements for a wide range of applications.
+      - key: performance
+        polarity: hurts
+        strength: moderate
+        statement: Generational collection taxes the mutator with write-barrier bookkeeping to track
+          inter-generational references, and loses outright if object mortality is not skewed 
+          towards the young.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: pp. 154–155
+            chunk_id: jones-hosking-moss-2012#c00329
+            quote: generational collectors impose a bookkeeping overhead on mutators in order to 
+              track references that span generations
+          - source: jones-hosking-moss-2012
+            locator: §9.13
+            chunk_id: jones-hosking-moss-2012#c00380
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-25732f6df36f
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: generational-garbage-collection--affects-quality--predictability
+    from: generational-garbage-collection
+    to: predictability
+    assessments:
+      - key: predictability
+        polarity: improves
+        strength: moderate
+        statement: 'Bounding the nursery size reduces expected pause times to tens or hundreds of microseconds,
+          but only the expected case: the eventual full-heap collection leaves the worst case unbounded,
+          so it cannot meet hard real-time deadlines.'
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: pp. 154–155
+            chunk_id: jones-hosking-moss-2012#c00329
+            quote: Generational collection therefore only improves expected pause times, not the 
+              worst case. On its own, it is not sufficient for real-time systems.
+          - source: jones-hosking-moss-2012
+            locator: §9.13
+            chunk_id: jones-hosking-moss-2012#c00380
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c3d3636190ea
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: parallel-garbage-collection--affects-quality--predictability
+    from: parallel-garbage-collection
+    to: predictability
+    assessments:
+      - key: predictability
+        polarity: improves
+        strength: moderate
+        statement: Having all processors cooperate on the collection while the mutators are stopped 
+          shortens the stop-the-world pause.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 328
+            chunk_id: jones-hosking-moss-2012#c00737
+            quote: An obvious way to reduce pause times is to have all processors cooperate to 
+              collect garbage (while still stopping all mutator threads)
+          - source: jones-hosking-moss-2012
+            locator: p. 44
+            chunk_id: jones-hosking-moss-2012#c00085
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7496c78b22cc
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: concurrent-garbage-collection--affects-quality--performance
+    from: concurrent-garbage-collection
+    to: performance
+    assessments:
+      - key: performance
+        polarity: hurts
+        strength: moderate
+        statement: Concurrent collection taxes the mutator with barrier synchronisation; measured 
+          inlined write barriers cost 2–6% of running time and read barriers up to 20%.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 386
+            chunk_id: jones-hosking-moss-2012#c00870
+            quote: He measured the running-time overhead of inlined write barriers as ranging from 
+              2% to 6%, and up to 20% for read barriers.
+          - source: jones-hosking-moss-2012
+            locator: p. 44
+            chunk_id: jones-hosking-moss-2012#c00085
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ede9c1ce51cb
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: deletion-barrier--affects-quality--memory-efficiency
+    from: deletion-barrier
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: 'The snapshot-at-the-beginning deletion barrier is the least precise technique: it
+          retains as floating garbage every object whose last incoming pointer was deleted during the
+          cycle.'
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 377
+            chunk_id: jones-hosking-moss-2012#c00848
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-169e82499891
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: mark-compact-collection--affects-quality--memory-efficiency
+    from: mark-compact-collection
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: improves
+        strength: strong
+        statement: Compacting live objects into one end of the region eliminates external 
+          fragmentation, so free space is contiguous and available to any allocation request.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 72
+            chunk_id: jones-hosking-moss-2012#c00150
+            quote: two strategies for compacting live objects in the heap in order to eliminate 
+              external fragmentation
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6d1a8dd07815
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: mark-sweep-collection--affects-quality--memory-efficiency
+    from: mark-sweep-collection
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: As a non-moving collector, mark-sweep fragments the heap over time, so a large 
+          request can fail even when total free space suffices.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 72
+            chunk_id: jones-hosking-moss-2012#c00150
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c29d3e176292
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: semispace-copying-collection--affects-quality--memory-efficiency
+    from: semispace-copying-collection
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: strong
+        statement: Semispace copying reserves a second space for survivors, halving the heap 
+          available to the program.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 84
+            chunk_id: jones-hosking-moss-2012#c00174
+            quote: Its chief disadvantage is that it reduces the size of the available heap by half.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ef17333df99d
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: semispace-copying-collection--affects-quality--performance
+    from: semispace-copying-collection
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Copying compacts the heap in a single pass over the live objects and leaves a 
+          contiguous space in which allocation is a cache-friendly bump of a free pointer.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 84
+            chunk_id: jones-hosking-moss-2012#c00174
+            quote: Copying compacts the heap, thus allowing fast allocation, yet only requires a 
+              single pass over the live objects in the heap.
+          - source: jones-hosking-moss-2012
+            locator: pp. 94–95
+            chunk_id: jones-hosking-moss-2012#c00193
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-df2eb8de2624
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: thread-local-allocation-buffer--affects-quality--performance
+    from: thread-local-allocation-buffer
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Giving each thread its own allocation buffer removes the atomic operations that 
+          otherwise make allocation a serial bottleneck, and was measured to improve multiprocessor 
+          Java performance substantially.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §7.7
+            chunk_id: jones-hosking-moss-2012#c00299
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c00a57f3da7a
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: stack-allocation-of-heap-objects--affects-quality--performance
+    from: stack-allocation-of-heap-objects
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Allocating non-escaping objects in the caller's stack frame is inherently cheaper
+          than heap allocation and removes the occasional synchronisation with the thread-common 
+          heap.
+        evidence:
+          - source: choi-et-al-1999
+            locator: p. 1
+            chunk_id: choi-et-al-1999#c00002
+          - source: choi-et-al-1999
+            locator: p. 13
+            chunk_id: choi-et-al-1999#c00038
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c33b0e535371
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: arena-obstack-allocation--affects-quality--performance
+    from: arena-obstack-allocation
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Arena allocation is usually an inlined pointer increment, and the cost of freeing
+          is proportional to the number of chunks rather than the number of objects released.
+        evidence:
+          - source: hanson-1990
+            locator: p. 3
+            chunk_id: hanson-1990#c00006
+            quote: Allocation is simple and, like quick-fit, most allocations can be done with 
+              in-line code.
+          - source: wilson-et-al-1995
+            locator: §4
+            chunk_id: wilson-et-al-1995#c00192
+            quote: The time cost for freeing in a large specially-managed heap is roughly 
+              proportional to the number of chunks freed
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a4aa994b9a37
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: arena-obstack-allocation--affects-quality--ease-of-use
+    from: arena-obstack-allocation
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: improves
+        strength: moderate
+        statement: Managing objects in lifetime batches is easier for the programmer than writing 
+          routines that free each object individually.
+        evidence:
+          - source: wilson-et-al-1995
+            locator: §4
+            chunk_id: wilson-et-al-1995#c00192
+            quote: it is often easier for the programmer to manage batches of objects than to code 
+              freeing routines that free each object individually
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-bc7e93fb7d72
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: buddy-system-allocation--affects-quality--memory-efficiency
+    from: buddy-system-allocation
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: Measured against other policies, binary buddy allocation wasted far more memory, 
+          and its internal fragmentation alone is comparable to the total fragmentation of better 
+          schemes.
+        evidence:
+          - source: wilson-et-al-1995
+            locator: §4
+            chunk_id: wilson-et-al-1995#c00205
+          - source: wilson-et-al-1995
+            locator: §3
+            chunk_id: wilson-et-al-1995#c00109
+            quote: their cost in internal fragmentation alone seems to be comparable to the total 
+              fragmentation costs of better schemes
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6dfa645b8abf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: segregated-fits-allocation--affects-quality--performance
+    from: segregated-fits-allocation
+    to: performance
+    assessments:
+      - key: performance
+        polarity: improves
+        strength: moderate
+        statement: Segregating free cells into per-size-class lists removes the search for a 
+          suitable cell that dominates basic free-list allocation time.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §7.4
+            chunk_id: jones-hosking-moss-2012#c00279
+            quote: Much of the time consumed by a basic free-list allocator is spent searching for a
+              free cell of appropriate size. Hence, using multiple free-lists whose members are 
+              segregated by size can speed allocation
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-38053d37fd81
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: conservative-garbage-collection--affects-quality--interoperability
+    from: conservative-garbage-collection
+    to: interoperability
+    assessments:
+      - key: interoperability
+        polarity: improves
+        strength: moderate
+        statement: Conservative scanning is what allows collection in uncooperative environments, 
+          where the compiler — as for C and C++ — supplies no type-accurate map of which slots hold 
+          references.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 147
+            chunk_id: jones-hosking-moss-2012#c00309
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-869997b0627e
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: conservative-garbage-collection--affects-quality--memory-efficiency
+    from: conservative-garbage-collection
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: moderate
+        statement: Because conservative estimates may only over-estimate references, values that 
+          merely look like pointers keep dead objects alive, which is safe but space-inefficient.
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: §11.2
+            chunk_id: jones-hosking-moss-2012#c00469
+          - source: jones-hosking-moss-2012
+            locator: p. 147
+            chunk_id: jones-hosking-moss-2012#c00309
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-20f4d918f0e4
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: stack-map--affects-quality--memory-efficiency
+    from: stack-map
+    to: memory-efficiency
+    assessments:
+      - key: memory-efficiency
+        polarity: hurts
+        strength: weak
+        statement: 'Stack maps cost real space: measured tables ran to 16% of code size for Modula-3 and
+          about 20–22% of x86 code size for Java before compression.'
+        evidence:
+          - source: jones-hosking-moss-2012
+            locator: p. 227
+            chunk_id: jones-hosking-moss-2012#c00500
+            quote: Diwan et al. [1992] found their tables for Modula-3 for the VAX to be 16% of the 
+              size of code, and Stichnoth et al. [1999] reported their tables for Java to be 20% of 
+              the size of x86 code.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e81a827451ed
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+  - key: scoped-memory--affects-quality--predictability
+    from: scoped-memory
+    to: predictability
+    assessments:
+      - key: predictability
+        polarity: improves
+        strength: strong
+        statement: Objects allocated in scoped and immortal memory areas are reclaimed by scope exit
+          rather than by the collector, so their allocation and use never incur garbage collection 
+          latency.
+        evidence:
+          - source: rtsj-1-0-2-spec
+            locator: pp. 200–201
+            chunk_id: rtsj-1-0-2-spec#c00392
+            quote: allocate objects in a Java-like style, ignore the reclamation of those objects, 
+              and not incur the latency of the implemented garbage collection algorithm
+          - source: rtsj-1-0-2-spec
+            locator: pp. 195–196
+            chunk_id: rtsj-1-0-2-spec#c00382
+            quote: the allocation and use of objects in immortal memory is never subject to garbage 
+              collection delays
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2220feb0d116
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: scoped-memory--affects-quality--ease-of-use
+    from: scoped-memory
+    to: ease-of-use
+    assessments:
+      - key: ease-of-use
+        polarity: hurts
+        strength: moderate
+        statement: Scoped memory burdens the programmer with a restricted set of reference 
+          assignment rules, whose violation the virtual machine detects only by throwing an 
+          exception at run time.
+        evidence:
+          - source: rtsj-1-0-2-spec
+            locator: p. 48
+            chunk_id: rtsj-1-0-2-spec#c00083
+            quote: A reference to a scoped object may only be assigned into the same scope or into 
+              an inner scope. The virtual machine must detect illegal assignment attempts and must 
+              throw an appropriate exception when they occur.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-fdd85f368ba8
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-19-r4-verify-02-memory-management-04
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: scoped-memory--affects-quality--safety
+    from: scoped-memory
+    to: safety
+    assessments:
+      - key: safety
+        polarity: improves
+        strength: moderate
+        statement: The assignment rules on scoped references exist precisely to prevent dangling 
+          references and so preserve referential integrity of the runtime.
+        evidence:
+          - source: rtsj-1-0-2-spec
+            locator: pp. 195–196
+            chunk_id: rtsj-1-0-2-spec#c00382
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7915ccbb503f
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-19-r4-verify-02-memory-management-03
+    note: ''
+findings:
+  - kind: structure-friction
+    detail: automatic-reference-counting-objc and cyclic-reference-counting each specialise the 
+      feature reference-counting-gc (add compiler-inserted retain/release, or add trial-deletion 
+      cycle collection) rather than realising a distinct concept; the realizes relation only 
+      connects feature->concept, so this feature-specialises-feature link cannot be expressed and 
+      had to be dropped or redirected to a looser concept target.
+    keys:
+      - automatic-reference-counting-objc
+      - cyclic-reference-counting
+    area: ontology
+    element: realizes
+  - kind: rule-candidate
+    detail: 'Generational garbage collection has no effect on its own: it requires pairing with at least
+      one member of the gc-collector-algorithm dimension (mark-sweep, semispace-copying or mark-compact)
+      to actually collect each generation. The interaction, not either feature alone, is what the sources
+      describe (e.g. copying nursery + mark-compact old generation).'
+    keys:
+      - generational-garbage-collection
+      - mark-sweep-collection
+      - semispace-copying-collection
+      - mark-compact-collection
+  - kind: rule-candidate
+    detail: A card-table remembered set is only meaningful in combination with both a write barrier 
+      (to dirty cards) and a generational or regional collector (to consult the table when 
+      scanning); none of the three alone produces the described cross-region-pointer tracking.
+    keys:
+      - card-table-remembered-set
+      - write-barrier
+      - generational-garbage-collection
+  - kind: cross-theme-edge
+    detail: Ownership, borrowing, move-semantics and substructural-types (linear/affine) are as much
+      a type-system discipline as a memory-management one; the Rust FLS and ATTAPL sources frame 
+      them primarily as static typing/substructural-logic machinery that happens to govern storage 
+      reclamation as a side effect. A 'type systems' theme will want to claim some or all of these 
+      too.
+    keys:
+      - ownership
+      - borrowing
+      - move-semantics
+      - substructural-types
+  - kind: cross-theme-edge
+    detail: Escape analysis is a general compiler-optimisation technique (also used for lock 
+      elision) that this theme only sees through its memory-allocation consequence (stack allocation
+      of would-be-heap objects). A compiler-optimisations theme will likely also want this node.
+    keys:
+      - escape-analysis
+      - stack-allocation-of-heap-objects
+  - kind: cross-theme-edge
+    detail: 'Distributed garbage collection (and its folded-in weighted-reference-counting / time-lease
+      mechanisms) sits at the boundary with a distributed-systems/concurrency theme: the reclamation problem
+      is memory management but the solutions (credits, leases, failure detection) are distributed-systems
+      techniques.'
+    keys:
+      - distributed-garbage-collection
+  - kind: structure-friction
+    detail: Several surveyor leads bundle a whole policy space under one gloss without 
+      separately-evidenced member values (allocator-fit-policy's first/next/best-fit, 
+      compaction-order's arbitrary/linearising/sliding). These were folded as notes into a sibling 
+      node (free-list-allocation, mark-compact-collection) rather than minted as their own 
+      dimension, because the model requires at least two independently evidenced member features to 
+      open a dimension and the survey only evidences the bundling concept, not its individual 
+      values.
+    keys:
+      - free-list-allocation
+      - mark-compact-collection
+    area: ontology
+    element: concept-feature-split
+  - kind: rule-candidate
+    detail: Generational collection is only correct in combination with both a write barrier on 
+      pointer stores and a remembered-set structure (e.g. a card table); neither feature alone 
+      produces the effect, and the barrier itself is modelled as a concept, not a feature.
+    keys:
+      - generational-garbage-collection
+      - card-table-remembered-set
+      - insertion-barrier
+  - kind: rule-candidate
+    detail: Conservative pointer finding combined with a moving collector yields the 
+      'mostly-copying' behaviour only when heap objects additionally carry layout information and 
+      ambiguously-referenced objects are pinned — an interaction of conservative scanning plus 
+      copying, not a property of either alone.
+    keys:
+      - conservative-garbage-collection
+      - semispace-copying-collection
+      - accurate-pointer-finding
+  - kind: rule-candidate
+    detail: Reclaiming cyclic garbage under reference counting needs reference counting plus either 
+      trial-deletion cycle collection or disciplined weak references; the combination determines 
+      whether cycles leak or are reclaimed.
+    keys:
+      - reference-counting-gc
+      - cyclic-reference-counting
+      - weak-reference
+  - kind: structure-friction
+    detail: Buddy-system allocation is described in the literature as a special case of segregated 
+      fits (size classes with rounding plus a restricted splitting/coalescing rule). None of the 
+      five types expresses 'specialises'; 'alternative-to' was used for its competition with general
+      free-list allocation instead, which loses the containment relation.
+    keys:
+      - buddy-system-allocation
+      - segregated-fits-allocation
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: Bitmapped-fits allocation is a sequential-fits strategy that replaces only the free-cell
+      search mechanism of free-list allocation; the relation is 'is a variant/refinement of', not 
+      rivalry or enablement.
+    keys:
+      - bitmapped-fits-allocation
+      - free-list-allocation
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: "Several edges the sources state plainly cannot be drawn because the required endpoint is
+      a concept: generational and concurrent collectors require a write barrier; moving concurrent collectors
+      require a read barrier; conservative collection causes space leaks. There is also no generic 'tracing
+      garbage collection' feature node to anchor requires-edges from finalizer, weak-reference or stack-map,
+      which currently have to be attached to specific algorithms (mark-sweep, copying) instead."
+    keys:
+      - write-barrier
+      - read-barrier
+      - finalizer
+      - stack-map
+    area: ontology
+    element: concept-feature-split
+  - kind: cross-theme-edge
+    detail: Compiler-driven stack allocation depends on escape analysis, a static program analysis; 
+      the enabling relation crosses into the compilation/static-analysis theme rather than memory 
+      management.
+    keys:
+      - stack-allocation-of-heap-objects
+      - escape-analysis
+  - kind: cross-theme-edge
+    detail: 'Trail and choice-point reclamation is driven by backtracking control flow in logic languages:
+      the heap top saved in a choice point is restored on failure, so the edge really runs to a control-flow/nondeterminism
+      feature in another theme.'
+    keys:
+      - prolog-trail-and-backtracking-reclamation
+  - kind: cross-theme-edge
+    detail: Unique- and shared-ownership pointers connect to ownership, borrowing, move semantics 
+      and substructural types — type-system features in another theme — and destructors connect to 
+      scope-based resource management (RAII) in the control-flow theme.
+    keys:
+      - unique-ownership-pointer
+      - destructor
+      - ownership
+  - kind: cross-theme-edge
+    detail: 'Stack maps and conservative scanning sit at the foreign-function/interoperability boundary:
+      objects reachable from native code (e.g. through JNI) must be pinned or accessed through handles,
+      an interop-theme constraint.'
+    keys:
+      - stack-map
+      - conservative-garbage-collection
+  - kind: trimmed
+    detail: "Trimmed 6 edges over the cap: Cut 6 of the 66 candidates: the two weakest-cited/most tangential
+      edges whose citation text doesn't clearly name the specific mechanism claimed (card-table→concurrent-GC,
+      which repurposes a generic write-barrier passage; stack-allocation→TLAB, a speculative 'reduces
+      pressure' inference from an escape-analysis passage not about TLABs); a self-undermining, explicitly
+      weak-strength claim (concurrent-GC improving predictability, whose own citation argues it mostly
+      doesn't); an imprecise 'enables' claim better described as a complementary fix (weak-reference enabling
+      shared_ownership_pointer, which works without it); a redundant quality edge restating the general
+      reference-counting cycle problem specifically for shared_ptr with no added citation strength; and
+      the most thematically peripheral single-language edge (Prolog trail/backtracking reclamation) relative
+      to the core, well-established GC/allocation concepts the rest of the set reinforces."
+    keys:
+      - card-table-remembered-set--enables--concurrent-garbage-collection
+      - weak-reference--enables--shared-ownership-pointer
+      - stack-allocation-of-heap-objects--influences--thread-local-allocation-buffer
+      - shared-ownership-pointer--affects-quality--memory-efficiency
+      - concurrent-garbage-collection--affects-quality--predictability
+      - prolog-trail-and-backtracking-reclamation--affects-quality--memory-efficiency
