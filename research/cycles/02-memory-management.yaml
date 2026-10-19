@@ -1,7 +1,7 @@
 cycle: 2
 theme: memory-management
 theme_digest: 6f27faeff90ccc69
-status: r3-done
+status: r4-drafted
 languages:
   - prolog
   - cpp
@@ -11,6 +11,7 @@ languages:
 nodes_minted: []
 artifacts:
   survey: research/surveys/02-memory-management.yaml
+  draft: research/drafts/02-memory-management.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-10-09'
