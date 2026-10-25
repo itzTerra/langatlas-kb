@@ -1,0 +1,4407 @@
+cycle: 4
+theme: syntax-layer-constructs
+theme_digest: 356863098e13a19f
+generated_at: '2026-10-19T17:09:56Z'
+survey: research/surveys/04-syntax-layer-constructs.yaml
+runs:
+  ontologist: 2026-10-19-r4-atomize-04-syntax-layer-constructs-01
+  edge_drafter: 2026-10-19-r4-edges-04-syntax-layer-constructs-02
+dimensions:
+  - key: block-delimiter-notation
+    slug: block-delimiter-notation
+    label: Statement-grouping notation
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: 'The surface device a language uses to group a sequence of statements into one unit: matched
+      brace-like delimiters, a per-construct closing keyword, or indentation.'
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: statement-expression-status
+    slug: statement-expression-status
+    label: Statement/expression status of constructs
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Whether a language keeps a separate syntactic category of statements or makes every 
+      construct an expression that yields a value.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: block-comment-nesting
+    slug: block-comment-nesting
+    label: Nesting of delimited comments
+    exclusivity: exclusive
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Whether a delimited comment may contain a further delimited comment; specifications state 
+      this explicitly either way.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: operator-notation-position
+    slug: operator-notation-position
+    label: Operator notation position
+    exclusivity: multi
+    applies_to:
+      - general-purpose
+    contested:
+      - new-dimension
+    debate_id:
+    status: waived
+    verification:
+    note: Where an operator stands relative to its operands in surface syntax; Scott notes 
+      precedence and associativity questions arise only for infix notation.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+qualities:
+  - key: implementability
+    slug: implementability
+    label: Implementability
+    summary: How cheaply and straightforwardly a language feature can be implemented in a 
+      conventional compiler front end and in tooling.
+    contested:
+      - new-quality
+    debate_id:
+    status: waived
+    verification:
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+nodes:
+  - key: abstract-versus-concrete-syntax
+    from_candidates:
+      - abstract-versus-concrete-syntax
+    kind: concept
+    id: abstract-versus-concrete-syntax
+    name: Abstract versus concrete syntax
+    summary: The distinction between the concrete (surface) syntax, the strings of characters 
+      programmers read and write, and the abstract syntax, a simpler tree representation of the same
+      phrase that elides details needed only for unambiguous analysis.
+    evidence:
+      - source: pierce-tapl-2002
+        locator: pp. 59–60
+        chunk_id: pierce-tapl-2002#c00134
+        quote: The concrete syntax (or surface syntax ) of the language refers to the strings of 
+          characters that programmers directly read and write. Abstract syntax is a much simpler 
+          internal representation of programs as labeled trees
+      - source: kaijanaho-2015
+        locator: §2.3
+        chunk_id: kaijanaho-2015#c00057
+      - source: harper-pfpl
+        locator: p. 23
+        chunk_id: harper-pfpl#c00029
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-642dc89a0db0
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved as one concept because all three sources present it as a single two-level 
+      distinction rather than as two independent ideas.
+  - key: lexical-analysis
+    from_candidates:
+      - lexical-analysis-phase
+    kind: concept
+    id: lexical-analysis
+    name: Lexical analysis
+    summary: The lowest level of syntax analysis, which collects the character stream of a program 
+      into logical groupings, discards whitespace and comments, and hands the parser a sequence of 
+      tokens.
+    evidence:
+      - source: sebesta-copl
+        locator: §4.2
+        chunk_id: sebesta-copl#c00342
+        quote: A lexical analyzer serves as the front end of a syntax analyzer. Technically, lexical
+          analysis is a part of syntax analysis. A lexical analyzer performs syntax analysis at the 
+          lowest level of program structure.
+      - source: scott-plp
+        locator: pp. 62–63
+        chunk_id: scott-plp#c00061
+      - source: pierce-tapl-2002
+        locator: pp. 59–60
+        chunk_id: pierce-tapl-2002#c00134
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7d6a9d08a510
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept at the level of the phase itself, not of any one language's token set, which is the 
+      separate token-classes feature.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: token-lexeme-distinction
+    from_candidates:
+      - token-versus-lexeme
+    kind: concept
+    id: token-lexeme-distinction
+    name: Token category versus lexeme
+    summary: The distinction between a lexeme, the concrete character grouping found in the source, 
+      and a token, the internal code for the category of such groupings that the parser actually 
+      sees.
+    evidence:
+      - source: sebesta-copl
+        locator: §4.2
+        chunk_id: sebesta-copl#c00342
+      - source: kaijanaho-2015
+        locator: §2.3
+        chunk_id: kaijanaho-2015#c00057
+      - source: sebesta-copl
+        locator: §4.5.3
+        chunk_id: sebesta-copl#c00384
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e1c20759c6f6
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Drawn as its own concept rather than folded into lexical analysis because the token/lexeme
+      pair is what later grammar rules and spec wording quantify over.
+  - key: maximal-munch
+    from_candidates:
+      - maximal-munch
+      - tokenization-ambiguity-rules
+    kind: concept
+    id: maximal-munch
+    name: Maximal munch
+    summary: The rule that resolves lexical ambiguity by reading, at each point, the longest 
+      character sequence that forms a legal token, so that competing shorter tokenizations are 
+      rejected even when they would yield a valid program.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+        quote: 'Lexical analysis should use the “maximal munch” rule: at each point, the longest possible
+          lexeme satisfying the lexeme production is read.'
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+      - source: jls-se25
+        locator: §3.2
+        chunk_id: jls-se25#c00053
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0f28445b5e8a
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The surveyor's separate 'tokenization ambiguity rules' candidate is merged here because 
+      the spec rules it cites are the longest-match rule plus its stated exceptions.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: syntactic-ambiguity
+    from_candidates:
+      - syntactic-ambiguity
+    kind: concept
+    id: syntactic-ambiguity
+    name: Grammatical ambiguity and disambiguation
+    summary: A grammar is ambiguous when some token sequence has more than one parse tree; since 
+      meaning is based on syntactic form, languages add extra conditions, rewritten productions or 
+      meta-rules that restrict the parser to one tree.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2
+        chunk_id: vanroy-haridi-2003#c00125
+        quote: Context-free grammars can be ambiguous , i.e., there can be several parse trees that 
+          correspond to a given token sequence.
+      - source: sebesta-copl
+        locator: §3.3.1
+        chunk_id: sebesta-copl#c00268
+      - source: haskell-2010-report
+        locator: §10.1
+        chunk_id: haskell-2010-report#c00251
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-55a8ad0a212c
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Minted above the individual ambiguities (dangling else, infix grouping) because the 
+      sources treat ambiguity plus disambiguation as one general property of grammars.
+  - key: dangling-else-ambiguity
+    from_candidates:
+      - dangling-else-ambiguity
+    kind: concept
+    id: dangling-else-ambiguity
+    name: Dangling else ambiguity
+    summary: The specific grammar ambiguity in which an optional else clause could belong to either 
+      of two nested conditionals; languages decree a resolution, typically binding else to the 
+      innermost possible if, or rewrite the grammar to exclude one tree.
+    evidence:
+      - source: jls-se25
+        locator: §14.5
+        chunk_id: jls-se25#c00718
+        quote: The Java programming language, like C and C++ and many programming languages before 
+          them, arbitrarily decrees that an else clause belongs to the innermost if to which it 
+          might possibly belong.
+      - source: sebesta-copl
+        locator: §3.3.1
+        chunk_id: sebesta-copl#c00276
+      - source: scott-plp
+        locator: pp. 138–140
+        chunk_id: scott-plp#c00127
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-1f45a253582a
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept separate from general ambiguity because it is the canonical named instance whose 
+      resolutions (nearest-if rule, end markers, indentation) are themselves compared across 
+      languages.
+  - key: syntactic-sugar
+    from_candidates:
+      - interpolation-desugars-to-format-call
+    kind: concept
+    id: syntactic-sugar
+    name: Syntactic sugar and desugaring
+    summary: The practice of splitting a language into a core (kernel) language whose constructs are
+      handled directly and a surface language of extra conveniences, defined by a translation 
+      (desugaring) back into the core.
+    evidence:
+      - source: krishnamurthi-plai
+        locator: p. 72
+        chunk_id: krishnamurthi-plai#c00101
+        quote: The surface language may have various conveniences, but these get translated into the
+          core language, whose constructs are all handled directly. The extra constructs—those that 
+          make it “sweeter” to program—are called syntactic sugar .
+      - source: turbak-gifford-dcpl
+        locator: p. 1211
+        chunk_id: turbak-gifford-dcpl#c01844
+      - source: vanroy-haridi-2003
+        locator: §2.5.1
+        chunk_id: vanroy-haridi-2003#c00199
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-723b02a96717
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The surveyor's interpolation-specific desugaring candidate is generalised here, since the 
+      sources state the surface/core split as a general specification device rather than a feature 
+      of one construct.
+  - key: translation-phases
+    from_candidates:
+      - translation-phases
+    kind: concept
+    id: translation-phases
+    name: Ordered translation phases
+    summary: A specification device that fixes the precedence among syntax rules by describing 
+      translation as a numbered sequence of conceptual phases, each consuming the output of the 
+      previous one.
+    evidence:
+      - source: c23-n3220
+        locator: §5.1
+        chunk_id: c23-n3220#c00070
+        quote: The precedence among the syntax rules of translation is specified by the following 
+          phases.
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00041
+      - source: jls-se25
+        locator: §3.2
+        chunk_id: jls-se25#c00053
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-a3e4b63147aa
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: A concept about how specifications order syntax rules, not a construct a programmer 
+      writes, so it is not given a layer.
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: preprocessing-token
+    from_candidates:
+      - preprocessing-token
+    kind: concept
+    id: preprocessing-token
+    name: Preprocessing token
+    summary: A coarser lexical category that is the minimal lexical element only during earlier 
+      translation phases and is later required to have the form of a proper token of the language.
+    evidence:
+      - source: c23-n3220
+        locator: §6.4
+        chunk_id: c23-n3220#c00173
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00042
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ead27b32eba6
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Separate from token-lexeme-distinction because it posits a second, phase-relative token 
+      level rather than a different view of the same tokens.
+  - key: preprocessing-as-lexical-layer
+    from_candidates:
+      - preprocessing-as-lexical-layer
+    kind: concept
+    id: preprocessing-as-lexical-layer
+    name: Preprocessing as a lexical layer
+    summary: A directive sub-language that conceptually runs before translation of the resulting 
+      unit, able to include other files, conditionally skip sections of text and replace macros, and
+      that is not part of the syntactic grammar proper.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §15
+        chunk_id: iso-iec-14882-cpp20-n4861#c00970
+      - source: ecma-334-7th
+        locator: §6.5
+        chunk_id: ecma-334-7th#c00141
+      - source: c23-n3220
+        locator: §6.10.1
+        chunk_id: c23-n3220#c00400
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6af2b3d472c2
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved as a concept because C#, C and C++ all describe it as a layer outside the syntactic
+      grammar, independent of which directives a given language supplies.
+  - key: logical-versus-physical-line
+    from_candidates:
+      - logical-versus-physical-line
+    kind: concept
+    id: logical-versus-physical-line
+    name: Logical versus physical line
+    summary: The distinction between a line of the source file and the line unit the grammar sees, 
+      the latter being constructed from one or more physical lines by explicit or implicit joining 
+      rules.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.1. Logical lines
+        chunk_id: python-langref-3#c00008
+        quote: A logical line is constructed from one or more physical lines by following the 
+          explicit or implicit line joining rules.
+      - source: c23-n3220
+        locator: §5.1
+        chunk_id: c23-n3220#c00070
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00042
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-16c2f717957e
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Stated as a concept because both line-splicing and bracket-based joining presuppose it, 
+      and line-oriented rules are defined over the logical unit.
+  - key: statement-expression-distinction
+    from_candidates:
+      - statement-expression-distinction
+    kind: concept
+    id: statement-expression-distinction
+    name: Statement versus expression
+    summary: The distinction between a construct that produces a value and one that is executed only
+      for its effect and sequencing; languages mark it by placing the two in separate syntactic 
+      categories.
+    evidence:
+      - source: vanroy-haridi-2003
+        locator: §2.5.1
+        chunk_id: vanroy-haridi-2003#c00199
+      - source: rust-fls
+        locator: § 6. Expressions¶
+        chunk_id: rust-fls#c00147
+      - source: jls-se25
+        locator: p. 511
+        chunk_id: jls-se25#c00705
+    contested:
+      - split-candidate
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f61a84570cc0
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The concept is split from the two layer-3 positions (expression-oriented versus 
+      statement-oriented) that languages take on it.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: statement-separator-versus-terminator
+    from_candidates:
+      - statement-separator-versus-terminator
+      - newline-terminates-complete-expression
+    kind: concept
+    id: statement-separator-versus-terminator
+    name: Statement separator versus terminator
+    summary: Whether the punctuation between statements separates them or terminates each one, and 
+      whether a line break can do that job — either by being supplied automatically or by ending a 
+      text that already parses.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Semicolons'
+        chunk_id: go-lang-spec#c00007
+        quote: The formal syntax uses semicolons ";" as terminators in a number of productions. Go 
+          programs may omit most of these semicolons using the following two rules
+      - source: python-langref-3
+        locator: § 8. Compound statements
+        chunk_id: python-langref-3#c00283
+      - source: rust-reference
+        locator: pp. 276–277
+        chunk_id: rust-reference#c00363
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-06a7450765fe
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The R-style rule that a newline terminates only a syntactically complete expression is 
+      folded in here as one answer to the same question rather than minted as a thinly sourced 
+      feature.
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: operator-precedence-and-associativity
+    from_candidates:
+      - operator-precedence-and-associativity
+    kind: concept
+    id: operator-precedence-and-associativity
+    name: Operator precedence and associativity
+    summary: 'The conventions that disambiguate unparenthesised infix expressions: precedence says which
+      operators group more tightly, associativity says how repeated operators of equal precedence group,
+      and both are usually encoded in the expression grammar.'
+    evidence:
+      - source: scott-plp
+        locator: pp. 92–93
+        chunk_id: scott-plp#c00090
+      - source: ecma-334-7th
+        locator: §12.4
+        chunk_id: ecma-334-7th#c00347
+      - source: haskell-2010-report
+        locator: §4.4.2
+        chunk_id: haskell-2010-report#c00115
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b6db07c1878b
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: One concept rather than two, because every source presents precedence and associativity 
+      together as the pair of conditions that disambiguate infix expressions.
+  - key: operator-fixity
+    from_candidates:
+      - operator-fixity
+    kind: concept
+    id: operator-fixity
+    name: Operator fixity
+    summary: The classification of an operator by its arity and the position it takes relative to 
+      its operands — prefix, infix or postfix — which together with associativity determines which 
+      operands may be left unbracketed.
+    evidence:
+      - source: deransart-prolog-1996
+        locator: §9.2
+        chunk_id: deransart-prolog-1996#c00737
+      - source: scott-plp
+        locator: pp. 319–321
+        chunk_id: scott-plp#c00303
+      - source: haskell-2010-report
+        locator: p. 36
+        chunk_id: haskell-2010-report#c00051
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-acbea09394c3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Separated from precedence/associativity because fixity is the positional classification on
+      which the notation-position dimension's values are defined.
+  - key: keyword-versus-reserved-word
+    from_candidates:
+      - keyword-versus-reserved-word
+    kind: concept
+    id: keyword-versus-reserved-word
+    name: Keyword versus reserved word
+    summary: The distinction between a special word that merely has meaning in some context and may 
+      still be redefined or used as a name, and a reserved word that can never be used as an 
+      identifier.
+    evidence:
+      - source: sebesta-copl
+        locator: §5.2.3
+        chunk_id: sebesta-copl#c00399
+      - source: scott-plp
+        locator: pp. 1361–1362
+        chunk_id: scott-plp#c01315
+      - source: rust-fls
+        locator: § 2.6. Keywords¶
+        chunk_id: rust-fls#c00034
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9e0ecfbb7345
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: A concept because the terminology itself is contested between sources, and the 
+      per-language answers (reserved words, soft keywords, escapes) are distinct features realising 
+      it.
+  - key: significant-indentation
+    from_candidates:
+      - significant-indentation
+      - tab-stop-column-convention
+    kind: feature
+    id: significant-indentation
+    name: Significant indentation
+    summary: Using the leading whitespace of a line, rather than explicit delimiters, to determine 
+      how statements are grouped, which requires a specified conversion of tabs to column positions.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00014
+        quote: Leading whitespace (spaces and tabs) at the beginning of a logical line is used to 
+          compute the indentation level of the line, which in turn is used to determine the grouping
+          of statements.
+      - source: scott-plp
+        locator: pp. 970–971
+        chunk_id: scott-plp#c00944
+      - source: sebesta-copl
+        locator: §8.2.1
+        chunk_id: sebesta-copl#c00646
+    contested:
+      - merged-candidates
+      - split-candidate
+      - new-dimension
+      - ontologist-flagged
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-33ee56f20a08
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Placed at layer 3 because Sebesta and Scott present reliance on indentation as a contested
+      position against brace or keyword delimiters, not as a neutral lexical detail. It is both a 
+      value on the grouping-notation axis and a lexical rule with its own mechanism (INDENT/DEDENT, 
+      tab stops), so its layer-3 placement may be wrong.
+    dimension: block-delimiter-notation
+    cross_cutting: true
+    aliases:
+      - indentation-based grouping
+      - off-side layout
+    realizes:
+      - lexical-analysis
+      - dangling-else-ambiguity
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: brace-delimited-blocks
+    from_candidates:
+      - block-delimiter-choice
+    kind: feature
+    id: brace-delimited-blocks
+    name: Brace-delimited blocks
+    summary: Grouping a possibly empty sequence of declarations and statements between matching 
+      brace brackets, so the group can stand wherever a single statement is expected.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Blocks'
+        chunk_id: go-lang-spec#c00051
+        quote: A block is a possibly empty sequence of declarations and statements within matching 
+          brace brackets.
+      - source: ecma-334-7th
+        locator: pp. 625–627
+        chunk_id: ecma-334-7th#c01024
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §8
+        chunk_id: iso-iec-14882-cpp20-n4861#c00371
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-36725d5b409a
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Split out of the surveyor's 'block delimiter choice' candidate, which names the axis 
+      rather than any one value on it.
+    dimension: block-delimiter-notation
+    cross_cutting: false
+    aliases:
+      - curly-brace blocks
+      - matched brackets
+    realizes:
+      - statement-separator-versus-terminator
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: keyword-end-markers
+    from_candidates:
+      - explicit-end-markers
+      - elsif-clause
+      - block-delimiter-choice
+    kind: feature
+    id: keyword-end-markers
+    name: Explicit end markers for structured statements
+    summary: Requiring each structured statement to be closed by its own keyword, which removes 
+      grouping ambiguity but makes terminators pile up, prompting chained-conditional forms such as 
+      elsif that need only one closing marker.
+    evidence:
+      - source: scott-plp
+        locator: pp. 138–140
+        chunk_id: scott-plp#c00127
+      - source: scott-plp
+        locator: pp. 140–142
+        chunk_id: scott-plp#c00128
+      - source: vanroy-haridi-2003
+        locator: §2.5.1
+        chunk_id: vanroy-haridi-2003#c00199
+    contested:
+      - merged-candidates
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-07cc2aefc2cc
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The elsif clause is folded in because Scott introduces it only as a repair for the 
+      terminator pile-up that end markers create, not as an independently comparable construct.
+    dimension: block-delimiter-notation
+    cross_cutting: false
+    aliases:
+      - end if
+      - distinct closing syntax
+      - elsif
+      - elif
+    realizes:
+      - dangling-else-ambiguity
+      - syntactic-ambiguity
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: expression-oriented-syntax
+    from_candidates:
+      - expression-oriented-syntax
+    kind: feature
+    id: expression-oriented-syntax
+    name: Expression-oriented syntax
+    summary: A design with no separate statement category, in which arbitrary expressions may appear
+      where other languages require statements and constructs other languages call statements may 
+      appear inside expressions, every construct yielding a value.
+    evidence:
+      - source: scott-plp
+        locator: pp. 329–330
+        chunk_id: scott-plp#c00313
+        quote: 'Algol 68 is said to be expression-oriented: it has no separate notion of statement. Arbitrary
+          expressions can appear in contexts that would call for a statement in a language like Pascal'
+      - source: rust-reference
+        locator: p. 249
+        chunk_id: rust-reference#c00323
+      - source: kaijanaho-2015
+        locator: §2.3
+        chunk_id: kaijanaho-2015#c00057
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f08ba1ec6f29
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Layer 3 because Scott frames it explicitly as a design goal (orthogonality) that few 
+      languages since have weighted the same way.
+    dimension: statement-expression-status
+    cross_cutting: false
+    aliases:
+      - expression language
+      - orthogonal expression syntax
+    realizes:
+      - statement-expression-distinction
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: statement-oriented-syntax
+    from_candidates:
+      - statement-expression-distinction
+    kind: feature
+    id: statement-oriented-syntax
+    name: Statement-oriented syntax
+    summary: A design that keeps statements and expressions in distinct syntactic categories, so 
+      statements are executed for effect and do not have values, and expressions reach statement 
+      position only through a dedicated expression-statement form.
+    evidence:
+      - source: jls-se25
+        locator: p. 511
+        chunk_id: jls-se25#c00705
+        quote: THE sequence of execution of a program is controlled by statements , which are 
+          executed for their effect and do not have values.
+      - source: scott-plp
+        locator: pp. 329–330
+        chunk_id: scott-plp#c00313
+      - source: ecma-334-7th
+        locator: §13.1
+        chunk_id: ecma-334-7th#c00586
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-36ee74112aee
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Minted as the contrasting value so the statement/expression axis has two members, as the 
+      dimension model requires.
+    dimension: statement-expression-status
+    cross_cutting: false
+    aliases:
+      - statement/expression separation
+    realizes:
+      - statement-expression-distinction
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: nestable-block-comments
+    from_candidates:
+      - nestable-block-comments
+    kind: feature
+    id: nestable-block-comments
+    name: Nestable block comments
+    summary: A delimited comment form whose grammar permits a further delimited comment inside it, 
+      so that regions of code containing comments can be commented out as a whole.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+        quote: ncomment → opencom ANYseq { ncomment ANYseq } closecom
+      - source: rust-reference
+        locator: p. 19
+        chunk_id: rust-reference#c00028
+      - source: scott-plp
+        locator: pp. 96–97
+        chunk_id: scott-plp#c00093
+    contested:
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c51bda482c39
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Layer 3 because Scott presents nesting as a deliberate choice with implementation cost 
+      that languages answer differently, not as an incidental grammar detail.
+    dimension: block-comment-nesting
+    cross_cutting: false
+    aliases:
+      - ncomment
+      - nested block comments
+    realizes:
+      - lexical-analysis
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: non-nesting-block-comments
+    from_candidates:
+      - nestable-block-comments
+      - comment-forms
+    kind: feature
+    id: non-nesting-block-comments
+    name: Non-nesting block comments
+    summary: A delimited comment form that ends at the first closing delimiter, so such comments do 
+      not nest and the comment-introducing characters have no special meaning inside one.
+    evidence:
+      - source: c23-n3220
+        locator: §6.4.9
+        chunk_id: c23-n3220#c00208
+        quote: Thus, /* . .. */ comments do not nest.
+      - source: jls-se25
+        locator: §3.7
+        chunk_id: jls-se25#c00065
+      - source: ecma-334-7th
+        locator: §6.3
+        chunk_id: ecma-334-7th#c00120
+    contested:
+      - merged-candidates
+      - split-candidate
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-734d1a0a5666
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved as the opposite value on the same axis because C, Java and C# all state non-nesting
+      as an explicit normative property.
+    dimension: block-comment-nesting
+    cross_cutting: false
+    aliases:
+      - traditional comment
+      - delimited comment
+    realizes:
+      - lexical-analysis
+      - maximal-munch
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: infix-operator-notation
+    from_candidates:
+      - infix-operator-notation
+    kind: feature
+    id: infix-operator-notation
+    name: Infix operator notation
+    summary: Writing a binary (or multiword) operator between its operands, which without 
+      parentheses creates grouping ambiguity and therefore requires precedence and associativity 
+      rules.
+    evidence:
+      - source: scott-plp
+        locator: pp. 319–321
+        chunk_id: scott-plp#c00303
+        quote: Most languages provide a rich set of built-in arithmetic and logical operators. When 
+          written in infix notation, without parentheses, these operators lead to ambiguity as to 
+          what is an operand of what.
+      - source: deransart-prolog-1996
+        locator: §9.2
+        chunk_id: deransart-prolog-1996#c00737
+      - source: turbak-gifford-dcpl
+        locator: pp. 29–30
+        chunk_id: turbak-gifford-dcpl#c00031
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-951fb0c83cdb
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Layer 3 because the sources compare notations as alternative surface encodings of the same
+      abstract phrase structure.
+    dimension: operator-notation-position
+    cross_cutting: false
+    aliases:
+      - infix
+    realizes:
+      - operator-fixity
+      - operator-precedence-and-associativity
+      - syntactic-ambiguity
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: prefix-operator-notation
+    from_candidates:
+      - prefix-operator-notation
+    kind: feature
+    id: prefix-operator-notation
+    name: Prefix operator notation
+    summary: Writing the operator before its operands, as in parenthesised Lisp-style expressions, 
+      so that grouping is explicit and questions of precedence and associativity do not arise.
+    evidence:
+      - source: turbak-gifford-dcpl
+        locator: pp. 29–30
+        chunk_id: turbak-gifford-dcpl#c00031
+      - source: scott-plp
+        locator: pp. 319–321
+        chunk_id: scott-plp#c00303
+      - source: deransart-prolog-1996
+        locator: §9.2
+        chunk_id: deransart-prolog-1996#c00737
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2e5330675f55
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept as its own value because Scott states that precedence and associativity issues do not
+      arise in prefix notation, which distinguishes it behaviourally from infix.
+    dimension: operator-notation-position
+    cross_cutting: false
+    aliases:
+      - Cambridge Polish
+      - Polish notation
+    realizes:
+      - operator-fixity
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: postfix-operator-notation
+    from_candidates:
+      - postfix-operator-notation
+    kind: feature
+    id: postfix-operator-notation
+    name: Postfix operator notation
+    summary: Writing the operator after its operands, used for most functions in stack languages and
+      for a few operators such as increment and pointer dereference in Algol-family languages.
+    evidence:
+      - source: scott-plp
+        locator: pp. 319–321
+        chunk_id: scott-plp#c00303
+      - source: deransart-prolog-1996
+        locator: p. 248
+        chunk_id: deransart-prolog-1996#c00765
+      - source: turbak-gifford-dcpl
+        locator: pp. 29–30
+        chunk_id: turbak-gifford-dcpl#c00031
+    contested:
+      - new-dimension
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-dd41c3c010a5
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: A third value on the notation axis, which is marked multi because one language can use 
+      several positions at once.
+    dimension: operator-notation-position
+    cross_cutting: false
+    aliases:
+      - reverse Polish
+      - suffix notation
+      - xf, yf specifier
+    realizes:
+      - operator-fixity
+    layer: 3
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: token-classes
+    from_candidates:
+      - token-classes
+      - literal-kinds
+    kind: feature
+    id: token-classes
+    name: Token classes of a language
+    summary: The small fixed set of token kinds a language's lexical grammar recognises — typically 
+      identifiers, keywords, literals or constants, and operators and other separators — which form 
+      the terminal symbols of the syntactic grammar.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+        quote: 'Tokens form the vocabulary of the Go language. There are four classes: identifiers, keywords,
+          operators and punctuation, and literals.'
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00051
+      - source: c23-n3220
+        locator: §6.4
+        chunk_id: c23-n3220#c00173
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-e3f27d5f3b88
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The surveyor's separate 'kinds of literal' candidate is folded in because specifications 
+      enumerate literal kinds as one of these token classes.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - input elements
+      - lexical elements
+      - kinds of token
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: whitespace-as-token-separator
+    from_candidates:
+      - whitespace-as-token-separator
+      - line-terminator-recognition
+    kind: feature
+    id: whitespace-as-token-separator
+    name: Whitespace as token separator only
+    summary: Treating spaces, tabs, newlines and comments as ignored except where they keep adjacent
+      characters from combining into a single token, which also requires fixing which sequences 
+      count as line terminators.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00051
+        quote: Blanks, horizontal and vertical tabs, newlines, formfeeds, and comments 
+          (collectively, “white space”), as described below, are ignored except as they serve to 
+          separate tokens.
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+      - source: ecma-334-7th
+        locator: §6.3
+        chunk_id: ecma-334-7th#c00118
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-20538c54ac80
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Line-terminator recognition is merged in because specs define it as part of the same 
+      whitespace clause that also governs comments and layout.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - white space
+      - insignificant whitespace
+      - line terminators
+    realizes:
+      - lexical-analysis
+      - maximal-munch
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: comment-forms
+    from_candidates:
+      - comment-forms
+    kind: feature
+    id: comment-forms
+    name: Comment forms
+    summary: 'Lexical constructs for text the translator ignores, conventionally in two shapes: one running
+      from a marker to the end of the line and one delimited by opening and closing character sequences.'
+    evidence:
+      - source: go-lang-spec
+        locator: '#Comments'
+        chunk_id: go-lang-spec#c00005
+        quote: 'Comments serve as program documentation. There are two forms: Line comments start with
+          the character sequence // and stop at the end of the line. General comments start with the character
+          sequence /* and stop with the first subsequent character sequence */.'
+      - source: ecma-334-7th
+        locator: §6.3
+        chunk_id: ecma-334-7th#c00119
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+    contested:
+      - split-candidate
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5f20c3314974
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: One node for the pair of forms, since every spec read introduces them together as the two 
+      shapes of ignored text.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - single-line comment
+      - line comment
+      - delimited comment
+      - general comment
+    realizes:
+      - lexical-analysis
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: documentation-comments
+    from_candidates:
+      - documentation-comments
+      - inner-versus-outer-doc-comments
+    kind: feature
+    id: documentation-comments
+    name: Documentation comments
+    summary: Specially marked comment forms whose content is consumed as documentation metadata 
+      rather than merely ignored, distinguished lexically into variants that attach to the enclosing
+      construct and variants that attach to the following one.
+    evidence:
+      - source: rust-reference
+        locator: pp. 19–20
+        chunk_id: rust-reference#c00029
+        quote: Line doc comments beginning with exactly three slashes ( /// ), and block doc 
+          comments ( /** ... */ ), both outer doc comments, are interpreted as a special syntax for 
+          doc attributes .
+      - source: rust-fls
+        locator: § B.185. doc comment¶
+        chunk_id: rust-fls#c00646
+      - source: rust-fls
+        locator: § B.343. inner doc comment¶
+        chunk_id: rust-fls#c00802
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-609587283000
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The inner/outer split is folded in as a variant distinction inside doc comments rather 
+      than minted as a feature specialising a feature, which the model cannot express.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - doc comment
+      - inner doc comment
+      - outer doc comment
+      - XML documentation comment
+    realizes:
+      - lexical-analysis
+      - syntactic-sugar
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: literate-source-convention
+    from_candidates:
+      - literate-source-convention
+    kind: feature
+    id: literate-source-convention
+    name: Literate source convention
+    summary: An inverted source layout in which prose is the default and only marked lines (or 
+      regions between delimiters) are program text, so that comments dominate the file.
+    evidence:
+      - source: haskell-2010-report
+        locator: §10.4
+        chunk_id: haskell-2010-report#c00259
+      - source: haskell-2010-report
+        locator: §10.4
+        chunk_id: haskell-2010-report#c00260
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-09936290acca
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept distinct from comment forms because it inverts which text is code, and is applied as 
+      a pre-pass before the ordinary lexical and layout rules.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - literate comments
+      - literate programming style
+      - bird tracks
+    realizes:
+      - lexical-analysis
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: identifier-lexical-syntax
+    from_candidates:
+      - identifier-lexical-syntax
+      - reserved-identifier-namespace
+    kind: feature
+    id: identifier-lexical-syntax
+    name: Identifier lexical syntax
+    summary: The rules fixing which character sequences may name entities, including the admissible 
+      start and continuation characters, exclusions such as reserved words, and spelling patterns 
+      set aside for the implementation.
+    evidence:
+      - source: jls-se25
+        locator: §3.8
+        chunk_id: jls-se25#c00066
+        quote: An identifier is an unlimited-length sequence of Java letters and Java digits , the 
+          first of which must be a Java letter .
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00127
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7af0010bfefa
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Implementation-reserved spellings are folded in because the specs state them as a 
+      constraint within the same identifier clause.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - names
+      - identifier chars
+      - reserved identifiers
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: identifier-case-sensitivity
+    from_candidates:
+      - identifier-case-sensitivity
+    kind: feature
+    id: identifier-case-sensitivity
+    name: Identifier case sensitivity
+    summary: Whether letter case distinguishes identifiers — that is, whether the translator 
+      case-folds names before comparing them — which Sebesta lists as one of the two primary design 
+      issues for names.
+    evidence:
+      - source: sebesta-copl
+        locator: §5.2.1
+        chunk_id: sebesta-copl#c00396
+        quote: 'The following are the primary design issues for names: • Are names case sensitive? • Are
+          the special words of the language reserved words or keywords?'
+      - source: c23-n3220
+        locator: p. 520
+        chunk_id: c23-n3220#c01100
+      - source: rust-fls
+        locator: § 2.6. Keywords¶
+        chunk_id: rust-fls#c00034
+    contested:
+      - ontologist-flagged
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-24c8523eb9b3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Left at layer 1 rather than promoted to a dimension because the sources read here document
+      only the case-sensitive side, so a two-valued axis is not yet supported. Sebesta frames this 
+      as a design issue with two answers, which argues for a layer-3 dimension; no source read here 
+      establishes a case-insensitive member.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - case significance
+      - case folding of names
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: case-signalled-name-classes
+    from_candidates:
+      - case-signalled-name-classes
+    kind: feature
+    id: case-signalled-name-classes
+    name: Case-signalled name classes
+    summary: Using the case of an identifier's initial letter lexically to put it in a different 
+      syntactic class, for example separating variable identifiers from constructor identifiers.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+      - source: vanroy-haridi-2003
+        locator: §2.5.1
+        chunk_id: vanroy-haridi-2003#c00199
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2e50238366a9
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Distinct from mere case sensitivity, because here case selects the token category rather 
+      than only distinguishing two names.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - varid versus conid
+      - capitalisation convention
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+  - key: unicode-identifiers
+    from_candidates:
+      - unicode-identifiers
+    kind: feature
+    id: unicode-identifiers
+    name: Non-ASCII identifier characters
+    summary: Permitting identifiers to be drawn from the whole Unicode character set, with the 
+      admissible letters and digits defined by Unicode character properties, so that names can be 
+      written in a programmer's own script.
+    evidence:
+      - source: jls-se25
+        locator: §3.8
+        chunk_id: jls-se25#c00066
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d5c32451cd78
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Separated from identifier-lexical-syntax because it is a comparable yes/no extension of 
+      the character repertoire rather than part of the base shape of identifiers.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - Unicode identifiers
+      - Java letters
+    realizes:
+      - lexical-analysis
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: reserved-words
+    from_candidates:
+      - reserved-words
+    kind: feature
+    id: reserved-words
+    name: Reserved words
+    summary: A fixed list of special words set by the lexical grammar that may never be used as 
+      ordinary identifiers, which protects the grammar but can crowd the space of usable names.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.3.1. Keywords
+        chunk_id: python-langref-3#c00021
+        quote: The following names are used as reserved words, or keywords of the language, and 
+          cannot be used as ordinary identifiers.
+      - source: go-lang-spec
+        locator: '#Keywords'
+        chunk_id: go-lang-spec#c00009
+      - source: sebesta-copl
+        locator: §5.2.3
+        chunk_id: sebesta-copl#c00399
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-7d709016c2c5
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The per-language realisation of the keyword/reserved-word concept, carved here rather than
+      merged into identifier syntax because scanners treat reserved words as exceptions to the 
+      identifier rule.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - keywords
+      - reserved keyword
+    realizes:
+      - keyword-versus-reserved-word
+      - lexical-analysis
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: contextual-soft-keywords
+    from_candidates:
+      - contextual-soft-keywords
+    kind: feature
+    id: contextual-soft-keywords
+    name: Contextual (soft) keywords
+    summary: Identifier-like words that act as keywords only in specified grammatical positions and 
+      remain usable as ordinary identifiers elsewhere, which preserves compatibility with existing 
+      code.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.3.2. Soft Keywords
+        chunk_id: python-langref-3#c00022
+        quote: These syntactically act as keywords in their specific contexts, but this distinction 
+          is done at the parser level, not when tokenizing. As soft keywords, their use in the 
+          grammar is possible while still preserving compatibility with existing code
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00127
+      - source: jls-se25
+        locator: §3.2
+        chunk_id: jls-se25#c00053
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2aacde9ec03a
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept apart from reserved words because recognition happens in the parser, not the 
+      tokenizer, which is a different mechanism rather than a weaker version of the same one.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - soft keywords
+      - contextual keyword
+      - weak keyword
+    realizes:
+      - keyword-versus-reserved-word
+      - lexical-analysis
+    layer: 1
+  - key: keyword-escape-prefix
+    from_candidates:
+      - keyword-escape-prefix
+    kind: feature
+    id: keyword-escape-prefix
+    name: Escaping a keyword for use as an identifier
+    summary: A lexical device, such as an at-sign prefix, that lets an otherwise reserved word serve
+      as an ordinary name.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00127
+        quote: A keyword is an identifier-like sequence of characters that is reserved, and cannot 
+          be used as an identifier except when prefaced by the @ character.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ed397ed692cc
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: 'A separate device from soft keywords: the word stays reserved and the escape is spelled in
+      the identifier, so it is carved on its own.'
+    dimension:
+    cross_cutting: false
+    aliases:
+      - verbatim identifier
+      - '@-prefixed identifier'
+    realizes:
+      - keyword-versus-reserved-word
+      - lexical-analysis
+    layer: 1
+  - key: wildcard-underscore-token
+    from_candidates:
+      - wildcard-underscore-token
+    kind: feature
+    id: wildcard-underscore-token
+    name: Underscore as a wildcard token
+    summary: Reserving the single-underscore lexeme as a wildcard that matches any value and binds 
+      no name, rather than treating it as an ordinary identifier.
+    evidence:
+      - source: python-langref-3
+        locator: § 8.6.4.5. Wildcard Patterns
+        chunk_id: python-langref-3#c00307
+      - source: rust-fls
+        locator: § 5.12. Underscore Patterns¶
+        chunk_id: rust-fls#c00132
+      - source: jls-se25
+        locator: §3.8
+        chunk_id: jls-se25#c00066
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d6e657c5ccd4
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved as a lexical carve-out from the identifier rule; its matching behaviour belongs to 
+      the pattern-matching theme and is reported as a cross-theme edge.
+    dimension:
+    cross_cutting: true
+    aliases:
+      - blank identifier
+      - wildcard pattern
+      - underscore pattern
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: numeric-literal-notation
+    from_candidates:
+      - integer-literal-radix-prefixes
+      - digit-separators
+      - literal-type-suffix
+      - floating-literal-exponent-part
+      - hexadecimal-floating-literal
+    kind: feature
+    id: numeric-literal-notation
+    name: Numeric literal notation
+    summary: "The lexical shape of numeric constants: an optional base-selecting prefix, digits optionally
+      grouped by an ignored separator character, for real literals a fraction and an exponent part, and
+      an optional suffix fixing the literal's type rather than its value."
+    evidence:
+      - source: go-lang-spec
+        locator: '#Integer_literals'
+        chunk_id: go-lang-spec#c00011
+      - source: jls-se25
+        locator: §3.10
+        chunk_id: jls-se25#c00078
+      - source: rust-fls
+        locator: § 2.4.4.1. Integer Literals¶
+        chunk_id: rust-fls#c00026
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-8cb28d51fa7a
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Five surveyor candidates are merged because every specification read defines prefix, 
+      separator, exponent and suffix inside one numeric-literal production rather than as 
+      independent constructs.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - integer literal
+      - floating-point literal
+      - radix prefix
+      - numeric underscores
+      - integer suffix
+      - hexadecimal floating literal
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: character-literal
+    from_candidates:
+      - character-literal
+    kind: feature
+    id: character-literal
+    name: Character literal
+    summary: A single-quoted lexical form denoting one character or code unit, whose content 
+      excludes the quote, backslash and newline except via escapes, and which is distinct from a 
+      string literal.
+    evidence:
+      - source: c23-n3220
+        locator: §6.4.4
+        chunk_id: c23-n3220#c00195
+      - source: haskell-2010-report
+        locator: §2.6
+        chunk_id: haskell-2010-report#c00045
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00060
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-a1626d02ece8
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept separate from string literals because the two forms have mutually inverted quoting 
+      and escaping requirements.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - character constant
+      - rune literal
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+  - key: escape-sequences
+    from_candidates:
+      - escape-sequences
+      - numeric-escape-sequences
+      - string-gap-line-continuation
+    kind: feature
+    id: escape-sequences
+    name: Escape sequences
+    summary: Backslash-introduced spellings inside quoted literals that denote characters which 
+      cannot or should not appear directly, including simple mnemonic escapes, numeric escapes 
+      naming a character by its octal, decimal or hexadecimal value, and continuation escapes that 
+      delete a line break from the value.
+    evidence:
+      - source: c23-n3220
+        locator: §6.4.4
+        chunk_id: c23-n3220#c00196
+        quote: Each octal or hexadecimal escape sequence is the longest sequence of characters that 
+          can constitute the escape sequence.
+      - source: haskell-2010-report
+        locator: §2.6
+        chunk_id: haskell-2010-report#c00045
+      - source: jls-se25
+        locator: §3.10
+        chunk_id: jls-se25#c00092
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-fb731990f63e
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Numeric escapes and string gaps are folded in because the specs list them as alternatives 
+      inside a single escape-sequence production.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - charesc
+      - octal escape
+      - string gap
+      - line continuation escape
+    realizes:
+      - lexical-analysis
+      - maximal-munch
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: unicode-code-point-escape
+    from_candidates:
+      - unicode-code-point-escape
+      - universal-character-name
+      - unicode-escape-pre-lexing-phase
+    kind: feature
+    id: unicode-code-point-escape
+    name: Unicode code point escape
+    summary: An escape form naming a character by its Unicode or ISO 10646 code point value, usable 
+      in identifiers as well as literals in some languages, and in others translated to the 
+      character in a phase preceding tokenization so it may occur anywhere in the source.
+    evidence:
+      - source: jls-se25
+        locator: §3.2
+        chunk_id: jls-se25#c00053
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00041
+      - source: rust-reference
+        locator: pp. 629–630
+        chunk_id: rust-reference#c00838
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-3a8d5ca80472
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: the cited text contradicts the claim; the claim is wrong as written'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The pre-lexing phase placement is folded in as a property of this escape form, since Java 
+      and C++ both define it as translation phase 1 behaviour of the same notation.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - universal character name
+      - \u escape
+      - Unicode escape
+    realizes:
+      - lexical-analysis
+      - translation-phases
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: string-literal
+    from_candidates:
+      - string-literal
+      - string-literal-encoding-prefix
+      - adjacent-string-concatenation
+    kind: feature
+    id: string-literal
+    name: String literal
+    summary: A quoted lexical form denoting a sequence of characters, optionally carrying an 
+      encoding prefix that selects the encoding and element type of the resulting value, and in some
+      languages joined with neighbouring string literal tokens during translation.
+    evidence:
+      - source: go-lang-spec
+        locator: '#String_literals'
+        chunk_id: go-lang-spec#c00017
+        quote: 'A string literal represents a string constant obtained from concatenating a sequence of
+          characters. There are two forms: raw string literals and interpreted string literals.'
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00067
+      - source: c23-n3220
+        locator: p. 476
+        chunk_id: c23-n3220#c00997
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6bed1f0f10d3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Encoding prefixes and translation-time joining are folded in because C and C++ define both
+      inside the string-literal clause itself.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - interpreted string literal
+      - UTF-8 string literal
+      - encoding prefix
+    realizes:
+      - lexical-analysis
+      - token-lexeme-distinction
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: raw-string-literal
+    from_candidates:
+      - raw-string-literal
+      - customisable-string-delimiters
+    kind: feature
+    id: raw-string-literal
+    name: Raw string literal
+    summary: A string form in which backslash escapes are not processed, so the content is taken 
+      literally, usually paired with an extensible delimiter — repeated hashes or a delimiter word —
+      so that the content may itself contain quotes.
+    evidence:
+      - source: rust-reference
+        locator: p. 28
+        chunk_id: rust-reference#c00038
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00067
+      - source: go-lang-spec
+        locator: '#String_literals'
+        chunk_id: go-lang-spec#c00017
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-f274a584dada
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Customisable delimiters are merged in because both Rust and C++ introduce them only as 
+      part of the raw-string form, to let the body contain the ordinary terminator.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - verbatim string literal
+      - d-char-sequence delimiter
+      - raw string
+    realizes:
+      - lexical-analysis
+      - maximal-munch
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: multi-line-string-literal
+    from_candidates:
+      - multi-line-string-literal
+      - incidental-indentation-stripping
+    kind: feature
+    id: multi-line-string-literal
+    name: Multi-line string literal
+    summary: A literal form, usually opened by tripled quoting delimiters, that permits unescaped 
+      line terminators in its content and strips the common leading whitespace so the literal can be
+      indented with the surrounding code.
+    evidence:
+      - source: jls-se25
+        locator: §3.10
+        chunk_id: jls-se25#c00087
+        quote: Unlike in a string literal (§3.10.5), it is not a compile-time error for a line 
+          terminator to appear in the content of a text block.
+      - source: ghc-users-guide
+        locator: §6.9.9
+        chunk_id: ghc-users-guide#c00972
+      - source: python-langref-3
+        locator: § 2.5.7. f-strings
+        chunk_id: python-langref-3#c00040
+    contested:
+      - merged-candidates
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-61cf12b983b2
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Indentation stripping is folded in because Java and GHC both specify it as a mandatory 
+      post-processing step of this literal form, not an independent construct.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - text block
+      - triple-quoted string
+      - incidental white space
+    realizes:
+      - lexical-analysis
+      - syntactic-sugar
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: string-interpolation
+    from_candidates:
+      - string-interpolation
+      - replacement-field-syntax
+      - interpolation-format-specifier
+    kind: feature
+    id: string-interpolation
+    name: String interpolation
+    summary: A literal form containing brace-delimited replacement fields whose embedded expressions
+      are evaluated and substituted at run time — with doubled braces escaping a literal brace and 
+      optional trailing clauses controlling conversion and formatting — so the literal has no 
+      constant value.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.5.7. f-strings
+        chunk_id: python-langref-3#c00040
+        quote: Unlike other string literals, f-strings do not have a constant value. They may 
+          contain replacement fields delimited by curly braces {}. Replacement fields contain 
+          expressions which are evaluated at run time.
+      - source: python-langref-3
+        locator: § 2.5.7. f-strings
+        chunk_id: python-langref-3#c00041
+      - source: ecma-334-7th
+        locator: §12.8
+        chunk_id: ecma-334-7th#c00406
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7cfb2195bebc
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Replacement-field shape and format specifiers are merged in as parts of the interpolation 
+      form, which is how the Python reference presents them.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - f-string
+      - formatted string literal
+      - interpolated string expression
+      - replacement field
+    realizes:
+      - lexical-analysis
+      - syntactic-sugar
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: source-character-set
+    from_candidates:
+      - source-character-set
+      - unicode-source-text
+    kind: feature
+    id: source-character-set
+    name: Source character set
+    summary: The repertoire of characters a translator accepts in source text — either a small basic
+      set with an implementation-defined mapping from physical file characters, or Unicode taken 
+      directly as the source alphabet with lexical categories derived from Unicode properties.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00041
+      - source: c23-n3220
+        locator: §5.1
+        chunk_id: c23-n3220#c00070
+      - source: haskell-2010-report
+        locator: §2.2
+        chunk_id: haskell-2010-report#c00038
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b8cb3cf24ffd
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Unicode-as-source-alphabet is folded in as the other answer to the same question of what 
+      the translator reads, rather than minted as a near-duplicate feature.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - basic source character set
+      - source alphabet
+    realizes:
+      - lexical-analysis
+      - translation-phases
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: line-splicing
+    from_candidates:
+      - line-splicing
+    kind: feature
+    id: line-splicing
+    name: Line splicing with backslash-newline
+    summary: Deleting a backslash immediately followed by a newline so that physical source lines 
+      are spliced into one logical source line, with only the last backslash on a line eligible.
+    evidence:
+      - source: c23-n3220
+        locator: §5.1
+        chunk_id: c23-n3220#c00070
+        quote: Each instance of a backslash character ( \ ) immediately followed by a new-line 
+          character is deleted, splicing physical source lines to form logical source lines.
+      - source: python-langref-3
+        locator: § 2.1.5. Explicit line joining
+        chunk_id: python-langref-3#c00011
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00042
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-05360c5070fb
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: A concrete surface device, carved apart from the logical/physical line concept it 
+      realises.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - explicit line joining
+      - backslash continuation
+    realizes:
+      - logical-versus-physical-line
+      - translation-phases
+    layer: 1
+  - key: implicit-line-joining
+    from_candidates:
+      - implicit-line-joining
+    kind: feature
+    id: implicit-line-joining
+    name: Implicit line joining inside brackets
+    summary: Allowing an expression inside unclosed parentheses, brackets or braces to span physical
+      lines with no continuation marker and with no line token generated between them.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.6. Implicit line joining
+        chunk_id: python-langref-3#c00012
+      - source: python-langref-3
+        locator: § 2.1.1. Logical lines
+        chunk_id: python-langref-3#c00008
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-83ff859a5fa2
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Distinct from explicit splicing because the trigger is unbalanced bracketing rather than a
+      marker character, and it suppresses the line token entirely.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - bracket continuation
+    realizes:
+      - logical-versus-physical-line
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: directive-line-syntax
+    from_candidates:
+      - directive-line-syntax
+    kind: feature
+    id: directive-line-syntax
+    name: Directive line syntax
+    summary: Rules making a preprocessing directive a whole-line construct introduced by a marker 
+      token at the start of the line and ended by a newline, outside the syntactic grammar of the 
+      language proper.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.5
+        chunk_id: ecma-334-7th#c00141
+      - source: c23-n3220
+        locator: §6.10.1
+        chunk_id: c23-n3220#c00400
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §15
+        chunk_id: iso-iec-14882-cpp20-n4861#c00970
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-327edc98d55e
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: every citation tops out at `partial`; narrow the claim to what the cited
+        text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved as the line-structure feature of the directive layer, separate from what the 
+      directives then do to tokens.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - preprocessing directive line
+      - control-line
+    realizes:
+      - preprocessing-as-lexical-layer
+      - preprocessing-token
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: macro-replacement-on-tokens
+    from_candidates:
+      - macro-replacement-on-tokens
+      - destringizing-pragma-operator
+    kind: feature
+    id: macro-replacement-on-tokens
+    name: Macro replacement over token sequences
+    summary: Substitution defined over preprocessing token sequences rather than raw text, in which 
+      a macro name is replaced by its replacement list, with directive-level operators able to turn 
+      tokens into string literals and back.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §15
+        chunk_id: iso-iec-14882-cpp20-n4861#c00970
+        quote: The preprocessing tokens within a preprocessing directive are not subject to macro 
+          expansion unless otherwise stated.
+      - source: c23-n3220
+        locator: §6.10.1
+        chunk_id: c23-n3220#c00400
+      - source: c23-n3220
+        locator: §6.10.2
+        chunk_id: c23-n3220#c00405
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4aad79cc0b23
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The destringizing pragma operator is folded in as one of this layer's token-level 
+      operators rather than minted from a single passage.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - '#define replacement'
+      - stringizing operator
+      - _Pragma
+    realizes:
+      - preprocessing-as-lexical-layer
+      - preprocessing-token
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: indent-dedent-tokens
+    from_candidates:
+      - indent-dedent-tokens
+      - inconsistent-indentation-error
+    kind: feature
+    id: indent-dedent-tokens
+    name: INDENT and DEDENT tokens
+    summary: Synthesising bracket-like grouping tokens from a stack of indentation levels so the 
+      parser sees explicit grouping, and reporting an error when a dedent matches no level on the 
+      stack or when tabs and spaces mix ambiguously.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00014
+        quote: Indentation is rejected as inconsistent if a source file mixes tabs and spaces in a 
+          way that makes the meaning dependent on the worth of a tab in spaces; a TabError is raised
+          in that case.
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00016
+      - source: python-langref-3
+        locator: § 8. Compound statements
+        chunk_id: python-langref-3#c00283
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2f2a9d9480c3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The mechanism that implements significant indentation, carved separately because it is 
+      what makes indentation visible to a conventional parser; the inconsistency error is its 
+      failure mode.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - suite
+      - TabError
+      - indentation stack
+    realizes:
+      - lexical-analysis
+      - logical-versus-physical-line
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: layout-rule-offside
+    from_candidates:
+      - layout-rule-offside
+      - layout-parse-error-rule
+      - mixing-explicit-and-implicit-layout
+      - tab-stop-column-convention
+    kind: feature
+    id: layout-rule-offside
+    name: Layout rule (off-side rule)
+    summary: A rule that inserts braces and semicolons at positions determined by indentation, so a 
+      laid-out program has a fully layout-insensitive equivalent; explicit braces suspend layout 
+      processing, and an implicit group is also closed when the next token would otherwise be a 
+      parse error.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.7
+        chunk_id: haskell-2010-report#c00047
+        quote: Haskell permits the omission of the braces and semicolons used in several grammar 
+          productions, by using layout to convey the same information. This allows both 
+          layout-sensitive and layout-insensitive styles of coding, which can be freely mixed within
+          one program.
+      - source: haskell-2010-report
+        locator: §10.3
+        chunk_id: haskell-2010-report#c00257
+      - source: haskell-2010-report
+        locator: §10.3
+        chunk_id: haskell-2010-report#c00255
+    contested:
+      - merged-candidates
+      - split-candidate
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-53b5e4914e78
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: The parse-error rule, brace mixing and tab-stop conventions are folded in because the 
+      Haskell report defines them as clauses and side conditions of the single translation function 
+      L.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - off-side rule
+      - layout contexts
+      - L function
+    realizes:
+      - lexical-analysis
+      - syntactic-sugar
+      - dangling-else-ambiguity
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: compound-statement-block
+    from_candidates:
+      - compound-statement-block
+      - implicit-blocks
+    kind: feature
+    id: compound-statement-block
+    name: Compound statement (block)
+    summary: A construct that lets several statements and declarations stand where one statement is 
+      expected and that defines a block scope; languages also posit implicit blocks with no surface 
+      delimiters, for example per file, per clause or around a single substatement.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §8
+        chunk_id: iso-iec-14882-cpp20-n4861#c00371
+      - source: go-lang-spec
+        locator: '#Blocks'
+        chunk_id: go-lang-spec#c00051
+      - source: c23-n3220
+        locator: §6.8.3
+        chunk_id: c23-n3220#c00382
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b9714e6f8e92
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Implicit blocks are folded in because Go and C++ introduce them in the same clause, as 
+      grouping regions the language posits in addition to written ones.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - block
+      - statement list
+      - implicit block
+    realizes:
+      - statement-separator-versus-terminator
+      - abstract-versus-concrete-syntax
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: automatic-semicolon-insertion
+    from_candidates:
+      - automatic-semicolon-insertion
+      - restricted-production-no-line-break
+    kind: feature
+    id: automatic-semicolon-insertion
+    name: Automatic semicolon insertion
+    summary: Letting the tokenizer supply omitted statement terminators according to stated rules 
+      about line breaks and the identity of the preceding token, so that most semicolons may be left
+      out of the source.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Semicolons'
+        chunk_id: go-lang-spec#c00007
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+    contested:
+      - merged-candidates
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2317d090b122
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Restricted productions forbidding a line break are recorded in from_candidates and 
+      reported as a rule candidate, because they have no effect except in combination with 
+      insertion.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - ASI
+      - semicolon insertion
+      - no LineTerminator here
+    realizes:
+      - statement-separator-versus-terminator
+      - logical-versus-physical-line
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: empty-statement
+    from_candidates:
+      - empty-statement
+    kind: feature
+    id: empty-statement
+    name: Empty statement
+    summary: A statement consisting only of the terminator, which does nothing and is used where a 
+      statement is syntactically required — to carry a label or to supply a null loop body.
+    evidence:
+      - source: ecma-334-7th
+        locator: §13.4
+        chunk_id: ecma-334-7th#c00592
+        quote: An empty statement is used when there are no operations to perform in a context where
+          a statement is required.
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §8
+        chunk_id: iso-iec-14882-cpp20-n4861#c00371
+      - source: rust-fls
+        locator: § 8. Statements¶
+        chunk_id: rust-fls#c00258
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-a921c5cbdf42
+      verdict: failed
+      admissible: false
+      pairs: 3
+      detail: 'node-definition: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Kept as its own node because it exists purely to satisfy a grammatical requirement, which 
+      is a syntax-layer fact rather than a behavioural one.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - null statement
+    realizes:
+      - statement-separator-versus-terminator
+      - statement-expression-distinction
+    layer: 1
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: expression-statement
+    from_candidates:
+      - expression-statement
+      - semicolon-elision-block-expression
+    kind: feature
+    id: expression-statement
+    name: Expression statement
+    summary: A statement form that evaluates an expression and ignores its result, letting 
+      expressions appear where statements are required; languages may restrict which expressions 
+      qualify, and may let a block or control-flow expression used this way omit the trailing 
+      terminator.
+    evidence:
+      - source: rust-reference
+        locator: p. 252
+        chunk_id: rust-reference#c00328
+      - source: ecma-334-7th
+        locator: §13.7
+        chunk_id: ecma-334-7th#c00604
+      - source: scott-plp
+        locator: pp. 329–330
+        chunk_id: scott-plp#c00313
+    contested:
+      - merged-candidates
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ee00dfe567a2
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Terminator elision after a block expression is folded in because both Rust documents 
+      define it inside the expression-statement production, together with its tie-break rule.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - statement expression
+      - expression statement without semicolon
+    realizes:
+      - statement-expression-distinction
+      - statement-separator-versus-terminator
+    layer: 1
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: operator-overloading
+    from_candidates:
+      - operator-overloading
+    kind: feature
+    id: operator-overloading
+    name: Operator overloading
+    summary: Declaring a user-defined meaning for an existing operator symbol applied to a 
+      user-defined type, where the declaration supplies an implementation in functional notation but
+      cannot change the operator's syntax, precedence or associativity.
+    evidence:
+      - source: ecma-334-7th
+        locator: §12.4
+        chunk_id: ecma-334-7th#c00350
+        quote: User-defined operator declarations cannot modify the syntax, precedence, or 
+          associativity of an operator.
+      - source: ecma-334-7th
+        locator: §15.10
+        chunk_id: ecma-334-7th#c00801
+      - source: ecma-334-7th
+        locator: pp. 641–642
+        chunk_id: ecma-334-7th#c01037
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4c25039384f3
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Named in the theme statement and carved at layer 1 because the construct is a surface 
+      declaration form; what it means for dispatch belongs to a semantic theme.
+    dimension:
+    cross_cutting: true
+    aliases:
+      - user-defined operator
+      - overloadable operator
+    realizes:
+      - operator-fixity
+      - syntactic-sugar
+    layer: 1
+  - key: user-defined-operator-fixity
+    from_candidates:
+      - user-defined-operator-fixity
+    kind: feature
+    id: user-defined-operator-fixity
+    name: User-declarable operator fixity
+    summary: Letting a program declare the fixity and binding precedence of an operator, so that the
+      table consulted when disambiguating infix expressions is itself extensible by the programmer.
+    evidence:
+      - source: haskell-2010-report
+        locator: §4.4.2
+        chunk_id: haskell-2010-report#c00115
+      - source: deransart-prolog-1996
+        locator: §9.2
+        chunk_id: deransart-prolog-1996#c00737
+      - source: deransart-prolog-1996
+        locator: p. 136
+        chunk_id: deransart-prolog-1996#c00412
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-98617b8ee82a
+      verdict: verified
+      admissible: true
+      pairs: 3
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: Carved apart from operator overloading because C# explicitly forbids changing syntax and 
+      precedence while Haskell and Prolog explicitly permit it, so the two are different 
+      capabilities.
+    dimension:
+    cross_cutting: false
+    aliases:
+      - fixity declaration
+      - infixl/infixr
+      - op/3
+      - operator table
+    realizes:
+      - operator-fixity
+      - operator-precedence-and-associativity
+    layer: 1
+edges:
+  - key: brace-delimited-blocks--alternative-to--layout-rule-offside
+    type: alternative-to
+    from: brace-delimited-blocks
+    to: layout-rule-offside
+    polarity:
+    statement: The off-side layout rule and explicit brace-and-semicolon delimiters are competing 
+      ways to convey the same block structure, and Haskell lets a program omit the braces by using 
+      layout instead.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.7
+        chunk_id: haskell-2010-report#c00047
+        quote: Haskell permits the omission of the braces and semicolons used in several grammar 
+          productions, by using layout to convey the same information.
+      - source: haskell-2010-report
+        locator: §10.3
+        chunk_id: haskell-2010-report#c00254
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-079190a22577
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: brace-delimited-blocks--alternative-to--significant-indentation
+    type: alternative-to
+    from: brace-delimited-blocks
+    to: significant-indentation
+    polarity:
+    statement: Making indentation syntactically significant and delimiting blocks with braces are 
+      two answers to the same question of how grouping is written, since indentation can carry 
+      exactly the information braces would.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.7
+        chunk_id: haskell-2010-report#c00047
+        quote: The effect of layout on the meaning of a Haskell program can be completely speciﬁed 
+          by adding braces and semicolons in places determined by the layout.
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00015
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-4cd571ed8681
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: indent-dedent-tokens--alternative-to--layout-rule-offside
+    type: alternative-to
+    from: indent-dedent-tokens
+    to: layout-rule-offside
+    polarity:
+    statement: Emitting INDENT and DEDENT tokens from an indentation stack and inserting braces and 
+      semicolons by an off-side translation function are competing lexical mechanisms for turning 
+      indentation into grammatical structure.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00015
+        quote: The indentation levels of consecutive lines are used to generate INDENT and DEDENT 
+          tokens, using a stack
+      - source: haskell-2010-report
+        locator: §10.3
+        chunk_id: haskell-2010-report#c00254
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b2c3818022e0
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: significant-indentation--conflicts-with--whitespace-as-token-separator
+    type: conflicts-with
+    from: significant-indentation
+    to: whitespace-as-token-separator
+    polarity:
+    statement: A language cannot both treat white space as nothing but a token separator and let the
+      indentation of lines generate grammatical structure.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00015
+        quote: The indentation levels of consecutive lines are used to generate INDENT and DEDENT 
+          tokens, using a stack
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c9076d260324
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: implicit-line-joining--enables--significant-indentation
+    type: enables
+    from: implicit-line-joining
+    to: significant-indentation
+    polarity:
+    statement: Because indentation is measured per logical line, implicit line joining inside 
+      brackets lets one statement spread over several physical lines without their indentation being
+      measured.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.1. Logical lines
+        chunk_id: python-langref-3#c00008
+        quote: A logical line is constructed from one or more physical lines by following the 
+          explicit or implicit line joining rules.
+      - source: python-langref-3
+        locator: § 2.1.8. Indentation
+        chunk_id: python-langref-3#c00015
+        quote: At the beginning of each logical line, the line’s indentation level is compared to 
+          the top of the stack.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-4ee176a3a123
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: implicit-line-joining--alternative-to--line-splicing
+    type: alternative-to
+    from: implicit-line-joining
+    to: line-splicing
+    polarity:
+    statement: Implicit joining inside brackets and explicit backslash-newline joining are the two 
+      competing rules by which several physical lines are combined into one logical line.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.1.1. Logical lines
+        chunk_id: python-langref-3#c00008
+        quote: A logical line is constructed from one or more physical lines by following the 
+          explicit or implicit line joining rules.
+      - source: python-langref-3
+        locator: § 2.1.5. Explicit line joining
+        chunk_id: python-langref-3#c00011
+        quote: Two or more physical lines may be joined into logical lines using backslash 
+          characters (\)
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c98d3fab02ea
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: raw-string-literal--conflicts-with--line-splicing
+    type: conflicts-with
+    from: raw-string-literal
+    to: line-splicing
+    polarity:
+    statement: Backslash-newline line splicing has to be suspended inside raw string literals, 
+      because a raw literal must keep the backslash and newline as literal characters.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00042
+        quote: Except for splices reverted in a raw string literal
+      - source: python-langref-3
+        locator: § 2.5.6. Raw string literals
+        chunk_id: python-langref-3#c00039
+        quote: Note also that a single backslash followed by a newline is interpreted as those two 
+          characters as part of the literal, not as a line continuation.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7663934e911b
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: automatic-semicolon-insertion--alternative-to--layout-rule-offside
+    type: alternative-to
+    from: automatic-semicolon-insertion
+    to: layout-rule-offside
+    polarity:
+    statement: Automatic semicolon insertion and the off-side layout rule are competing ways of 
+      having line structure supply the separators that the grammar nominally requires.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Semicolons'
+        chunk_id: go-lang-spec#c00007
+        quote: a semicolon is automatically inserted into the token stream immediately after a 
+          line's final token
+      - source: haskell-2010-report
+        locator: §2.7
+        chunk_id: haskell-2010-report#c00047
+        quote: if it is indented the same amount, then a new item begins (a semicolon is inserted)
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-be9f1ce77bf7
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: automatic-semicolon-insertion--influences--whitespace-as-token-separator
+    type: influences
+    from: automatic-semicolon-insertion
+    to: whitespace-as-token-separator
+    polarity: '-'
+    statement: Automatic semicolon insertion weakens the rule that white space only separates 
+      tokens, because a newline can then also trigger the insertion of a token.
+    evidence:
+      - source: go-lang-spec
+        locator: '#Tokens'
+        chunk_id: go-lang-spec#c00006
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-b9fdf602aa47
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: contextual-soft-keywords--alternative-to--reserved-words
+    type: alternative-to
+    from: contextual-soft-keywords
+    to: reserved-words
+    polarity:
+    statement: Treating special words as reserved words that can never be names, or as mere keywords
+      that programmers may redefine, are competing answers to how special words are recognized.
+    evidence:
+      - source: sebesta-copl
+        locator: §5.2.3
+        chunk_id: sebesta-copl#c00399
+        quote: In most languages, special words are classified as reserved words, which means they 
+          cannot be redefined by pro- grammers. But in some, such as Fortran, they are only 
+          keywords, which means they can be redefined.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-80c29d11ec92
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: every citation tops out at `partial`; narrow the claim to what the cited text
+        actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: keyword-escape-prefix--requires--reserved-words
+    type: requires
+    from: keyword-escape-prefix
+    to: reserved-words
+    polarity:
+    statement: An escape form for using a keyword as an identifier only has a purpose in a language 
+      whose keywords are otherwise reserved against such use.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00125
+        quote: The prefix “ @ ” enables the use of keywords as identifiers
+      - source: rust-fls
+        locator: § 2.3. Identifiers¶
+        chunk_id: rust-fls#c00015
+        quote: RawIdentifier ::= r# (PureIdentifier | RawIdentifierKeyword)
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-621c4c0a970e
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: case-signalled-name-classes--requires--identifier-case-sensitivity
+    type: requires
+    from: case-signalled-name-classes
+    to: identifier-case-sensitivity
+    polarity:
+    statement: Splitting identifiers into name classes by their initial letter case presupposes that
+      the language distinguishes upper from lower case in identifiers.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.4
+        chunk_id: haskell-2010-report#c00041
+      - source: haskell-2010-report
+        locator: §1.4
+        chunk_id: haskell-2010-report#c00035
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c96367d65df0
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: wildcard-underscore-token--requires--identifier-lexical-syntax
+    type: requires
+    from: wildcard-underscore-token
+    to: identifier-lexical-syntax
+    polarity:
+    statement: 'The wildcard underscore is carved out of the identifier lexical syntax: the underscore
+      counts as an identifier character, but standing alone it is a reserved identifier used as a wildcard.'
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.4
+        chunk_id: haskell-2010-report#c00041
+        quote: Underscore, “ _ ”, is treated as a lowercase letter, and can occur wherever a 
+          lowercase letter can. However, “ _ ” all by itself is a reserved identiﬁer, used as wild 
+          card in patterns.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b3668665aff8
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: unicode-identifiers--requires--identifier-lexical-syntax
+    type: requires
+    from: unicode-identifiers
+    to: identifier-lexical-syntax
+    polarity:
+    statement: Admitting non-ASCII identifier characters is done by widening the identifier lexical 
+      syntax to the Unicode XID_Start and XID_Continue character classes.
+    evidence:
+      - source: rust-fls
+        locator: § 2.3. Identifiers¶
+        chunk_id: rust-fls#c00015
+        quote: PureIdentifier ::= XID_Start XID_Continue* | _XID_Continue+
+      - source: c23-n3220
+        locator: §6.4.2
+        chunk_id: c23-n3220#c00177
+        quote: An XID_Start character is an implementation-defined character whose corresponding 
+          code point in ISO/IEC 10646 has the XID_Start property.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-22493506a772
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: unicode-code-point-escape--enables--unicode-identifiers
+    type: enables
+    from: unicode-code-point-escape
+    to: unicode-identifiers
+    polarity:
+    statement: Universal character names let a program name characters outside the basic character 
+      set in identifiers as well as literals, so extended identifiers can be written without the 
+      source file holding those characters.
+    evidence:
+      - source: c23-n3220
+        locator: §6.4.3
+        chunk_id: c23-n3220#c00182
+        quote: Universal character names may be used in identifiers, character constants, and string
+          literals to designate characters that are not in the basic character set.
+      - source: c23-n3220
+        locator: §6.4.2
+        chunk_id: c23-n3220#c00178
+        quote: On systems that cannot accept extended characters in external identifiers, an 
+          encoding of the universal character name may be used in forming such identifiers.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b053b3441ee4
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: source-character-set--influences--unicode-code-point-escape
+    type: influences
+    from: source-character-set
+    to: unicode-code-point-escape
+    polarity: +
+    statement: Because the basic source character set is restricted to a small fixed repertoire, the
+      language adds a universal-character-name notation for naming characters outside it.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00046
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-b950277aa678
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: escape-sequences--requires--string-literal
+    type: requires
+    from: escape-sequences
+    to: string-literal
+    polarity:
+    statement: Escape sequences exist as a sub-syntax of string and character literals, being 
+      recognized only among the characters of such a literal.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00136
+        quote: 'fragment Regular_String_Literal_Character : Single_Regular_String_Literal_Character |
+          Simple_Escape_Sequence | Hexadecimal_Escape_Sequence | Unicode_Escape_Sequence'
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00063
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-55bfc4836e92
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: the cited text contradicts the claim; the claim is wrong as written'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: escape-sequences--enables--character-literal
+    type: enables
+    from: escape-sequences
+    to: character-literal
+    polarity:
+    statement: Escape sequences make character literals usable for characters that have no graphic 
+      representation, such as newline, tab or backspace.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00063
+        quote: new-line NL(LF) \n horizontal tab HT \t vertical tab VT \v backspace BS \b carriage 
+          return CR \r form feed FF \f
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-5cbc2029c066
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: raw-string-literal--requires--string-literal
+    type: requires
+    from: raw-string-literal
+    to: string-literal
+    polarity:
+    statement: A raw string literal is a variant form of the ordinary string literal that differs 
+      only by not recognizing escaped characters.
+    evidence:
+      - source: rust-fls
+        locator: § 2.4.6.2. Raw String Literals¶
+        chunk_id: rust-fls#c00032
+        quote: A raw string literal is a simple string literal that does not recognize escaped 
+          characters.
+      - source: rust-reference
+        locator: p. 28
+        chunk_id: rust-reference#c00038
+        quote: Raw string literals do not process any escapes.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-70a8364d7985
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: escape-sequences--alternative-to--raw-string-literal
+    type: alternative-to
+    from: escape-sequences
+    to: raw-string-literal
+    polarity:
+    statement: Escaping and raw or verbatim literals are competing answers to how a string 
+      containing backslashes and quotes is written, since a raw literal suppresses the escape 
+      processing entirely.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00136
+        quote: string g = "\\\\server\\share\\file.txt" ; // \\server\share\file.txt string h = 
+          @"\\server\share\file.txt"
+      - source: python-langref-3
+        locator: § 2.5.6. Raw string literals
+        chunk_id: python-langref-3#c00039
+        quote: As a result, in raw string literals, escape sequences are not treated specially
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7893ecc8c6a6
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: raw-string-literal--enables--multi-line-string-literal
+    type: enables
+    from: raw-string-literal
+    to: multi-line-string-literal
+    polarity:
+    statement: Raw or verbatim string literals admit newlines in their body, so a string literal can
+      span several source lines with the newline carried into the value.
+    evidence:
+      - source: ecma-334-7th
+        locator: §6.4
+        chunk_id: ecma-334-7th#c00136
+        quote: A verbatim string literal may span multiple lines.
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §5
+        chunk_id: iso-iec-14882-cpp20-n4861#c00067
+        quote: A source-ﬁle new-line in a raw string literal results in a new-line in the resulting 
+          execution string literal.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d798ceb61d02
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: multi-line-string-literal--influences--layout-rule-offside
+    type: influences
+    from: multi-line-string-literal
+    to: layout-rule-offside
+    polarity: '-'
+    statement: String literals that span lines force the off-side layout algorithm to special-case 
+      them, since no indentation marker may be inserted inside a literal that is not yet a complete 
+      lexeme.
+    evidence:
+      - source: haskell-2010-report
+        locator: §10.3
+        chunk_id: haskell-2010-report#c00254
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-80cbed60ccd1
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: string-interpolation--requires--string-literal
+    type: requires
+    from: string-interpolation
+    to: string-literal
+    polarity:
+    statement: An interpolated string is a form of string literal, distinguished by a prefix and 
+      containing replacement fields whose expressions are evaluated.
+    evidence:
+      - source: python-langref-3
+        locator: § 2.5.7. f-strings
+        chunk_id: python-langref-3#c00040
+        quote: A formatted string literal or f-string is a string literal that is prefixed with ‘f’ 
+          or ‘F’.
+      - source: ecma-334-7th
+        locator: §12.8
+        chunk_id: ecma-334-7th#c00405
+        quote: which are lexically similar to, but differ semantically from, the two forms of string
+          literals
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-046d51b8862d
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: string-interpolation--influences--token-classes
+    type: influences
+    from: string-interpolation
+    to: token-classes
+    polarity: '-'
+    statement: String interpolation complicates tokenization, because the pieces of an interpolated 
+      string must be recognized by context-sensitive lexical rules and the embedded expressions may 
+      themselves contain strings, comments and newlines.
+    evidence:
+      - source: ecma-334-7th
+        locator: §12.8
+        chunk_id: ecma-334-7th#c00406
+        quote: // the following three lexical rules are context sensitive, see details below
+      - source: python-langref-3
+        locator: § 2.5.7. f-strings
+        chunk_id: python-langref-3#c00041
+        quote: Replacement expressions can contain newlines in both single-quoted and triple-quoted 
+          f-strings and they can contain comments.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3fb5df5eaacf
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: string-literal--influences--comment-forms
+    type: influences
+    from: string-literal
+    to: comment-forms
+    polarity: '-'
+    statement: 'Comment syntax must be qualified by string literals: comment introducers are not recognized
+      inside a character or string literal, and conversely a quote inside a comment is not a literal.'
+    evidence:
+      - source: c23-n3220
+        locator: §6.4.9
+        chunk_id: c23-n3220#c00208
+        quote: Except within a character constant, a string literal, or a comment, the characters /*
+          introduce a comment.
+      - source: ecma-334-7th
+        locator: §6.3
+        chunk_id: ecma-334-7th#c00120
+        quote: Comments are not processed within character and string literals.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e73b8e1f5ce2
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: nestable-block-comments--alternative-to--non-nesting-block-comments
+    type: alternative-to
+    from: nestable-block-comments
+    to: non-nesting-block-comments
+    polarity:
+    statement: Allowing block comments to nest to any depth and forbidding nesting outright are the 
+      two competing answers to how a block comment terminates.
+    evidence:
+      - source: haskell-2010-report
+        locator: §2.3
+        chunk_id: haskell-2010-report#c00040
+        quote: 'Nested comments may be nested to any depth: any occurrence of the string “ {- ” within
+          the nested comment starts a new nested comment'
+      - source: jls-se25
+        locator: §3.7
+        chunk_id: jls-se25#c00065
+        quote: Comments do not nest.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c3dd6a55f6d7
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: documentation-comments--requires--comment-forms
+    type: requires
+    from: documentation-comments
+    to: comment-forms
+    polarity:
+    statement: Documentation comments are a distinguished spelling within the language's ordinary 
+      comment forms, built from the line and block comment syntax.
+    evidence:
+      - source: rust-reference
+        locator: pp. 20–21
+        chunk_id: rust-reference#c00030
+        quote: /// - Outer line doc (exactly 3 slashes) //// - Only a comment
+      - source: rust-reference
+        locator: p. 19
+        chunk_id: rust-reference#c00028
+        quote: Comments follow the general C++ style of line ( // ) and block ( /* ... */ ) comment 
+          forms.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-32c4052af541
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: documentation-comments--alternative-to--literate-source-convention
+    type: alternative-to
+    from: documentation-comments
+    to: literate-source-convention
+    polarity:
+    statement: Documentation comments inside a program file and the literate convention, where prose
+      is the default and code lines are marked, are competing answers to how prose and code share a 
+      source file.
+    evidence:
+      - source: haskell-2010-report
+        locator: §10.4
+        chunk_id: haskell-2010-report#c00259
+        quote: The literate style encourages comments by making them the default. A line in which “ 
+          > ” is the ﬁrst character is treated as part of the program; all other lines are comments.
+      - source: rust-reference
+        locator: pp. 20–21
+        chunk_id: rust-reference#c00030
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-0f3668e20e61
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: macro-replacement-on-tokens--requires--directive-line-syntax
+    type: requires
+    from: macro-replacement-on-tokens
+    to: directive-line-syntax
+    polarity:
+    statement: Macro replacement over token sequences is set up by line-oriented definition 
+      directives, whose replacement list runs to the terminating newline.
+    evidence:
+      - source: c23-n3220
+        locator: §6.10.5
+        chunk_id: c23-n3220#c00430
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6ae1b5f721d5
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: directive-line-syntax--influences--whitespace-as-token-separator
+    type: influences
+    from: directive-line-syntax
+    to: whitespace-as-token-separator
+    polarity: '-'
+    statement: A line-oriented directive layer makes newlines syntactically significant, so within 
+      such a language white space is not purely a token separator.
+    evidence:
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §15
+        chunk_id: iso-iec-14882-cpp20-n4861#c00969
+      - source: iso-iec-14882-cpp20-n4861
+        locator: §15
+        chunk_id: iso-iec-14882-cpp20-n4861#c00970
+        quote: Thus, preprocessing directives are commonly called “lines”.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-529b21870a5c
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: operator-overloading--requires--infix-operator-notation
+    type: requires
+    from: operator-overloading
+    to: infix-operator-notation
+    polarity:
+    statement: Operator overloading gives new meanings to the language's existing operator notation,
+      so the overloadable binary operators keep the infix notation and the fixed syntax the language
+      already defines.
+    evidence:
+      - source: ecma-334-7th
+        locator: §12.4
+        chunk_id: ecma-334-7th#c00346
+        quote: Binary operators. The binary operators take two operands and all use infix notation 
+          (such as x + y ).
+      - source: ecma-334-7th
+        locator: §12.4
+        chunk_id: ecma-334-7th#c00350
+        quote: User-defined operator declarations cannot modify the syntax, precedence, or 
+          associativity of an operator.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-1eb832468026
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: operator-overloading--alternative-to--user-defined-operator-fixity
+    type: alternative-to
+    from: operator-overloading
+    to: user-defined-operator-fixity
+    polarity:
+    statement: Overloading the fixed set of built-in operator symbols and letting programmers 
+      declare the fixity and precedence of their own operators are competing answers to how users 
+      extend operator notation.
+    evidence:
+      - source: ecma-334-7th
+        locator: §12.4
+        chunk_id: ecma-334-7th#c00350
+        quote: User-defined operator declarations cannot modify the syntax, precedence, or 
+          associativity of an operator.
+      - source: haskell-2010-report
+        locator: §4.4.2
+        chunk_id: haskell-2010-report#c00115
+        quote: A ﬁxity declaration gives the ﬁxity and binding precedence of one or more operators.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d0cd0292809c
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: user-defined-operator-fixity--requires--infix-operator-notation
+    type: requires
+    from: user-defined-operator-fixity
+    to: infix-operator-notation
+    polarity:
+    statement: Declarable operator fixity presupposes infix operator notation, since what is 
+      declared is left, right or non-associativity and a binding precedence for an infix operator.
+    evidence:
+      - source: haskell-2010-report
+        locator: §4.4.2
+        chunk_id: haskell-2010-report#c00115
+        quote: There are three kinds of ﬁxity, non-, left- and right-associativity ( infix , infixl 
+          , and infixr , respec- tively), and ten precedence levels
+      - source: scott-plp
+        locator: pp. 318–319
+        chunk_id: scott-plp#c00302
+        quote: A few languages, notably ML and the R scripting language, allow the user to create 
+          new infix operators.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-d104ab77f3a6
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: infix-operator-notation--alternative-to--prefix-operator-notation
+    type: alternative-to
+    from: infix-operator-notation
+    to: prefix-operator-notation
+    polarity:
+    statement: Prefix and infix notation are competing answers to where an operator's name stands 
+      relative to its operands, with Lisp using prefix for all functions and most imperative 
+      languages infix for binary operators.
+    evidence:
+      - source: scott-plp
+        locator: pp. 318–319
+        chunk_id: scott-plp#c00302
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e32a9c90eafe
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: infix-operator-notation--alternative-to--postfix-operator-notation
+    type: alternative-to
+    from: infix-operator-notation
+    to: postfix-operator-notation
+    polarity:
+    statement: Postfix and infix notation are competing answers to where an operator's name stands 
+      relative to its operands.
+    evidence:
+      - source: scott-plp
+        locator: pp. 318–319
+        chunk_id: scott-plp#c00302
+        quote: These terms indicate, respectively, whether the function name appears before, among, 
+          or after its several arguments
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-0e7002a307d4
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: expression-oriented-syntax--alternative-to--statement-oriented-syntax
+    type: alternative-to
+    from: expression-oriented-syntax
+    to: statement-oriented-syntax
+    polarity:
+    statement: Directing nearly all evaluation through a uniform expression category, or dividing 
+      the language into value-producing expressions and non-value-producing statements, are 
+      competing answers to the same design question.
+    evidence:
+      - source: rust-reference
+        locator: p. 249
+        chunk_id: rust-reference#c00323
+      - source: vanroy-haridi-2003
+        locator: §2.5.1
+        chunk_id: vanroy-haridi-2003#c00199
+        quote: An expression is syntactic sugar for a sequence of operations that returns a value. 
+          It is diﬀerent from a statement, which is also a sequence of operations but does not 
+          return a value.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-baa413cd34fe
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: expression-oriented-syntax--influences--compound-statement-block
+    type: influences
+    from: expression-oriented-syntax
+    to: compound-statement-block
+    polarity: +
+    statement: In an expression-oriented language the block itself yields a value, namely the value 
+      of its tail expression, rather than being a mere grouping of statements.
+    evidence:
+      - source: rust-fls
+        locator: § 6.4. Block Expressions¶
+        chunk_id: rust-fls#c00161
+        quote: if the block expression has a tail expression, then the value is the value of the 
+          tail expression
+      - source: rust-reference
+        locator: p. 249
+        chunk_id: rust-reference#c00323
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9586e581c230
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: expression-oriented-syntax--influences--expression-statement
+    type: influences
+    from: expression-oriented-syntax
+    to: expression-statement
+    polarity: +
+    statement: Where evaluation is expression-directed, the expression statement becomes the 
+      construct that discards a value, and the semicolon marks that discarding.
+    evidence:
+      - source: rust-fls
+        locator: § 8.2. Expression Statements¶
+        chunk_id: rust-fls#c00261
+      - source: rust-reference
+        locator: p. 249
+        chunk_id: rust-reference#c00323
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e664f419e7fa
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: expression-statement--requires--statement-oriented-syntax
+    type: requires
+    from: expression-statement
+    to: statement-oriented-syntax
+    polarity:
+    statement: An expression statement exists only where the grammar has a statement category 
+      distinct from expressions, into which only some expressions are admitted.
+    evidence:
+      - source: ecma-334-7th
+        locator: §13.7
+        chunk_id: ecma-334-7th#c00604
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9962eef923be
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: empty-statement--requires--statement-oriented-syntax
+    type: requires
+    from: empty-statement
+    to: statement-oriented-syntax
+    polarity:
+    statement: The empty statement is a member of the language's statement category, listed among 
+      the statements that carry no trailing substatement.
+    evidence:
+      - source: jls-se25
+        locator: §14.5
+        chunk_id: jls-se25#c00719
+        quote: 'StatementWithoutTrailingSubstatement: Block EmptyStatement ExpressionStatement'
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-9de31ec55248
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'edge-exists: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: compound-statement-block--requires--statement-oriented-syntax
+    type: requires
+    from: compound-statement-block
+    to: statement-oriented-syntax
+    polarity:
+    statement: A compound statement presupposes a statement category, being itself a statement that 
+      groups a sequence of statements.
+    evidence:
+      - source: jls-se25
+        locator: §14.5
+        chunk_id: jls-se25#c00719
+        quote: 'StatementWithoutTrailingSubstatement: Block EmptyStatement ExpressionStatement'
+      - source: r-lang-definition
+        locator: §3.2
+        chunk_id: r-lang-definition#c00034
+        quote: Statements can be grouped together using braces ‘{’ and ‘}’. A group of statements is
+          sometimes called a block.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8ee0c41fd51a
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: brace-delimited-blocks--requires--compound-statement-block
+    type: requires
+    from: brace-delimited-blocks
+    to: compound-statement-block
+    polarity:
+    statement: 'Brace delimiters are concrete syntax for the compound statement: the braces exist in order
+      to bound a grouped sequence of statements.'
+    evidence:
+      - source: r-lang-definition
+        locator: §3.2
+        chunk_id: r-lang-definition#c00034
+        quote: Statements can be grouped together using braces ‘{’ and ‘}’. A group of statements is
+          sometimes called a block.
+      - source: r-lang-definition
+        locator: §10.3.7
+        chunk_id: r-lang-definition#c00132
+        quote: Braces—‘{’ and ‘}’—delimit blocks of expressions in function definitions, conditional
+          expressions, and iterative constructs.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-3f66e1153695
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: brace-delimited-blocks--alternative-to--keyword-end-markers
+    type: alternative-to
+    from: brace-delimited-blocks
+    to: keyword-end-markers
+    polarity:
+    statement: Closing a structured statement with a distinct keyword marker and closing every group
+      with the same brace are competing answers to how a statement group is terminated.
+    evidence:
+      - source: sebesta-copl
+        locator: §1.3.1
+        chunk_id: sebesta-copl#c00056
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6cd13b20e3c0
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+quality_edges:
+  - key: brace-delimited-blocks--affects-quality--readability
+    from: brace-delimited-blocks
+    to: readability
+    assessments:
+      - key: brace-delimited-blocks-readability
+        polarity: hurts
+        strength: moderate
+        statement: Terminating every statement group with the same brace diminishes readability, 
+          because the reader cannot tell from the closing token which group is being ended.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00056
+            quote: All of these languages have diminished readability because statement groups are 
+              always terminated in the same way, which makes it difficult to determine which group 
+              is being ended when an end or a right brace appears.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-6b6e304c6464
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: keyword-end-markers--affects-quality--readability
+    from: keyword-end-markers
+    to: readability
+    assessments:
+      - key: keyword-end-markers-readability
+        polarity: improves
+        strength: moderate
+        statement: Giving each kind of structured statement its own closing keyword makes the end of
+          a group clearer to the reader than a uniform closing token.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00056
+            quote: Fortran 95 and Ada (ISO/IEC, 2014) make this clearer by using a distinct closing 
+              syntax for each type of statement group. For example, Ada uses end if to terminate a 
+              selection construct and end loop to terminate a loop construct.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-423c47b0636c
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: keyword-end-markers--affects-quality--simplicity
+    from: keyword-end-markers
+    to: simplicity
+    assessments:
+      - key: keyword-end-markers-simplicity
+        polarity: hurts
+        strength: moderate
+        statement: Distinct closing keywords enlarge the set of reserved words, which is the cost 
+          side of a recognized conflict between simplicity and readability in this design choice.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00057
+            quote: This is an example of the conflict between simplicity that results in fewer 
+              reserved words, as in Java, and the greater readability that can result from using 
+              more reserved words, as in Ada.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-ca19b4566248
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: reserved-words--affects-quality--readability
+    from: reserved-words
+    to: readability
+    assessments:
+      - key: reserved-words-readability
+        polarity: improves
+        strength: moderate
+        statement: Reserving special words protects readability, because the reader can rely on such
+          a word always connoting something special rather than possibly being a variable name.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00057
+            quote: Another important issue is whether the special words of a language can be used as
+              names for program variables. If so, then the resulting programs can be very confusing.
+          - source: sebesta-copl
+            locator: §5.2.3
+            chunk_id: sebesta-copl#c00399
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e0ac1f22138f
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: contextual-soft-keywords--affects-quality--readability
+    from: contextual-soft-keywords
+    to: readability
+    assessments:
+      - key: contextual-soft-keywords-readability
+        polarity: hurts
+        strength: moderate
+        statement: Letting special words double as ordinary names makes programs confusing, since an
+          occurrence of such a word may or may not connote something special.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00057
+            quote: in Fortran 95, special words, such as Do and End , are legal variable names, so 
+              the appearance of these words in a program may or may not connote something special
+          - source: vanroy-haridi-2003
+            locator: §9.4
+            chunk_id: vanroy-haridi-2003#c01111
+            quote: IF IF=THEN THEN THEN=ELSE ELSE ELSE=IF
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-7057bacd4b3f
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: contextual-soft-keywords--affects-quality--implementability
+    from: contextual-soft-keywords
+    to: implementability
+    assessments:
+      - key: contextual-soft-keywords-implementability
+        polarity: hurts
+        strength: moderate
+        statement: When special words are not reserved, the parser must carry ambiguous 
+          interpretations forward until only one remains, which is why such languages are hard to 
+          handle with conventional parser tools.
+        evidence:
+          - source: vanroy-haridi-2003
+            locator: §9.4
+            chunk_id: vanroy-haridi-2003#c01111
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-d798b51ba181
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: identifier-case-sensitivity--affects-quality--readability
+    from: identifier-case-sensitivity
+    to: readability
+    assessments:
+      - key: identifier-case-sensitivity-readability
+        polarity: hurts
+        strength: moderate
+        statement: Case-sensitive names are argued to harm readability because names that look very 
+          similar denote unrelated entities, violating the principle that similar-looking constructs
+          should mean similar things.
+        evidence:
+          - source: sebesta-copl
+            locator: pp. 223–224
+            chunk_id: sebesta-copl#c00398
+            quote: To some people, this is a serious detriment to readability, because names that 
+              look very similar in fact denote different entities. In that sense, case sensitiv- ity
+              violates the design principle that language constructs that look similar should have 
+              similar meanings.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-95f330621959
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: every citation tops out at `partial`; narrow the claim to what the
+        cited text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: identifier-case-sensitivity--affects-quality--ease-of-use
+    from: identifier-case-sensitivity
+    to: ease-of-use
+    assessments:
+      - key: identifier-case-sensitivity-ease-of-use
+        polarity: hurts
+        strength: moderate
+        statement: 'Case sensitivity is chiefly a writability cost: having to remember the exact case
+          of predefined names makes correct programs harder to write.'
+        evidence:
+          - source: sebesta-copl
+            locator: pp. 223–224
+            chunk_id: sebesta-copl#c00398
+            quote: This is a problem of writability rather than readability, because the need to 
+              remember specific case usage makes it more difficult to write correct programs.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-34364e38826c
+      verdict: failed
+      admissible: false
+      pairs: 1
+      detail: 'quality-assessment: every citation tops out at `partial`; narrow the claim to what the
+        cited text actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: operator-overloading--affects-quality--readability
+    from: operator-overloading
+    to: readability
+    assessments:
+      - key: operator-overloading-readability-positive
+        polarity: improves
+        strength: moderate
+        statement: Sensibly used operator overloading aids readability, since an arithmetic 
+          expression over a user type reads far better than nested function calls.
+        evidence:
+          - source: sebesta-copl
+            locator: §7.3
+            chunk_id: sebesta-copl#c00602
+            quote: When sensibly used, user-defined operator overloading can aid readability.
+      - key: operator-overloading-readability-negative
+        polarity: hurts
+        strength: moderate
+        statement: User-defined overloading can be harmful to readability, because nothing stops a 
+          programmer giving an operator an unrelated meaning and the reader must hunt for operand 
+          types and the operator's definition.
+        evidence:
+          - source: sebesta-copl
+            locator: §7.3
+            chunk_id: sebesta-copl#c00602
+            quote: On the other hand, user-defined overloading can be harmful to readability. For 
+              one thing, nothing prevents a user from defining + to mean multiplication.
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00050
+      - key: operator-overloading-safety
+        polarity: hurts
+        strength: moderate
+        statement: Overloading one symbol for unrelated unary and binary operations lets a keying 
+          error such as a dropped first operand go undetected by the compiler.
+        evidence:
+          - source: sebesta-copl
+            locator: §7.3
+            chunk_id: sebesta-copl#c00601
+            quote: the simple keying error of leaving out the first operand for a bitwise AND 
+              operation can go undetected by the compiler, because it is interpreted as an 
+              address-of operator. Such an error may be difficult to diagnose.
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-c0298ffcc38a
+      verdict: failed
+      admissible: false
+      pairs: 4
+      detail: 'quality-assessment: the cited text contradicts the claim; the claim is wrong as written;
+        quality-assessment: every citation tops out at `partial`; narrow the claim to what the cited text
+        actually supports and resubmit'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+  - key: operator-overloading--affects-quality--simplicity
+    from: operator-overloading
+    to: simplicity
+    assessments:
+      - key: operator-overloading-simplicity
+        polarity: improves
+        strength: weak
+        statement: Overloading an operator across related operand types simplifies a language by 
+          reducing the number of distinct operators it needs.
+        evidence:
+          - source: sebesta-copl
+            locator: §1.3.1
+            chunk_id: sebesta-copl#c00050
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-9f7920b05d94
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: nestable-block-comments--affects-quality--ease-of-use
+    from: nestable-block-comments
+    to: ease-of-use
+    assessments:
+      - key: nestable-block-comments-ease-of-use
+        polarity: improves
+        strength: moderate
+        statement: Nestable block comments are handy in practice because they let a programmer 
+          temporarily comment out a large block of code that already contains comments.
+        evidence:
+          - source: scott-plp
+            locator: pp. 96–97
+            chunk_id: scott-plp#c00093
+            quote: Nested comments can be handy for the programmer (e.g., for temporarily 
+              “commenting out” large blocks of code).
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-1e873769c152
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: nestable-block-comments--affects-quality--implementability
+    from: nestable-block-comments
+    to: implementability
+    assessments:
+      - key: nestable-block-comments-implementability
+        polarity: hurts
+        strength: moderate
+        statement: Nesting makes comments a recursive construct, which a conventional scanner cannot
+          handle, so implementors must add special-purpose comment-handling code.
+        evidence:
+          - source: scott-plp
+            locator: pp. 96–97
+            chunk_id: scott-plp#c00093
+            quote: Scanners normally deal only with non-recursive constructs, however, so nested 
+              comments require special treatment. Some languages disallow them. Others require the 
+              language implementor to augment the scanner with special-purpose comment-handling 
+              code.
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-2f72354c7e32
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: non-nesting-block-comments--affects-quality--ease-of-use
+    from: non-nesting-block-comments
+    to: ease-of-use
+    assessments:
+      - key: non-nesting-block-comments-ease-of-use
+        polarity: hurts
+        strength: moderate
+        statement: Because they do not nest, delimited comments cannot reliably be used to comment 
+          out a block of code that itself contains delimited comments.
+        evidence:
+          - source: ecma-334-7th
+            locator: §6.3
+            chunk_id: ecma-334-7th#c00120
+            quote: In general, it does not work to put /* before those lines and */ after them, as 
+              this does not properly encapsulate delimited comments in the block, and in general may
+              completely change the structure of such delimited comments.
+          - source: scott-plp
+            locator: pp. 96–97
+            chunk_id: scott-plp#c00093
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-76920daba2ab
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: layout-rule-offside--affects-quality--implementability
+    from: layout-rule-offside
+    to: implementability
+    assessments:
+      - key: layout-rule-offside-implementability
+        polarity: hurts
+        strength: moderate
+        statement: The off-side rule couples lexing to parsing, since a closing brace is inserted 
+          precisely when an illegal lexeme is met at a point where a close brace would be legal.
+        evidence:
+          - source: haskell-2010-report
+            locator: §2.7
+            chunk_id: haskell-2010-report#c00048
+          - source: haskell-2010-report
+            locator: §10.3
+            chunk_id: haskell-2010-report#c00256
+            quote: 'L ( t : ts ) ( m : ms ) = } : ( L ( t : ts ) ms ) if m/ = 0 and parse-error ( t )'
+    contested:
+      - new-quality
+      - single-source
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-c454bbacb697
+      verdict: verified
+      admissible: true
+      pairs: 2
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    waiver: 'Developer waiver (D71): the draft-only batch is re-atomized after the structure review, so
+      cycles 2-4 skip debates.'
+  - key: brace-delimited-blocks--affects-quality--interoperability
+    from: brace-delimited-blocks
+    to: interoperability
+    assessments:
+      - key: brace-delimited-blocks-interoperability
+        polarity: improves
+        strength: moderate
+        statement: Keeping an explicit brace-and-semicolon form available, so layout is never 
+          required, is what makes programs straightforward to generate by other programs.
+        evidence:
+          - source: haskell-2010-report
+            locator: §2.7
+            chunk_id: haskell-2010-report#c00047
+            quote: Because layout is not required, Haskell programs can be straightforwardly 
+              produced by other programs.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-e007c234056f
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: keyword-escape-prefix--affects-quality--interoperability
+    from: keyword-escape-prefix
+    to: interoperability
+    assessments:
+      - key: keyword-escape-prefix-interoperability
+        polarity: improves
+        strength: moderate
+        statement: An escape prefix for keywords aids interfacing with other languages, since the 
+          escape is not part of the identifier and the name is seen elsewhere as ordinary.
+        evidence:
+          - source: ecma-334-7th
+            locator: §6.4
+            chunk_id: ecma-334-7th#c00125
+            quote: The prefix “ @ ” enables the use of keywords as identifiers, which is useful when
+              interfacing with other programming languages. The character @ is not actually part of 
+              the identifier, so the identifier might be seen in other languages as a normal 
+              identifier, without the prefix.
+    contested: []
+    debate_id:
+    status: verified
+    verification:
+      fact_id: f-8cd70a5e33b5
+      verdict: verified
+      admissible: true
+      pairs: 1
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+  - key: raw-string-literal--affects-quality--ease-of-use
+    from: raw-string-literal
+    to: ease-of-use
+    assessments:
+      - key: raw-string-literal-ease-of-use
+        polarity: improves
+        strength: weak
+        statement: Raw or verbatim literals make backslash-heavy strings such as paths and regular 
+          expressions easier to write, since the doubling of every backslash is no longer needed.
+        evidence:
+          - source: ecma-334-7th
+            locator: §6.4
+            chunk_id: ecma-334-7th#c00136
+            quote: string g = "\\\\server\\share\\file.txt" ; // \\server\share\file.txt string h = 
+              @"\\server\share\file.txt"
+          - source: python-langref-3
+            locator: § 2.5.6. Raw string literals
+            chunk_id: python-langref-3#c00039
+            quote: ">>> r'\\d{4}-\\d{2}-\\d{2}' '\\\\d{4}-\\\\d{2}-\\\\d{2}'"
+    contested: []
+    debate_id:
+    status: dropped
+    verification:
+      fact_id: f-25a7589cac1b
+      verdict: failed
+      admissible: false
+      pairs: 2
+      detail: 'quality-assessment: no citation supports the claim; find a source that states it, or withdraw
+        it'
+      run_id: 2026-10-25-r4-verify-04-syntax-layer-constructs-02
+    note: ''
+    drop_reason: Refused by the D24 gate (citations do not support the claim); the draft-only batch 
+      is re-atomized after the structure review.
+findings:
+  - kind: rule-candidate
+    detail: "ECMA-262 annotates certain productions with 'no LineTerminator here'. Such an annotation
+      has no effect on its own: it only matters because automatic semicolon insertion would otherwise
+      supply a terminator at that point. This is an interaction of two features, not a mintable feature,
+      so the restricted-production candidate was folded into the ASI node and recorded here."
+    keys:
+      - automatic-semicolon-insertion
+      - restricted-production-no-line-break
+  - kind: rule-candidate
+    detail: The Haskell layout rule's parse-error side condition closes an implicit group precisely 
+      when the next token together with the tokens produced so far is an invalid prefix of the 
+      grammar. The effect exists only when a layout-based lexer and the context-free grammar are 
+      taken together, which is a rule over two features rather than a property of either.
+    keys:
+      - layout-rule-offside
+      - syntactic-ambiguity
+      - compound-statement-block
+  - kind: cross-theme-edge
+    detail: The reserved underscore lexeme is carved here as a lexical carve-out from the identifier
+      rule, but Python, Rust and the Rust FLS define its behaviour as a wildcard pattern that 
+      matches any value and binds no name. The matching semantics belong to a 
+      pattern-matching/binding theme and should be edged to from this node rather than restated 
+      here.
+    keys:
+      - wildcard-underscore-token
+  - kind: cross-theme-edge
+    detail: The candidate 'execution-character-set-mapping' was not minted. C and C++ define it as 
+      an implementation-defined mapping from source characters to members of the execution character
+      set, i.e. a statement about the representation of values at run time, which belongs to a 
+      data-representation or semantics theme and only connects to the syntax layer through character
+      and string literals.
+    keys:
+      - source-character-set
+      - character-literal
+  - kind: structure-friction
+    detail: "Several carves are features that specialise other features rather than realising a concept:
+      the elsif clause exists only as a repair for keyword end markers, inner versus outer doc comments
+      are variants of documentation comments, and terminator elision is a variant of the expression statement.
+      'realizes' only points from a feature to a concept, so these specialisations had to be flattened
+      into their parent nodes. The model would need a feature-to-feature specialisation relation (or a
+      variant/sub-feature record kind) to keep them distinct without inventing a concept for each."
+    keys:
+      - keyword-end-markers
+      - documentation-comments
+      - expression-statement
+    area: ontology
+    element: realizes
+  - kind: structure-friction
+    detail: Ordered translation phases and the preprocessing layer are not surface constructs a 
+      programmer writes, nor are they meaning-of-a-construct facts; they are statements about the 
+      order in which syntax rules apply, and they are what make phase-relative carves (preprocessing
+      tokens, pre-lexical Unicode escapes) coherent. They were filed as concepts with no layer, but 
+      the three-layer scheme has no slot for a translation-pipeline stage, so a layer-0 or an 
+      explicit 'specification device' kind would be needed.
+    keys:
+      - translation-phases
+      - preprocessing-as-lexical-layer
+      - preprocessing-token
+      - unicode-code-point-escape
+    area: ontology
+    element: layers
+  - kind: structure-friction
+    detail: Two dimension-model misfits. First, significant indentation is simultaneously a value on
+      the statement-grouping axis (layer 3) and a layer-1 lexical mechanism with its own tab-stop 
+      and INDENT/DEDENT rules, so one node has to be both a dimension value and a concrete 
+      construct. Second, Sebesta names identifier case sensitivity as a primary design issue, which 
+      asks for a dimension, but no source read here documents a case-insensitive language, so the 
+      axis cannot be given the two member features the model requires and the carve was left at 
+      layer 1.
+    keys:
+      - significant-indentation
+      - indent-dedent-tokens
+      - identifier-case-sensitivity
+    area: ontology
+    element: dimension-model
+  - kind: structure-friction
+    detail: "indent-dedent-tokens and layout-rule-offside are not requirements, enablers or alternatives
+      of significant-indentation: each is a concrete mechanism that *realises* the layer-3 feature. The
+      five feature-to-feature types cannot express 'specialises/is-a-mechanism-for', so the only honest
+      options are to leave the pair unlinked or to misuse requires. A 'specialises' (or layer-crossing
+      'realises-feature') type would express it. The same friction holds for brace-delimited-blocks vs
+      compound-statement-block, where I was forced to use requires."
+    keys:
+      - significant-indentation
+      - indent-dedent-tokens
+      - layout-rule-offside
+    area: ontology
+    element: edge-types
+  - kind: structure-friction
+    detail: 'The strongest relations in the operator cluster run from features to the concepts operator-fixity
+      and operator-precedence-and-associativity: a fixity declaration simply *is* a way of fixing precedence
+      and associativity (haskell-2010-report#c00115), and C# forbids user operators from touching them
+      (ecma-334-7th#c00350). Edges may only connect features, so these governing relations are unrepresentable
+      and the concept nodes end up orphaned from the features that instantiate them.'
+    keys:
+      - infix-operator-notation
+      - user-defined-operator-fixity
+      - operator-overloading
+    area: ontology
+    element: edge-types
+  - kind: rule-candidate
+    detail: 'Nestable block comments plus string literals interact: commenting out code with a nested
+      comment breaks if an occurrence of the comment delimiters sits inside a string literal or an end-of-line
+      comment in that code (haskell-2010-report#c00040). The hazard needs both features present; neither
+      alone causes it.'
+    keys:
+      - nestable-block-comments
+      - string-literal
+  - kind: rule-candidate
+    detail: "Line splicing plus line comments jointly produce a hazard: a backslash at the end of a //
+      comment splices the next physical line into the comment, so code silently disappears (c23-n3220#c00208,
+      examples '//\\ i(); // part of a two-line comment'). Effect exists only when both features are present."
+    keys:
+      - line-splicing
+      - comment-forms
+  - kind: rule-candidate
+    detail: 'Mixing layout with explicit braces needs a joint rule: the layout rule matches only the braces
+      it inserted, an explicit open brace must be matched explicitly, and inside explicit braces no layout
+      processing happens (haskell-2010-report#c00048). This governs the two features together, not either
+      one.'
+    keys:
+      - layout-rule-offside
+      - brace-delimited-blocks
+  - kind: rule-candidate
+    detail: 'Indentation-significant lexing needs a joint rule with the character repertoire: column counting
+      assumes a fixed-width font, tab stops 8 characters apart, and that Unicode characters count as one
+      ASCII width (haskell-2010-report#c00255). Indentation significance alone does not determine this;
+      the character set must be pinned too.'
+    keys:
+      - layout-rule-offside
+      - indent-dedent-tokens
+      - source-character-set
+  - kind: cross-theme-edge
+    detail: "Operator overloading's real dependency is on the type system: operator notation is rewritten
+      into function-call notation and resolved by overload resolution over operand types, and at least
+      one operand must be of a class or enumeration type (iso-iec-14882-cpp20-n4861#c00712, ecma-334-7th#c00350).
+      That requires-edge crosses out of the syntax theme into types/overload resolution."
+    keys:
+      - operator-overloading
+  - kind: cross-theme-edge
+    detail: 'The preprocessing cluster reaches into a compilation/metaprogramming theme: directives also
+      perform conditional compilation and source inclusion, with #include reprocessing a file through
+      phases 1-4 recursively (c23-n3220#c00071). Edges from these nodes to conditional-compilation and
+      module/include features belong to that theme.'
+    keys:
+      - macro-replacement-on-tokens
+      - directive-line-syntax
+  - kind: unmappable-candidate
+    detail: 'Identifier normalization has no node, although every modern spec mandates it and they disagree:
+      C, C++ and Rust require Normalization Form C and compare identifiers after normalizing (rust-fls#c00016,
+      c23-n3220#c00178), while Python normalizes names to NFKC at parse time (python-langref-3#c00024).
+      This is a distinct feature-level choice, not a characteristic of unicode-identifiers.'
+    keys:
+      - unicode-identifiers
+      - identifier-case-sensitivity
+  - kind: trimmed
+    detail: "Trimmed 2 edges over the cap: Cut the two weakest candidates: \"directive-line-syntax--alternative-to--nestable-block-comments\"\
+      \ relies on a single, loosely-related source (scott-plp's scanner discussion of comment delimiters
+      doesn't actually discuss directives) and strains the \"alternative-to\" framing; \"token-classes--influences--automatic-semicolon-insertion\"\
+      \ is redundant with the better-supported \"automatic-semicolon-insertion--influences--whitespace-as-token-separator\"\
+      \ edge, drawing on the identical two Go-spec passages to make a thinner, more peripheral point about
+      the same lexical mechanism."
+    keys:
+      - token-classes--influences--automatic-semicolon-insertion
+      - directive-line-syntax--alternative-to--nestable-block-comments
