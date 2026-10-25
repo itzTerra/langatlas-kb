@@ -1,7 +1,7 @@
 cycle: 4
 theme: syntax-layer-constructs
 theme_digest: 356863098e13a19f
-status: r3-done
+status: r4-drafted
 languages:
   - c
   - java
@@ -11,6 +11,7 @@ languages:
 nodes_minted: []
 artifacts:
   survey: research/surveys/04-syntax-layer-constructs.yaml
+  draft: research/drafts/04-syntax-layer-constructs.yaml
 signed_off:
   by: Michal Doležel
   date: '2026-10-14'
